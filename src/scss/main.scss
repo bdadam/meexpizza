@@ -23,8 +23,9 @@ html {
 body {
     background-color: #091F44;
     background-image: url(/images/bg2.jpg);
-    background-image: url(/images/meexbg_4.jpg);
-    background-repeat: no-repeat;
+    background-image: url(/images/pattern7.png), url(/images/meexbg_4.jpg);
+    background-repeat: repeat, no-repeat;
+    background-position: center top, center top;
 }
 
 h1, h2, h3, h4, h5, h6 {
