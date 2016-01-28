@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<main>
+    <div id="menucard">
+        {% for x in [1,2,3,4,5,6,7] %}
+        <section id="classic-pizza">
+            <h2>Klasszikus Pizzák</h2>
+            <table>
+                <thead>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    {% for i in [1,2,3] %}
+                    <tr>
+                        <td><img src="http://lorempixel.com/120/120/?3{{ i}}"></td>
+                        <td>
+                            <h3>Margarita pizza</h3>
+                            <p>fűszeres paradicsom szósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika</p>
+                        </td>
+                        <td colspan="3">
+                            <p>30cm - 850 Ft | 40cm - 1850 Ft | 50cm - 2700 Ft</p>
+                            <button>Kosárba</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="http://lorempixel.com/120/120/?1{{ i }}"></td>
+                        <td>
+                            <h3>Piedone pizza</h3>
+                            <p>fűszeres paradicsom szósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika</p>
+                        </td>
+                        <td>850 Ft <button>Kosárba</button></td>
+                        <td>1850 Ft <button>Kosárba</button></td>
+                        <td>2700 Ft <button>Kosárba</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        {% endfor %}
+    </div>
+    <aside id="cart">Üres</aside>
+</main>
+{% endblock %}

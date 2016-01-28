@@ -41,4 +41,20 @@ gulp.task('webserver', function() {
         }));
 });
 
-gulp.task('default', ['webpack', 'sass', 'sass:watch', 'webserver']);
+gulp.task('html', () => {
+    var fs = require('fs');
+    var nunjucks = require('nunjucks');
+    var htmlmin = require('html-minifier');
+    nunjucks.configure('./src/content/', { autoescape: true });
+    var html = htmlmin.minify(nunjucks.render('index.html'), {
+        collapseWhitespace: true,
+        preserveLineBreaks: true
+    });
+    fs.writeFileSync('./dist/index.html', html);
+});
+
+gulp.task('html:watch', () => {
+    gulp.watch('src/content/**/*', ['html']);
+})
+
+gulp.task('default', ['webpack', 'sass', 'sass:watch', 'html', 'html:watch', 'webserver']);
