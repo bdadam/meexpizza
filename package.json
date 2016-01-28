@@ -1,0 +1,31 @@
+{
+  "name": "meexpizza.hu",
+  "version": "1.0.0",
+  "description": "",
+  "main": "menu.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/bdadamdev/meexpizza.hu.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/bdadamdev/meexpizza.hu#readme",
+  "devDependencies": {
+    "babel": "^6.3.26",
+    "babel-core": "^6.4.5",
+    "babel-loader": "^6.2.1",
+    "babel-preset-es2015": "^6.3.13",
+    "gulp": "^3.9.0",
+    "gulp-pleeease": "^2.0.2",
+    "gulp-sass": "^2.1.1",
+    "gulp-webserver": "^0.9.1",
+    "lodash": "^4.0.1",
+    "nedb": "^1.7.2",
+    "redux": "^3.0.6",
+    "webpack-stream": "^3.1.0"
+  }
+}

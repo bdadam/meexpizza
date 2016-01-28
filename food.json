@@ -1,0 +1,10 @@
+{
+    "drinks": {
+        "title": "Üdítők",
+        "list": [
+            { "name": "1 literes", "price": 350, "options": ["Pepsi", "Pepsi Max (light)", "Mirinda", "Canada Dry"] },
+            { "name": "1.75 literes", "price": 350, "options": ["Pepsi", "Pepsi Max (light)", "Mirinda", "Canada Dry"] },
+            { "name": "Dobozos üdítők (0,33)", "price": 350, "options": ["Pepsi", "Pepsi Max (light)", "Mirinda", "Canada Dry"] },
+        ]
+    }
+}
