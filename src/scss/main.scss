@@ -28,6 +28,10 @@ body {
     background-position: center top, center top;
 }
 
+img {
+    max-width: 100%;
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-family: Russo One;
 }
@@ -129,6 +133,33 @@ main {
         min-height: 600px;
         padding-left: 16px;
     }
+
+    .item {
+        overflow: hidden;
+        margin: 6px 0 0;
+    }
+
+    .image {
+        float: left;
+        width: 10%;
+        overflow: hidden;
+        font-size: 0;
+        //
+        // img {
+        //     border-radius: 100%;
+        // }
+    }
+
+    .text {
+        float: left;
+        width: 60%;
+    }
+
+    .buy {
+        float: left;
+        width: 30%;
+    }
+
 
     table {
         width: 100%;

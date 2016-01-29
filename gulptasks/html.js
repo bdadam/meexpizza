@@ -34,8 +34,6 @@ module.exports = (gulp) => {
             menucard
         });
 
-        console.log(html.length)
-
         const minhtml = htmlmin.minify(html, {
             collapseWhitespace: true,
             preserveLineBreaks: true

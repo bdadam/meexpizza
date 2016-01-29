@@ -6,7 +6,32 @@
         {% for catname, cat in menucard %}
         <section id="{{ catname }}">
             <h2>{{ cat.name }}</h2>
-            <table>
+            {% for item in cat.items %}
+            <div class="item">
+                <div class="image"><img src="http://lorempixel.com/80/80/?{{ item.price }}{{ item.name }}"></div>
+                <div class="text">
+                    <h3>{{ item.name }}</h3>
+                    <p>{{ item.text }}</p>
+                    <p>
+                        {% for variant, variantprice in item.variants %}
+                            {{ variant }}
+                        {% endfor %}
+                    </p>
+                </div>
+                <div class="buy">
+                    {% if item.variants %}
+                        {% for variant, variantprice in item.variants %}
+                            <button>{{ variant }} - {{ variantprice }}</button>
+                        {% endfor %}
+                    {% else %}
+                        <button>{{ item.price }} Ft - Kosárba</button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+
+
+            {# <table>
                 <tbody>
                 {% for item in cat.items %}
                     <tr>
@@ -32,7 +57,7 @@
                     </tr>
                 {% endfor %}
                 </tbody>
-            </table>
+            </table> #}
         </section>
         {% endfor %}
     </div>
