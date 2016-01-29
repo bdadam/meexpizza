@@ -1,39 +1,11 @@
 var gulp = require('gulp');
-var webpack = require('webpack-stream');
-// var nodemon = require('gulp-nodemon');
 
-var sass = require('gulp-sass');
-var pleeease = require('gulp-pleeease');
-
-gulp.task('sass', function () {
-    gulp.src('src/scss/main.scss')
-        .pipe(sass().on('error', sass.logError))
-        .pipe(pleeease())
-        .pipe(gulp.dest('dist'));
-});
-
-gulp.task('sass:watch', function () {
-    gulp.watch('src/scss/**/*.scss', ['sass']);
-});
-
-gulp.task('webpack', function() {
-    return gulp.src('src/js/main.js')
-                .pipe(webpack(require('./webpack.config.js')))
-                .pipe(gulp.dest('dist/'));
-});
-
-// gulp.task('nodemon', function () {
-//     nodemon({
-//         script: 'index.js',
-//         ext: 'js html',
-//         env: { 'NODE_ENV': 'development' },
-//         ignore: ['static/**/*']
-//     });
-// });
-
-var webserver = require('gulp-webserver');
+require('./gulptasks/sass')(gulp); // sass, sass:watch
+require('./gulptasks/webpack')(gulp); // webpack
+require('./gulptasks/html')(gulp); // html, html:watch
 
 gulp.task('webserver', function() {
+    var webserver = require('gulp-webserver');
     gulp.src('./dist')
         .pipe(webserver({
             livereload: true,
@@ -41,20 +13,17 @@ gulp.task('webserver', function() {
         }));
 });
 
-gulp.task('html', () => {
-    var fs = require('fs');
-    var nunjucks = require('nunjucks');
-    var htmlmin = require('html-minifier');
-    nunjucks.configure('./src/content/', { autoescape: true });
-    var html = htmlmin.minify(nunjucks.render('index.html'), {
-        collapseWhitespace: true,
-        preserveLineBreaks: true
+gulp.task('watch', ['watchwithoutwebserver', 'webserver'], () => {
+    var spawn = require('child_process').spawn;
+    var proc;
+    gulp.watch(['gulpfile.js', 'gulptasks/**/*.js'], () => {
+        if (proc) { proc.kill(); }
+        proc = spawn('gulp.cmd', ['build', 'watchwithoutwebserver'], { stdio: 'inherit' });
     });
-    fs.writeFileSync('./dist/index.html', html);
 });
 
-gulp.task('html:watch', () => {
-    gulp.watch('src/content/**/*', ['html']);
-})
+// gulp.task('watch', ['sass:watch', 'html:watch', 'webserver']);
 
-gulp.task('default', ['webpack', 'sass', 'sass:watch', 'html', 'html:watch', 'webserver']);
+gulp.task('build', ['webpack', 'sass', 'html']);
+gulp.task('watchwithoutwebserver', ['sass:watch', 'html:watch'])
+gulp.task('default', ['build', 'watch']);

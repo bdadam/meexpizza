@@ -46,10 +46,7 @@
 
 	'use strict';
 	
-	console.log('main');
 	var redux = __webpack_require__(1);
-	
-	console.log(redux);
 	
 	var cart = redux.createStore(function () {
 	    var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
@@ -68,6 +65,9 @@
 	});
 	
 	cart.dispatch({ type: 'ADD', data: { id: '1', size: '30' } });
+	
+	cart.dispatch({ type: 'ADD', data: { id: '1', category: 'pizza', size: '30', extras: ['17', '21', '32'] } });
+	cart.dispatch({ type: 'ADD', data: { id: '13', category: 'pasta', size: '30', extras: ['17', '21', '32'] } });
 
 /***/ },
 /* 1 */

@@ -3,35 +3,34 @@
 {% block body %}
 <main>
     <div id="menucard">
-        {% for x in [1,2,3,4,5,6,7] %}
-        <section id="classic-pizza">
-            <h2>Klasszikus Pizzák</h2>
+        {% for catname, cat in menucard %}
+        <section id="{{ catname }}">
+            <h2>{{ cat.name }}</h2>
             <table>
                 <tbody>
-                    {% for i in [1,2,3] %}
+                {% for item in cat.items %}
                     <tr>
-                        <td><img src="http://lorempixel.com/120/120/?3{{ i}}"></td>
+                        <td><img src="http://lorempixel.com/80/80/?{{ item.price }}{{ item.name }}"></td>
                         <td>
-                            <h3>Margarita pizza</h3>
-                            <p>fűszeres paradicsom szósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika</p>
+                            <h3>{{ item.name }}</h3>
+                            <p>{{ item.text }}</p>
+                            <p>
+                                {% for variant, variantprice in item.variants %}
+                                    {{ variant }}
+                                {% endfor %}
+                            </p>
                         </td>
                         <td>
-                            <p>30cm - 850 Ft | 40cm - 1850 Ft | 50cm - 2700 Ft</p>
-                            <button>Kosárba</button>
+                            {% if item.variants %}
+                                {% for variant, variantprice in item.variants %}
+                                    <button>{{ variant }} - {{ variantprice }}</button>
+                                {% endfor %}
+                            {% else %}
+                                <button>{{ item.price }} Ft - Kosárba</button>
+                            {% endif %}
                         </td>
                     </tr>
-                    <tr>
-                        <td><img src="http://lorempixel.com/120/120/?1{{ i }}"></td>
-                        <td>
-                            <h3>Piedone pizza</h3>
-                            <p>fűszeres paradicsom szósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika</p>
-                        </td>
-                        <td>
-                            <p>30cm - 850 Ft | 40cm - 1850 Ft | 50cm - 2700 Ft</p>
-                            <button>Kosárba</button>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                {% endfor %}
                 </tbody>
             </table>
         </section>
