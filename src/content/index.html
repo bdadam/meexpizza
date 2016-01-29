@@ -8,7 +8,7 @@
             <h2>{{ cat.name }}</h2>
             {% for item in cat.items %}
             <div class="item">
-                <div class="image"><img src="http://lorempixel.com/80/80/?{{ item.price }}{{ item.name }}"></div>
+                <div class="image"><img src="http://lorempixel.com/120/120/?{{ item.price }}{{ item.name }}"></div>
                 <div class="text">
                     <h3>{{ item.name }}</h3>
                     <p>{{ item.text }}</p>
@@ -61,6 +61,8 @@
         </section>
         {% endfor %}
     </div>
-    <aside id="cart">Üres</aside>
+    <aside id="cart">
+        <div>Üres</div>
+    </aside>
 </main>
 {% endblock %}
