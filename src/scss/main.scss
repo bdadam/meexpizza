@@ -137,17 +137,12 @@ main {
         border-collapse: collapse;
     }
 
-    th:first-child {
+    td:first-child {
         width: 144px;
     }
 
-    th:nth-child(2) {
-        width: 30%;
-    }
-
-    th {
-        padding: 12px 0;
-        font-size: 1.25rem;
+    td:nth-child(2) {
+        width: 50%;
     }
 
     td {
