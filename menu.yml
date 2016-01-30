@@ -1,0 +1,28 @@
+Klasszikus pizzák:
+    - Pizzakenyér:
+        Árak:
+            30cm: 500
+
+    - Sajtos-fokhagymás pizzakenyér:
+        Összetevők: sajt, fokhagyma, fűszerkeverék
+        Árak:
+            30cm: 600
+
+    - Margarita pizza:
+        Összetevők: fűszeres paradicsom szósz, sajt
+        Árak:
+            30cm: 850
+            40cm: 1850
+            50cm: 2700
+
+
+Extra pizzák:
+    - Tonhalas pizza:
+        Összetevők: fűszeres paradicsom szósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek
+        Árak:
+            - 30cm: 1190
+
+    - Piedone pizza:
+        Összetevők: fűszeres paradicsom szósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika
+        Árak:
+            - 30cm: 1190

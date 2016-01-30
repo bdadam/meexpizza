@@ -4,6 +4,7 @@ $max-width-L: 1280px;
 // @import url(https://fonts.googleapis.com/css?family=Arimo:400,700&subset=latin,latin-ext);
 // @import url(https://fonts.googleapis.com/css?family=Oswald:400,700,300&subset=latin,latin-ext);
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800&subset=latin,latin-ext);
+@import url(https://fonts.googleapis.com/css?family=Lato:400,900,700,300&subset=latin,latin-ext);
 
 @import 'site-header';
 
@@ -14,16 +15,20 @@ $max-width-L: 1280px;
 }
 
 html {
-    // font-family: Arimo;
-    // font-family: Oswald;
-    font-family: Source Sans Pro;
-    color: #333;
-    line-height: 1.35;
 }
 
 body {
-    background-color: #f1f1f1;
-    background-color: #fff;
+    // font-family: Arimo;
+    // font-family: Oswald;
+    // font-family: Source Sans Pro;
+    // font-family: Open Sans;
+    font-family: Lato;
+    color: #333;
+    line-height: 1.35;
+    font-size: 0.875rem;
+
+    // background-color: #f1f1f1;
+    // background-color: #fff;
 }
 
 @media screen and (min-width: 1024px) {
@@ -40,7 +45,7 @@ img {
     max-width: 100%;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2 {
     font-family: Russo One;
 }
 
@@ -50,15 +55,13 @@ h2 {
 }
 
 select, button {
-    background: none;
     font-size: inherit;
+    font-family: inherit;
+    line-height: inherit;
+    background: none;
     border: 0;
-    font-family: Open Sans;
     border-radius: 4px;
     padding: 2px 4px;
-}
-
-select {
     border: 1px solid #ccc;
 }
 
@@ -94,8 +97,8 @@ select {
     }
 
     h3 {
-        font-family: Open Sans;
         font-size: 1rem;
+        line-height: 1.2;
     }
 
     .item {
@@ -108,43 +111,32 @@ select {
     }
 
     img {
-        display: inline-block;
         width: 20%;
+        display: inline-block;
         margin-top: 4px;
         position: relative;
     }
 
     .text {
+        width: 76%;
+        margin-left: 4%;
         display: inline-block;
         vertical-align: top;
-        width: 70%;
-        margin-left: 4%;
-        font-size: 1rem;
+        font-size: 0.875rem;
     }
 
     .in-cart-count {
         display: inline-block;
-        vertical-align: top;
-        width: 6%;
         color: red;
-        font-size: 1rem;
         font-weight: bold;
+        float: right;
+        margin-left: 8px;
     }
 
-    // .buy-mobile {
-    //     width: 6%;
-    //     display: inline-block;
-    //     vertical-align: top;
-    //     border: 0;
-    //     background-color: transparent;
-    //
-    //     display: none;
-    // }
-
     .prices {
-        margin-top: 4px;
+        margin-top: 8px;
         border-radius: 2px;
-        font-size: 1rem;
+        font-size: 0.875rem;
         text-align: right;
 
         div {
@@ -159,7 +151,7 @@ select {
             flex-grow: 1;
         }*/
 
-        font-size: 0.8125rem;
+        font-size: 0.875rem;
 
         select {
 

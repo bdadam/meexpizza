@@ -18,11 +18,17 @@ module.exports = {
 			{ test: /\.js$/, exclude: /(node_modules|bower_components)/, loader: 'babel', query: { presets: ['es2015'] }, cacheDirectory: true }
 		]
 	},
+	externals: {
+        // require("jquery") is external and available
+        //  on the global var jQuery
+        "jquery": "jQuery"
+    },
 	resolve: {
 		alias: {
 		}
 	},
 	plugins: [
+		new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"production"' }),
 		new webpack.optimize.DedupePlugin(),
 		// new webpack.optimize.OccurrenceOrderPlugin(),
 		// new webpack.optimize.UglifyJsPlugin()

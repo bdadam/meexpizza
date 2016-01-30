@@ -1,3 +1,10 @@
+// require('babel-polyfill');
+
+require('lazysizes/lazysizes');
+
+var navi = require('./navi');
+navi.init();
+
 var redux = require('redux');
 
 var cart = redux.createStore((state = {}, action) => {
@@ -10,20 +17,39 @@ var cart = redux.createStore((state = {}, action) => {
     return state;
 });
 
-cart.subscribe(() => {
-    console.log(cart.getState())
+
+
+function on(elSelector, eventName, selector, fn) {
+    var element = document.querySelector(elSelector);
+
+    element.addEventListener(eventName, function(event) {
+        var possibleTargets = element.querySelectorAll(selector);
+        var target = event.target;
+
+        for (var i = 0, l = possibleTargets.length; i < l; i++) {
+            var el = target;
+            var p = possibleTargets[i];
+
+            while(el && el !== element) {
+                if (el === p) {
+                    return fn.call(p, event);
+                }
+
+                el = el.parentNode;
+            }
+        }
+    });
+}
+
+const menucard = require('../../menu');
+console.log(menucard);
+
+on('body', 'click', 'button[data-add-to-cart]', function(e) {
+    // var name, price;
+    // console.log(e);
+    // console.log(this);
+
+    // cart.dispatch({ type: 'ADD', data: { id: '1', size: '30',  } })
 });
 
-cart.dispatch({ type: 'ADD', data: { id: '1', size: '30',  } })
-
-
-cart.dispatch({ type: 'ADD', data: { id: '1', category: 'pizza', size: '30', extras: ['17', '21', '32']  } })
-cart.dispatch({ type: 'ADD', data: { id: '13', category: 'pasta', size: '30', extras: ['17', '21', '32']  } })
-
-var menuToggle = document.querySelector('.menu-toggle');
-var navi = document.querySelector('#site-navigation');
-menuToggle.addEventListener('click', (e) => {
-    e.preventDefault();
-    menuToggle.classList.toggle('active');
-    navi.classList.toggle('open');
-});
+var $ = require("jquery");

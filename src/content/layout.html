@@ -20,6 +20,8 @@
 
 {% include "navigation.html" %}
 {% block body %}{% endblock %}
-<script src="main.js"></script>
+<script>menucard={{ menucardJson | safe }}</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js" defer></script>
+<script src="main.js" defer></script>
 </body>
 </html>
