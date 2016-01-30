@@ -36,7 +36,8 @@ module.exports = (gulp) => {
         const html = nunjucks.render('index.html', {
             menucard,
             menucardJson: JSON.stringify(menucard),
-            menu
+            menu,
+            menuJson: JSON.stringify(menu)
         });
 
         const minhtml = htmlmin.minify(html, {

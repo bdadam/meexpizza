@@ -33,38 +33,12 @@
             {% endfor %}
         </section>
         {% endfor %}
-
-
-        {# {% for catname, cat in menucard %}
-        <section id="{{ catname }}" class="menu-category">
-            <h2>{{ cat.name }}</h2>
-            {% for item in cat.items %}
-            <div class="item" data-item>
-                <img data-src="http://lorempixel.com/120/120/?{{ item.price }}{{ item.name }}" class="lazyload">
-                <div class="text">
-                    <div class="in-cart-count">2&times;</div>
-                    <h3>{{ item.name }}</h3>
-                    <p>{{ item.text }}</p>
-                </div>
-                <div class="prices">
-                    {% if item.variants %}
-                        <select>
-                            {% for variant, variantprice in item.variants %}
-                                <option>{{ variant }} - {{ variantprice }} Ft</option>
-                            {% endfor %}
-                        </select>
-                        <button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
-                    {% else %}
-                        <div>{{ item.size }} - {{ item.price }} Ft</div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
-                    {% endif %}
-                </div>
-            </div>
-            {% endfor %}
-        </section>
-        {% endfor %} #}
     </div>
     <aside id="cart">
         <div>Üres</div>
     </aside>
 </main>
+<div style="width: 100%; position: fixed; bottom: 24px;">
+    <button style="display: block; width: 80%; margin: 0 auto; background-color: #999; display: block; padding: 8px 0; font-size: 1.125rem; color: #fff; font-weight: 700; border: 0;">Megrendelés</button>
+</div>
 {% endblock %}
