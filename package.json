@@ -32,6 +32,7 @@
     "lodash": "^4.0.1",
     "nedb": "^1.7.2",
     "redux": "^3.0.6",
+    "speakingurl": "^8.0.2",
     "suspend": "^0.7.0",
     "webpack-stream": "^3.1.0",
     "yargs": "^3.32.0"
