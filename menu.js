@@ -2,18 +2,17 @@ module.exports = {
     classicpizza: {
         name: 'Klasszikus pizzák',
         items: [
-            { name: 'Pizzakenyér', size: 30, price: 500, text:'' },
-            { name: 'Sajtos-fokhagymás pizzakenyér', size: 30, price: 600, text: 'sajt, fokhagyma, fűszerkeverék' },
+            { name: 'Pizzakenyér', size: '30cm', price: 500, text:'' },
+            { name: 'Sajtos-fokhagymás pizzakenyér', size: '30cm', price: 600, text: 'sajt, fokhagyma, fűszerkeverék' },
             { name: 'Margarita pizza', variants: { '30cm': 850, '40cm': 1850, '50cm': 2700 }, text: 'fűszeres paradicsom szósz, sajt' },
         ]
     },
     extrapizza: {
         name: 'Extra pizzák',
-        size: '30cm',
         items: [
-            { name: 'Tonhalas pizza', text: 'fűszeres paradicsom szósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek', price: 1190 },
-            { name: 'Piedone pizza', text: 'fűszeres paradicsom szósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika', price: 1190 },
-            { name: 'Jóasszony pizza', text: 'fűszeres paradicsomos alap, sajt, paprikás szalámi, csípős cseresznyepaprika, csiperke gomba, hagyma', price: 1190 },
+            { name: 'Tonhalas pizza', text: 'fűszeres paradicsom szósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek', size: '30cm', price: 1190 },
+            { name: 'Piedone pizza', text: 'fűszeres paradicsom szósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika', size: '30cm', price: 1190 },
+            { name: 'Jóasszony pizza', text: 'fűszeres paradicsomos alap, sajt, paprikás szalámi, csípős cseresznyepaprika, csiperke gomba, hagyma', size: '30cm', price: 1190 },
         ]
     },
     full: {

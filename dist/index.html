@@ -3,387 +3,335 @@
 <head>
     <meta charset="utf-8">
     <title>Meexpizza Gyöngyös</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="main.css">
     
 </head>
 <body>
+    <div style="display: none;">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <symbol id="icon-cart" viewBox="0 0 1024 1024">
+                <path class="path1" d="M384 928c0 53.019-42.981 96-96 96s-96-42.981-96-96c0-53.019 42.981-96 96-96s96 42.981 96 96z"></path>
+                <path class="path2" d="M1024 928c0 53.019-42.981 96-96 96s-96-42.981-96-96c0-53.019 42.981-96 96-96s96 42.981 96 96z"></path>
+                <path class="path3" d="M1024 512v-384h-768c0-35.346-28.654-64-64-64h-192v64h128l48.074 412.054c-29.294 23.458-48.074 59.5-48.074 99.946 0 70.696 57.308 128 128 128h768v-64h-768c-35.346 0-64-28.654-64-64 0-0.218 0.014-0.436 0.016-0.656l831.984-127.344z"></path>
+            </symbol>
+        </svg>
+    </div>
+
 <header id="site-header">
-    <p>Rendelés: +36 30 211 1212 | Ingyenes kiszállítás Gyöngyös területén 1000 Ft.- felett.</p>
-    <nav id="site-navigation">
-        <a href="/" class="logo" title="Meexpizza">Meexpizza</a>
-        <a href="">Pizza</a>
-        <a href="">Streetfood</a>
-        <a href="">Saláta</a>
-        <a href="">Menü</a>
-        <a href="">Üdítő</a>
-        <span>
-            <!-- Rendelés: <span class="phone">+36 30 211 1212</span> -->
-            <!-- | Ingyenes kiszállítás Gyöngyös területén 1000 Ft.- felett! -->
-        </span>
-    </nav>
+    <!-- <p>Rendelés: +36 30 211 1212 | Ingyenes kiszállítás Gyöngyös területén 1000 Ft.- felett.</p> -->
+    <div class="container">
+        <div class="brand"><a href="/">Meexpizza</a></div>
+
+        <button href="" class="menu-toggle"><span></span></button>
+
+        <nav id="site-navigation">
+            <!-- <a href="/" class="logo" title="Meexpizza">
+                Meexpizza
+                <img src="/images/meex_logo_web.png">
+            </a> -->
+            <a href="">Pizza</a>
+            <a href="">Hamburger</a>
+            <a href="">Saláta</a>
+            <a href="">Menü</a>
+            <a href="">Édesség</a>
+            <a href="">Üdítő</a>
+
+            <!-- <img src="/images/meex_logo_web.png"> -->
+            <!-- <span>
+                Rendelés: <span class="phone">+36 30 211 1212</span>
+                | Ingyenes kiszállítás Gyöngyös területén 1000 Ft.- felett!
+            </span> -->
+        </nav>
+        <!-- <a href="#" class="header-cart"><span>5 x</span><svg><use xlink:href="#icon-cart"/></svg></a> -->
+        <a href="#" class="header-cart"><span>5 &times;</span><i class="icon-crt"></i></a>
+    </div>
 </header>
 
 
-<main>
+<main class="container">
     <div id="menucard">
         
-        <section id="classicpizza">
+        <section id="classicpizza" class="menu-category">
             <h2>Klasszikus pizzák</h2>
             
             <div class="item">
-                <div class="image"><img src="http://lorempixel.com/120/120/?500Pizzakenyér"></div>
+                <img src="http://lorempixel.com/120/120/?500Pizzakenyér">
                 <div class="text">
                     <h3>Pizzakenyér</h3>
                     <p></p>
-                    <p>
-                        
-                    </p>
                 </div>
-                <div class="buy">
+                <div class="in-cart-count">2&times;</div>
+                <div class="prices">
                     
-                        <button>500 Ft - Kosárba</button>
+                        <div>30cm - 500 Ft</div><button><i class="icon-crt-inv"></i> Kosárba</button>
                     
                 </div>
             </div>
             
             <div class="item">
-                <div class="image"><img src="http://lorempixel.com/120/120/?600Sajtos-fokhagymás pizzakenyér"></div>
+                <img src="http://lorempixel.com/120/120/?600Sajtos-fokhagymás pizzakenyér">
                 <div class="text">
                     <h3>Sajtos-fokhagymás pizzakenyér</h3>
                     <p>sajt, fokhagyma, fűszerkeverék</p>
-                    <p>
-                        
-                    </p>
                 </div>
-                <div class="buy">
+                <div class="in-cart-count">2&times;</div>
+                <div class="prices">
                     
-                        <button>600 Ft - Kosárba</button>
+                        <div>30cm - 600 Ft</div><button><i class="icon-crt-inv"></i> Kosárba</button>
                     
                 </div>
             </div>
             
             <div class="item">
-                <div class="image"><img src="http://lorempixel.com/120/120/?Margarita pizza"></div>
+                <img src="http://lorempixel.com/120/120/?Margarita pizza">
                 <div class="text">
                     <h3>Margarita pizza</h3>
                     <p>fűszeres paradicsom szósz, sajt</p>
-                    <p>
-                        
-                            30cm
-                        
-                            40cm
-                        
-                            50cm
-                        
-                    </p>
                 </div>
-                <div class="buy">
+                <div class="in-cart-count">2&times;</div>
+                <div class="prices">
                     
-                        
-                            <button>30cm - 850</button>
-                        
-                            <button>40cm - 1850</button>
-                        
-                            <button>50cm - 2700</button>
-                        
+                        <select>
+                            
+                                <option>30cm - 850 Ft</option>
+                            
+                                <option>40cm - 1850 Ft</option>
+                            
+                                <option>50cm - 2700 Ft</option>
+                            
+                        </select>
+                        <button><i class="icon-crt-inv"></i> Kosárba</button>
                     
                 </div>
             </div>
             
-
-
-            
         </section>
         
-        <section id="extrapizza">
+        <section id="extrapizza" class="menu-category">
             <h2>Extra pizzák</h2>
             
             <div class="item">
-                <div class="image"><img src="http://lorempixel.com/120/120/?1190Tonhalas pizza"></div>
+                <img src="http://lorempixel.com/120/120/?1190Tonhalas pizza">
                 <div class="text">
                     <h3>Tonhalas pizza</h3>
                     <p>fűszeres paradicsom szósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek</p>
-                    <p>
-                        
-                    </p>
                 </div>
-                <div class="buy">
+                <div class="in-cart-count">2&times;</div>
+                <div class="prices">
                     
-                        <button>1190 Ft - Kosárba</button>
+                        <div>30cm - 1190 Ft</div><button><i class="icon-crt-inv"></i> Kosárba</button>
                     
                 </div>
             </div>
             
             <div class="item">
-                <div class="image"><img src="http://lorempixel.com/120/120/?1190Piedone pizza"></div>
+                <img src="http://lorempixel.com/120/120/?1190Piedone pizza">
                 <div class="text">
                     <h3>Piedone pizza</h3>
                     <p>fűszeres paradicsom szósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika</p>
-                    <p>
-                        
-                    </p>
                 </div>
-                <div class="buy">
+                <div class="in-cart-count">2&times;</div>
+                <div class="prices">
                     
-                        <button>1190 Ft - Kosárba</button>
+                        <div>30cm - 1190 Ft</div><button><i class="icon-crt-inv"></i> Kosárba</button>
                     
                 </div>
             </div>
             
             <div class="item">
-                <div class="image"><img src="http://lorempixel.com/120/120/?1190Jóasszony pizza"></div>
+                <img src="http://lorempixel.com/120/120/?1190Jóasszony pizza">
                 <div class="text">
                     <h3>Jóasszony pizza</h3>
                     <p>fűszeres paradicsomos alap, sajt, paprikás szalámi, csípős cseresznyepaprika, csiperke gomba, hagyma</p>
-                    <p>
-                        
-                    </p>
                 </div>
-                <div class="buy">
+                <div class="in-cart-count">2&times;</div>
+                <div class="prices">
                     
-                        <button>1190 Ft - Kosárba</button>
+                        <div>30cm - 1190 Ft</div><button><i class="icon-crt-inv"></i> Kosárba</button>
                     
                 </div>
             </div>
             
-
-
-            
         </section>
         
-        <section id="full">
+        <section id="full" class="menu-category">
             <h2>Full a fullban Pizzák</h2>
             
-
-
-            
         </section>
         
-        <section id="pasta">
+        <section id="pasta" class="menu-category">
             <h2>Tészták</h2>
             
-
-
-            
         </section>
         
-        <section id="meexspecial">
+        <section id="meexspecial" class="menu-category">
             <h2>Meex specialitás</h2>
             
-
-
-            
         </section>
         
-        <section id="cheese">
+        <section id="cheese" class="menu-category">
             <h2>Rántott sajtok</h2>
             
-
-
-            
         </section>
         
-        <section id="fresh">
+        <section id="fresh" class="menu-category">
             <h2>Frissensültek</h2>
             
-
-
-            
         </section>
         
-        <section id="streetfood">
+        <section id="streetfood" class="menu-category">
             <h2>Hamburgerek (street food)</h2>
             
-
-
-            
         </section>
         
-        <section id="combi">
+        <section id="combi" class="menu-category">
             <h2>Hamburger menük</h2>
             
-
-
-            
         </section>
         
-        <section id="sandwich">
+        <section id="sandwich" class="menu-category">
             <h2>Fitnesz szendvics</h2>
             
-
-
-            
         </section>
         
-        <section id="salads">
+        <section id="salads" class="menu-category">
             <h2>Saláták</h2>
             
-
-
-            
         </section>
         
-        <section id="sweets">
+        <section id="sweets" class="menu-category">
             <h2>Édesség</h2>
             
             <div class="item">
-                <div class="image"><img src="http://lorempixel.com/120/120/?600Profiterol"></div>
+                <img src="http://lorempixel.com/120/120/?600Profiterol">
                 <div class="text">
                     <h3>Profiterol</h3>
                     <p>Profiterol golyók fehér- és tejcsokoládé bevonattal, tejszínhab koronával</p>
-                    <p>
-                        
-                    </p>
                 </div>
-                <div class="buy">
+                <div class="in-cart-count">2&times;</div>
+                <div class="prices">
                     
-                        <button>600 Ft - Kosárba</button>
+                        <div> - 600 Ft</div><button><i class="icon-crt-inv"></i> Kosárba</button>
                     
                 </div>
             </div>
-            
-
-
             
         </section>
         
-        <section id="drinks">
+        <section id="drinks" class="menu-category">
             <h2>Üdítők</h2>
             
             <div class="item">
-                <div class="image"><img src="http://lorempixel.com/120/120/?Pepsi"></div>
+                <img src="http://lorempixel.com/120/120/?Pepsi">
                 <div class="text">
                     <h3>Pepsi</h3>
                     <p></p>
-                    <p>
-                        
-                            1,75 liter
-                        
-                            1 liter
-                        
-                            0,33 liter
-                        
-                    </p>
                 </div>
-                <div class="buy">
+                <div class="in-cart-count">2&times;</div>
+                <div class="prices">
                     
-                        
-                            <button>1,75 liter - 480</button>
-                        
-                            <button>1 liter - 350</button>
-                        
-                            <button>0,33 liter - 190</button>
-                        
+                        <select>
+                            
+                                <option>1,75 liter - 480 Ft</option>
+                            
+                                <option>1 liter - 350 Ft</option>
+                            
+                                <option>0,33 liter - 190 Ft</option>
+                            
+                        </select>
+                        <button><i class="icon-crt-inv"></i> Kosárba</button>
                     
                 </div>
             </div>
             
             <div class="item">
-                <div class="image"><img src="http://lorempixel.com/120/120/?Pepsi Max (light)"></div>
+                <img src="http://lorempixel.com/120/120/?Pepsi Max (light)">
                 <div class="text">
                     <h3>Pepsi Max (light)</h3>
                     <p></p>
-                    <p>
-                        
-                            1,75 liter
-                        
-                            1 liter
-                        
-                            0,33 liter
-                        
-                    </p>
                 </div>
-                <div class="buy">
+                <div class="in-cart-count">2&times;</div>
+                <div class="prices">
                     
-                        
-                            <button>1,75 liter - 480</button>
-                        
-                            <button>1 liter - 350</button>
-                        
-                            <button>0,33 liter - 190</button>
-                        
+                        <select>
+                            
+                                <option>1,75 liter - 480 Ft</option>
+                            
+                                <option>1 liter - 350 Ft</option>
+                            
+                                <option>0,33 liter - 190 Ft</option>
+                            
+                        </select>
+                        <button><i class="icon-crt-inv"></i> Kosárba</button>
                     
                 </div>
             </div>
             
             <div class="item">
-                <div class="image"><img src="http://lorempixel.com/120/120/?Mirinda"></div>
+                <img src="http://lorempixel.com/120/120/?Mirinda">
                 <div class="text">
                     <h3>Mirinda</h3>
                     <p></p>
-                    <p>
-                        
-                            1,75 liter
-                        
-                            1 liter
-                        
-                            0,33 liter
-                        
-                    </p>
                 </div>
-                <div class="buy">
+                <div class="in-cart-count">2&times;</div>
+                <div class="prices">
                     
-                        
-                            <button>1,75 liter - 480</button>
-                        
-                            <button>1 liter - 350</button>
-                        
-                            <button>0,33 liter - 190</button>
-                        
+                        <select>
+                            
+                                <option>1,75 liter - 480 Ft</option>
+                            
+                                <option>1 liter - 350 Ft</option>
+                            
+                                <option>0,33 liter - 190 Ft</option>
+                            
+                        </select>
+                        <button><i class="icon-crt-inv"></i> Kosárba</button>
                     
                 </div>
             </div>
             
             <div class="item">
-                <div class="image"><img src="http://lorempixel.com/120/120/?Canada Dry"></div>
+                <img src="http://lorempixel.com/120/120/?Canada Dry">
                 <div class="text">
                     <h3>Canada Dry</h3>
                     <p></p>
-                    <p>
-                        
-                            1,75 liter
-                        
-                            1 liter
-                        
-                            0,33 liter
-                        
-                    </p>
                 </div>
-                <div class="buy">
+                <div class="in-cart-count">2&times;</div>
+                <div class="prices">
                     
-                        
-                            <button>1,75 liter - 480</button>
-                        
-                            <button>1 liter - 350</button>
-                        
-                            <button>0,33 liter - 190</button>
-                        
+                        <select>
+                            
+                                <option>1,75 liter - 480 Ft</option>
+                            
+                                <option>1 liter - 350 Ft</option>
+                            
+                                <option>0,33 liter - 190 Ft</option>
+                            
+                        </select>
+                        <button><i class="icon-crt-inv"></i> Kosárba</button>
                     
                 </div>
             </div>
             
             <div class="item">
-                <div class="image"><img src="http://lorempixel.com/120/120/?Lipton Ice Tea"></div>
+                <img src="http://lorempixel.com/120/120/?Lipton Ice Tea">
                 <div class="text">
                     <h3>Lipton Ice Tea</h3>
                     <p></p>
-                    <p>
-                        
-                            0,33 liter
-                        
-                    </p>
                 </div>
-                <div class="buy">
+                <div class="in-cart-count">2&times;</div>
+                <div class="prices">
                     
-                        
-                            <button>0,33 liter - 190</button>
-                        
+                        <select>
+                            
+                                <option>0,33 liter - 190 Ft</option>
+                            
+                        </select>
+                        <button><i class="icon-crt-inv"></i> Kosárba</button>
                     
                 </div>
             </div>
-            
-
-
             
         </section>
         

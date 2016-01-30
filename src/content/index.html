@@ -1,63 +1,33 @@
 {% extends "layout.html" %}
 
 {% block body %}
-<main>
+<main class="container">
     <div id="menucard">
         {% for catname, cat in menucard %}
-        <section id="{{ catname }}">
+        <section id="{{ catname }}" class="menu-category">
             <h2>{{ cat.name }}</h2>
             {% for item in cat.items %}
             <div class="item">
-                <div class="image"><img src="http://lorempixel.com/120/120/?{{ item.price }}{{ item.name }}"></div>
+                <img src="http://lorempixel.com/120/120/?{{ item.price }}{{ item.name }}">
                 <div class="text">
                     <h3>{{ item.name }}</h3>
                     <p>{{ item.text }}</p>
-                    <p>
-                        {% for variant, variantprice in item.variants %}
-                            {{ variant }}
-                        {% endfor %}
-                    </p>
                 </div>
-                <div class="buy">
+                <div class="in-cart-count">2&times;</div>
+                <div class="prices">
                     {% if item.variants %}
-                        {% for variant, variantprice in item.variants %}
-                            <button>{{ variant }} - {{ variantprice }}</button>
-                        {% endfor %}
+                        <select>
+                            {% for variant, variantprice in item.variants %}
+                                <option>{{ variant }} - {{ variantprice }} Ft</option>
+                            {% endfor %}
+                        </select>
+                        <button><i class="icon-crt-inv"></i> Kosárba</button>
                     {% else %}
-                        <button>{{ item.price }} Ft - Kosárba</button>
+                        <div>{{ item.size }} - {{ item.price }} Ft</div><button><i class="icon-crt-inv"></i> Kosárba</button>
                     {% endif %}
                 </div>
             </div>
             {% endfor %}
-
-
-            {# <table>
-                <tbody>
-                {% for item in cat.items %}
-                    <tr>
-                        <td><img src="http://lorempixel.com/80/80/?{{ item.price }}{{ item.name }}"></td>
-                        <td>
-                            <h3>{{ item.name }}</h3>
-                            <p>{{ item.text }}</p>
-                            <p>
-                                {% for variant, variantprice in item.variants %}
-                                    {{ variant }}
-                                {% endfor %}
-                            </p>
-                        </td>
-                        <td>
-                            {% if item.variants %}
-                                {% for variant, variantprice in item.variants %}
-                                    <button>{{ variant }} - {{ variantprice }}</button>
-                                {% endfor %}
-                            {% else %}
-                                <button>{{ item.price }} Ft - Kosárba</button>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table> #}
         </section>
         {% endfor %}
     </div>
