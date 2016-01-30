@@ -116,6 +116,21 @@ Full a fullban pizzák:
             Árak:
                 30cm: 1450
 
+Meex specialitás:
+    Választék:
+        Akay - török pizza:
+            Leírás: fűszeres paradicsomos alap, sajt, sonka
+            Árak:
+                darab: 490
+        Banu - török pizza:
+            Leírás: tejfölös alap, sajt, tarja, pirított fokhagyma
+            Árak:
+                darab: 490
+        Cahil - török pizza:
+            Leírás: bbq alap, sajt, ropogós bacon
+            Árak:
+                darab: 490
+
 Tészták:
     Választék:
         Carbonara:
@@ -134,21 +149,6 @@ Tészták:
             Leírás: csirke, gomba, fokhagyma, fűszeres tejszínes szósz, parmezán, spagetti
             Árak:
                 adagonként: 1190
-
-Meex specialitás:
-    Választék:
-        Akay - török pizza:
-            Leírás: fűszeres paradicsomos alap, sajt, sonka
-            Árak:
-                darab: 490
-        Banu - török pizza:
-            Leírás: tejfölös alap, sajt, tarja, pirított fokhagyma
-            Árak:
-                darab: 490
-        Cahil - török pizza:
-            Leírás: bbq alap, sajt, ropogós bacon
-            Árak:
-                darab: 490
 
 Rántott sajtok:
     Választék:
