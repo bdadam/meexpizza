@@ -7,22 +7,33 @@ const fileContent = fs.readFileSync('menu.yml', 'utf8');
 const doc = yaml.safeLoad(fileContent);
 
 const version = fileContent.match(/version\:\s([\S]+)/)[1];
-const categories = Object.keys(doc);
+const categories = Object.keys(doc).filter(key => !doc[key].hidden);
 
+const convertItems = items => {
+    if (!items) { return null; }
 
-console.log(version);
+    return Object.keys(items).map(name => ({
+        name,
+        text: items[name]['Leírás'] || '',
+        variants: items[name]['Árak'],
+        hasMultiVariants: !!(Object.keys(items[name]['Árak']).length > 1)
+    }));
+};
 
 const convert = () => {
 
     return {
-
-        categories
-
+        version,
+        categories,
+        menu: categories.map(cat => ({ name: cat, id: getslug(cat), items: convertItems(doc[cat]['Választék']) })),
+        pizzaExtras: doc['Pizzafeltétek'],
+        ref: doc,
+        refJson: JSON.toString(doc)
     };
 
-
-    return doc;
 };
 
+module.exports = convert();
 
-// console.log(require('util').inspect(doc, { depth: null }));
+// console.log(require('util').inspect(convert().menu, { depth: null }));
+// console.log(require('util').inspect(convert().pizzaExtras, { depth: null }));

@@ -2,16 +2,16 @@
 
 Klasszikus pizzák:
     Választék:
-        - Pizzakenyér:
+        Pizzakenyér:
             Árak:
                 30cm: 500
 
-        - Sajtos-fokhagymás pizzakenyér:
+        Sajtos-fokhagymás pizzakenyér:
             Leírás: sajt, fokhagyma, fűszerkeverék
             Árak:
                 30cm: 600
 
-        - Margarita pizza:
+        Margarita pizza:
             Leírás: fűszeres paradicsom szósz, sajt
             Árak:
                 30cm: 850
@@ -20,16 +20,16 @@ Klasszikus pizzák:
 
 Extra pizzák:
     Választék:
-        - Tonhalas pizza:
+        Tonhalas pizza:
             Leírás: fűszeres paradicsom szósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek
             Árak:
                 30cm: 1190
 
-        - Piedone pizza:
+        Piedone pizza:
             Leírás: fűszeres paradicsom szósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika
             Árak:
                 30cm: 1190
-        - Jóasszony pizza:
+        Jóasszony pizza:
             Leírás: fűszeres paradicsomos alap, sajt, paprikás szalámi, csípős cseresznyepaprika, csiperke gomba, hagyma
             Árak:
                 30cm: 1190
@@ -60,42 +60,42 @@ Saláták:
 
 Édességek:
     Választék:
-        - Profiterol:
+        Profiterol:
             Leírás: Profiterol golyók fehér- és tejcsokoládé bevonattal, tejszínhab koronával
             Árak:
                 adag: 600
 
 Üdítők:
     Választék:
-        - Pepsi:
+        Pepsi:
             Árak:
                 1,75 literes: 480
                 1 literes: 350
                 0,33 literes: 190
-        - Pepsi Max (light):
+        Pepsi Max (light):
             Árak:
                 1,75 literes: 480
                 1 literes: 350
                 0,33 literes: 190
-        - Mirinda:
+        Mirinda:
             Árak:
                 1,75 literes: 480
                 1 literes: 350
                 0,33 literes: 190
-        - Canada Dry:
+        Canada Dry:
             Árak:
                 1,75 literes: 480
                 1 literes: 350
                 0,33 literes: 190
 
-        - Lipton Ice Tea:
+        Lipton Ice Tea:
             Árak:
                 0,33 literes: 190
 
 Pizzafeltétek:
     hidden: true
     Választék:
-        - Húsok:
+        Húsok:
             Ár: 250
             Választék:
                 - sonka
@@ -103,32 +103,32 @@ Pizzafeltétek:
                 - bacon
                 - szalámi
                 - csirkemell
-        - Halféleségek:
+        Halféleségek:
             Ár: 300
             Választék:
                 - tengergyümölcse
                 - tonhal
-        - Prémium sonkák:
+        Prémium sonkák:
             Ár: 450
             Választék:
                 - pármai
                 - serrano
                 - mangalica
-        - Tejes készítmények, sajtok:
+        Tejes készítmények, sajtok:
             Ár: 250
             Választék:
                 - tejföl
                 - juhtúró
                 - sajt
                 - füstölt sajt
-        - Prémium sajtok:
+        Prémium sajtok:
             Ár: 300
             Választék:
                 - gorgonzola sajt
                 - parmezán sajt
                 - mozzarella golyó
                 - feta sajt
-        - Zöldségek:
+        Zöldségek:
             Ár: 150
             Választék:
                 - kukorica
@@ -149,7 +149,7 @@ Pizzafeltétek:
                 - ruccola
                 - paradicsom
                 - brokkoli
-        - Gyümölcsök:
+        Gyümölcsök:
             Ár: 150
             Választék:
                 - ananász

@@ -30,9 +30,13 @@ module.exports = (gulp) => {
         delete require.cache[require.resolve('../menu')];
         var menucard = require('../menu');
 
+        delete require.cache[require.resolve('../data-test')];
+        var menu = require('../data-test');
+
         const html = nunjucks.render('index.html', {
             menucard,
-            menucardJson: JSON.stringify(menucard)
+            menucardJson: JSON.stringify(menucard),
+            menu
         });
 
         const minhtml = htmlmin.minify(html, {

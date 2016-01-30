@@ -3,7 +3,39 @@
 {% block body %}
 <main class="container">
     <div id="menucard">
-        {% for catname, cat in menucard %}
+        {% for cat in menu.menu %}
+        <section id="{{ cat.id }}" class="menu-category">
+            <h2>{{ cat.name }}</h2>
+
+            {% for item in cat.items %}
+            <div class="item">
+                <img data-src="http://lorempixel.com/120/120/?{{ item.price }}{{ item.name }}" class="lazyload">
+                <div class="text">
+                    <div class="in-cart-count">2&times;</div>
+                    <h3>{{ item.name }}</h3>
+                    <p>{{ item.text }}</p>
+                </div>
+                <div class="prices">
+                    {% if item.hasMultiVariants %}
+                        <select>
+                            {% for variant, variantprice in item.variants %}
+                                <option>{{ variant }} - {{ variantprice }} Ft</option>
+                            {% endfor %}
+                        </select>
+                        <button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                    {% else %}
+                        {% for variant, variantprice in item.variants %}
+                            <div>{{ variant }} - {{ variantprice }} Ft</div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+        {% endfor %}
+
+
+        {# {% for catname, cat in menucard %}
         <section id="{{ catname }}" class="menu-category">
             <h2>{{ cat.name }}</h2>
             {% for item in cat.items %}
@@ -29,7 +61,7 @@
             </div>
             {% endfor %}
         </section>
-        {% endfor %}
+        {% endfor %} #}
     </div>
     <aside id="cart">
         <div>Üres</div>
