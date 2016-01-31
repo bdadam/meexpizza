@@ -8,27 +8,26 @@
             <h2>{{ cat.name }}</h2>
             <ul>
             {% for item in cat.items %}
-                <li class="item">
+                <li class="item" data-dish-id="{{ item.id }}" data-dish-category-id="{{ cat.id }}">
                     <div class="img">
-                        {# <img data-src="http://lorempixel.com/120/120/?{{ item.price }}{{ item.name }}" class="lazyload" width="60" height="60"> #}
                         <img data-src="food-images/small/{{ item.imageName }}.jpeg" class="lazyload">
                     </div>
                     <div class="text">
-                        <div class="in-cart-count">2&times;</div>
+                        <div class="in-cart-count"></div>
                         <h3>{{ item.name }}</h3>
                         <p>{{ item.text }}</p>
                     </div>
                     <div class="prices">
                         {% if item.hasMultiVariants %}
-                            <select>
+                            <select name="variant">
                                 {% for variant, variantprice in item.variants %}
-                                    <option>{{ variant }} - {{ variantprice }} Ft</option>
+                                    <option value="{{ variant }}">{{ variant }} - {{ variantprice }} Ft</option>
                                 {% endfor %}
                             </select>
                             <button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
                         {% else %}
                             {% for variant, variantprice in item.variants %}
-                                <div>{{ variant }} - <b>{{ variantprice }} Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                <div><span data-variant>{{ variant }}</span> - <b>{{ variantprice }} Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
                             {% endfor %}
                         {% endif %}
                     </div>
@@ -38,11 +37,44 @@
         </section>
         {% endfor %}
     </div>
-    <aside id="cart">
-        <div>Üres</div>
+    <aside id="side-cart-container">
+        <div id="side-cart">
+            <h2>Kosár</h2>
+            <div class="cart-content">
+                <p class="default-content">
+                    A kosár üres.
+                    Az ételeket a "Kosárba" gomb megnyomásával adhatod hozzá a rendeléshez.
+                </p>
+                <div class="items"></div>
+                <form>
+                    <label for="city">Város</label>
+                    <select id="city" name="city">
+                        <option>Gyöngyös</option>
+                        <option>Karácsondi úti gyártelep</option>
+                        <option>KRF Kollégium</option>
+                        <option>Gyöngyöshalász</option>
+                        <option>Gyöngyöspata</option>
+                        <option>Mátrafüred</option>
+                    </select>
+
+                    <label for="name">Neved</label>
+                    <input type="text" name="name" id="name">
+
+                    <label for="street">Utca, házszám</label>
+                    <input type="text" name="street" id="street">
+
+                    <label for="phone">Telefonszámod</label>
+                    <input type="text" name="phone" id="phone">
+
+                    <label for="notes">Megjegyzések</label>
+                    <textarea rows="3" name="notes" id="notes" placeholder="Egyéb megjegyzés, pl. pontos helszín (belső udvar, emelet) stb."></textarea>
+                    <button class="order" disabled>Megrendelés</button>
+                </form>
+            </div>
+        </div>
     </aside>
 </main>
-<div style="width: 100%; position: fixed; bottom: 32px;">
-    <button style="display: block; width: 80%; margin: 0 auto; background-color: #091F44; border: 1px solid #fff !important; display: block; padding: 8px 0; font-size: 1.125rem; color: #fff; font-weight: 700; border: 0;">Megrendelés</button>
+<div class="sticky-button-container">
+    <button>Megrendelés</button>
 </div>
 {% endblock %}

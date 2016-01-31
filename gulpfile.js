@@ -31,8 +31,8 @@ gulp.task('images', () => {
         .pipe(imageResize({
             format: 'jpeg',
             quality: 0.8,
-            width: 120,
-            height: 120
+            width: 160,
+            height: 160
         }))
         .pipe(gulp.dest('dist/food-images/small'));
 });

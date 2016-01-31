@@ -15,7 +15,8 @@ module.exports = {
 	},
 	module: {
 		loaders: [
-			{ test: /\.js$/, exclude: /(node_modules|bower_components)/, loader: 'babel', query: { presets: ['es2015'] }, cacheDirectory: true }
+			{ test: /\.js$/, exclude: /(node_modules|bower_components)/, loader: 'babel', query: { presets: ['es2015'] }, cacheDirectory: true },
+			{ test: /\.html$/, loader: 'mustache', query: { minify: true } }
 		]
 	},
 	externals: {
@@ -27,8 +28,8 @@ module.exports = {
 	},
 	plugins: [
 		new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"production"' }),
-		// new webpack.optimize.DedupePlugin(),
-		// new webpack.optimize.OccurrenceOrderPlugin(),
-		// new webpack.optimize.UglifyJsPlugin()
+		new webpack.optimize.DedupePlugin(),
+		new webpack.optimize.OccurrenceOrderPlugin(),
+		new webpack.optimize.UglifyJsPlugin()
 	]
 };
