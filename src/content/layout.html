@@ -20,8 +20,20 @@
 
 {% include "navigation.html" %}
 {% block body %}{% endblock %}
+{% include "footer.html" %}
 <script>menucard={{ menuJson | safe }}</script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js" defer></script>
 <script src="main.js" defer></script>
+
+<div id="modal">
+    <p class="modal-title">Válassz!</p>
+    <p>Pizza margarita</p>
+    <p>
+        <select><option>30cm</option><option>40cm</option><option>50cm</option></select>
+    </p>
+    <p>
+        Feltét
+    </p>
+</div>
 </body>
 </html>

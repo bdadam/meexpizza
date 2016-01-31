@@ -7,6 +7,7 @@ $max-width-L: 1280px;
 @import url(https://fonts.googleapis.com/css?family=Lato:400,900,700,300&subset=latin,latin-ext);
 
 @import 'site-header';
+@import 'site-footer';
 
 *, *:before, *:after {
     box-sizing: border-box;
@@ -15,14 +16,17 @@ $max-width-L: 1280px;
 }
 
 html {
+    @media screen and (min-width: 768px) {
+        font-size: 1.125rem;
+    }
 }
 
 body {
     // font-family: Arimo;
     // font-family: Oswald;
     // font-family: Source Sans Pro;
-    // font-family: Open Sans;
-    font-family: Lato;
+    font-family: Open Sans;
+    // font-family: Lato;
     color: #333;
     line-height: 1.35;
     font-size: 0.875rem;
@@ -38,6 +42,14 @@ body {
         background-image: url(/images/pattern7.png), url(/images/meexbg_4.jpg);
         background-repeat: repeat, no-repeat;
         background-position: center top, center top;
+    }
+}
+
+a {
+    text-decoration: none;
+
+    &:hover, &:active {
+        text-decoration: underline;
     }
 }
 
@@ -114,11 +126,14 @@ select, button {
         }
     }
 
-    img {
+    .img {
         width: 20%;
         display: inline-block;
-        margin-top: 4px;
         position: relative;
+
+        img {
+            border-radius: 1px;
+        }
     }
 
     .text {
@@ -184,6 +199,11 @@ select, button {
             }
         }
     }
+}
+
+.nanoModal.nanoModalOverride {
+    position: fixed;
+    backface-visibility:hidden;
 }
 
 /*

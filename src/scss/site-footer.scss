@@ -1,0 +1,45 @@
+#site-footer {
+    background-color: #091F44;
+    color: #fff;
+    padding-bottom: 80px;
+    border-bottom: 16px solid #DA1E3F;
+    line-height: 1.5;
+    overflow: hidden;
+    // font-size: 0;
+
+    @media screen and (min-width: 768px) {
+        .box {
+            width: 33.333333%;
+            float: left;
+            // display: inline-block;
+            // vertical-align: top;
+        }
+    }
+
+    a {
+        color: #fff;
+    }
+
+    .box {
+        padding: 20px 20px 0;
+    }
+
+    h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 4px;
+    }
+
+    .opening-hours {
+        dd {
+            display: inline-block;
+            width: 30%;
+        }
+        dt {
+            display: inline-block;
+            width: 70%;
+            font-weight: bold;
+            text-align: right;
+        }
+    }
+}

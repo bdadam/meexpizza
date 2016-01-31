@@ -14,6 +14,8 @@ const convertItems = items => {
 
     return Object.keys(items).map(name => ({
         name,
+        speakingName: getslug(name),
+        imageName: items[name].image || getslug(name),
         text: items[name]['Leírás'] || '',
         variants: items[name]['Árak'],
         hasMultiVariants: !!(Object.keys(items[name]['Árak']).length > 1)

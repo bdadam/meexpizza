@@ -53,3 +53,30 @@ on('body', 'click', 'button[data-add-to-cart]', function(e) {
 });
 
 var $ = require("jquery");
+
+const nanoModal = require('nanomodal');
+
+$(document).on('click', 'button[data-add-to-cart]', () => {
+    $('#modal').scroll(e => {
+        console.log(e);
+        // e.preventDefault();
+        // e.stopPropagation();
+    });
+
+    var modalWithNoButtons = nanoModal($('#modal')[0], {
+        overlayClose: false,
+        buttons: [{
+            text: "I'm sure!",
+            handler: function(modal) {
+                alert("doing something...");
+                modal.hide();
+            },
+            primary: true
+        }, {
+            text: "Maybe not...",
+            handler: "hide"
+        }]
+    });
+
+    modalWithNoButtons.show();
+});

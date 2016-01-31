@@ -7,6 +7,7 @@ Klasszikus pizzák:
             Árak:
                 30cm: 500
         Sajtos-fokhagymás pizzakenyér:
+            image: pizzakenyer
             Leírás: sajt, fokhagyma, fűszerkeverék
             Árak:
                 30cm: 600
@@ -153,18 +154,21 @@ Tészták:
 Rántott sajtok:
     Választék:
         Ízletes cheddar sajtfalatkák steak/hasábbal:
+            image: rantottsajt-cheddar
             Leírás: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
             Árak:
                 tartármártással: 1390
                 gyüm. szósszal: 1390
                 chilis szósszal: 1390
         Camembert sajt steak/hasáb gyümölcs szósz:
+            image: rantottsajt-camambert
             Leírás: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
             Árak:
                 tartármártással: 1290
                 gyümö. szósszal: 1290
                 chilis szósszal: 1290
         Trappista sajt steak/hasáb:
+            image: rantottsajt-trappista
             Leírás: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
             Árak:
                 tartármártással: 1190
@@ -174,11 +178,13 @@ Rántott sajtok:
 Frissensültek:
     Választék:
         Buffalo csirkeszárnyak:
+            image: buffalo-csirkeszarnyak
             Leírás: TODO
             Árak:
                 6 darab: 780
                 12 darab: 1090
         Buffalo csirkeszárnyak + Hasáb/Steak + szósz:
+            image: buffalo-csirkeszarnyak
             Leírás: TODO
             Árak:
                 6 darab: 1190
@@ -187,19 +193,22 @@ Frissensültek:
 Hamburgerek:
     Választék:
         Meex burger:
+            image: meex-burger
             Leírás: friss jégsaláta, paradicsom karika, uborka, házi húspogácsa
             Árak:
                 darab: 750
         Meex sajtburger:
+            image: meex-burger
             Leírás: friss jégsaláta, paradicsom karika, uborka, házi húspogácsa, olvasztott sajt
             Árak:
                 darab: 850
         Dupla Meex burger:
+            image: meex-burger
             Leírás: friss jégsaláta, paradicsom karika, uborka, házi dupla húspogácsa
             Árak:
                 darab: 1250
-
         Dupla Meex sajtburger:
+            image: meex-burger
             Leírás: friss jégsaláta, paradicsom karika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt
             Árak:
                 darab: 1450
@@ -207,18 +216,22 @@ Hamburgerek:
 Hamburger menük:
     Választék:
         Meex Burger + Hasáb + Szósz:
+            image: meex-burger
             Leírás: "friss jégsaláta, paradicsom karika, uborka, házi húspogácsa + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz"
             Árak:
                 darab: 990
         Meex Sajtburger + Hasáb + Szósz:
+            image: meex-burger
             Leírás: "friss jégsaláta, paradicsom karika, uborka, házi húspogácsa, olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz"
             Árak:
                 darab: 1090
         Dupla Meex Burger + Hasáb + Szósz:
+            image: meex-burger
             Leírás: "friss jégsaláta, paradicsom karika, uborka, házi dupla húspogácsa, + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz"
             Árak:
                 darab: 1490
         Dupla Meex Sajtburger + Hasáb + Szósz:
+            image: meex-burger
             Leírás: "friss jégsaláta, paradicsom karika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz"
             Árak:
                 darab: 1490
@@ -232,7 +245,7 @@ Fitnesz szendvicsek:
 
 Saláták:
     Választék:
-        Prímőr saláta:
+        Primőr saláta:
             Leírás: friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola nyakon öntve vinegrettével, pizzakenyér szeletekkel tálalva
             Árak:
                 adagonként: 650

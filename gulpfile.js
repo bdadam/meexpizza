@@ -9,7 +9,8 @@ gulp.task('webserver', function() {
     gulp.src('./dist')
         .pipe(webserver({
             livereload: true,
-            port: 3000
+            port: 3000,
+            host: '0.0.0.0'
         }));
 });
 
@@ -23,6 +24,18 @@ gulp.task('watch', ['watchwithoutwebserver', 'webserver'], () => {
 });
 
 // gulp.task('watch', ['sass:watch', 'html:watch', 'webserver']);
+
+gulp.task('images', () => {
+    var imageResize = require('gulp-image-resize');
+    gulp.src('food-images/**/*')
+        .pipe(imageResize({
+            format: 'jpeg',
+            quality: 0.8,
+            width: 120,
+            height: 120
+        }))
+        .pipe(gulp.dest('dist/food-images/small'));
+});
 
 gulp.task('build', ['webpack', 'sass', 'html']);
 gulp.task('watchwithoutwebserver', ['sass:watch', 'html:watch'])
