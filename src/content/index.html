@@ -6,34 +6,35 @@
         {% for cat in menu.menu %}
         <section id="{{ cat.id }}" class="menu-category">
             <h2>{{ cat.name }}</h2>
-
+            <ul>
             {% for item in cat.items %}
-            <div class="item">
-                <div class="img">
-                    {# <img data-src="http://lorempixel.com/120/120/?{{ item.price }}{{ item.name }}" class="lazyload" width="60" height="60"> #}
-                    <img data-src="food-images/small/{{ item.imageName }}.jpeg" class="lazyload">
-                </div>
-                <div class="text">
-                    <div class="in-cart-count">2&times;</div>
-                    <h3>{{ item.name }}</h3>
-                    <p>{{ item.text }}</p>
-                </div>
-                <div class="prices">
-                    {% if item.hasMultiVariants %}
-                        <select>
+                <li class="item">
+                    <div class="img">
+                        {# <img data-src="http://lorempixel.com/120/120/?{{ item.price }}{{ item.name }}" class="lazyload" width="60" height="60"> #}
+                        <img data-src="food-images/small/{{ item.imageName }}.jpeg" class="lazyload">
+                    </div>
+                    <div class="text">
+                        <div class="in-cart-count">2&times;</div>
+                        <h3>{{ item.name }}</h3>
+                        <p>{{ item.text }}</p>
+                    </div>
+                    <div class="prices">
+                        {% if item.hasMultiVariants %}
+                            <select>
+                                {% for variant, variantprice in item.variants %}
+                                    <option>{{ variant }} - {{ variantprice }} Ft</option>
+                                {% endfor %}
+                            </select>
+                            <button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                        {% else %}
                             {% for variant, variantprice in item.variants %}
-                                <option>{{ variant }} - {{ variantprice }} Ft</option>
+                                <div>{{ variant }} - <b>{{ variantprice }} Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
                             {% endfor %}
-                        </select>
-                        <button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
-                    {% else %}
-                        {% for variant, variantprice in item.variants %}
-                            <div>{{ variant }} - <b>{{ variantprice }} Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
+                        {% endif %}
+                    </div>
+                </li>
             {% endfor %}
+            </ul>
         </section>
         {% endfor %}
     </div>
