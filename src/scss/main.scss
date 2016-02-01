@@ -250,6 +250,32 @@ select {
         margin-top: 16px;
         text-align: center;
     }
+
+    .items {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    td {
+        vertical-align: top;
+        padding-bottom: 8px;
+
+        &:first-child {
+            font-weight: 600;
+        }
+
+        &:last-child {
+            text-align: right;
+        }
+    }
+
+    tfoot tr {
+        border-top: 1px solid #ccc;
+    }
+    tfoot td {
+        padding-top: 8px;
+        font-weight: 600;
+    }
 }
 
 .nanoModal.nanoModalOverride {

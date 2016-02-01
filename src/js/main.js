@@ -17,6 +17,8 @@ var defaultState = {
     }
 };
 
+const flatMap = require('lodash/flatMap');
+
 const shoppingCart = redux.createStore((state = defaultState, action) => {
     var newState;
     switch(action.type) {
@@ -24,10 +26,32 @@ const shoppingCart = redux.createStore((state = defaultState, action) => {
             return Object.assign({}, state, { inCart: [...state.inCart, { dish: action.dish, timestamp: action.timestamp }] });
         case 'REMOVE':
             return Object.assign({}, state, { inCart: state.inCart.filter(x => x.timestamp !== action.timestamp) });
+        case 'DUPLICATE':
+            return Object.assign({}, state, {
+                inCart: flatMap(state.inCart, item => {
+                                    return item.timestamp !== action.timestamp
+                                        ? item
+                                        : [item, Object.assign({}, item, { timestamp: +new Date() })];
+                                    })
+                                });
         case 'RESTORE':
             return Object.assign({}, state, action.state);
     }
 });
+
+shoppingCart.subscribe(() => {
+    try {
+        localStorage.shoppingCart = JSON.stringify(shoppingCart.getState());
+    } catch(ex) { }
+});
+
+setTimeout(() => {
+    try {
+        const state = JSON.parse(localStorage.shoppingCart);
+        shoppingCart.dispatch({ type: 'RESTORE', state })
+    } catch(ex) { }
+});
+
 
 const $ = require("jquery");
 const nanoModal = require('nanomodal');
@@ -67,15 +91,30 @@ shoppingCart.subscribe(() => {
     itemsContainer.empty();
 
     state.inCart.forEach(item => {
-        var cat = window.menucard.menu.filter(category => category.id = item.dish.categoryId)[0];
+        var cat = window.menucard.menu.filter(category => category.id === item.dish.categoryId)[0];
         var x = cat.items.filter(dish => dish.id === item.dish.id)[0];
-        itemsContainer.append(`<p>${x.name} - ${x.variants[item.dish.variant]} Ft <button data-duplicate-order-item="${item.timestamp}">Még ebből!</button> <button data-remove-order-item="${item.timestamp}">Eltávolítás</button></p>`);
+        itemsContainer.append(`<tr><td>${x.name}<div><button data-duplicate-order-item="${item.timestamp}">Még ebből!</button> <button data-remove-order-item="${item.timestamp}">Eltávolítás</button></div></td><td>${x.variants[item.dish.variant]} Ft</td></tr>`);
     });
+
+    if (state.inCart.length > 0) {
+        const sum = state.inCart.reduce((prev, item) => {
+            var cat = window.menucard.menu.filter(category => category.id === item.dish.categoryId)[0];
+            var x = cat.items.filter(dish => dish.id === item.dish.id)[0];
+            return prev + x.variants[item.dish.variant];
+        }, 0);
+
+        itemsContainer.append(`<tfoot><tr><td>Végösszeg</td><td>${sum} Ft</td></tr></tfoot>`);
+    }
 });
 
 $(document).on('click', 'button[data-remove-order-item]', function(e) {
     var timestamp = $(this).data('removeOrderItem');
     shoppingCart.dispatch({ type: 'REMOVE', timestamp: timestamp });
+});
+
+$(document).on('click', 'button[data-duplicate-order-item]', function(e) {
+    var timestamp = $(this).data('duplicateOrderItem');
+    shoppingCart.dispatch({ type: 'DUPLICATE', timestamp: timestamp });
 });
 
 $(document).on('click', 'button[data-add-to-cart]', (e) => {
@@ -110,18 +149,6 @@ $(document).on('click', 'button[data-add-to-cart]', (e) => {
     //
     // modalWithNoButtons.show();
 });
-
-shoppingCart.subscribe(() => {
-    try {
-        localStorage.shoppingCart = JSON.stringify(shoppingCart.getState());
-    } catch(ex) { }
-});
-
-try {
-    const state = JSON.parse(localStorage.shoppingCart);
-    shoppingCart.dispatch({ type: 'RESTORE', state })
-} catch(ex) { }
-
 
 // var orderItemTemplate = require('./templates/order-item.html');
 // console.log(orderItemTemplate({ id: 'jfsjkfsdf', qwe: 'jshdfjkhsdfkjhs' }));
