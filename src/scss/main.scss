@@ -281,6 +281,16 @@ select {
         padding-top: 8px;
         font-weight: 600;
     }
+
+    [data-duplicate-order-item], [data-remove-order-item] {
+        padding: 4px;
+        font-size: 0;
+        margin-right: 8px;
+        svg {
+            width: 16px;
+            height: 16px;
+        }
+    }
 }
 
 .nanoModal.nanoModalOverride {
