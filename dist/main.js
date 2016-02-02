@@ -60,11 +60,8 @@
 	
 	var defaultState = {
 	    inCart: [],
-	    address: {
-	        name: '',
-	        street: '',
-	        city: ''
-	    }
+	    serializedForm: '',
+	    isEmpty: true
 	};
 	
 	var flatMap = __webpack_require__(14);
@@ -73,14 +70,14 @@
 	    var state = arguments.length <= 0 || arguments[0] === undefined ? defaultState : arguments[0];
 	    var action = arguments[1];
 	
-	    var newState;
 	    switch (action.type) {
 	        case 'ADD':
-	            return Object.assign({}, state, { inCart: [].concat(_toConsumableArray(state.inCart), [{ dish: action.dish, timestamp: action.timestamp }]) });
+	            return Object.assign({}, state, { isEmpty: false, inCart: [].concat(_toConsumableArray(state.inCart), [{ dish: action.dish, timestamp: action.timestamp }]) });
 	        case 'REMOVE':
-	            return Object.assign({}, state, { inCart: state.inCart.filter(function (x) {
-	                    return x.timestamp !== action.timestamp;
-	                }) });
+	            var inCart = state.inCart.filter(function (x) {
+	                return x.timestamp !== action.timestamp;
+	            });
+	            return Object.assign({}, state, { isEmpty: !inCart.length, inCart: inCart });
 	        case 'DUPLICATE':
 	            return Object.assign({}, state, {
 	                inCart: flatMap(state.inCart, function (item) {
@@ -88,7 +85,9 @@
 	                })
 	            });
 	        case 'RESTORE':
-	            return Object.assign({}, state, action.state);
+	            return Object.assign({}, state, defaultState, action.state, { isEmpty: !action.state.inCart.length });
+	        case 'ORDER_FORM_CHANGE':
+	            return Object.assign({}, state, { serializedForm: action.serializedForm });
 	    }
 	});
 	
@@ -130,12 +129,13 @@
 	
 	shoppingCart.subscribe(function () {
 	    var state = shoppingCart.getState();
-	    var count = state.inCart.length;
-	    if (count === 0) {
+	    if (state.isEmpty) {
 	        $('#side-cart .default-content').show();
+	        // $('#side-cart .order-form').hide();
 	        $('#side-cart button.order').attr('disabled', true);
 	    } else {
 	        $('#side-cart .default-content').hide();
+	        // $('#side-cart .order-form').show();
 	        $('#side-cart button.order').attr('disabled', false);
 	    }
 	
@@ -165,6 +165,22 @@
 	
 	        itemsContainer.append('<tfoot><tr><td>Végösszeg</td><td>' + sum + ' Ft</td></tr></tfoot>');
 	    }
+	});
+	
+	shoppingCart.subscribe(function () {
+	    var state = shoppingCart.getState();
+	    state.serializedForm.split('&').map(function (x) {
+	        return x.split('=').map(function (x) {
+	            return x.replace(/\+/g, ' ');
+	        }).map(decodeURIComponent);
+	    }).forEach(function (kv) {
+	        $('.order-form [name="' + kv[0] + '"]').val(kv[1]);
+	    });
+	});
+	
+	var orderForm = $('#side-cart .order-form').on('input change', function (e) {
+	    var serializedForm = $('#side-cart .order-form').serialize();
+	    shoppingCart.dispatch({ type: 'ORDER_FORM_CHANGE', serializedForm: serializedForm });
 	});
 	
 	$(document).on('click', 'button[data-remove-order-item]', function (e) {
@@ -212,6 +228,8 @@
 	
 	// var orderItemTemplate = require('./templates/order-item.html');
 	// console.log(orderItemTemplate({ id: 'jfsjkfsdf', qwe: 'jshdfjkhsdfkjhs' }));
+	
+	window.sc = shoppingCart;
 
 /***/ },
 /* 1 */

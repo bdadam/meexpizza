@@ -10,22 +10,19 @@ const redux = require('redux');
 
 var defaultState = {
     inCart: [],
-    address: {
-        name: '',
-        street: '',
-        city: '',
-    }
+    serializedForm: '',
+    isEmpty: true
 };
 
 const flatMap = require('lodash/flatMap');
 
 const shoppingCart = redux.createStore((state = defaultState, action) => {
-    var newState;
     switch(action.type) {
         case 'ADD':
-            return Object.assign({}, state, { inCart: [...state.inCart, { dish: action.dish, timestamp: action.timestamp }] });
+            return Object.assign({}, state, { isEmpty: false, inCart: [...state.inCart, { dish: action.dish, timestamp: action.timestamp }] });
         case 'REMOVE':
-            return Object.assign({}, state, { inCart: state.inCart.filter(x => x.timestamp !== action.timestamp) });
+            const inCart = state.inCart.filter(x => x.timestamp !== action.timestamp);
+            return Object.assign({}, state, { isEmpty: !inCart.length, inCart: inCart });
         case 'DUPLICATE':
             return Object.assign({}, state, {
                 inCart: flatMap(state.inCart, item => {
@@ -35,7 +32,9 @@ const shoppingCart = redux.createStore((state = defaultState, action) => {
                                     })
                                 });
         case 'RESTORE':
-            return Object.assign({}, state, action.state);
+            return Object.assign({}, state, defaultState, action.state, { isEmpty: !action.state.inCart.length });
+        case 'ORDER_FORM_CHANGE':
+            return Object.assign({}, state, { serializedForm: action.serializedForm });
     }
 });
 
@@ -78,12 +77,13 @@ shoppingCart.subscribe(() => {
 
 shoppingCart.subscribe(() => {
     const state = shoppingCart.getState();
-    const count = state.inCart.length;
-    if (count === 0) {
+    if (state.isEmpty) {
         $('#side-cart .default-content').show();
+        // $('#side-cart .order-form').hide();
         $('#side-cart button.order').attr('disabled', true);
     } else {
         $('#side-cart .default-content').hide();
+        // $('#side-cart .order-form').show();
         $('#side-cart button.order').attr('disabled', false);
     }
 
@@ -106,6 +106,18 @@ shoppingCart.subscribe(() => {
         itemsContainer.append(`<tfoot><tr><td>Végösszeg</td><td>${sum} Ft</td></tr></tfoot>`);
     }
 });
+
+shoppingCart.subscribe(() => {
+    const state = shoppingCart.getState();
+    state.serializedForm.split('&').map(x => x.split('=').map(x => x.replace(/\+/g, ' ')).map(decodeURIComponent)).forEach(kv => {
+        $(`.order-form [name="${kv[0]}"]`).val(kv[1]);
+    });
+});
+
+const orderForm = $('#side-cart .order-form').on('input change', (e) => {
+    var serializedForm = $('#side-cart .order-form').serialize();
+    shoppingCart.dispatch({ type: 'ORDER_FORM_CHANGE', serializedForm });
+})
 
 $(document).on('click', 'button[data-remove-order-item]', function(e) {
     var timestamp = $(this).data('removeOrderItem');
@@ -152,3 +164,5 @@ $(document).on('click', 'button[data-add-to-cart]', (e) => {
 
 // var orderItemTemplate = require('./templates/order-item.html');
 // console.log(orderItemTemplate({ id: 'jfsjkfsdf', qwe: 'jshdfjkhsdfkjhs' }));
+
+window.sc = shoppingCart;
