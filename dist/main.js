@@ -147,7 +147,7 @@
 	        var x = menucard.dishes.filter(function (dish) {
 	            return dish.id === item.dish.id;
 	        })[0];
-	        itemsContainer.append('<tr><td>' + x.name + ' (' + item.dish.variant + ')<div><button data-duplicate-order-item="' + item.timestamp + '"><svg><use xlink:href="#icon-plus"></use></svg></button><button data-remove-order-item="' + item.timestamp + '"><svg><use xlink:href="#icon-minus"></use></svg></button></div></td><td>' + x.variants[item.dish.variant] + ' Ft</td></tr>');
+	        itemsContainer.append('<tr><td>' + x.name + ' (' + item.dish.variant + ')</td><td><button data-duplicate-order-item="' + item.timestamp + '"><svg><use xlink:href="#icon-plus"></use></svg></button><button data-remove-order-item="' + item.timestamp + '"><svg><use xlink:href="#icon-minus"></use></svg></button></div></td><td>' + x.variants[item.dish.variant] + '&nbsp;Ft</td></tr>');
 	    });
 	
 	    if (!state.isEmpty) {
@@ -158,7 +158,7 @@
 	            return prev + x.variants[item.dish.variant];
 	        }, 0);
 	
-	        itemsContainer.append('<tfoot><tr><td>Végösszeg</td><td>' + sum + ' Ft</td></tr></tfoot>');
+	        itemsContainer.append('<tfoot><tr><td>Végösszeg</td><td colspan="2">' + sum + '&nbsp;Ft</td></tr></tfoot>');
 	    }
 	});
 	

@@ -283,12 +283,13 @@ select {
     }
 
     [data-duplicate-order-item], [data-remove-order-item] {
-        padding: 4px;
+        padding: 2px;
         font-size: 0;
         margin-right: 8px;
+        border-color: #ddd;
         svg {
-            width: 16px;
-            height: 16px;
+            width: 12px;
+            height: 12px;
         }
     }
 }
