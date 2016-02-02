@@ -30,6 +30,7 @@
     "gulp-sass": "^2.1.1",
     "gulp-webserver": "^0.9.1",
     "html-minifier": "^1.1.1",
+    "jeet": "^6.1.2",
     "js-yaml": "^3.5.2",
     "lazysizes": "^1.4.0",
     "lodash": "^4.0.1",

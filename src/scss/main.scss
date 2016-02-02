@@ -6,6 +6,8 @@ $max-width-L: 1280px;
 @import url(https://fonts.googleapis.com/css?family=Russo+One&subset=latin,latin-ext);
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&subset=latin,latin-ext);
 
+@import "../../node_modules/jeet/scss/jeet/index";
+
 @import 'site-header';
 @import 'site-footer';
 
@@ -90,6 +92,7 @@ select {
 }
 
 .container {
+    @include cf();
     position: relative;
 
     @media screen and (min-width: 1024px) {
@@ -234,6 +237,8 @@ select {
 }
 
 #side-cart {
+    background-color: #fff;
+
     h2 {
         border-bottom: 1px solid #ccc;
         background-color: #f1f1f1;
@@ -284,109 +289,14 @@ select {
 }
 
 @media screen and (min-width: 1024px) {
-    .container {
-        display: flex;
-        flex-flow: row;
-    }
-
     #menucard {
-        width: 70%;
-    }
-
-    #side-cart-container {
-        width: 30%;
-        padding-left: 32px;
+        @include col (2/3);
     }
 
     #side-cart {
-        background-color: #fff;
+        @include col(1/3);
     }
 }
-
-/*
-#menucard {
-    @media screen and (min-width: 1024px) {
-        display: table-cell;
-        width: 75%;
-        vertical-align: top;
-        padding-right: 16px;
-
-        section {
-            padding: 0 20px 20px;
-            background-color: #fff;
-            box-shadow: 0 0 3px rgba(127, 127, 127, .2);
-            box-shadow: 0 0 4px rgba(0, 0, 0, .4);
-            border-radius: 2px;
-        }
-    }
-}
-
-#cart {
-    display: table-cell;
-    vertical-align: top;
-    width: 25%;
-    padding-left: 16px;
-
-    & > div {
-        min-height: 300px;
-        padding: 0 20px 20px;
-        background-color: #fff;
-        box-shadow: 0 0 3px rgba(127, 127, 127, .2);
-        border-radius: 2px;
-    }
-}
-
-.item {
-    overflow: hidden;
-    margin: 18px 0 0;
-}
-
-.image {
-    float: left;
-    width: 15%;
-    overflow: hidden;
-    font-size: 0;
-    //
-    // img {
-    //     border-radius: 100%;
-    // }
-}
-
-.text {
-    float: left;
-    width: 55%;
-}
-
-.buy {
-    float: left;
-    width: 30%;
-}
-
-h2 {
-    border-bottom: 1px solid #ccc;
-
-    background-color: #f1f1f1;
-    margin: 0 -20px;
-    padding: 20px;
-}
-
-button {
-    display: block;
-    width: 100%;
-    border: 1px solid #ccc;
-    padding: 4px;
-    text-align: center;
-    font-size: 1rem;
-    font-family: Arial;
-    cursor: pointer;
-    border-radius: 2px;
-    background-color: #fff;
-
-    &:hover {
-        background-color: #eee;
-    }
-}
-*/
 
 .sticky-button-container {
     width: 100%;
