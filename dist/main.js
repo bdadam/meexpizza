@@ -56,7 +56,6 @@
 	__webpack_require__(3).init();
 	
 	var redux = __webpack_require__(5);
-	// const menucard = require('../../menu');
 	
 	var defaultState = {
 	    inCart: [],
@@ -128,6 +127,8 @@
 	});
 	
 	shoppingCart.subscribe(function () {
+	    var menucard = __webpack_require__(103);
+	
 	    var state = shoppingCart.getState();
 	    if (state.isEmpty) {
 	        $('#side-cart .default-content').show();
@@ -143,21 +144,15 @@
 	    itemsContainer.empty();
 	
 	    state.inCart.forEach(function (item) {
-	        var cat = window.menucard.menu.filter(function (category) {
-	            return category.id === item.dish.categoryId;
-	        })[0];
-	        var x = cat.items.filter(function (dish) {
+	        var x = menucard.dishes.filter(function (dish) {
 	            return dish.id === item.dish.id;
 	        })[0];
-	        itemsContainer.append('<tr><td>' + x.name + '<div><button data-duplicate-order-item="' + item.timestamp + '">Még ebből!</button> <button data-remove-order-item="' + item.timestamp + '">Eltávolítás</button></div></td><td>' + x.variants[item.dish.variant] + ' Ft</td></tr>');
+	        itemsContainer.append('<tr><td>' + x.name + ' (' + item.dish.variant + ')<div><button data-duplicate-order-item="' + item.timestamp + '"><svg><use xlink:href="#icon-plus"></use></svg></button><button data-remove-order-item="' + item.timestamp + '"><svg><use xlink:href="#icon-minus"></use></svg></button></div></td><td>' + x.variants[item.dish.variant] + ' Ft</td></tr>');
 	    });
 	
-	    if (state.inCart.length > 0) {
+	    if (!state.isEmpty) {
 	        var sum = state.inCart.reduce(function (prev, item) {
-	            var cat = window.menucard.menu.filter(function (category) {
-	                return category.id === item.dish.categoryId;
-	            })[0];
-	            var x = cat.items.filter(function (dish) {
+	            var x = menucard.dishes.filter(function (dish) {
 	                return dish.id === item.dish.id;
 	            })[0];
 	            return prev + x.variants[item.dish.variant];
@@ -4607,6 +4602,424 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var require;var require;var nanoModal;!function a(b,c,d){function e(g,h){if(!c[g]){if(!b[g]){var i="function"==typeof require&&require;if(!h&&i)return require(g,!0);if(f)return f(g,!0);throw new Error("Cannot find module '"+g+"'")}var j=c[g]={exports:{}};b[g][0].call(j.exports,function(a){var c=b[g][1][a];return e(c?c:a)},j,j.exports,a,b,c,d)}return c[g].exports}for(var f="function"==typeof require&&require,g=0;g<d.length;g++)e(d[g]);return e}({1:[function(a,b,c){function d(a,b){var c=document,d=a.nodeType||a===window?a:c.createElement(a),f=[];b&&(d.className=b);var g=e(),h=e(),i=function(a,b){d.addEventListener?d.addEventListener(a,b,!1):d.attachEvent("on"+a,b),f.push({event:a,handler:b})},j=function(a,b){d.removeEventListener?d.removeEventListener(a,b):d.detachEvent("on"+a,b);for(var c,e=f.length;e-->0;)if(c=f[e],c.event===a&&c.handler===b){f.splice(e,1);break}},k=function(a){var b=!1,c=function(c){b||(b=!0,setTimeout(function(){b=!1},100),a(c))};i("touchstart",c),i("mousedown",c)},l=function(a){d&&(d.style.display="block",g.fire(a))},m=function(a){d&&(d.style.display="none",h.fire(a))},n=function(){return d.style&&"block"===d.style.display},o=function(a){d&&(d.innerHTML=a)},p=function(a){d&&(o(""),d.appendChild(c.createTextNode(a)))},q=function(){if(d.parentNode){for(var a,b=f.length;b-->0;)a=f[b],j(a.event,a.handler);d.parentNode.removeChild(d),g.removeAllListeners(),h.removeAllListeners()}},r=function(a){var b=a.el||a;d.appendChild(b)};return{el:d,addListener:i,addClickListener:k,onShowEvent:g,onHideEvent:h,show:l,hide:m,isShowing:n,html:o,text:p,remove:q,add:r}}var e=a("./ModalEvent");b.exports=d},{"./ModalEvent":3}],2:[function(a,b,c){function d(a,b,c,f,g){if(void 0!==a){b=b||{};var h,i=e("div","nanoModal nanoModalOverride "+(b.classes||"")),j=e("div","nanoModalContent"),k=e("div","nanoModalButtons");i.add(j),i.add(k),i.el.style.display="none";var l,m=[];b.buttons=b.buttons||[{text:"Close",handler:"hide",primary:!0}];var n=function(){for(var a=m.length;a-->0;){var b=m[a];b.remove()}m=[]},o=function(){i.el.style.marginLeft=-i.el.clientWidth/2+"px"},p=function(){for(var a=document.querySelectorAll(".nanoModal"),b=a.length;b-->0;)if("none"!==a[b].style.display)return!0;return!1},q=function(){i.isShowing()||(d.resizeOverlay(),c.show(c),i.show(l),o())},r=function(){i.isShowing()&&(i.hide(l),p()||c.hide(c),b.autoRemove&&l.remove())},s=function(a){var b={};for(var c in a)a.hasOwnProperty(c)&&(b[c]=a[c]);return b};return l={modal:i,overlay:c,show:function(){return f?f(q,l):q(),l},hide:function(){return g?g(r,l):r(),l},onShow:function(a){return i.onShowEvent.addListener(function(){a(l)}),l},onHide:function(a){return i.onHideEvent.addListener(function(){a(l)}),l},remove:function(){c.onRequestHide.removeListener(h),h=null,n(),i.remove()},setButtons:function(a){var b,c,d,f=a.length,g=function(a,b){var c=s(l);a.addClickListener(function(a){c.event=a||window.event,b.handler(c)})};if(n(),0===f)k.hide();else for(k.show();f-->0;)b=a[f],d="nanoModalBtn",b.primary&&(d+=" nanoModalBtnPrimary"),d+=b.classes?" "+b.classes:"",c=e("button",d),"hide"===b.handler?c.addClickListener(l.hide):b.handler&&g(c,b),c.text(b.text),k.add(c),m.push(c);return o(),l},setContent:function(b){return b.nodeType?(j.html(""),j.add(b)):j.html(b),o(),a=b,l},getContent:function(){return a}},h=c.onRequestHide.addListener(function(){b.overlayClose!==!1&&i.isShowing()&&l.hide()}),l.setContent(a).setButtons(b.buttons),document.body.appendChild(i.el),l}}var e=a("./El"),f=document,g=function(a){var b=f.documentElement,c="scroll"+a,d="offset"+a;return Math.max(f.body[c],b[c],f.body[d],b[d],b["client"+a])};d.resizeOverlay=function(){var a=f.getElementById("nanoModalOverlay");a.style.width=g("Width")+"px",a.style.height=g("Height")+"px"},b.exports=d},{"./El":1}],3:[function(a,b,c){function d(){var a={},b=0,c=function(c){return a[b]=c,b++},d=function(b){b&&delete a[b]},e=function(){a={}},f=function(){for(var c=0,d=b;d>c;++c)a[c]&&a[c].apply(null,arguments)};return{addListener:c,removeListener:d,removeAllListeners:e,fire:f}}b.exports=d},{}],4:[function(a,b,c){var d=a("./ModalEvent"),e=function(){function b(){if(!g.querySelector("#nanoModalOverlay")){var a=e("style"),b=a.el,h=g.querySelectorAll("head")[0].childNodes[0];h.parentNode.insertBefore(b,h);var i=".nanoModal{position:absolute;top:100px;left:50%;display:none;z-index:9999;min-width:300px;padding:15px 20px 10px;-webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;background:#fff;background:-moz-linear-gradient(top,#fff 0,#ddd 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#fff),color-stop(100%,#ddd));background:-webkit-linear-gradient(top,#fff 0,#ddd 100%);background:-o-linear-gradient(top,#fff 0,#ddd 100%);background:-ms-linear-gradient(top,#fff 0,#ddd 100%);background:linear-gradient(to bottom,#fff 0,#ddd 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dddddd', GradientType=0)}.nanoModalOverlay{position:absolute;top:0;left:0;width:100%;height:100%;z-index:9998;background:#000;display:none;-ms-filter:\"alpha(Opacity=50)\";-moz-opacity:.5;-khtml-opacity:.5;opacity:.5}.nanoModalButtons{border-top:1px solid #ddd;margin-top:15px;text-align:right}.nanoModalBtn{color:#333;background-color:#fff;display:inline-block;padding:6px 12px;margin:8px 4px 0;font-size:14px;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:1px solid transparent;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px}.nanoModalBtn:active,.nanoModalBtn:focus,.nanoModalBtn:hover{color:#333;background-color:#e6e6e6;border-color:#adadad}.nanoModalBtn.nanoModalBtnPrimary{color:#fff;background-color:#428bca;border-color:#357ebd}.nanoModalBtn.nanoModalBtnPrimary:active,.nanoModalBtn.nanoModalBtnPrimary:focus,.nanoModalBtn.nanoModalBtnPrimary:hover{color:#fff;background-color:#3071a9;border-color:#285e8e}";b.styleSheet?b.styleSheet.cssText=i:a.text(i),c=e("div","nanoModalOverlay nanoModalOverride"),c.el.id="nanoModalOverlay",g.body.appendChild(c.el),c.onRequestHide=d();var j=function(){c.onRequestHide.fire()};c.addClickListener(j),e(g).addListener("keydown",function(a){var b=a.which||a.keyCode;27===b&&j()});var k,l=e(window);l.addListener("resize",function(){k&&clearTimeout(k),k=setTimeout(f.resizeOverlay,100)}),l.addListener("orientationchange",function(){for(var a=0;3>a;++a)setTimeout(f.resizeOverlay,1e3*a+200)})}}var c,e=a("./El"),f=a("./Modal"),g=document;document.body&&b();var h=function(a,d){return b(),f(a,d,c,h.customShow,h.customHide)};return h.resizeOverlay=f.resizeOverlay,h}();nanoModal=e},{"./El":1,"./Modal":2,"./ModalEvent":3}]},{},[1,2,3,4]),"undefined"!=typeof window&&("function"==typeof window.define&&window.define.amd&&window.define(function(){return nanoModal}),window.nanoModal=nanoModal),"undefined"!=typeof module&&(module.exports=nanoModal);
+
+/***/ },
+/* 103 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	module.exports = {
+	    "dishes": [{
+	        "categoryId": "klasszikus-pizzak",
+	        "name": "Pizzakenyér",
+	        "id": "klasszikus-pizzak-pizzakenyer",
+	        "variants": {
+	            "30cm": 500
+	        }
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "name": "Sajtos-fokhagymás pizzakenyér",
+	        "id": "klasszikus-pizzak-sajtos-fokhagymas-pizzakenyer",
+	        "variants": {
+	            "30cm": 600
+	        }
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "name": "Margarita pizza",
+	        "id": "klasszikus-pizzak-margarita-pizza",
+	        "variants": {
+	            "30cm": 850,
+	            "40cm": 1850,
+	            "50cm": 2700
+	        }
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "name": "Sonkás pizza",
+	        "id": "klasszikus-pizzak-sonkas-pizza",
+	        "variants": {
+	            "30cm": 1070,
+	            "40cm": 2070,
+	            "50cm": 2920
+	        }
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "name": "Szalámis pizza",
+	        "id": "klasszikus-pizzak-szalamis-pizza",
+	        "variants": {
+	            "30cm": 1070,
+	            "40cm": 2070,
+	            "50cm": 2920
+	        }
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "name": "Sonka-ku pizza",
+	        "id": "klasszikus-pizzak-sonka-ku-pizza",
+	        "variants": {
+	            "30cm": 1070,
+	            "40cm": 2070,
+	            "50cm": 2920
+	        }
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "name": "Bacon pizza",
+	        "id": "klasszikus-pizzak-bacon-pizza",
+	        "variants": {
+	            "30cm": 1070,
+	            "40cm": 2070,
+	            "50cm": 2920
+	        }
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "name": "4 Sajtos pizza",
+	        "id": "klasszikus-pizzak-4-sajtos-pizza",
+	        "variants": {
+	            "30cm": 1070,
+	            "40cm": 2070,
+	            "50cm": 2920
+	        }
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "name": "Hawaii pizza",
+	        "id": "klasszikus-pizzak-hawaii-pizza",
+	        "variants": {
+	            "30cm": 1070,
+	            "40cm": 2070,
+	            "50cm": 2920
+	        }
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "name": "Zöldséges pizza",
+	        "id": "extra-pizzak-zoldseges-pizza",
+	        "variants": {
+	            "30cm": 1190
+	        }
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "name": "Tonhalas pizza",
+	        "id": "extra-pizzak-tonhalas-pizza",
+	        "variants": {
+	            "30cm": 1190
+	        }
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "name": "Piedone pizza",
+	        "id": "extra-pizzak-piedone-pizza",
+	        "variants": {
+	            "30cm": 1190
+	        }
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "name": "Jóasszony pizza",
+	        "id": "extra-pizzak-joasszony-pizza",
+	        "variants": {
+	            "30cm": 1190
+	        }
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "name": "3 Kívánság pizza",
+	        "id": "extra-pizzak-3-kivansag-pizza",
+	        "variants": {
+	            "30cm": 1190
+	        }
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "name": "Victorio pizza",
+	        "id": "full-a-fullban-pizzak-victorio-pizza",
+	        "variants": {
+	            "30cm": 1450
+	        }
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "name": "Hús-zabáló pizza",
+	        "id": "full-a-fullban-pizzak-hus-zabalo-pizza",
+	        "variants": {
+	            "30cm": 1450
+	        }
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "name": "Master pizza",
+	        "id": "full-a-fullban-pizzak-master-pizza",
+	        "variants": {
+	            "30cm": 1450
+	        }
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "name": "Barbeque pizza",
+	        "id": "full-a-fullban-pizzak-barbeque-pizza",
+	        "variants": {
+	            "30cm": 1450
+	        }
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "name": "Jalapeno Barbeque pizza",
+	        "id": "full-a-fullban-pizzak-jalapeno-barbeque-pizza",
+	        "variants": {
+	            "30cm": 1450
+	        }
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "name": "Tenger kincsei pizza",
+	        "id": "full-a-fullban-pizzak-tenger-kincsei-pizza",
+	        "variants": {
+	            "30cm": 1450
+	        }
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "name": "Dani pizza",
+	        "id": "full-a-fullban-pizzak-dani-pizza",
+	        "variants": {
+	            "30cm": 1450
+	        }
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "name": "Meex töltött pizza",
+	        "id": "full-a-fullban-pizzak-meex-toltott-pizza",
+	        "variants": {
+	            "30cm": 1450
+	        }
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "name": "Bossy pizza",
+	        "id": "full-a-fullban-pizzak-bossy-pizza",
+	        "variants": {
+	            "30cm": 1450
+	        }
+	    }, {
+	        "categoryId": "meex-specialitas",
+	        "name": "Akay - török pizza",
+	        "id": "meex-specialitas-akay-torok-pizza",
+	        "variants": {
+	            "darab": 490
+	        }
+	    }, {
+	        "categoryId": "meex-specialitas",
+	        "name": "Banu - török pizza",
+	        "id": "meex-specialitas-banu-torok-pizza",
+	        "variants": {
+	            "darab": 490
+	        }
+	    }, {
+	        "categoryId": "meex-specialitas",
+	        "name": "Cahil - török pizza",
+	        "id": "meex-specialitas-cahil-torok-pizza",
+	        "variants": {
+	            "darab": 490
+	        }
+	    }, {
+	        "categoryId": "tesztak",
+	        "name": "Carbonara",
+	        "id": "tesztak-carbonara",
+	        "variants": {
+	            "adagonként": 1090
+	        }
+	    }, {
+	        "categoryId": "tesztak",
+	        "name": "Milánói",
+	        "id": "tesztak-milanoi",
+	        "variants": {
+	            "adagonként": 1090
+	        }
+	    }, {
+	        "categoryId": "tesztak",
+	        "name": "Peperoncino",
+	        "id": "tesztak-peperoncino",
+	        "variants": {
+	            "adagonként": 1090
+	        }
+	    }, {
+	        "categoryId": "tesztak",
+	        "name": "Meex",
+	        "id": "tesztak-meex",
+	        "variants": {
+	            "adagonként": 1190
+	        }
+	    }, {
+	        "categoryId": "rantott-sajtok",
+	        "name": "Ízletes cheddar sajtfalatkák steak/hasábbal",
+	        "id": "rantott-sajtok-izletes-cheddar-sajtfalatkak-steak-hasabbal",
+	        "variants": {
+	            "tartármártással": 1390,
+	            "gyüm. szósszal": 1390,
+	            "chilis szósszal": 1390
+	        }
+	    }, {
+	        "categoryId": "rantott-sajtok",
+	        "name": "Camembert sajt steak/hasáb gyümölcs szósz",
+	        "id": "rantott-sajtok-camembert-sajt-steak-hasab-gyumolcs-szosz",
+	        "variants": {
+	            "tartármártással": 1290,
+	            "gyümö. szósszal": 1290,
+	            "chilis szósszal": 1290
+	        }
+	    }, {
+	        "categoryId": "rantott-sajtok",
+	        "name": "Trappista sajt steak/hasáb",
+	        "id": "rantott-sajtok-trappista-sajt-steak-hasab",
+	        "variants": {
+	            "tartármártással": 1190,
+	            "gyüm. szósszal": 1190,
+	            "chilis szósszal": 1190
+	        }
+	    }, {
+	        "categoryId": "frissensultek",
+	        "name": "Buffalo csirkeszárnyak",
+	        "id": "frissensultek-buffalo-csirkeszarnyak",
+	        "variants": {
+	            "6 darab": 780,
+	            "12 darab": 1090
+	        }
+	    }, {
+	        "categoryId": "frissensultek",
+	        "name": "Buffalo csirkeszárnyak + Hasáb/Steak + szósz",
+	        "id": "frissensultek-buffalo-csirkeszarnyak-hasab-steak-szosz",
+	        "variants": {
+	            "6 darab": 1190,
+	            "12 darab": 1350
+	        }
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "name": "Meex burger",
+	        "id": "hamburgerek-meex-burger",
+	        "variants": {
+	            "darab": 750
+	        }
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "name": "Meex sajtburger",
+	        "id": "hamburgerek-meex-sajtburger",
+	        "variants": {
+	            "darab": 850
+	        }
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "name": "Dupla Meex burger",
+	        "id": "hamburgerek-dupla-meex-burger",
+	        "variants": {
+	            "darab": 1250
+	        }
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "name": "Dupla Meex sajtburger",
+	        "id": "hamburgerek-dupla-meex-sajtburger",
+	        "variants": {
+	            "darab": 1450
+	        }
+	    }, {
+	        "categoryId": "hamburger-menuk",
+	        "name": "Meex Burger + Hasáb + Szósz",
+	        "id": "hamburger-menuk-meex-burger-hasab-szosz",
+	        "variants": {
+	            "darab": 990
+	        }
+	    }, {
+	        "categoryId": "hamburger-menuk",
+	        "name": "Meex Sajtburger + Hasáb + Szósz",
+	        "id": "hamburger-menuk-meex-sajtburger-hasab-szosz",
+	        "variants": {
+	            "darab": 1090
+	        }
+	    }, {
+	        "categoryId": "hamburger-menuk",
+	        "name": "Dupla Meex Burger + Hasáb + Szósz",
+	        "id": "hamburger-menuk-dupla-meex-burger-hasab-szosz",
+	        "variants": {
+	            "darab": 1490
+	        }
+	    }, {
+	        "categoryId": "hamburger-menuk",
+	        "name": "Dupla Meex Sajtburger + Hasáb + Szósz",
+	        "id": "hamburger-menuk-dupla-meex-sajtburger-hasab-szosz",
+	        "variants": {
+	            "darab": 1490
+	        }
+	    }, {
+	        "categoryId": "fitnesz-szendvicsek",
+	        "name": "Purpur",
+	        "id": "fitnesz-szendvicsek-purpur",
+	        "variants": {
+	            "darab": 590
+	        }
+	    }, {
+	        "categoryId": "salatak",
+	        "name": "Primőr saláta",
+	        "id": "salatak-primor-salata",
+	        "variants": {
+	            "adagonként": 650
+	        }
+	    }, {
+	        "categoryId": "salatak",
+	        "name": "Mozarella saláta",
+	        "id": "salatak-mozarella-salata",
+	        "variants": {
+	            "adagonként": 800
+	        }
+	    }, {
+	        "categoryId": "salatak",
+	        "name": "Tonhal saláta",
+	        "id": "salatak-tonhal-salata",
+	        "variants": {
+	            "adagonként": 1080
+	        }
+	    }, {
+	        "categoryId": "salatak",
+	        "name": "Cézár saláta",
+	        "id": "salatak-cezar-salata",
+	        "variants": {
+	            "adagonként": 1080
+	        }
+	    }, {
+	        "categoryId": "edessegek",
+	        "name": "Profiterol",
+	        "id": "edessegek-profiterol",
+	        "variants": {
+	            "adagonként": 600
+	        }
+	    }, {
+	        "categoryId": "uditok",
+	        "name": "Pepsi",
+	        "id": "uditok-pepsi",
+	        "variants": {
+	            "1,75 literes": 480,
+	            "1 literes": 350,
+	            "0,33 literes": 190
+	        }
+	    }, {
+	        "categoryId": "uditok",
+	        "name": "Pepsi Max",
+	        "id": "uditok-pepsi-max",
+	        "variants": {
+	            "1,75 literes": 480,
+	            "1 literes": 350,
+	            "0,33 literes": 190
+	        }
+	    }, {
+	        "categoryId": "uditok",
+	        "name": "Mirinda",
+	        "id": "uditok-mirinda",
+	        "variants": {
+	            "1,75 literes": 480,
+	            "1 literes": 350,
+	            "0,33 literes": 190
+	        }
+	    }, {
+	        "categoryId": "uditok",
+	        "name": "Canada Dry",
+	        "id": "uditok-canada-dry",
+	        "variants": {
+	            "1,75 literes": 480,
+	            "1 literes": 350,
+	            "0,33 literes": 190
+	        }
+	    }, {
+	        "categoryId": "uditok",
+	        "name": "Lipton Ice Tea",
+	        "id": "uditok-lipton-ice-tea",
+	        "variants": {
+	            "0,33 literes": 190
+	        }
+	    }]
+	};
 
 /***/ }
 /******/ ]);

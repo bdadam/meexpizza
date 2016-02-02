@@ -6,7 +6,6 @@ require('lazysizes/lazysizes');
 require('./navi').init();
 
 const redux = require('redux');
-// const menucard = require('../../menu');
 
 var defaultState = {
     inCart: [],
@@ -76,6 +75,8 @@ shoppingCart.subscribe(() => {
 });
 
 shoppingCart.subscribe(() => {
+    const menucard = require('../../data/menucard.generated');
+
     const state = shoppingCart.getState();
     if (state.isEmpty) {
         $('#side-cart .default-content').show();
@@ -91,15 +92,13 @@ shoppingCart.subscribe(() => {
     itemsContainer.empty();
 
     state.inCart.forEach(item => {
-        var cat = window.menucard.menu.filter(category => category.id === item.dish.categoryId)[0];
-        var x = cat.items.filter(dish => dish.id === item.dish.id)[0];
-        itemsContainer.append(`<tr><td>${x.name}<div><button data-duplicate-order-item="${item.timestamp}">Még ebből!</button> <button data-remove-order-item="${item.timestamp}">Eltávolítás</button></div></td><td>${x.variants[item.dish.variant]} Ft</td></tr>`);
+        const x = menucard.dishes.filter(dish => dish.id === item.dish.id)[0];
+        itemsContainer.append(`<tr><td>${x.name} (${item.dish.variant})<div><button data-duplicate-order-item="${item.timestamp}"><svg><use xlink:href="#icon-plus"></use></svg></button><button data-remove-order-item="${item.timestamp}"><svg><use xlink:href="#icon-minus"></use></svg></button></div></td><td>${x.variants[item.dish.variant]} Ft</td></tr>`);
     });
 
-    if (state.inCart.length > 0) {
+    if (!state.isEmpty) {
         const sum = state.inCart.reduce((prev, item) => {
-            var cat = window.menucard.menu.filter(category => category.id === item.dish.categoryId)[0];
-            var x = cat.items.filter(dish => dish.id === item.dish.id)[0];
+            var x = menucard.dishes.filter(dish => dish.id === item.dish.id)[0];
             return prev + x.variants[item.dish.variant];
         }, 0);
 

@@ -27,17 +27,17 @@ const generateData = suspend(function*() {
 module.exports = (gulp) => {
     gulp.task('html', (done) => {
 
-        delete require.cache[require.resolve('../menu')];
-        var menucard = require('../menu');
-
-        delete require.cache[require.resolve('../data-test')];
-        var menu = require('../data-test');
+        // delete require.cache[require.resolve('../menu')];
+        // var menucard = require('../menu');
+        //
+        delete require.cache[require.resolve('../data/index')];
+        var menu = require('../data/index');
 
         const html = nunjucks.render('index.html', {
-            menucard,
-            menucardJson: JSON.stringify(menucard),
+            // menucard,
+            // menucardJson: JSON.stringify(menucard),
             menu,
-            menuJson: JSON.stringify(menu)
+            // menuJson: JSON.stringify(menu)
         });
 
         const minhtml = htmlmin.minify(html, {

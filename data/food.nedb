@@ -1,7 +1,0 @@
-{"_id":"1","category":"pizza","name":"Pizzakenyér","text":"","size":30,"price":500}
-{"_id":"10","category":"extra-pizza","name":"Tonhalas pizza","text":"fűszeres paradicsom szósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek","size":30,"price":1190}
-{"_id":"11","category":"extra-pizza","name":"Piedone pizza","text":"fűszeres paradicsom szósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika","size":30,"price":1190}
-{"_id":"2","category":"pizza","name":"Sajtos-fokhagymás pizzakenyér","text":"sajt, fokhagyma, fűszerkeverék","size":30,"price":600}
-{"_id":"3a","category":"pizza","name":"Margarita pizza","text":"fűszeres paradicsom szósz, sajt","size":30,"price":850}
-{"_id":"3b","category":"pizza","name":"Margarita pizza","text":"fűszeres paradicsom szósz, sajt","size":40,"price":1850}
-{"_id":"3c","category":"pizza","name":"Margarita pizza","text":"fűszeres paradicsom szósz, sajt","size":50,"price":2700}
