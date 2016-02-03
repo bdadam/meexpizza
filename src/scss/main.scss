@@ -1,40 +1,35 @@
-$max-width-L: 1280px;
-
-// @import url(https://fonts.googleapis.com/css?family=Arimo:400,700&subset=latin,latin-ext);
-// @import url(https://fonts.googleapis.com/css?family=Oswald:400,700,300&subset=latin,latin-ext);
-// @import url(https://fonts.googleapis.com/css?family=Lato:400,900,700,300&subset=latin,latin-ext);
 @import url(https://fonts.googleapis.com/css?family=Russo+One&subset=latin,latin-ext);
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&subset=latin,latin-ext);
 
 @import "../../node_modules/jeet/scss/jeet/index";
+@import "../../node_modules/normalize.css/normalize";
 
 @import 'site-header';
 @import 'site-footer';
 
-*, *:before, *:after {
+html {
     box-sizing: border-box;
-    padding: 0;
-    margin: 0;
 }
 
-html {
-    @media screen and (min-width: 768px) {
-        font-size: 1.125rem;
-    }
+*, *:before, *:after {
+    box-sizing: inherit;
+    padding: 0;
+    margin: 0;
+
+    // @media screen and (min-width: 768px) {
+    //     font-size: 1.125rem;
+    // }
 }
 
 body {
-    // font-family: Arimo;
-    // font-family: Oswald;
-    // font-family: Source Sans Pro;
     font-family: Open Sans;
-    // font-family: Lato;
     color: #333;
     line-height: 1.35;
     font-size: 0.875rem;
 
-    // background-color: #f1f1f1;
-    // background-color: #fff;
+    @media screen and (min-width: 768px) {
+        font-size: 1rem;
+    }
 }
 
 @media screen and (min-width: 1024px) {
@@ -78,6 +73,10 @@ select, button, input, textarea {
     border-radius: 4px;
     padding: 2px 4px;
     border: 1px solid #ccc;
+}
+
+button[disabled] {
+    cursor: not-allowed;
 }
 
 select {
@@ -128,9 +127,15 @@ select {
 
 .section-anchor {
     position: relative;
-    top: -40px;
+    height: 1px;
+    width: 1px;
+    display: block;
+    left: -1000px;
+
+    top: -48px;
+
     @media screen and (min-width: 1024px) {
-        top: -80px;
+        top: -78px;
     }
 }
 
@@ -164,9 +169,11 @@ select {
     .img {
         width: 20%;
         display: inline-block;
+
         position: relative;
         text-align: center;
         height: 60px;
+        // max-height: 60px;
 
         @media screen and (min-width: 1024px) {
             height: 80px;
@@ -216,6 +223,21 @@ select {
         font-size: 0.875rem;
 
         button {
+            // background-color: #4b546a;
+            // background-image: linear-gradient(to bottom, #606c88, #3f4c6b);
+            // border:1px solid #495267;
+            // border-radius: 3px;
+            //
+            // color: #fff;
+            // font-weight: 600;
+            // padding: 4px 8px;
+            //
+            // &:hover{
+            //     border:1px solid #363d4c;
+            //     background-color: #4b546a;
+            //     background-image: linear-gradient(to bottom, #4b546a, #2c354b);
+            // }
+
             border: 0;
             background: none;
             border-left: 1px solid #ccc;
