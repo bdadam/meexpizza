@@ -4,7 +4,8 @@
 <main class="container">
     <div id="menucard">
         {% for cat in menu.menu %}
-        <section id="{{ cat.id }}" class="menu-category">
+        <a id="{{ cat.id }}" class="section-anchor"></a>
+        <section id="section-{{ cat.id }}" class="menu-category">
             <h2>{{ cat.name }}</h2>
             <ul>
             {% for item in cat.items %}
