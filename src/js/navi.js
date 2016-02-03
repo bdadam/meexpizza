@@ -2,19 +2,18 @@ var $ = require("jquery");
 
 module.exports = {
     init() {
+
+        const navigation = $('#site-navigation');
+
         var menuToggle = $('.menu-toggle').click(() => {
             menuToggle.toggleClass('active');
-            $('#site-navigation').toggleClass('open');
+            navigation.toggleClass('open');
         });
 
+        navigation.on('click', 'a', () => {
+            menuToggle.removeClass('active');
+            navigation.removeClass('open');
+        });
 
-        // var toggle = document.querySelector('.menu-toggle');
-        // var navi = document.querySelector('#site-navigation');
-        //
-        // toggle.addEventListener('click', (e) => {
-        //     e.preventDefault();
-        //     menuToggle.classList.toggle('active');
-        //     navi.classList.toggle('open');
-        // });
     }
 };

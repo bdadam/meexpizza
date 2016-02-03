@@ -975,19 +975,18 @@
 	
 	module.exports = {
 	    init: function init() {
+	
+	        var navigation = $('#site-navigation');
+	
 	        var menuToggle = $('.menu-toggle').click(function () {
 	            menuToggle.toggleClass('active');
-	            $('#site-navigation').toggleClass('open');
+	            navigation.toggleClass('open');
 	        });
 	
-	        // var toggle = document.querySelector('.menu-toggle');
-	        // var navi = document.querySelector('#site-navigation');
-	        //
-	        // toggle.addEventListener('click', (e) => {
-	        //     e.preventDefault();
-	        //     menuToggle.classList.toggle('active');
-	        //     navi.classList.toggle('open');
-	        // });
+	        navigation.on('click', 'a', function () {
+	            menuToggle.removeClass('active');
+	            navigation.removeClass('open');
+	        });
 	    }
 	};
 
