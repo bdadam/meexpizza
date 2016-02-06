@@ -11,7 +11,8 @@
             {% for item in cat.items %}
                 <li class="item" data-dish-id="{{ item.id }}" data-dish-category-id="{{ cat.id }}">
                     <div class="img">
-                        <img data-src="food-images/small/{{ item.imageName }}.jpeg" class="lazyload">
+                        {# <img src="food-images/small/{{ item.imageName }}.jpeg" class="l-azyload"> #}
+                        <div class="icon-{{ item.imageName }}"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -28,7 +29,11 @@
                             <button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
                         {% else %}
                             {% for variant, variantprice in item.variants %}
-                                <div><span data-variant>{{ variant }}</span> - <b>{{ variantprice }} Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                {% if variant %}
+                                    <div><span data-variant>{{ variant }}</span> - <b>{{ variantprice }} Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                {% else %}
+                                    <div><b>{{ variantprice }} Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                {% endif %}
                             {% endfor %}
                         {% endif %}
                     </div>
@@ -80,6 +85,27 @@
             </div>
         </div>
 
+        <div id="contact-box" class="side-content">
+            <h2>Kapcsolat</h2>
+            <p class="phone">+36 30 2111 212</p>
+            <p class="address-1">Meex Pizza & Food</p>
+            <p class="address-2">3200 Gyöngyös, Orczy út 1.</p>
+            <a class="map" href="https://maps.google.com/?q=47.785625,19.932675" rel="external" target="_blank" is="google-map" title="Meexpizza a térképen"><p>Kattints a nagyobb térképhez!</p></a>
+        </div>
+
+        <div id="opening-hours" class="side-content">
+            <h2>Nyitvatartás</h2>
+            <dl class="opening-hours">
+                <dd>Hétfő</dd><dt>11:00 - 22:00</dt>
+                <dd>Kedd</dd><dt>11:00 - 22:00</dt>
+                <dd>Szerda</dd><dt>11:00 - 22:00</dt>
+                <dd>Csütörtök</dd><dt>11:00 - 22:00</dt>
+                <dd>Péntek</dd><dt>11:00 - 23:00</dt>
+                <dd>Szombat</dd><dt>11:00 - 23:00</dt>
+                <dd>Vasárnap</dd><dt>11:00 - 21:00</dt>
+            </dl>
+        </div>
+
         <div class="side-content">
             <h2>Kövess minket</h2>
             <div class="cart-content">
@@ -91,4 +117,43 @@
 <div class="sticky-button-container">
     <button>Megrendelés</button>
 </div>
+
+{#
+<div class="modal-backdrop">
+    <div class="modal-window">
+        <header>
+            <h1 style="font-size: 1.25rem; margin: 0;">Válassz feltétet!</h1>
+            <button data-close>&times;</button>
+        </header>
+        <div class="modal-body">
+            <label>Méret</label>
+            <div class="radio-toggle">
+                <input name="q" id="x" type="radio" value="30cm">
+                <label for="x">30cm</label>
+                <input name="q" id="y" type="radio" value="40cm">
+                <label for="y">40cm</label>
+                <input name="q" id="z" type="radio" value="50cm">
+                <label for="z">50cm</label>
+            </div>
+
+            <textarea rows="2" style="width: 100%;"></textarea>
+
+            <h2>Feltétek</h2>
+            <h3>Húsok (300 Ft)</h3>
+            <button>Blah</button>
+            <button>Blah</button>
+            <button>Blah</button>
+
+            <h3>Húsok (450 Ft)</h3>
+            <button>Blah</button>
+            <button>Blah</button>
+            <button>Blah</button>
+        </div>
+        <footer>
+            <button data-close>Mégse</button>
+            <button>Kosárba</button>
+        </footer>
+    </div>
+</div> #}
+
 {% endblock %}

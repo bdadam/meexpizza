@@ -1,0 +1,31 @@
+<div id="side-cart">
+    <h2>Kosár</h2>
+    <div class="cart-content">
+        <p class="default-content">
+            A kosár még üres.
+            Az ételeket a "Kosárba" gomb megnyomásával adhatod hozzá a rendeléshez.
+        </p>
+        <table class="items"></table>
+        <form class="order-form">
+            <label for="city">Város</label>
+            <select id="city" name="city">
+                {{#cities}}
+                    <option>{{ . }}</option>
+                {{/cities}}
+            </select>
+
+            <label for="name">Neved</label>
+            <input type="text" name="name" id="name" value="{{ address.name }}">
+
+            <label for="street">Utca, házszám</label>
+            <input type="text" name="street" id="street" value="{{ address.street }}">
+
+            <label for="phone">Telefonszámod</label>
+            <input type="text" name="phone" id="phone" value="{{ address.phone }}">
+
+            <label for="notes">Megjegyzések</label>
+            <textarea rows="3" name="notes" id="notes" placeholder="Egyéb megjegyzés, pl. pontos helszín (belső udvar, emelet) stb.">{{ notes }}</textarea>
+            <button class="order">Megrendelés</button>
+        </form>
+    </div>
+</div>

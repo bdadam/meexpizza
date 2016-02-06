@@ -1,0 +1,287 @@
+/*
+Icon classes can be used entirely standalone. They are named after their original file names.
+
+```html
+<!-- `display: block` sprite -->
+<div class="icon-home"></div>
+
+<!-- `display: inline-block` sprite -->
+<img class="icon-home" />
+```
+*/
+.icon-3-kivansag-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -320px -510px;
+  width: 160px;
+  height: 107px;
+}
+.icon-4-sajtos-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -800px -519px;
+  width: 160px;
+  height: 92px;
+}
+.icon-akay-torok-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -480px -510px;
+  width: 160px;
+  height: 107px;
+}
+.icon-bacon-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -480px -107px;
+  width: 160px;
+  height: 107px;
+}
+.icon-banu-torok-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -320px -403px;
+  width: 160px;
+  height: 107px;
+}
+.icon-barbeque-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -160px -160px;
+  width: 160px;
+  height: 120px;
+}
+.icon-bossy-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -160px -285px;
+  width: 160px;
+  height: 108px;
+}
+.icon-buffalo-csirkeszarnyak {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -640px -107px;
+  width: 160px;
+  height: 107px;
+}
+.icon-cahil-torok-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -640px -428px;
+  width: 160px;
+  height: 107px;
+}
+.icon-canada-dry {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -960px -160px;
+  width: 51px;
+  height: 160px;
+}
+.icon-carbonara {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -160px 0px;
+  width: 160px;
+  height: 145px;
+}
+.icon-cezar-salata {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -480px -214px;
+  width: 160px;
+  height: 107px;
+}
+.icon-dani-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: 0px -403px;
+  width: 160px;
+  height: 107px;
+}
+.icon-hawaii-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -160px -403px;
+  width: 160px;
+  height: 107px;
+}
+.icon-hus-zabalo-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -320px 0px;
+  width: 160px;
+  height: 120px;
+}
+.icon-jalapeno-barbeque-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -480px -403px;
+  width: 160px;
+  height: 107px;
+}
+.icon-joasszony-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: 0px -510px;
+  width: 160px;
+  height: 107px;
+}
+.icon-lipton-ice-tea {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: 0px -724px;
+  width: 90px;
+  height: 160px;
+}
+.icon-margarita-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: 0px 0px;
+  width: 160px;
+  height: 160px;
+}
+.icon-master-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -800px -611px;
+  width: 160px;
+  height: 88px;
+}
+.icon-meex-burger-menu {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -640px 0px;
+  width: 160px;
+  height: 107px;
+}
+.icon-meex-burger {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: 0px -160px;
+  width: 160px;
+  height: 125px;
+}
+.icon-meex-toltott-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -640px -535px;
+  width: 160px;
+  height: 82px;
+}
+.icon-meex {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -320px -285px;
+  width: 160px;
+  height: 107px;
+}
+.icon-milanoi {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -320px -120px;
+  width: 160px;
+  height: 120px;
+}
+.icon-mirinda {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -960px -480px;
+  width: 43px;
+  height: 160px;
+}
+.icon-mozarella-salata {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -160px -617px;
+  width: 160px;
+  height: 107px;
+}
+.icon-peperoncino {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -320px -617px;
+  width: 160px;
+  height: 107px;
+}
+.icon-pepsi-max {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -960px -320px;
+  width: 49px;
+  height: 160px;
+}
+.icon-pepsi {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -960px 0px;
+  width: 53px;
+  height: 160px;
+}
+.icon-piedone-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -640px -617px;
+  width: 160px;
+  height: 107px;
+}
+.icon-pizzakenyer {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -800px -212px;
+  width: 160px;
+  height: 106px;
+}
+.icon-primor-salata {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -410px -724px;
+  width: 160px;
+  height: 84px;
+}
+.icon-profiterol {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -90px -724px;
+  width: 160px;
+  height: 86px;
+}
+.icon-purpur {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -250px -724px;
+  width: 160px;
+  height: 84px;
+}
+.icon-rantottsajt-camambert {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -800px -318px;
+  width: 160px;
+  height: 105px;
+}
+.icon-rantottsajt-cheddar {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -480px -617px;
+  width: 160px;
+  height: 107px;
+}
+.icon-rantottsajt-trappista {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: 0px -617px;
+  width: 160px;
+  height: 107px;
+}
+.icon-sonka-ku-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -640px -321px;
+  width: 160px;
+  height: 107px;
+}
+.icon-sonkas-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -640px -214px;
+  width: 160px;
+  height: 107px;
+}
+.icon-szalamis-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: 0px -285px;
+  width: 160px;
+  height: 118px;
+}
+.icon-tenger-kincsei-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -160px -510px;
+  width: 160px;
+  height: 107px;
+}
+.icon-tonhal-salata {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -800px -106px;
+  width: 160px;
+  height: 106px;
+}
+.icon-tonhalas-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -800px -423px;
+  width: 160px;
+  height: 96px;
+}
+.icon-victorio-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -480px 0px;
+  width: 160px;
+  height: 107px;
+}
+.icon-zoldseges-pizza {
+  background-image: url(food-images/sprites/food-sprite-160.jpeg);
+  background-position: -800px 0px;
+  width: 160px;
+  height: 106px;
+}

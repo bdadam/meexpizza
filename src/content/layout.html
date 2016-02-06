@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="main.css">
     <link rel="canonical" href="http://www.meexpizza.hu/">
     {% block meta %}{% endblock %}
+    <!--[if lte IE 9]><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script><![endif]-->
+    <script src="main.js" async></script>
 </head>
 <body>
     <div style="display: none;">
@@ -29,9 +31,6 @@
 {% include "navigation.html" %}
 {% block body %}{% endblock %}
 {% include "footer.html" %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js" defer></script>
-<script src="main.js" defer></script>
-
 <div id="modal">
     <p class="modal-title">Válassz!</p>
     <p>Pizza margarita</p>

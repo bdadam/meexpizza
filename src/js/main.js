@@ -1,40 +1,66 @@
 // require('babel-polyfill');
 
+// require('zepto/zepto.min');
+import zepto from 'zepto/zepto.min.js';
+window.jQuery = window.$;
+
 require('es6-object-assign').polyfill();
 require('lazysizes/lazysizes');
+require('document-register-element');
 
 require('./navi').init();
 
 const redux = require('redux');
 
+const menucard = require('../../data/menucard.generated');
+const deliveryFees = require('../../data/delivery-fees.generated');
+
 var defaultState = {
     inCart: [],
     serializedForm: '',
-    isEmpty: true
+    isEmpty: true,
+    address: { city: 'Gyöngyös' }
 };
 
 const flatMap = require('lodash/flatMap');
 
 const shoppingCart = redux.createStore((state = defaultState, action) => {
+    let newState = defaultState;
+
     switch(action.type) {
         case 'ADD':
-            return Object.assign({}, state, { isEmpty: false, inCart: [...state.inCart, { dish: action.dish, timestamp: action.timestamp }] });
+            newState = Object.assign({}, state, { inCart: [...state.inCart, { dish: action.dish, timestamp: action.timestamp }] });
+            break;
         case 'REMOVE':
             const inCart = state.inCart.filter(x => x.timestamp !== action.timestamp);
-            return Object.assign({}, state, { isEmpty: !inCart.length, inCart: inCart });
+            newState = Object.assign({}, state, { inCart });
+            break;
         case 'DUPLICATE':
-            return Object.assign({}, state, {
+            newState = Object.assign({}, state, {
                 inCart: flatMap(state.inCart, item => {
                                     return item.timestamp !== action.timestamp
                                         ? item
                                         : [item, Object.assign({}, item, { timestamp: +new Date() })];
                                     })
                                 });
+            break;
         case 'RESTORE':
-            return Object.assign({}, state, defaultState, action.state, { isEmpty: !action.state.inCart.length });
-        case 'ORDER_FORM_CHANGE':
-            return Object.assign({}, state, { serializedForm: action.serializedForm });
+            newState = Object.assign({}, state, defaultState, action.state);
+            break;
+        case 'ADDRESS_CHANGE':
+            newState = Object.assign({}, state, { address: action.address });
+            break;
+        default:
+            // no-op
+            return state;
     }
+
+    // newState.total = newState.inCart.reduce(item => item.)
+    newState.isEmpty = newState.inCart.length === 0;
+    newState.deliveryFee = deliveryFees[newState.address.city].fix || 0;
+    newState.deliveryFreeFrom = deliveryFees[newState.address.city].min || 0;
+
+    return newState;
 });
 
 shoppingCart.subscribe(() => {
@@ -75,7 +101,6 @@ shoppingCart.subscribe(() => {
 });
 
 shoppingCart.subscribe(() => {
-    const menucard = require('../../data/menucard.generated');
 
     const state = shoppingCart.getState();
     if (state.isEmpty) {
@@ -106,17 +131,27 @@ shoppingCart.subscribe(() => {
     }
 });
 
+
 shoppingCart.subscribe(() => {
-    const state = shoppingCart.getState();
-    state.serializedForm.split('&').map(x => x.split('=').map(x => x.replace(/\+/g, ' ')).map(decodeURIComponent)).forEach(kv => {
-        $(`.order-form [name="${kv[0]}"]`).val(kv[1]);
-    });
+    const address = shoppingCart.getState().address;
+    const orderForm = $('#side-cart .order-form')
+
+    orderForm.find('[name=city]').val(address.city);
+    orderForm.find('[name=name]').val(address.name);
+    orderForm.find('[name=street]').val(address.street);
+    orderForm.find('[name=phone]').val(address.phone);
 });
 
 const orderForm = $('#side-cart .order-form').on('input change', (e) => {
-    var serializedForm = $('#side-cart .order-form').serialize();
-    shoppingCart.dispatch({ type: 'ORDER_FORM_CHANGE', serializedForm });
-})
+    const address = {
+        city: orderForm.find('[name=city]').val(),
+        name: orderForm.find('[name=name]').val(),
+        street: orderForm.find('[name=street]').val(),
+        phone: orderForm.find('[name=phone]').val()
+    };
+
+    shoppingCart.dispatch({ type: 'ADDRESS_CHANGE', address });
+});
 
 $(document).on('click', 'button[data-remove-order-item]', function(e) {
     var timestamp = $(this).data('removeOrderItem');
@@ -133,9 +168,24 @@ $(document).on('click', 'button[data-add-to-cart]', (e) => {
 
     var categoryId = item.data('dishCategoryId');
     var id = item.data('dishId');
-    var variant = item.find('[name=variant]').val() || item.find('[data-variant]').text();
+    var variant = item.find('[name=variant]').val() || item.find('[data-variant]').text() || '';
 
     shoppingCart.dispatch({ type: 'ADD', dish: { id, variant, categoryId }, timestamp: +new Date() });
+
+    // const template = require('./templates/pizza-options.html');
+    // const html = template();
+    // const modal = nanoModal(html, {
+    //     overlayClose: false,
+    //     buttons: [{
+    //         text: 'Hozzáadás a rendeléshez',
+    //         handler: m => m.hide(),
+    //         primary: true
+    //     }, {
+    //         text: 'Mégsem',
+    //         handler: 'hide'
+    //     }]
+    // });
+    // modal.show();
 
     // $('#modal').scroll(e => {
     //     console.log(e);
@@ -165,3 +215,59 @@ $(document).on('click', 'button[data-add-to-cart]', (e) => {
 // console.log(orderItemTemplate({ id: 'jfsjkfsdf', qwe: 'jshdfjkhsdfkjhs' }));
 
 window.sc = shoppingCart;
+
+document.registerElement('google-map', {
+    extends: 'a',
+    prototype: Object.create(HTMLElement.prototype, {
+        attachedCallback: {
+            value: function() {
+                var el = this;
+                setTimeout(() => {
+                    // 47.785625, 19.932675
+                    const width = el.clientWidth | 0;
+
+                    if (width === 0) { return; }
+
+                    const height = width * 0.75 | 0;
+                    const scale = (window.devicePixelRatio > 1) ? 2 : 1;
+                    const staticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?zoom=15&size=${width}x${height}&scale=${scale}&maptype=roadmap&markers=color:blue%7Clabel:M%7C3200+Gyöngyös,+Orczy+út+1.&format=png`;
+                    const img = document.createElement('img');
+                    img.alt = el.getAttribute('title');
+                    img.src = staticMapUrl;
+                    el.insertBefore(img, el.firstChild);
+                });
+            }
+        }
+    })
+});
+
+const dayOfWeek = new Date().getDay();
+$(`#opening-hours dd:nth-of-type(${dayOfWeek}), #opening-hours dt:nth-of-type(${dayOfWeek})`).css({ fontWeight: 700 });
+
+
+var currentOrder = {
+    timestamp: 1234,
+    dishId: 'asdf',
+    variant: '30cm',
+    pizzaExtras: ['errt', 'dfgfdg', 'dfgfdg'],
+    hamburgerExtras: ['errt', 'dfgfdg', 'dfgfdg']
+};
+
+//
+// const openModal = () => {
+//     const tpl = require('./templates/pizza-options.html');
+//     const html = tpl({ id: 'pizza-modal' });
+//
+//     const currentScroll = window.scrollY;
+//
+//     $(document.body).append(html);
+//
+//     $(document).on('click', '[data-close]', () => {
+//         $('#pizza-modal').remove();
+//         window.scrollY = currentScroll;
+//     });
+// };
+//
+// openModal();
+
+// require('vue')

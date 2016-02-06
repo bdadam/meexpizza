@@ -1,17 +1,17 @@
 module.exports = {
     "dishes": [
         {
-            "categoryId": "klasszikus-pizzak",
+            "categoryId": "pizzakenyerek",
             "name": "Pizzakenyér",
-            "id": "klasszikus-pizzak-pizzakenyer",
+            "id": "pizzakenyerek-pizzakenyer",
             "variants": {
                 "30cm": 500
             }
         },
         {
-            "categoryId": "klasszikus-pizzak",
+            "categoryId": "pizzakenyerek",
             "name": "Sajtos-fokhagymás pizzakenyér",
-            "id": "klasszikus-pizzak-sajtos-fokhagymas-pizzakenyer",
+            "id": "pizzakenyerek-sajtos-fokhagymas-pizzakenyer",
             "variants": {
                 "30cm": 600
             }
@@ -203,7 +203,7 @@ module.exports = {
             "name": "Akay - török pizza",
             "id": "meex-specialitas-akay-torok-pizza",
             "variants": {
-                "darab": 490
+                "": 490
             }
         },
         {
@@ -211,7 +211,7 @@ module.exports = {
             "name": "Banu - török pizza",
             "id": "meex-specialitas-banu-torok-pizza",
             "variants": {
-                "darab": 490
+                "": 490
             }
         },
         {
@@ -219,7 +219,7 @@ module.exports = {
             "name": "Cahil - török pizza",
             "id": "meex-specialitas-cahil-torok-pizza",
             "variants": {
-                "darab": 490
+                "": 490
             }
         },
         {
@@ -227,7 +227,7 @@ module.exports = {
             "name": "Carbonara",
             "id": "tesztak-carbonara",
             "variants": {
-                "adagonként": 1090
+                "": 1090
             }
         },
         {
@@ -235,7 +235,7 @@ module.exports = {
             "name": "Milánói",
             "id": "tesztak-milanoi",
             "variants": {
-                "adagonként": 1090
+                "": 1090
             }
         },
         {
@@ -243,7 +243,7 @@ module.exports = {
             "name": "Peperoncino",
             "id": "tesztak-peperoncino",
             "variants": {
-                "adagonként": 1090
+                "": 1090
             }
         },
         {
@@ -251,37 +251,31 @@ module.exports = {
             "name": "Meex",
             "id": "tesztak-meex",
             "variants": {
-                "adagonként": 1190
+                "": 1190
             }
         },
         {
             "categoryId": "rantott-sajtok",
-            "name": "Ízletes cheddar sajtfalatkák steak/hasábbal",
-            "id": "rantott-sajtok-izletes-cheddar-sajtfalatkak-steak-hasabbal",
+            "name": "Ízletes cheddar sajtfalatkák",
+            "id": "rantott-sajtok-izletes-cheddar-sajtfalatkak",
             "variants": {
-                "tartármártással": 1390,
-                "gyüm. szósszal": 1390,
-                "chilis szósszal": 1390
+                "": 1390
             }
         },
         {
             "categoryId": "rantott-sajtok",
-            "name": "Camembert sajt steak/hasáb gyümölcs szósz",
-            "id": "rantott-sajtok-camembert-sajt-steak-hasab-gyumolcs-szosz",
+            "name": "Camembert sajt",
+            "id": "rantott-sajtok-camembert-sajt",
             "variants": {
-                "tartármártással": 1290,
-                "gyümö. szósszal": 1290,
-                "chilis szósszal": 1290
+                "": 1290
             }
         },
         {
             "categoryId": "rantott-sajtok",
-            "name": "Trappista sajt steak/hasáb",
-            "id": "rantott-sajtok-trappista-sajt-steak-hasab",
+            "name": "Trappista sajt",
+            "id": "rantott-sajtok-trappista-sajt",
             "variants": {
-                "tartármártással": 1190,
-                "gyüm. szósszal": 1190,
-                "chilis szósszal": 1190
+                "": 1190
             }
         },
         {
@@ -307,7 +301,7 @@ module.exports = {
             "name": "Meex burger",
             "id": "hamburgerek-meex-burger",
             "variants": {
-                "darab": 750
+                "": 750
             }
         },
         {
@@ -315,7 +309,7 @@ module.exports = {
             "name": "Meex sajtburger",
             "id": "hamburgerek-meex-sajtburger",
             "variants": {
-                "darab": 850
+                "": 850
             }
         },
         {
@@ -323,7 +317,7 @@ module.exports = {
             "name": "Dupla Meex burger",
             "id": "hamburgerek-dupla-meex-burger",
             "variants": {
-                "darab": 1250
+                "": 1250
             }
         },
         {
@@ -331,39 +325,39 @@ module.exports = {
             "name": "Dupla Meex sajtburger",
             "id": "hamburgerek-dupla-meex-sajtburger",
             "variants": {
-                "darab": 1450
+                "": 1450
             }
         },
         {
             "categoryId": "hamburger-menuk",
-            "name": "Meex Burger + Hasáb + Szósz",
-            "id": "hamburger-menuk-meex-burger-hasab-szosz",
+            "name": "Meex Burger Menü",
+            "id": "hamburger-menuk-meex-burger-menu",
             "variants": {
-                "darab": 990
+                "": 990
             }
         },
         {
             "categoryId": "hamburger-menuk",
-            "name": "Meex Sajtburger + Hasáb + Szósz",
-            "id": "hamburger-menuk-meex-sajtburger-hasab-szosz",
+            "name": "Meex Sajtburger Menü",
+            "id": "hamburger-menuk-meex-sajtburger-menu",
             "variants": {
-                "darab": 1090
+                "": 1090
             }
         },
         {
             "categoryId": "hamburger-menuk",
-            "name": "Dupla Meex Burger + Hasáb + Szósz",
-            "id": "hamburger-menuk-dupla-meex-burger-hasab-szosz",
+            "name": "Dupla Meex Burger Menü",
+            "id": "hamburger-menuk-dupla-meex-burger-menu",
             "variants": {
-                "darab": 1490
+                "": 1490
             }
         },
         {
             "categoryId": "hamburger-menuk",
-            "name": "Dupla Meex Sajtburger + Hasáb + Szósz",
-            "id": "hamburger-menuk-dupla-meex-sajtburger-hasab-szosz",
+            "name": "Dupla Meex Sajtburger Menü",
+            "id": "hamburger-menuk-dupla-meex-sajtburger-menu",
             "variants": {
-                "darab": 1490
+                "": 1490
             }
         },
         {
@@ -371,7 +365,7 @@ module.exports = {
             "name": "Purpur",
             "id": "fitnesz-szendvicsek-purpur",
             "variants": {
-                "darab": 590
+                "": 590
             }
         },
         {
@@ -379,7 +373,7 @@ module.exports = {
             "name": "Primőr saláta",
             "id": "salatak-primor-salata",
             "variants": {
-                "adagonként": 650
+                "": 650
             }
         },
         {
@@ -387,7 +381,7 @@ module.exports = {
             "name": "Mozarella saláta",
             "id": "salatak-mozarella-salata",
             "variants": {
-                "adagonként": 800
+                "": 800
             }
         },
         {
@@ -395,7 +389,7 @@ module.exports = {
             "name": "Tonhal saláta",
             "id": "salatak-tonhal-salata",
             "variants": {
-                "adagonként": 1080
+                "": 1080
             }
         },
         {
@@ -403,7 +397,7 @@ module.exports = {
             "name": "Cézár saláta",
             "id": "salatak-cezar-salata",
             "variants": {
-                "adagonként": 1080
+                "": 1080
             }
         },
         {
@@ -411,7 +405,7 @@ module.exports = {
             "name": "Profiterol",
             "id": "edessegek-profiterol",
             "variants": {
-                "adagonként": 600
+                "": 600
             }
         },
         {

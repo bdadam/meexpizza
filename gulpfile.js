@@ -5,6 +5,8 @@ require('./gulptasks/webpack')(gulp); // webpack
 require('./gulptasks/html')(gulp); // html, html:watch
 
 gulp.task('webserver', function() {
+    // const spawn = require('child_process').spawn;
+    // spawn('php', ['-S', 'localhost:3000', '-t', 'dist']);
     var webserver = require('gulp-webserver');
     gulp.src('./dist')
         .pipe(webserver({
@@ -31,10 +33,42 @@ gulp.task('images', () => {
         .pipe(imageResize({
             format: 'jpeg',
             quality: 0.8,
+            width: 100,
+            height: 160
+        }))
+        .pipe(gulp.dest('dist/food-images/100'));
+
+    gulp.src('food-images/**/*')
+        .pipe(imageResize({
+            format: 'jpeg',
+            quality: 0.8,
             width: 160,
             height: 160
         }))
-        .pipe(gulp.dest('dist/food-images/small'));
+        .pipe(gulp.dest('dist/food-images/160'));
+
+});
+
+const spritesmith = require('gulp.spritesmith');
+
+gulp.task('sprite', function () {
+    gulp.src('dist/food-images/100/*.jpeg')
+        .pipe(spritesmith({
+            imgName: 'food-sprite-100.jpeg',
+            cssName: 'food-sprite-100.css',
+            imgPath: 'food-images/sprites/food-sprite-100.jpeg',
+            imgOpts: { quality: 80 }
+        }))
+        .pipe(gulp.dest('dist/food-images/sprites'));
+
+    gulp.src('dist/food-images/160/*.jpeg')
+        .pipe(spritesmith({
+            imgName: 'food-sprite-160.jpeg',
+            cssName: 'food-sprite-160.css',
+            imgPath: 'food-images/sprites/food-sprite-160.jpeg',
+            imgOpts: { quality: 80 }
+        }))
+        .pipe(gulp.dest('dist/food-images/sprites'));
 });
 
 gulp.task('build', ['webpack', 'sass', 'html']);

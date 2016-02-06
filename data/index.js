@@ -25,8 +25,7 @@ const dishes = _.flatten(cats.map(cat => {
             name: dishName,
             // text: dish['Leírás'],
             id: getslug(`${cat.name} ${dishName}`),
-            variants: dish['Árak'],
-
+            variants: dish['Árak']
         };
     });
 }));
@@ -72,5 +71,6 @@ const convert = () => {
 
 module.exports = convert();
 
-// console.log(require('util').inspect(convert().menu, { depth: null }));
-// console.log(require('util').inspect(convert().pizzaExtras, { depth: null }));
+const deliveryFeesContent = fs.readFileSync(path.resolve(__dirname, './delivery-fees.yml'), 'utf8');
+const deliveryFees = yaml.safeLoad(deliveryFeesContent);
+fs.writeFileSync(path.resolve(__dirname, './delivery-fees.generated.js'), `module.exports = ${JSON.stringify(deliveryFees, null, '    ')};`);

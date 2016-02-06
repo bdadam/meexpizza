@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="main.css">
     <link rel="canonical" href="http://www.meexpizza.hu/">
     
+    <!--[if lte IE 9]><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script><![endif]-->
+    <script src="main.js" async></script>
 </head>
 <body>
     <div style="display: none;">
@@ -48,14 +50,15 @@
 <main class="container">
     <div id="menucard">
         
-        <a id="klasszikus-pizzak" class="section-anchor"></a>
-        <section id="section-klasszikus-pizzak" class="menu-category">
-            <h2>Klasszikus pizzák</h2>
+        <a id="pizzakenyerek" class="section-anchor"></a>
+        <section id="section-pizzakenyerek" class="menu-category">
+            <h2>Pizzakenyerek</h2>
             <ul>
             
-                <li class="item" data-dish-id="klasszikus-pizzak-pizzakenyer" data-dish-category-id="klasszikus-pizzak">
+                <li class="item" data-dish-id="pizzakenyerek-pizzakenyer" data-dish-category-id="pizzakenyerek">
                     <div class="img">
-                        <img data-src="food-images/small/pizzakenyer.jpeg" class="lazyload">
+                        
+                        <div class="icon-pizzakenyer"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -65,15 +68,18 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>500 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>500 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
                 </li>
             
-                <li class="item" data-dish-id="klasszikus-pizzak-sajtos-fokhagymas-pizzakenyer" data-dish-category-id="klasszikus-pizzak">
+                <li class="item" data-dish-id="pizzakenyerek-sajtos-fokhagymas-pizzakenyer" data-dish-category-id="pizzakenyerek">
                     <div class="img">
-                        <img data-src="food-images/small/pizzakenyer.jpeg" class="lazyload">
+                        
+                        <div class="icon-pizzakenyer"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -83,15 +89,26 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>600 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>600 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
                 </li>
             
+            </ul>
+        </section>
+        
+        <a id="klasszikus-pizzak" class="section-anchor"></a>
+        <section id="section-klasszikus-pizzak" class="menu-category">
+            <h2>Klasszikus pizzák</h2>
+            <ul>
+            
                 <li class="item" data-dish-id="klasszikus-pizzak-margarita-pizza" data-dish-category-id="klasszikus-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/margarita-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-margarita-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -116,7 +133,8 @@
             
                 <li class="item" data-dish-id="klasszikus-pizzak-sonkas-pizza" data-dish-category-id="klasszikus-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/sonkas-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-sonkas-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -141,7 +159,8 @@
             
                 <li class="item" data-dish-id="klasszikus-pizzak-szalamis-pizza" data-dish-category-id="klasszikus-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/szalamis-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-szalamis-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -166,7 +185,8 @@
             
                 <li class="item" data-dish-id="klasszikus-pizzak-sonka-ku-pizza" data-dish-category-id="klasszikus-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/sonka-ku-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-sonka-ku-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -191,7 +211,8 @@
             
                 <li class="item" data-dish-id="klasszikus-pizzak-bacon-pizza" data-dish-category-id="klasszikus-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/bacon-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-bacon-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -216,7 +237,8 @@
             
                 <li class="item" data-dish-id="klasszikus-pizzak-4-sajtos-pizza" data-dish-category-id="klasszikus-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/4-sajtos-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-4-sajtos-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -241,7 +263,8 @@
             
                 <li class="item" data-dish-id="klasszikus-pizzak-hawaii-pizza" data-dish-category-id="klasszikus-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/hawaii-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-hawaii-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -274,7 +297,8 @@
             
                 <li class="item" data-dish-id="extra-pizzak-zoldseges-pizza" data-dish-category-id="extra-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/zoldseges-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-zoldseges-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -284,7 +308,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>1190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>1190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -292,7 +318,8 @@
             
                 <li class="item" data-dish-id="extra-pizzak-tonhalas-pizza" data-dish-category-id="extra-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/tonhalas-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-tonhalas-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -302,7 +329,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>1190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>1190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -310,7 +339,8 @@
             
                 <li class="item" data-dish-id="extra-pizzak-piedone-pizza" data-dish-category-id="extra-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/piedone-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-piedone-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -320,7 +350,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>1190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>1190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -328,7 +360,8 @@
             
                 <li class="item" data-dish-id="extra-pizzak-joasszony-pizza" data-dish-category-id="extra-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/joasszony-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-joasszony-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -338,7 +371,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>1190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>1190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -346,7 +381,8 @@
             
                 <li class="item" data-dish-id="extra-pizzak-3-kivansag-pizza" data-dish-category-id="extra-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/3-kivansag-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-3-kivansag-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -356,7 +392,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>1190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>1190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -372,7 +410,8 @@
             
                 <li class="item" data-dish-id="full-a-fullban-pizzak-victorio-pizza" data-dish-category-id="full-a-fullban-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/victorio-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-victorio-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -382,7 +421,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -390,7 +431,8 @@
             
                 <li class="item" data-dish-id="full-a-fullban-pizzak-hus-zabalo-pizza" data-dish-category-id="full-a-fullban-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/hus-zabalo-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-hus-zabalo-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -400,7 +442,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -408,7 +452,8 @@
             
                 <li class="item" data-dish-id="full-a-fullban-pizzak-master-pizza" data-dish-category-id="full-a-fullban-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/master-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-master-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -418,7 +463,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -426,7 +473,8 @@
             
                 <li class="item" data-dish-id="full-a-fullban-pizzak-barbeque-pizza" data-dish-category-id="full-a-fullban-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/barbeque-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-barbeque-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -436,7 +484,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -444,7 +494,8 @@
             
                 <li class="item" data-dish-id="full-a-fullban-pizzak-jalapeno-barbeque-pizza" data-dish-category-id="full-a-fullban-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/jalapeno-barbeque-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-jalapeno-barbeque-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -454,7 +505,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -462,7 +515,8 @@
             
                 <li class="item" data-dish-id="full-a-fullban-pizzak-tenger-kincsei-pizza" data-dish-category-id="full-a-fullban-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/tenger-kincsei-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-tenger-kincsei-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -472,7 +526,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -480,7 +536,8 @@
             
                 <li class="item" data-dish-id="full-a-fullban-pizzak-dani-pizza" data-dish-category-id="full-a-fullban-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/dani-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-dani-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -490,7 +547,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -498,7 +557,8 @@
             
                 <li class="item" data-dish-id="full-a-fullban-pizzak-meex-toltott-pizza" data-dish-category-id="full-a-fullban-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/meex-toltott-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-meex-toltott-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -508,7 +568,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -516,7 +578,8 @@
             
                 <li class="item" data-dish-id="full-a-fullban-pizzak-bossy-pizza" data-dish-category-id="full-a-fullban-pizzak">
                     <div class="img">
-                        <img data-src="food-images/small/bossy-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-bossy-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -526,7 +589,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>30cm</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -542,7 +607,8 @@
             
                 <li class="item" data-dish-id="meex-specialitas-akay-torok-pizza" data-dish-category-id="meex-specialitas">
                     <div class="img">
-                        <img data-src="food-images/small/akay-torok-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-akay-torok-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -552,7 +618,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>darab</span> - <b>490 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>490 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -560,7 +628,8 @@
             
                 <li class="item" data-dish-id="meex-specialitas-banu-torok-pizza" data-dish-category-id="meex-specialitas">
                     <div class="img">
-                        <img data-src="food-images/small/banu-torok-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-banu-torok-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -570,7 +639,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>darab</span> - <b>490 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>490 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -578,7 +649,8 @@
             
                 <li class="item" data-dish-id="meex-specialitas-cahil-torok-pizza" data-dish-category-id="meex-specialitas">
                     <div class="img">
-                        <img data-src="food-images/small/cahil-torok-pizza.jpeg" class="lazyload">
+                        
+                        <div class="icon-cahil-torok-pizza"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -588,7 +660,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>darab</span> - <b>490 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>490 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -604,7 +678,8 @@
             
                 <li class="item" data-dish-id="tesztak-carbonara" data-dish-category-id="tesztak">
                     <div class="img">
-                        <img data-src="food-images/small/carbonara.jpeg" class="lazyload">
+                        
+                        <div class="icon-carbonara"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -614,7 +689,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>adagonként</span> - <b>1090 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>1090 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -622,7 +699,8 @@
             
                 <li class="item" data-dish-id="tesztak-milanoi" data-dish-category-id="tesztak">
                     <div class="img">
-                        <img data-src="food-images/small/milanoi.jpeg" class="lazyload">
+                        
+                        <div class="icon-milanoi"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -632,7 +710,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>adagonként</span> - <b>1090 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>1090 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -640,7 +720,8 @@
             
                 <li class="item" data-dish-id="tesztak-peperoncino" data-dish-category-id="tesztak">
                     <div class="img">
-                        <img data-src="food-images/small/peperoncino.jpeg" class="lazyload">
+                        
+                        <div class="icon-peperoncino"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -650,7 +731,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>adagonként</span> - <b>1090 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>1090 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -658,7 +741,8 @@
             
                 <li class="item" data-dish-id="tesztak-meex" data-dish-category-id="tesztak">
                     <div class="img">
-                        <img data-src="food-images/small/meex.jpeg" class="lazyload">
+                        
+                        <div class="icon-meex"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -668,7 +752,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>adagonként</span> - <b>1190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>1190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -682,77 +768,65 @@
             <h2>Rántott sajtok</h2>
             <ul>
             
-                <li class="item" data-dish-id="rantott-sajtok-izletes-cheddar-sajtfalatkak-steak-hasabbal" data-dish-category-id="rantott-sajtok">
+                <li class="item" data-dish-id="rantott-sajtok-izletes-cheddar-sajtfalatkak" data-dish-category-id="rantott-sajtok">
                     <div class="img">
-                        <img data-src="food-images/small/rantottsajt-cheddar.jpeg" class="lazyload">
+                        
+                        <div class="icon-rantottsajt-cheddar"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
-                        <h3>Ízletes cheddar sajtfalatkák steak/hasábbal</h3>
+                        <h3>Ízletes cheddar sajtfalatkák</h3>
                         <p>választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz</p>
                     </div>
                     <div class="prices">
                         
-                            <select name="variant">
+                            
                                 
-                                    <option value="tartármártással">tartármártással - 1390 Ft</option>
+                                    <div><b>1390 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
                                 
-                                    <option value="gyüm. szósszal">gyüm. szósszal - 1390 Ft</option>
-                                
-                                    <option value="chilis szósszal">chilis szósszal - 1390 Ft</option>
-                                
-                            </select>
-                            <button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                            
                         
                     </div>
                 </li>
             
-                <li class="item" data-dish-id="rantott-sajtok-camembert-sajt-steak-hasab-gyumolcs-szosz" data-dish-category-id="rantott-sajtok">
+                <li class="item" data-dish-id="rantott-sajtok-camembert-sajt" data-dish-category-id="rantott-sajtok">
                     <div class="img">
-                        <img data-src="food-images/small/rantottsajt-camambert.jpeg" class="lazyload">
+                        
+                        <div class="icon-rantottsajt-camambert"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
-                        <h3>Camembert sajt steak/hasáb gyümölcs szósz</h3>
+                        <h3>Camembert sajt</h3>
                         <p>választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz</p>
                     </div>
                     <div class="prices">
                         
-                            <select name="variant">
+                            
                                 
-                                    <option value="tartármártással">tartármártással - 1290 Ft</option>
+                                    <div><b>1290 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
                                 
-                                    <option value="gyümö. szósszal">gyümö. szósszal - 1290 Ft</option>
-                                
-                                    <option value="chilis szósszal">chilis szósszal - 1290 Ft</option>
-                                
-                            </select>
-                            <button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                            
                         
                     </div>
                 </li>
             
-                <li class="item" data-dish-id="rantott-sajtok-trappista-sajt-steak-hasab" data-dish-category-id="rantott-sajtok">
+                <li class="item" data-dish-id="rantott-sajtok-trappista-sajt" data-dish-category-id="rantott-sajtok">
                     <div class="img">
-                        <img data-src="food-images/small/rantottsajt-trappista.jpeg" class="lazyload">
+                        
+                        <div class="icon-rantottsajt-trappista"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
-                        <h3>Trappista sajt steak/hasáb</h3>
+                        <h3>Trappista sajt</h3>
                         <p>választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz</p>
                     </div>
                     <div class="prices">
                         
-                            <select name="variant">
+                            
                                 
-                                    <option value="tartármártással">tartármártással - 1190 Ft</option>
+                                    <div><b>1190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
                                 
-                                    <option value="gyüm. szósszal">gyüm. szósszal - 1190 Ft</option>
-                                
-                                    <option value="chilis szósszal">chilis szósszal - 1190 Ft</option>
-                                
-                            </select>
-                            <button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                            
                         
                     </div>
                 </li>
@@ -767,7 +841,8 @@
             
                 <li class="item" data-dish-id="frissensultek-buffalo-csirkeszarnyak" data-dish-category-id="frissensultek">
                     <div class="img">
-                        <img data-src="food-images/small/buffalo-csirkeszarnyak.jpeg" class="lazyload">
+                        
+                        <div class="icon-buffalo-csirkeszarnyak"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -790,7 +865,8 @@
             
                 <li class="item" data-dish-id="frissensultek-buffalo-csirkeszarnyak-hasab-steak-szosz" data-dish-category-id="frissensultek">
                     <div class="img">
-                        <img data-src="food-images/small/buffalo-csirkeszarnyak.jpeg" class="lazyload">
+                        
+                        <div class="icon-buffalo-csirkeszarnyak"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -821,7 +897,8 @@
             
                 <li class="item" data-dish-id="hamburgerek-meex-burger" data-dish-category-id="hamburgerek">
                     <div class="img">
-                        <img data-src="food-images/small/meex-burger.jpeg" class="lazyload">
+                        
+                        <div class="icon-meex-burger"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -831,7 +908,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>darab</span> - <b>750 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>750 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -839,7 +918,8 @@
             
                 <li class="item" data-dish-id="hamburgerek-meex-sajtburger" data-dish-category-id="hamburgerek">
                     <div class="img">
-                        <img data-src="food-images/small/meex-burger.jpeg" class="lazyload">
+                        
+                        <div class="icon-meex-burger"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -849,7 +929,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>darab</span> - <b>850 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>850 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -857,7 +939,8 @@
             
                 <li class="item" data-dish-id="hamburgerek-dupla-meex-burger" data-dish-category-id="hamburgerek">
                     <div class="img">
-                        <img data-src="food-images/small/meex-burger.jpeg" class="lazyload">
+                        
+                        <div class="icon-meex-burger"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -867,7 +950,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>darab</span> - <b>1250 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>1250 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -875,7 +960,8 @@
             
                 <li class="item" data-dish-id="hamburgerek-dupla-meex-sajtburger" data-dish-category-id="hamburgerek">
                     <div class="img">
-                        <img data-src="food-images/small/meex-burger.jpeg" class="lazyload">
+                        
+                        <div class="icon-meex-burger"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -885,7 +971,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>darab</span> - <b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>1450 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -899,73 +987,85 @@
             <h2>Hamburger menük</h2>
             <ul>
             
-                <li class="item" data-dish-id="hamburger-menuk-meex-burger-hasab-szosz" data-dish-category-id="hamburger-menuk">
+                <li class="item" data-dish-id="hamburger-menuk-meex-burger-menu" data-dish-category-id="hamburger-menuk">
                     <div class="img">
-                        <img data-src="food-images/small/meex-burger.jpeg" class="lazyload">
+                        
+                        <div class="icon-meex-burger-menu"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
-                        <h3>Meex Burger + Hasáb + Szósz</h3>
+                        <h3>Meex Burger Menü</h3>
                         <p>friss jégsaláta, paradicsom karika, uborka, házi húspogácsa + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz</p>
                     </div>
                     <div class="prices">
                         
                             
-                                <div><span data-variant>darab</span> - <b>990 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>990 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
                 </li>
             
-                <li class="item" data-dish-id="hamburger-menuk-meex-sajtburger-hasab-szosz" data-dish-category-id="hamburger-menuk">
+                <li class="item" data-dish-id="hamburger-menuk-meex-sajtburger-menu" data-dish-category-id="hamburger-menuk">
                     <div class="img">
-                        <img data-src="food-images/small/meex-burger.jpeg" class="lazyload">
+                        
+                        <div class="icon-meex-burger-menu"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
-                        <h3>Meex Sajtburger + Hasáb + Szósz</h3>
+                        <h3>Meex Sajtburger Menü</h3>
                         <p>friss jégsaláta, paradicsom karika, uborka, házi húspogácsa, olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz</p>
                     </div>
                     <div class="prices">
                         
                             
-                                <div><span data-variant>darab</span> - <b>1090 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>1090 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
                 </li>
             
-                <li class="item" data-dish-id="hamburger-menuk-dupla-meex-burger-hasab-szosz" data-dish-category-id="hamburger-menuk">
+                <li class="item" data-dish-id="hamburger-menuk-dupla-meex-burger-menu" data-dish-category-id="hamburger-menuk">
                     <div class="img">
-                        <img data-src="food-images/small/meex-burger.jpeg" class="lazyload">
+                        
+                        <div class="icon-meex-burger-menu"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
-                        <h3>Dupla Meex Burger + Hasáb + Szósz</h3>
+                        <h3>Dupla Meex Burger Menü</h3>
                         <p>friss jégsaláta, paradicsom karika, uborka, házi dupla húspogácsa, + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz</p>
                     </div>
                     <div class="prices">
                         
                             
-                                <div><span data-variant>darab</span> - <b>1490 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>1490 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
                 </li>
             
-                <li class="item" data-dish-id="hamburger-menuk-dupla-meex-sajtburger-hasab-szosz" data-dish-category-id="hamburger-menuk">
+                <li class="item" data-dish-id="hamburger-menuk-dupla-meex-sajtburger-menu" data-dish-category-id="hamburger-menuk">
                     <div class="img">
-                        <img data-src="food-images/small/meex-burger.jpeg" class="lazyload">
+                        
+                        <div class="icon-meex-burger-menu"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
-                        <h3>Dupla Meex Sajtburger + Hasáb + Szósz</h3>
+                        <h3>Dupla Meex Sajtburger Menü</h3>
                         <p>friss jégsaláta, paradicsom karika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz</p>
                     </div>
                     <div class="prices">
                         
                             
-                                <div><span data-variant>darab</span> - <b>1490 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>1490 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -981,7 +1081,8 @@
             
                 <li class="item" data-dish-id="fitnesz-szendvicsek-purpur" data-dish-category-id="fitnesz-szendvicsek">
                     <div class="img">
-                        <img data-src="food-images/small/purpur.jpeg" class="lazyload">
+                        
+                        <div class="icon-purpur"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -991,7 +1092,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>darab</span> - <b>590 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>590 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -1007,7 +1110,8 @@
             
                 <li class="item" data-dish-id="salatak-primor-salata" data-dish-category-id="salatak">
                     <div class="img">
-                        <img data-src="food-images/small/primor-salata.jpeg" class="lazyload">
+                        
+                        <div class="icon-primor-salata"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -1017,7 +1121,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>adagonként</span> - <b>650 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>650 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -1025,7 +1131,8 @@
             
                 <li class="item" data-dish-id="salatak-mozarella-salata" data-dish-category-id="salatak">
                     <div class="img">
-                        <img data-src="food-images/small/mozarella-salata.jpeg" class="lazyload">
+                        
+                        <div class="icon-mozarella-salata"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -1035,7 +1142,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>adagonként</span> - <b>800 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>800 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -1043,7 +1152,8 @@
             
                 <li class="item" data-dish-id="salatak-tonhal-salata" data-dish-category-id="salatak">
                     <div class="img">
-                        <img data-src="food-images/small/tonhal-salata.jpeg" class="lazyload">
+                        
+                        <div class="icon-tonhal-salata"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -1053,7 +1163,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>adagonként</span> - <b>1080 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>1080 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -1061,7 +1173,8 @@
             
                 <li class="item" data-dish-id="salatak-cezar-salata" data-dish-category-id="salatak">
                     <div class="img">
-                        <img data-src="food-images/small/cezar-salata.jpeg" class="lazyload">
+                        
+                        <div class="icon-cezar-salata"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -1071,7 +1184,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>adagonként</span> - <b>1080 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>1080 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -1087,7 +1202,8 @@
             
                 <li class="item" data-dish-id="edessegek-profiterol" data-dish-category-id="edessegek">
                     <div class="img">
-                        <img data-src="food-images/small/profiterol.jpeg" class="lazyload">
+                        
+                        <div class="icon-profiterol"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -1097,7 +1213,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>adagonként</span> - <b>600 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><b>600 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -1113,7 +1231,8 @@
             
                 <li class="item" data-dish-id="uditok-pepsi" data-dish-category-id="uditok">
                     <div class="img">
-                        <img data-src="food-images/small/pepsi.jpeg" class="lazyload">
+                        
+                        <div class="icon-pepsi"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -1138,7 +1257,8 @@
             
                 <li class="item" data-dish-id="uditok-pepsi-max" data-dish-category-id="uditok">
                     <div class="img">
-                        <img data-src="food-images/small/pepsi-max.jpeg" class="lazyload">
+                        
+                        <div class="icon-pepsi-max"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -1163,7 +1283,8 @@
             
                 <li class="item" data-dish-id="uditok-mirinda" data-dish-category-id="uditok">
                     <div class="img">
-                        <img data-src="food-images/small/mirinda.jpeg" class="lazyload">
+                        
+                        <div class="icon-mirinda"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -1188,7 +1309,8 @@
             
                 <li class="item" data-dish-id="uditok-canada-dry" data-dish-category-id="uditok">
                     <div class="img">
-                        <img data-src="food-images/small/canada-dry.jpeg" class="lazyload">
+                        
+                        <div class="icon-canada-dry"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -1213,7 +1335,8 @@
             
                 <li class="item" data-dish-id="uditok-lipton-ice-tea" data-dish-category-id="uditok">
                     <div class="img">
-                        <img data-src="food-images/small/lipton-ice-tea.jpeg" class="lazyload">
+                        
+                        <div class="icon-lipton-ice-tea"></div>
                     </div>
                     <div class="text">
                         <div class="in-cart-count"></div>
@@ -1223,7 +1346,9 @@
                     <div class="prices">
                         
                             
-                                <div><span data-variant>0,33 literes</span> - <b>190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
+                                    <div><span data-variant>0,33 literes</span> - <b>190 Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
+                                
                             
                         
                     </div>
@@ -1275,6 +1400,27 @@
             </div>
         </div>
 
+        <div id="contact-box" class="side-content">
+            <h2>Kapcsolat</h2>
+            <p class="phone">+36 30 2111 212</p>
+            <p class="address-1">Meex Pizza & Food</p>
+            <p class="address-2">3200 Gyöngyös, Orczy út 1.</p>
+            <a class="map" href="https://maps.google.com/?q=47.785625,19.932675" rel="external" target="_blank" is="google-map" title="Meexpizza a térképen"><p>Kattints a nagyobb térképhez!</p></a>
+        </div>
+
+        <div id="opening-hours" class="side-content">
+            <h2>Nyitvatartás</h2>
+            <dl class="opening-hours">
+                <dd>Hétfő</dd><dt>11:00 - 22:00</dt>
+                <dd>Kedd</dd><dt>11:00 - 22:00</dt>
+                <dd>Szerda</dd><dt>11:00 - 22:00</dt>
+                <dd>Csütörtök</dd><dt>11:00 - 22:00</dt>
+                <dd>Péntek</dd><dt>11:00 - 23:00</dt>
+                <dd>Szombat</dd><dt>11:00 - 23:00</dt>
+                <dd>Vasárnap</dd><dt>11:00 - 21:00</dt>
+            </dl>
+        </div>
+
         <div class="side-content">
             <h2>Kövess minket</h2>
             <div class="cart-content">
@@ -1286,6 +1432,9 @@
 <div class="sticky-button-container">
     <button>Megrendelés</button>
 </div>
+
+
+
 
 <footer id="site-footer">
     <div class="container">
@@ -1321,9 +1470,6 @@
         </div>
     </div>
 </footer>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js" defer></script>
-<script src="main.js" defer></script>
 
 <div id="modal">
     <p class="modal-title">Válassz!</p>

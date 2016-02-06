@@ -1,6 +1,6 @@
 # version: 2016-01-31
 
-Klasszikus pizzák:
+Pizzakenyerek:
     Választék:
         Pizzakenyér:
             Leírás: TODO
@@ -11,6 +11,9 @@ Klasszikus pizzák:
             Leírás: sajt, fokhagyma, fűszerkeverék
             Árak:
                 30cm: 600
+
+Klasszikus pizzák:
+    Választék:
         Margarita pizza:
             Leírás: fűszeres paradicsomszósz, sajt
             Árak:
@@ -122,58 +125,76 @@ Meex specialitás:
         Akay - török pizza:
             Leírás: fűszeres paradicsomos alap, sajt, sonka
             Árak:
-                darab: 490
+                '': 490
         Banu - török pizza:
             Leírás: tejfölös alap, sajt, tarja, pirított fokhagyma
             Árak:
-                darab: 490
+                '': 490
         Cahil - török pizza:
             Leírás: bbq alap, sajt, ropogós bacon
             Árak:
-                darab: 490
+                '': 490
 
 Tészták:
     Választék:
         Carbonara:
             Leírás: bacon, sonka, tojás, tejszín, parmezán sajt, spagetti
             Árak:
-                adagonként: 1090
+                '': 1090
         Milánói:
             Leírás: paradicsomszósz, sonka, gomba, trappista sajt, spagetti
             Árak:
-                adagonként: 1090
+                '': 1090
         Peperoncino:
             Leírás: pirított fokhagymás olívaolaj, chili, petrezselyem, csípős, spagetti
             Árak:
-                adagonként: 1090
+                '': 1090
         Meex:
             Leírás: csirke, gomba, fokhagyma, fűszeres tejszínes szósz, parmezán, spagetti
             Árak:
-                adagonként: 1190
+                '': 1190
 
 Rántott sajtok:
     Választék:
-        Ízletes cheddar sajtfalatkák steak/hasábbal:
+        Ízletes cheddar sajtfalatkák:
             image: rantottsajt-cheddar
             Leírás: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
+            Opciók:
+                Köretek:
+                    - hasábburgonya
+                    - steakburgonya
+                Szószok:
+                    - házi tartármártás
+                    - gyümölcsszósz
+                    - chilis szósz
             Árak:
-                tartármártással: 1390
-                gyüm. szósszal: 1390
-                chilis szósszal: 1390
-        Camembert sajt steak/hasáb gyümölcs szósz:
+                '': 1390
+        Camembert sajt:
             image: rantottsajt-camambert
             Leírás: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
+            Opciók:
+                Köretek:
+                    - hasábburgonya
+                    - steakburgonya
+                Szószok:
+                    - házi tartármártás
+                    - gyümölcsszósz
+                    - chilis szósz
             Árak:
-                tartármártással: 1290
-                gyümö. szósszal: 1290
-                chilis szósszal: 1290
-        Trappista sajt steak/hasáb:
+                '': 1290
+        Trappista sajt:
             image: rantottsajt-trappista
             Leírás: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
+            Opciók:
+                Köretek:
+                    - hasábburgonya
+                    - steakburgonya
+                Szószok:
+                    - házi tartármártás
+                    - gyümölcsszósz
+                    - chilis szósz
             Árak:
-                tartármártással: 1190
-                gyüm. szósszal: 1190
-                chilis szósszal: 1190
+                '': 1190
 
 Frissensültek:
     Választék:
@@ -196,78 +217,110 @@ Hamburgerek:
             image: meex-burger
             Leírás: friss jégsaláta, paradicsom karika, uborka, házi húspogácsa
             Árak:
-                darab: 750
+                '': 750
         Meex sajtburger:
             image: meex-burger
             Leírás: friss jégsaláta, paradicsom karika, uborka, házi húspogácsa, olvasztott sajt
             Árak:
-                darab: 850
+                '': 850
         Dupla Meex burger:
             image: meex-burger
             Leírás: friss jégsaláta, paradicsom karika, uborka, házi dupla húspogácsa
             Árak:
-                darab: 1250
+                '': 1250
         Dupla Meex sajtburger:
             image: meex-burger
             Leírás: friss jégsaláta, paradicsom karika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt
             Árak:
-                darab: 1450
+                '': 1450
 
 Hamburger menük:
     Választék:
-        Meex Burger + Hasáb + Szósz:
-            image: meex-burger
+        Meex Burger Menü:
+            image: meex-burger-menu
             Leírás: "friss jégsaláta, paradicsom karika, uborka, házi húspogácsa + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz"
+            Opciók:
+                Köretek:
+                    - hasábburgonya
+                    - steakburgonya
+                Szószok:
+                    - házi tartármártás
+                    - gyümölcsszósz
+                    - chilis szósz
             Árak:
-                darab: 990
-        Meex Sajtburger + Hasáb + Szósz:
-            image: meex-burger
+                '': 990
+        Meex Sajtburger Menü:
+            image: meex-burger-menu
             Leírás: "friss jégsaláta, paradicsom karika, uborka, házi húspogácsa, olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz"
+            Opciók:
+                Köretek:
+                    - hasábburgonya
+                    - steakburgonya
+                Szószok:
+                    - házi tartármártás
+                    - gyümölcsszósz
+                    - chilis szósz
             Árak:
-                darab: 1090
-        Dupla Meex Burger + Hasáb + Szósz:
-            image: meex-burger
+                '': 1090
+        Dupla Meex Burger Menü:
+            image: meex-burger-menu
             Leírás: "friss jégsaláta, paradicsom karika, uborka, házi dupla húspogácsa, + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz"
+            Opciók:
+                Köretek:
+                    - hasábburgonya
+                    - steakburgonya
+                Szószok:
+                    - házi tartármártás
+                    - gyümölcsszósz
+                    - chilis szósz
             Árak:
-                darab: 1490
-        Dupla Meex Sajtburger + Hasáb + Szósz:
-            image: meex-burger
+                '': 1490
+        Dupla Meex Sajtburger Menü:
+            image: meex-burger-menu
             Leírás: "friss jégsaláta, paradicsom karika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz"
+            Opciók:
+                Köretek:
+                    - hasábburgonya
+                    - steakburgonya
+                Szószok:
+                    - házi tartármártás
+                    - gyümölcsszósz
+                    - chilis szósz
             Árak:
-                darab: 1490
+                '': 1490
 
 Fitnesz szendvicsek:
     Választék:
         Purpur:
             Leírás: szénhidrátcsökkentett magvas baguette, friss jégsaláta, paradicsom, uborka, fűszeres grillezett csirkemell (16dkg)
             Árak:
-                darab: 590
+                '': 590
 
 Saláták:
     Választék:
         Primőr saláta:
             Leírás: friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola nyakon öntve vinegrettével, pizzakenyér szeletekkel tálalva
             Árak:
-                adagonként: 650
+                '': 650
         Mozarella saláta:
             Leírás: mozarella golyók, paradicsom karikák, olívaolajos bazsalikommal és oregánóval, pizzakenyér szeletekkel tálalva
             Árak:
-                adagonként: 800
+                '': 800
         Tonhal saláta:
             Leírás: friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, tonhaltörzs, sajtkocka, pizzakenyér szeletekkel tálalva
             Árak:
-                adagonként: 1080
+                '': 1080
         Cézár saláta:
             Leírás: friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, grillezett fűszeres csirkemell, parmezán, pizzakenyér szeletekkel tálalva
             Árak:
-                adagonként: 1080
+                '': 1080
 
 Édességek:
     Választék:
         Profiterol:
             Leírás: Profiterol golyók fehér- és tejcsokoládé bevonattal, tejszínhab koronával
             Árak:
-                adagonként: 600
+                '': 600
 
 Üdítők:
     Választék:
@@ -310,7 +363,7 @@ Pizzafeltétek:
         Halféleségek:
             Ár: 300
             Választék:
-                - tengergyümölcse
+                - tengergyümölcsei
                 - tonhal
         Prémium sonkák:
             Ár: 450
