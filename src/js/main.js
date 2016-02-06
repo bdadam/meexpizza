@@ -271,3 +271,43 @@ var currentOrder = {
 // openModal();
 
 // require('vue')
+
+
+/*
+Events:
+- add-to-cart
+- add-to-cart with extras should be chosen
+- removed from cart
+- duplicate cart item
+- reset cart
+- restore state
+- change address
+- change notes
+- extra added to order item
+- extra removed from order item
+- note added to order item
+- variant changed in order item
+- city changed
+
+Pizza kérdések:
+(- Milyen méret?)
+- Milyen extra feltétek?
+
+3-kívánság pizza:
+- Milyen alap?
+- Milyen 3 ingyenes feltét?
+
+
+Üdítő:
+- Milyen méret?
+
+Hamburger:
+- Menü vagy sem?
+- Milyen burgonya?
+- Milyen szósz?
+
+Rántott sajt:
+- Milyen burgonya?
+- Milyen szósz?
+
+*/
