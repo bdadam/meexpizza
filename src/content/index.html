@@ -10,10 +10,7 @@
             <ul>
             {% for item in cat.items %}
                 <li class="item" data-dish-id="{{ item.id }}" data-dish-category-id="{{ cat.id }}">
-                    <div class="img">
-                        {# <img src="food-images/small/{{ item.imageName }}.jpeg" class="l-azyload"> #}
-                        <div class="icon-{{ item.imageName }}"></div>
-                    </div>
+                    <div class="img icon-{{ item.imageName }}"></div>
                     <div class="text">
                         <div class="in-cart-count"></div>
                         <h3>{{ item.name }}</h3>

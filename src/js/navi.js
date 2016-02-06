@@ -5,7 +5,7 @@ module.exports = {
 
         const navigation = $('#site-navigation');
 
-        var menuToggle = $('.menu-toggle').click(() => {
+        var menuToggle = $('.menu-toggle').on('click', () => {
             menuToggle.toggleClass('active');
             navigation.toggleClass('open');
         });

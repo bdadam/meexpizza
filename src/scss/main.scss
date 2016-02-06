@@ -118,8 +118,6 @@
     }
 
     .img {
-        // @include col(1/5);
-
         width: 100px;
 
         @media screen and (min-width: 1024px) {
@@ -255,6 +253,10 @@
     .items {
         width: 100%;
         border-collapse: collapse;
+    }
+
+    tr {
+        border-bottom: 1px solid #ddd;
     }
 
     td {
