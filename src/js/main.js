@@ -118,7 +118,7 @@ shoppingCart.subscribe(() => {
 
     state.inCart.forEach(item => {
         const x = menucard.dishes.filter(dish => dish.id === item.dish.id)[0];
-        itemsContainer.append(`<tr><td>${x.name} (${item.dish.variant})</td><td><button data-duplicate-order-item="${item.timestamp}"><svg><use xlink:href="#icon-plus"></use></svg></button><button data-remove-order-item="${item.timestamp}"><svg><use xlink:href="#icon-minus"></use></svg></button></div></td><td>${x.variants[item.dish.variant]}&nbsp;Ft</td></tr>`);
+        itemsContainer.append(`<tr><td>${x.name} (${item.dish.variant})<br><a href="" style="font-size:0.875rem;"><svg style="width: 16px;height:16px;"><use xlink:href="#icon-plus"></use></svg> Még</a>&nbsp;&nbsp;<a href=""><svg style="width: 16px;height:16px;"><use xlink:href="#icon-minus"></use></svg> Nem kérem</a> <a href="">Extrák</a></td><td><button data-duplicate-order-item="${item.timestamp}"><svg><use xlink:href="#icon-plus"></use></svg></button><button data-remove-order-item="${item.timestamp}"><svg><use xlink:href="#icon-minus"></use></svg></button></div></td><td>${x.variants[item.dish.variant]}&nbsp;Ft</td></tr>`);
     });
 
     if (!state.isEmpty) {

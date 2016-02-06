@@ -5,8 +5,8 @@
     <div id="menucard">
         {% for cat in menu.menu %}
         <a id="{{ cat.id }}" class="section-anchor"></a>
-        <section id="section-{{ cat.id }}" class="menu-category">
-            <h2>{{ cat.name }}</h2>
+        <section class="card menu-category">
+            <h2 class="card-title">{{ cat.name }}</h2>
             <ul>
             {% for item in cat.items %}
                 <li class="item" data-dish-id="{{ item.id }}" data-dish-category-id="{{ cat.id }}">
@@ -43,8 +43,8 @@
         {% endfor %}
     </div>
     <aside id="side-cart-container">
-        <div id="side-cart">
-            <h2>Kosár</h2>
+        <div id="side-cart" class="card">
+            <h2 class="card-title">Kosár</h2>
             <div class="cart-content">
                 <p class="default-content">
                     A kosár még üres.
@@ -84,16 +84,16 @@
             </div>
         </div>
 
-        <div id="contact-box" class="side-content">
-            <h2>Kapcsolat</h2>
+        <div id="contact-box" class="side-content card">
+            <h2 class="card-title">Kapcsolat</h2>
             <p class="phone">+36 30 2111 212</p>
             <p class="address-1">Meex Pizza & Food</p>
             <p class="address-2">3200 Gyöngyös, Orczy út 1.</p>
             <a class="map" href="https://maps.google.com/?q=47.785625,19.932675" rel="external" target="_blank" is="google-map" title="Meexpizza a térképen"><p>Kattints a nagyobb térképhez!</p></a>
         </div>
 
-        <div id="opening-hours" class="side-content">
-            <h2>Nyitvatartás</h2>
+        <div id="opening-hours" class="side-content card">
+            <h2 class="card-title">Nyitvatartás</h2>
             <dl class="opening-hours">
                 <dd>Hétfő</dd><dt>11:00 - 22:00</dt>
                 <dd>Kedd</dd><dt>11:00 - 22:00</dt>
@@ -105,10 +105,10 @@
             </dl>
         </div>
 
-        <div class="side-content">
-            <h2>Kövess minket</h2>
-            <div class="cart-content">
-                <p>Blah blah</p>
+        <div class="card">
+            <h2 class="card-title">Kövess minket</h2>
+            <div class="card-content">
+                <p>TODO: FB Plugin</p>
             </div>
         </div>
     </aside>
