@@ -283,17 +283,17 @@
             "name": "Buffalo csirkeszárnyak",
             "id": "frissensultek-buffalo-csirkeszarnyak",
             "variants": {
-                "6 darab": 780,
-                "12 darab": 1090
+                "6 darabos": 780,
+                "12 darabos": 1090
             }
         },
         {
             "categoryId": "frissensultek",
-            "name": "Buffalo csirkeszárnyak + Hasáb/Steak + szósz",
-            "id": "frissensultek-buffalo-csirkeszarnyak-hasab-steak-szosz",
+            "name": "Buffalo csirkeszárnyak menü",
+            "id": "frissensultek-buffalo-csirkeszarnyak-menu",
             "variants": {
-                "6 darab": 1190,
-                "12 darab": 1350
+                "6 darabos": 1190,
+                "12 darabos": 1350
             }
         },
         {

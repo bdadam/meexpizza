@@ -202,14 +202,22 @@ Frissensültek:
             image: buffalo-csirkeszarnyak
             Leírás: TODO
             Árak:
-                6 darab: 780
-                12 darab: 1090
-        Buffalo csirkeszárnyak + Hasáb/Steak + szósz:
+                6 darabos: 780
+                12 darabos: 1090
+        Buffalo csirkeszárnyak menü:
             image: buffalo-csirkeszarnyak
-            Leírás: TODO
+            Leírás: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
+            Opciók:
+                Köretek:
+                    - hasábburgonya
+                    - steakburgonya
+                Szószok:
+                    - házi tartármártás
+                    - gyümölcsszósz
+                    - chilis szósz
             Árak:
-                6 darab: 1190
-                12 darab: 1350
+                6 darabos: 1190
+                12 darabos: 1350
 
 Hamburgerek:
     Választék:
