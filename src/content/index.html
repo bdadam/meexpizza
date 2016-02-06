@@ -10,11 +10,13 @@
             <ul>
             {% for item in cat.items %}
                 <li class="item" data-dish-id="{{ item.id }}" data-dish-category-id="{{ cat.id }}">
-                    <div class="img icon-{{ item.imageName }}"></div>
-                    <div class="text">
-                        <div class="in-cart-count"></div>
-                        <h3>{{ item.name }}</h3>
-                        <p>{{ item.text }}</p>
+                    <div class="xxx">
+                        <div class="img"><div class="icon-{{ item.imageName }}"></div></div>
+                        <div class="text">
+                            <div class="in-cart-count"></div>
+                            <h3>{{ item.name }}</h3>
+                            <p>{{ item.text }}</p>
+                        </div>
                     </div>
                     <div class="prices">
                         {% if item.hasMultiVariants %}

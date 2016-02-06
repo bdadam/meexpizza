@@ -1,8 +1,8 @@
 // require('babel-polyfill');
 
 // require('zepto/zepto.min');
-import zepto from 'zepto/zepto.min.js';
-window.jQuery = window.$;
+// import zepto from 'zepto/zepto.min.js';
+// window.jQuery = window.$;
 
 require('es6-object-assign').polyfill();
 require('lazysizes/lazysizes');
