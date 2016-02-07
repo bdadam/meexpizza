@@ -1,0 +1,17 @@
+Zöldségek:
+    Ár: 100
+    Választék:
+        - jégsaláta
+        - paradicsom
+        - uborka
+Húsok:
+    Ár: 300
+    Választék:
+        - Húspogácsa
+
+Sajtok:
+    Ár: 150
+    Választék:
+        - parmezán
+        - gorgonzola
+        - cheddar
