@@ -50,6 +50,9 @@ const shoppingCart = redux.createStore((state = defaultState, action) => {
         case 'ADDRESS_CHANGE':
             newState = Object.assign({}, state, { address: action.address });
             break;
+        case 'EMPTY_CART':
+            newState = Object.assign({}, state, { inCart: [] });
+            break;
         default:
             // no-op
             return state;
@@ -91,7 +94,7 @@ shoppingCart.subscribe(() => {
 
     Object.keys(ids).forEach(id => {
         var count = ids[id];
-        $(`[data-dish-id=${id}] .in-cart-count`).text(`${count} db`);
+        $(`[data-dish-id=${id}] .in-cart-count`).text(`${count} db a kosárban`);
     });
 });
 
@@ -103,13 +106,30 @@ shoppingCart.subscribe(() => {
 shoppingCart.subscribe(() => {
 
     const state = shoppingCart.getState();
+
+    const shcart = {
+        lines: [
+            // { id, name, price, extras: [
+                    // { name, price }
+            // ] }
+        ],
+        deliveryFee: 1000,
+        missingSumToFreeDelivery: 300,
+        address: {
+            // city
+            // name
+            // street
+            // phone
+        }
+    };
+
+
+
     if (state.isEmpty) {
         $('#side-cart .default-content').show();
-        // $('#side-cart .order-form').hide();
         $('#side-cart button.order').attr('disabled', true);
     } else {
         $('#side-cart .default-content').hide();
-        // $('#side-cart .order-form').show();
         $('#side-cart button.order').attr('disabled', false);
     }
 
@@ -163,14 +183,11 @@ $(document).on('click', 'button[data-duplicate-order-item]', function(e) {
     shoppingCart.dispatch({ type: 'DUPLICATE', timestamp: timestamp });
 });
 
-$(document).on('click', 'button[data-add-to-cart]', (e) => {
-    var item = $(e.target).parents('[data-dish-id]')
-
-    var categoryId = item.data('dishCategoryId');
-    var id = item.data('dishId');
-    var variant = item.find('[name=variant]').val() || item.find('[data-variant]').text() || '';
-
-    shoppingCart.dispatch({ type: 'ADD', dish: { id, variant, categoryId }, timestamp: +new Date() });
+$(document).on('click', 'button[data-add-to-cart]', function (e) {
+    const el = $(this);
+    const id = el.data('add-to-cart');
+    const variant = el.data('variant');
+    shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
 
     // const template = require('./templates/pizza-options.html');
     // const html = template();
@@ -241,17 +258,36 @@ document.registerElement('google-map', {
     })
 });
 
-const dayOfWeek = new Date().getDay();
+
+document.registerElement('add-to-cart', {
+    prototype: Object.create(HTMLElement.prototype, {
+        attachedCallback: { value: function() {
+            var itemid = this.getAttribute('dishid');
+
+            const el = $(this);
+            const dish = menucard.dishes.filter(dish => dish.id === itemid)[0];
+            const variants = dish.variants;
+            const variantNames = Object.keys(variants);
+            const button = $(`<button data-add-to-cart="${dish.id}" data-variant="${variantNames[0]}"><svg class="icon-cart white"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>`);
+
+            if (variantNames.length > 1) {
+                const select = $('<select>' + variantNames.map(v => `<option value="${v}">${v} - ${variants[v]} Ft</option>`) + '</select>').on('change', e => button.data('variant', select.val()));
+                el.append(select);
+            } else {
+                if (variantNames[0]) {
+                    el.append(`${variantNames[0]} - `);
+                }
+
+                el.append(`<b>${variants[variantNames[0]]} Ft</b>`)
+            }
+
+            el.append(button);
+        }}
+    })
+});
+
+const dayOfWeek = new Date().getDay() || 7;
 $(`#opening-hours dd:nth-of-type(${dayOfWeek}), #opening-hours dt:nth-of-type(${dayOfWeek})`).css({ fontWeight: 700 });
-
-
-var currentOrder = {
-    timestamp: 1234,
-    dishId: 'asdf',
-    variant: '30cm',
-    pizzaExtras: ['errt', 'dfgfdg', 'dfgfdg'],
-    hamburgerExtras: ['errt', 'dfgfdg', 'dfgfdg']
-};
 
 //
 // const openModal = () => {
@@ -275,9 +311,9 @@ var currentOrder = {
 
 /*
 Events:
-- add-to-cart
-- add-to-cart with extras should be chosen
-- removed from cart
+- add-to-cart - directly
+- add-to-cart - extras should be chosen
+- remove from cart
 - duplicate cart item
 - reset cart
 - restore state

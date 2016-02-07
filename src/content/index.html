@@ -9,16 +9,21 @@
             <h2 class="card-title">{{ cat.name }}</h2>
             <ul>
             {% for item in cat.items %}
-                <li class="item" data-dish-id="{{ item.id }}" data-dish-category-id="{{ cat.id }}">
+                <li class="item" data-dish-id="{{ item.id }}">
                     <div class="xxx">
                         <div class="img"><div class="icon-{{ item.imageName }}"></div></div>
                         <div class="text">
-                            <div class="in-cart-count"></div>
                             <h3>{{ item.name }}</h3>
                             <p>{{ item.text }}</p>
+                            <p class="in-cart-count"></p>
                         </div>
                     </div>
                     <div class="prices">
+                        <add-to-cart dishid="{{ item.id }}"></add-to-cart>
+                        {# <button data-add-to-cart="{{ item.id }}" data-variant><svg class="icon-cart white"><use xlink:href="#icon-cart"></use></svg> Kosárba</button> #}
+
+                        {# <x-btn dishid="{{ item.id }}"></x-btn> #}
+{#
                         {% if item.hasMultiVariants %}
                             <select name="variant">
                                 {% for variant, variantprice in item.variants %}
@@ -34,7 +39,7 @@
                                     <div><b>{{ variantprice }} Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
                                 {% endif %}
                             {% endfor %}
-                        {% endif %}
+                        {% endif %} #}
                     </div>
                 </li>
             {% endfor %}
@@ -84,26 +89,38 @@
             </div>
         </div>
 
-        <div id="contact-box" class="side-content card">
+        <section id="kapcsolat" class="card">
             <h2 class="card-title">Kapcsolat</h2>
-            <p class="phone">+36 30 2111 212</p>
-            <p class="address-1">Meex Pizza & Food</p>
-            <p class="address-2">3200 Gyöngyös, Orczy út 1.</p>
-            <a class="map" href="https://maps.google.com/?q=47.785625,19.932675" rel="external" target="_blank" is="google-map" title="Meexpizza a térképen"><p>Kattints a nagyobb térképhez!</p></a>
-        </div>
+            <div class="card-content">
+                <address class="meex-address">
+                    <p class="phone">+36 30 2111 212</p>
+                    <img class="logo" src="images/logo_opt.jpg">
+                    <p>
+                        <b>Meex Pizza & Food</b><br>
+                        3200 Gyöngyös, Orczy&nbsp;út&nbsp;1.<br>
+                        <a href="mailto:info@meexpizza.hu">info@meexpizza.hu</a><br>
+                        <a href="http://www.meexpizza.hu">www.meexpizza.hu</a>
+                    </p>
+                    <a class="meex-map" href="https://maps.google.com/?q=47.785625,19.932675" rel="external" target="_blank" is="google-map" title="Meexpizza a térképen"><p>Kattints a nagyobb térképhez!</p></a>
+                </address>
+            </div>
+        </section>
 
-        <div id="opening-hours" class="side-content card">
+        <section id="opening-hours" class="card">
             <h2 class="card-title">Nyitvatartás</h2>
-            <dl class="opening-hours">
-                <dd>Hétfő</dd><dt>11:00 - 22:00</dt>
-                <dd>Kedd</dd><dt>11:00 - 22:00</dt>
-                <dd>Szerda</dd><dt>11:00 - 22:00</dt>
-                <dd>Csütörtök</dd><dt>11:00 - 22:00</dt>
-                <dd>Péntek</dd><dt>11:00 - 23:00</dt>
-                <dd>Szombat</dd><dt>11:00 - 23:00</dt>
-                <dd>Vasárnap</dd><dt>11:00 - 21:00</dt>
-            </dl>
-        </div>
+            <div class="card-content">
+                <p>Kérjük, hogy rendelésedet egy adott napra legkésőbb a zárás előtt 30 perccel add fel.</p>
+                <dl class="opening-hours">
+                    <dd>Hétfő</dd><dt>11:00 - 22:00</dt>
+                    <dd>Kedd</dd><dt>11:00 - 22:00</dt>
+                    <dd>Szerda</dd><dt>11:00 - 22:00</dt>
+                    <dd>Csütörtök</dd><dt>11:00 - 22:00</dt>
+                    <dd>Péntek</dd><dt>11:00 - 23:00</dt>
+                    <dd>Szombat</dd><dt>11:00 - 23:00</dt>
+                    <dd>Vasárnap</dd><dt>11:00 - 21:00</dt>
+                </dl>
+            </div>
+        </section>
 
         <div class="card">
             <h2 class="card-title">Kövess minket</h2>

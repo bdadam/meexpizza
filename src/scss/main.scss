@@ -74,7 +74,7 @@
 .card {
     border-radius: 3px;
     overflow: hidden;
-    margin-bottom: 12px;
+    margin-bottom: 28px;
     box-shadow: 0 0 6px rgba(0, 0, 0, .3);
 }
 
@@ -97,7 +97,7 @@
 
 .card-content {
     background-color: #fff;
-    padding: 12px 20px;
+    padding: 20px;
 }
 
 .menu-category {
@@ -164,11 +164,11 @@
     }
 
     .in-cart-count {
-        display: inline-block;
+        // display: inline-block;
         color: red;
         font-weight: bold;
-        float: right;
-        margin-left: 8px;
+        // float: right;
+        // margin-left: 8px;
     }
 
     .xxx {
@@ -370,40 +370,37 @@ form {
     }
 }
 
-#contact-box {
-    padding-bottom: 20px;
+.meex-address {
     .phone {
-        // text-align: center;
+        text-align: center;
         font-size: 1.5rem;
         font-weight: 700;
         font-family: Russo One, sans-serif;
-        padding: 12px 20px;
+        line-height: 1;
+        margin-bottom: 12px;
     }
 
-    .address-1 {
-        font-weight: 600;
+    .logo {
+        float: right;
+        width: 92px;
     }
+}
 
-    .address-1, .address-2 {
-        padding: 0 20px;
-    }
-
-    .map {
-        text-decoration: none;
-        color: #333;
-        display: block;
-        margin-top: 8px;
-        text-align: center;
-        font-size: 0.875rem;
-    }
+.meex-map {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    text-align: center;
+    font-size: 0.875rem;
+    margin: 8px -20px 0;
 }
 
 #opening-hours {
     @include cf();
 
     dl {
-        padding: 12px 20px;
         font-size: 1.125rem;
+        @include cf;
     }
 
     dd {
@@ -415,7 +412,3 @@ form {
         text-align: right;
     }
 }
-
-// static-map {
-//     display: block;
-// }

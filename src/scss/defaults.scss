@@ -20,7 +20,7 @@ body {
     background-color: #fff;
     font-family: Open Sans, sans-serif;
     color: #333;
-    line-height: 1.35;
+    line-height: 1.4;
     // font-size: 0.875rem;
 
     @media screen and (min-width: 768px) {
@@ -34,6 +34,10 @@ a {
     &:hover, &:active {
         text-decoration: underline;
     }
+}
+
+p {
+    margin-bottom: 0.625rem;
 }
 
 img {
@@ -67,6 +71,10 @@ select {
     &::-ms-expand {
         display: none;
     }
+}
+
+address {
+    font-style: normal;
 }
 
 .radio-toggle {
@@ -122,5 +130,18 @@ select {
             background-image: url(data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEzLjUgMkw2IDkuNSAyLjUgNiAwIDguNWw2IDYgMTAtMTB6Ii8+PC9zdmc+);
             background-repeat: no-repeat;
         }
+    }
+}
+
+[class^="icon-"] {
+    width: 0.85em;
+    height: 0.85em;
+    margin-right: 4px;
+    display: inline-block;
+    position: relative;
+    top: 1px;
+
+    &.white {
+        fill: #fff;
     }
 }
