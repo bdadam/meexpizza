@@ -62,7 +62,7 @@
 	
 	var redux = __webpack_require__(6);
 	
-	var menucard = __webpack_require__(106);
+	var menucard = __webpack_require__(15);
 	var deliveryFees = __webpack_require__(16);
 	
 	var defaultState = {
@@ -73,6 +73,7 @@
 	};
 	
 	var flatMap = __webpack_require__(17);
+	var find = __webpack_require__(105);
 	
 	var shoppingCart = redux.createStore(function () {
 	    var state = arguments.length <= 0 || arguments[0] === undefined ? defaultState : arguments[0];
@@ -133,7 +134,7 @@
 	});
 	
 	var $ = __webpack_require__(5);
-	var nanoModal = __webpack_require__(105);
+	var nanoModal = __webpack_require__(113);
 	
 	shoppingCart.subscribe(function () {
 	    var state = shoppingCart.getState();
@@ -183,26 +184,55 @@
 	        $('#side-cart button.order').attr('disabled', false);
 	    }
 	
-	    var itemsContainer = $('#side-cart .items');
-	    itemsContainer.empty();
-	
-	    state.inCart.forEach(function (item) {
-	        var x = menucard.dishes.filter(function (dish) {
-	            return dish.id === item.dish.id;
-	        })[0];
-	        itemsContainer.append('<tr><td>' + x.name + ' (' + item.dish.variant + ')<br><a href="" style="font-size:0.875rem;"><svg style="width: 16px;height:16px;"><use xlink:href="#icon-plus"></use></svg> Még</a>&nbsp;&nbsp;<a href=""><svg style="width: 16px;height:16px;"><use xlink:href="#icon-minus"></use></svg> Nem kérem</a> <a href="">Extrák</a></td><td><button data-duplicate-order-item="' + item.timestamp + '"><svg><use xlink:href="#icon-plus"></use></svg></button><button data-remove-order-item="' + item.timestamp + '"><svg><use xlink:href="#icon-minus"></use></svg></button></div></td><td>' + x.variants[item.dish.variant] + '&nbsp;Ft</td></tr>');
-	    });
-	
-	    if (!state.isEmpty) {
-	        var sum = state.inCart.reduce(function (prev, item) {
-	            var x = menucard.dishes.filter(function (dish) {
+	    var viewModel = {
+	        showEmptyMessage: state.inCart.length === 0,
+	        isEmpty: state.inCart.length === 0,
+	        lines: state.inCart.map(function (item) {
+	            var dishFromCard = find(menucard.dishes, function (dish) {
 	                return dish.id === item.dish.id;
-	            })[0];
-	            return prev + x.variants[item.dish.variant];
-	        }, 0);
+	            }); //menucard.dishes.filter()
+	            return { id: item.timestamp, name: dishFromCard.name + ' (' + item.dish.variant + ')', price: find(dishFromCard.variants, function (v) {
+	                    return v.name === item.dish.variant;
+	                }).price };
+	        }),
+	        deliveryFee: menucard.deliveryFees[state.address.city].fix || 0,
+	        minForFreeDelivery: menucard.deliveryFees[state.address.city].min || 0
+	    };
 	
-	        itemsContainer.append('<tfoot><tr><td>Végösszeg</td><td colspan="2">' + sum + '&nbsp;Ft</td></tr></tfoot>');
+	    viewModel.total = viewModel.lines.reduce(function (prev, l) {
+	        return prev + l.price;
+	    }, 0) + viewModel.deliveryFee;
+	    viewModel.minTotalNotReached = viewModel.total < viewModel.minForFreeDelivery;
+	    viewModel.showMinForFreeDeliveryMessage = state.inCart.length > 0 && viewModel.minTotalNotReached;
+	
+	    var tpl = __webpack_require__(114);
+	    $('.cart-calculation').html(tpl(viewModel));
+	
+	    /*
+	    const itemsContainer = $('#side-cart .items');
+	    itemsContainer.empty();
+	      state.inCart.forEach(item => {
+	        const x = menucard.dishes.filter(dish => dish.id === item.dish.id)[0];
+	        const variant = x.variants.filter(v => v.name === item.dish.variant)[0];
+	        const price = variant.price;
+	          itemsContainer.append(`<tr><td>${x.name} (${item.dish.variant})<br><a href="" style="font-size:0.875rem;"><svg style="width: 16px;height:16px;"><use xlink:href="#icon-plus"></use></svg> Még</a>&nbsp;&nbsp;<a href=""><svg style="width: 16px;height:16px;"><use xlink:href="#icon-minus"></use></svg> Nem kérem</a> <a href="">Extrák</a></td><td><button data-duplicate-order-item="${item.timestamp}"><svg><use xlink:href="#icon-plus"></use></svg></button><button data-remove-order-item="${item.timestamp}"><svg><use xlink:href="#icon-minus"></use></svg></button></div></td><td>${price}&nbsp;Ft</td></tr>`);
+	    });
+	      if (!state.isEmpty) {
+	        let sum = state.inCart.reduce((prev, item) => {
+	            var dish = menucard.dishes.filter(dish => dish.id === item.dish.id)[0];
+	            const variant = dish.variants.filter(v => v.name === item.dish.variant)[0];
+	            return prev + variant.price;
+	        }, 0);
+	          const deliveryRule = menucard.deliveryFees[state.address.city];
+	          if (deliveryRule.fix) {
+	            sum += deliveryRule.fix;
+	            itemsContainer.append(`<tfoot><tr><td>Kiszállítási díj</td><td colspan="2">${deliveryRule.fix}&nbsp;Ft</td></tr></tfoot>`);
+	        } else if (deliveryRule.min && sum < deliveryRule.min) {
+	            itemsContainer.append(`<tfoot><tr><td colspan="3">A minimális ${deliveryRule.min} Ft rendelési értéket még nem érted el.</td></tr></tfoot>`);
+	        }
+	          itemsContainer.append(`<tfoot><tr><td>Végösszeg</td><td colspan="2">${sum}&nbsp;Ft</td></tr></tfoot>`);
 	    }
+	    */
 	});
 	
 	shoppingCart.subscribe(function () {
@@ -316,20 +346,12 @@
 	document.registerElement('add-to-cart', {
 	    prototype: Object.create(HTMLElement.prototype, {
 	        attachedCallback: { value: function value() {
-	                var itemid = this.getAttribute('dishid');
-	
 	                var el = $(this);
+	                var itemid = el.attr('dishid');
 	                var dish = menucard.dishes.filter(function (dish) {
 	                    return dish.id === itemid;
 	                })[0];
-	
-	                if (!dish) {
-	                    console.log(itemid);
-	                    return;
-	                }
-	
 	                var variants = dish.variants;
-	
 	                var button = $('<button data-add-to-cart="' + dish.id + '" data-variant="' + variants[0].name + '"><svg class="icon-cart white"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>');
 	
 	                if (variants.length > 1) {
@@ -1791,7 +1813,962 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 15 */,
+/* 15 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	module.exports = {
+	    "categories": [{
+	        "name": "Pizzakenyerek",
+	        "id": "pizzakenyerek"
+	    }, {
+	        "name": "Klasszikus pizzák",
+	        "id": "klasszikus-pizzak"
+	    }, {
+	        "name": "Extra pizzák",
+	        "id": "extra-pizzak"
+	    }, {
+	        "name": "Full a fullban pizzák",
+	        "id": "full-a-fullban-pizzak"
+	    }, {
+	        "name": "Meex specialitás",
+	        "id": "meex-specialitas"
+	    }, {
+	        "name": "Tészták",
+	        "id": "tesztak"
+	    }, {
+	        "name": "Rántott sajtok",
+	        "id": "rantott-sajtok"
+	    }, {
+	        "name": "Frissensültek",
+	        "id": "frissensultek"
+	    }, {
+	        "name": "Hamburgerek",
+	        "id": "hamburgerek"
+	    }, {
+	        "name": "Hamburger menük",
+	        "id": "hamburger-menuk"
+	    }, {
+	        "name": "Fitnesz szendvicsek",
+	        "id": "fitnesz-szendvicsek"
+	    }, {
+	        "name": "Saláták",
+	        "id": "salatak"
+	    }, {
+	        "name": "Édességek",
+	        "id": "edessegek"
+	    }, {
+	        "name": "Üdítők",
+	        "id": "uditok"
+	    }],
+	    "dishes": [{
+	        "categoryId": "pizzakenyerek",
+	        "id": "pizzakenyer",
+	        "category": "Pizzakenyerek",
+	        "name": "Pizzakenyér",
+	        "description": "TODO",
+	        "imageName": "pizzakenyer",
+	        "type": "none",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 500
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "pizzakenyerek",
+	        "id": "sajtos-fokhagymas-pizzakenyer",
+	        "category": "Pizzakenyerek",
+	        "name": "Sajtos-fokhagymás pizzakenyér",
+	        "description": "sajt, fokhagyma, fűszerkeverék",
+	        "imageName": "pizzakenyer",
+	        "type": "none",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 600
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "margarita-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Margarita pizza",
+	        "description": "fűszeres paradicsomszósz, sajt",
+	        "imageName": "margarita-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 850
+	        }, {
+	            "name": "40cm",
+	            "price": 1850
+	        }, {
+	            "name": "50cm",
+	            "price": 2700
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "sonkas-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Sonkás pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, sonka",
+	        "imageName": "sonkas-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "szalamis-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Szalámis pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, paprikás szalámi",
+	        "imageName": "szalamis-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "sonka-ku-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Sonka-ku pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, sonka, kukorica",
+	        "imageName": "sonka-ku-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "bacon-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Bacon pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, pirított bacon",
+	        "imageName": "bacon-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "4-sajtos-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "4 Sajtos pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, parmezán, gorgonzola, füstölt sajt",
+	        "imageName": "4-sajtos-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "hawaii-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Hawaii pizza",
+	        "description": "fűszeres paradicsomszósz vagy fűszeres tejfölös szósz, sajt, sonka, ananász, füstölt sajt",
+	        "imageName": "hawaii-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "zoldseges-pizza",
+	        "category": "Extra pizzák",
+	        "name": "Zöldséges pizza",
+	        "description": "fokhagymás tejfölös alap, sajt, padlizsán karikák, cukkini, répa szeletek, párolt fűszeres csirkemell",
+	        "imageName": "zoldseges-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "tonhalas-pizza",
+	        "category": "Extra pizzák",
+	        "name": "Tonhalas pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek",
+	        "imageName": "tonhalas-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "piedone-pizza",
+	        "category": "Extra pizzák",
+	        "name": "Piedone pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika",
+	        "imageName": "piedone-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "joasszony-pizza",
+	        "category": "Extra pizzák",
+	        "name": "Jóasszony pizza",
+	        "description": "fűszeres paradicsomszósz alap, sajt, paprikás szalámi, csípős cseresznyepaprika, csiperke gomba, hagyma",
+	        "imageName": "joasszony-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "3-kivansag-pizza",
+	        "category": "Extra pizzák",
+	        "name": "3 Kívánság pizza",
+	        "description": "szabadon választott szósz alap, sajt, és pluszban három feltét",
+	        "imageName": "3-kivansag-pizza",
+	        "type": "pizza-3-free-options",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "victorio-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Victorio pizza",
+	        "description": "fokhagymás tejfölös alap, sajt, póréhagyma, mozzarella golyó, pirított bacon, juhturó",
+	        "imageName": "victorio-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "hus-zabalo-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Hús-zabáló pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, csirkemell, sült tarja, sonka, bacon",
+	        "imageName": "hus-zabalo-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "master-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Master pizza",
+	        "description": "tejfölös mustáros tárkonyos ízvilág, sajt, sonka, kukorica, pirított bacon, csiperke gomba",
+	        "imageName": "master-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "barbeque-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Barbeque pizza",
+	        "description": "bbq alap szósz, sajt, bacon vagy csirkemell, vöröshagyma, pritamin paprika szeletek",
+	        "imageName": "barbeque-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "jalapeno-barbeque-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Jalapeno Barbeque pizza",
+	        "description": "fokhagymás bbq szósz, sajt, csirkemell, pirított póréhagyma, paradicsomkarika , jalapeno",
+	        "imageName": "jalapeno-barbeque-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "tenger-kincsei-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Tenger kincsei pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, pácban érlelt tenger gyümölcsei, vegyes magozott olíva bogyó",
+	        "imageName": "tenger-kincsei-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "dani-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Dani pizza",
+	        "description": "tejfölös fokhagymás alap, sajt, főtt tarja, lila hagyma, bacon, szeletekre vágott jalapeno paprika",
+	        "imageName": "dani-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "meex-toltott-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Meex töltött pizza",
+	        "description": "tejfölös alap, paprikás szalámi, ruccola, ízletes cheddar sajt, jalapeno paprika",
+	        "imageName": "meex-toltott-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "bossy-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Bossy pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, pármai sonka, frissen vágott ruccola, koktél paradicsom",
+	        "imageName": "bossy-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "meex-specialitas",
+	        "id": "akay-torok-pizza",
+	        "category": "Meex specialitás",
+	        "name": "Akay - török pizza",
+	        "description": "fűszeres paradicsomos alap, sajt, sonka",
+	        "imageName": "akay-torok-pizza",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 490
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "meex-specialitas",
+	        "id": "banu-torok-pizza",
+	        "category": "Meex specialitás",
+	        "name": "Banu - török pizza",
+	        "description": "tejfölös alap, sajt, tarja, pirított fokhagyma",
+	        "imageName": "banu-torok-pizza",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 490
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "meex-specialitas",
+	        "id": "cahil-torok-pizza",
+	        "category": "Meex specialitás",
+	        "name": "Cahil - török pizza",
+	        "description": "bbq alap, sajt, ropogós bacon",
+	        "imageName": "cahil-torok-pizza",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 490
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "tesztak",
+	        "id": "carbonara",
+	        "category": "Tészták",
+	        "name": "Carbonara",
+	        "description": "bacon, sonka, tojás, tejszín, parmezán sajt, spagetti",
+	        "imageName": "carbonara",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "tesztak",
+	        "id": "milanoi",
+	        "category": "Tészták",
+	        "name": "Milánói",
+	        "description": "paradicsomszósz, sonka, gomba, trappista sajt, spagetti",
+	        "imageName": "milanoi",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "tesztak",
+	        "id": "peperoncino",
+	        "category": "Tészták",
+	        "name": "Peperoncino",
+	        "description": "pirított fokhagymás olívaolaj, chili, petrezselyem, csípős, spagetti",
+	        "imageName": "peperoncino",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "tesztak",
+	        "id": "meex",
+	        "category": "Tészták",
+	        "name": "Meex",
+	        "description": "csirke, gomba, fokhagyma, fűszeres tejszínes szósz, parmezán, spagetti",
+	        "imageName": "meex",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "rantott-sajtok",
+	        "id": "izletes-cheddar-sajtfalatkak",
+	        "category": "Rántott sajtok",
+	        "name": "Ízletes cheddar sajtfalatkák",
+	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+	        "imageName": "rantottsajt-cheddar",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1390
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "rantott-sajtok",
+	        "id": "camembert-sajt",
+	        "category": "Rántott sajtok",
+	        "name": "Camembert sajt",
+	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+	        "imageName": "rantottsajt-camambert",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1290
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "rantott-sajtok",
+	        "id": "trappista-sajt",
+	        "category": "Rántott sajtok",
+	        "name": "Trappista sajt",
+	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+	        "imageName": "rantottsajt-trappista",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1190
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "frissensultek",
+	        "id": "buffalo-csirkeszarnyak",
+	        "category": "Frissensültek",
+	        "name": "Buffalo csirkeszárnyak",
+	        "description": "TODO",
+	        "imageName": "buffalo-csirkeszarnyak",
+	        "type": "none",
+	        "variants": [{
+	            "name": "6 darabos",
+	            "price": 780
+	        }, {
+	            "name": "12 darabos",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "frissensultek",
+	        "id": "buffalo-csirkeszarnyak-menu",
+	        "category": "Frissensültek",
+	        "name": "Buffalo csirkeszárnyak menü",
+	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+	        "imageName": "buffalo-csirkeszarnyak",
+	        "type": "none",
+	        "variants": [{
+	            "name": "6 darabos",
+	            "price": 1190
+	        }, {
+	            "name": "12 darabos",
+	            "price": 1350
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "meex-burger",
+	        "category": "Hamburgerek",
+	        "name": "Meex burger",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 750
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "meex-sajtburger",
+	        "category": "Hamburgerek",
+	        "name": "Meex sajtburger",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 850
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "dupla-meex-burger",
+	        "category": "Hamburgerek",
+	        "name": "Dupla Meex burger",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 1250
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "dupla-meex-sajtburger",
+	        "category": "Hamburgerek",
+	        "name": "Dupla Meex sajtburger",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "hamburger-menuk",
+	        "id": "meex-burger-menu",
+	        "category": "Hamburger menük",
+	        "name": "Meex Burger Menü",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
+	        "imageName": "meex-burger-menu",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 990
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "hamburger-menuk",
+	        "id": "meex-sajtburger-menu",
+	        "category": "Hamburger menük",
+	        "name": "Meex Sajtburger Menü",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
+	        "imageName": "meex-burger-menu",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "hamburger-menuk",
+	        "id": "dupla-meex-burger-menu",
+	        "category": "Hamburger menük",
+	        "name": "Dupla Meex Burger Menü",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
+	        "imageName": "meex-burger-menu",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 1490
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "hamburger-menuk",
+	        "id": "dupla-meex-sajtburger-menu",
+	        "category": "Hamburger menük",
+	        "name": "Dupla Meex Sajtburger Menü",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
+	        "imageName": "meex-burger-menu",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 1490
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "fitnesz-szendvicsek",
+	        "id": "purpur",
+	        "category": "Fitnesz szendvicsek",
+	        "name": "Purpur",
+	        "description": "szénhidrátcsökkentett magvas baguette, friss jégsaláta, paradicsom, uborka, fűszeres grillezett csirkemell (16dkg)",
+	        "imageName": "purpur",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 590
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "salatak",
+	        "id": "primor-salata",
+	        "category": "Saláták",
+	        "name": "Primőr saláta",
+	        "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola nyakon öntve vinegrettével, pizzakenyér szeletekkel tálalva",
+	        "imageName": "primor-salata",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 650
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "salatak",
+	        "id": "mozarella-salata",
+	        "category": "Saláták",
+	        "name": "Mozarella saláta",
+	        "description": "mozarella golyók, paradicsomkarikák, olívaolajos bazsalikommal és oregánóval, pizzakenyér szeletekkel tálalva",
+	        "imageName": "mozarella-salata",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 800
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "salatak",
+	        "id": "tonhal-salata",
+	        "category": "Saláták",
+	        "name": "Tonhal saláta",
+	        "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, tonhaltörzs, sajtkocka, pizzakenyér szeletekkel tálalva",
+	        "imageName": "tonhal-salata",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1080
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "salatak",
+	        "id": "cezar-salata",
+	        "category": "Saláták",
+	        "name": "Cézár saláta",
+	        "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, grillezett fűszeres csirkemell, parmezán, pizzakenyér szeletekkel tálalva",
+	        "imageName": "cezar-salata",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1080
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "edessegek",
+	        "id": "profiterol",
+	        "category": "Édességek",
+	        "name": "Profiterol",
+	        "description": "Profiterol golyók fehér- és tejcsokoládé bevonattal, tejszínhab koronával",
+	        "imageName": "profiterol",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 600
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "pepsi",
+	        "category": "Üdítők",
+	        "name": "Pepsi",
+	        "description": "",
+	        "imageName": "pepsi",
+	        "type": "none",
+	        "variants": [{
+	            "name": "1,75 literes",
+	            "price": 480
+	        }, {
+	            "name": "1 literes",
+	            "price": 350
+	        }, {
+	            "name": "0,33 literes",
+	            "price": 190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "pepsi-max",
+	        "category": "Üdítők",
+	        "name": "Pepsi Max",
+	        "description": "",
+	        "imageName": "pepsi-max",
+	        "type": "none",
+	        "variants": [{
+	            "name": "1,75 literes",
+	            "price": 480
+	        }, {
+	            "name": "1 literes",
+	            "price": 350
+	        }, {
+	            "name": "0,33 literes",
+	            "price": 190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "mirinda",
+	        "category": "Üdítők",
+	        "name": "Mirinda",
+	        "description": "",
+	        "imageName": "mirinda",
+	        "type": "none",
+	        "variants": [{
+	            "name": "1,75 literes",
+	            "price": 480
+	        }, {
+	            "name": "1 literes",
+	            "price": 350
+	        }, {
+	            "name": "0,33 literes",
+	            "price": 190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "canada-dry",
+	        "category": "Üdítők",
+	        "name": "Canada Dry",
+	        "description": "",
+	        "imageName": "canada-dry",
+	        "type": "none",
+	        "variants": [{
+	            "name": "1,75 literes",
+	            "price": 480
+	        }, {
+	            "name": "1 literes",
+	            "price": 350
+	        }, {
+	            "name": "0,33 literes",
+	            "price": 190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "lipton-ice-tea",
+	        "category": "Üdítők",
+	        "name": "Lipton Ice Tea",
+	        "description": "",
+	        "imageName": "lipton-ice-tea",
+	        "type": "none",
+	        "variants": [{
+	            "name": "0,33 literes",
+	            "price": 190
+	        }],
+	        "options": []
+	    }],
+	    "pizzaExtras": [{
+	        "name": "Húsok",
+	        "price": 250,
+	        "list": ["sonka", "tarja", "bacon", "szalámi", "csirkemell"]
+	    }, {
+	        "name": "Halféleségek",
+	        "price": 300,
+	        "list": ["tengergyümölcsei", "tonhal"]
+	    }, {
+	        "name": "Prémium sonkák",
+	        "price": 450,
+	        "list": ["pármai", "serrano", "mangalica"]
+	    }, {
+	        "name": "Tejes készítmények, sajtok",
+	        "price": 250,
+	        "list": ["tejföl", "juhtúró", "sajt", "füstölt sajt"]
+	    }, {
+	        "name": "Prémium sajtok",
+	        "price": 300,
+	        "list": ["gorgonzola sajt", "parmezán sajt", "mozzarella golyó", "feta sajt"]
+	    }, {
+	        "name": "Zöldségek",
+	        "price": 150,
+	        "list": ["kukorica", "gomba", "fokhagyma", "hagyma", "póréhagyma", "capribogyó", "fehér és vörös óriásbab", "édes pepperóni", "erős cseresznyepaprika", "jalapeno paprika", "padlizsán", "cukkini", "répa", "pritamin paprika", "magozott zöld és fekete olívabogyó", "ruccola", "paradicsom", "brokkoli"]
+	    }, {
+	        "name": "Gyümölcsök",
+	        "price": 150,
+	        "list": ["ananász", "citrom"]
+	    }],
+	    "hamburgerExtras": [{
+	        "name": "Zöldségek",
+	        "price": 100,
+	        "list": ["jégsaláta", "paradicsom", "uborka"]
+	    }, {
+	        "name": "Húsok",
+	        "price": 300,
+	        "list": ["Húspogácsa"]
+	    }, {
+	        "name": "Sajtok",
+	        "price": 150,
+	        "list": ["parmezán", "gorgonzola", "cheddar"]
+	    }],
+	    "deliveryFees": {
+	        "Gyöngyös": {
+	            "min": 1000
+	        },
+	        "Karácsondi úti gyártelep": {
+	            "min": 2000
+	        },
+	        "KRF Kollégium": {
+	            "min": 2000
+	        },
+	        "Abasár": {
+	            "fix": 800
+	        },
+	        "Detk": {
+	            "fix": 800
+	        },
+	        "Gyöngyöshalász": {
+	            "fix": 800
+	        },
+	        "Gyöngyössolymos": {
+	            "fix": 800
+	        },
+	        "Gyöngyöstarján": {
+	            "fix": 800
+	        },
+	        "Mátrafüred": {
+	            "fix": 800
+	        },
+	        "Nagyréde": {
+	            "fix": 800
+	        },
+	        "Pálosvörösmart": {
+	            "fix": 800
+	        },
+	        "Visonta": {
+	            "fix": 1000
+	        }
+	    },
+	    "version": "95084fb00b4b748ebf3782f89d62d9e8"
+	};
+
+/***/ },
 /* 16 */
 /***/ function(module, exports) {
 
@@ -4842,925 +5819,1066 @@
 /* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var require;var nanoModal;!function a(b,c,d){function e(g,h){if(!c[g]){if(!b[g]){var i="function"==typeof require&&require;if(!h&&i)return require(g,!0);if(f)return f(g,!0);throw new Error("Cannot find module '"+g+"'")}var j=c[g]={exports:{}};b[g][0].call(j.exports,function(a){var c=b[g][1][a];return e(c?c:a)},j,j.exports,a,b,c,d)}return c[g].exports}for(var f="function"==typeof require&&require,g=0;g<d.length;g++)e(d[g]);return e}({1:[function(a,b,c){function d(a,b){var c=document,d=a.nodeType||a===window?a:c.createElement(a),f=[];b&&(d.className=b);var g=e(),h=e(),i=function(a,b){d.addEventListener?d.addEventListener(a,b,!1):d.attachEvent("on"+a,b),f.push({event:a,handler:b})},j=function(a,b){d.removeEventListener?d.removeEventListener(a,b):d.detachEvent("on"+a,b);for(var c,e=f.length;e-->0;)if(c=f[e],c.event===a&&c.handler===b){f.splice(e,1);break}},k=function(a){var b=!1,c=function(c){b||(b=!0,setTimeout(function(){b=!1},100),a(c))};i("touchstart",c),i("mousedown",c)},l=function(a){d&&(d.style.display="block",g.fire(a))},m=function(a){d&&(d.style.display="none",h.fire(a))},n=function(){return d.style&&"block"===d.style.display},o=function(a){d&&(d.innerHTML=a)},p=function(a){d&&(o(""),d.appendChild(c.createTextNode(a)))},q=function(){if(d.parentNode){for(var a,b=f.length;b-->0;)a=f[b],j(a.event,a.handler);d.parentNode.removeChild(d),g.removeAllListeners(),h.removeAllListeners()}},r=function(a){var b=a.el||a;d.appendChild(b)};return{el:d,addListener:i,addClickListener:k,onShowEvent:g,onHideEvent:h,show:l,hide:m,isShowing:n,html:o,text:p,remove:q,add:r}}var e=a("./ModalEvent");b.exports=d},{"./ModalEvent":3}],2:[function(a,b,c){function d(a,b,c,f,g){if(void 0!==a){b=b||{};var h,i=e("div","nanoModal nanoModalOverride "+(b.classes||"")),j=e("div","nanoModalContent"),k=e("div","nanoModalButtons");i.add(j),i.add(k),i.el.style.display="none";var l,m=[];b.buttons=b.buttons||[{text:"Close",handler:"hide",primary:!0}];var n=function(){for(var a=m.length;a-->0;){var b=m[a];b.remove()}m=[]},o=function(){i.el.style.marginLeft=-i.el.clientWidth/2+"px"},p=function(){for(var a=document.querySelectorAll(".nanoModal"),b=a.length;b-->0;)if("none"!==a[b].style.display)return!0;return!1},q=function(){i.isShowing()||(d.resizeOverlay(),c.show(c),i.show(l),o())},r=function(){i.isShowing()&&(i.hide(l),p()||c.hide(c),b.autoRemove&&l.remove())},s=function(a){var b={};for(var c in a)a.hasOwnProperty(c)&&(b[c]=a[c]);return b};return l={modal:i,overlay:c,show:function(){return f?f(q,l):q(),l},hide:function(){return g?g(r,l):r(),l},onShow:function(a){return i.onShowEvent.addListener(function(){a(l)}),l},onHide:function(a){return i.onHideEvent.addListener(function(){a(l)}),l},remove:function(){c.onRequestHide.removeListener(h),h=null,n(),i.remove()},setButtons:function(a){var b,c,d,f=a.length,g=function(a,b){var c=s(l);a.addClickListener(function(a){c.event=a||window.event,b.handler(c)})};if(n(),0===f)k.hide();else for(k.show();f-->0;)b=a[f],d="nanoModalBtn",b.primary&&(d+=" nanoModalBtnPrimary"),d+=b.classes?" "+b.classes:"",c=e("button",d),"hide"===b.handler?c.addClickListener(l.hide):b.handler&&g(c,b),c.text(b.text),k.add(c),m.push(c);return o(),l},setContent:function(b){return b.nodeType?(j.html(""),j.add(b)):j.html(b),o(),a=b,l},getContent:function(){return a}},h=c.onRequestHide.addListener(function(){b.overlayClose!==!1&&i.isShowing()&&l.hide()}),l.setContent(a).setButtons(b.buttons),document.body.appendChild(i.el),l}}var e=a("./El"),f=document,g=function(a){var b=f.documentElement,c="scroll"+a,d="offset"+a;return Math.max(f.body[c],b[c],f.body[d],b[d],b["client"+a])};d.resizeOverlay=function(){var a=f.getElementById("nanoModalOverlay");a.style.width=g("Width")+"px",a.style.height=g("Height")+"px"},b.exports=d},{"./El":1}],3:[function(a,b,c){function d(){var a={},b=0,c=function(c){return a[b]=c,b++},d=function(b){b&&delete a[b]},e=function(){a={}},f=function(){for(var c=0,d=b;d>c;++c)a[c]&&a[c].apply(null,arguments)};return{addListener:c,removeListener:d,removeAllListeners:e,fire:f}}b.exports=d},{}],4:[function(a,b,c){var d=a("./ModalEvent"),e=function(){function b(){if(!g.querySelector("#nanoModalOverlay")){var a=e("style"),b=a.el,h=g.querySelectorAll("head")[0].childNodes[0];h.parentNode.insertBefore(b,h);var i=".nanoModal{position:absolute;top:100px;left:50%;display:none;z-index:9999;min-width:300px;padding:15px 20px 10px;-webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;background:#fff;background:-moz-linear-gradient(top,#fff 0,#ddd 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#fff),color-stop(100%,#ddd));background:-webkit-linear-gradient(top,#fff 0,#ddd 100%);background:-o-linear-gradient(top,#fff 0,#ddd 100%);background:-ms-linear-gradient(top,#fff 0,#ddd 100%);background:linear-gradient(to bottom,#fff 0,#ddd 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dddddd', GradientType=0)}.nanoModalOverlay{position:absolute;top:0;left:0;width:100%;height:100%;z-index:9998;background:#000;display:none;-ms-filter:\"alpha(Opacity=50)\";-moz-opacity:.5;-khtml-opacity:.5;opacity:.5}.nanoModalButtons{border-top:1px solid #ddd;margin-top:15px;text-align:right}.nanoModalBtn{color:#333;background-color:#fff;display:inline-block;padding:6px 12px;margin:8px 4px 0;font-size:14px;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:1px solid transparent;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px}.nanoModalBtn:active,.nanoModalBtn:focus,.nanoModalBtn:hover{color:#333;background-color:#e6e6e6;border-color:#adadad}.nanoModalBtn.nanoModalBtnPrimary{color:#fff;background-color:#428bca;border-color:#357ebd}.nanoModalBtn.nanoModalBtnPrimary:active,.nanoModalBtn.nanoModalBtnPrimary:focus,.nanoModalBtn.nanoModalBtnPrimary:hover{color:#fff;background-color:#3071a9;border-color:#285e8e}";b.styleSheet?b.styleSheet.cssText=i:a.text(i),c=e("div","nanoModalOverlay nanoModalOverride"),c.el.id="nanoModalOverlay",g.body.appendChild(c.el),c.onRequestHide=d();var j=function(){c.onRequestHide.fire()};c.addClickListener(j),e(g).addListener("keydown",function(a){var b=a.which||a.keyCode;27===b&&j()});var k,l=e(window);l.addListener("resize",function(){k&&clearTimeout(k),k=setTimeout(f.resizeOverlay,100)}),l.addListener("orientationchange",function(){for(var a=0;3>a;++a)setTimeout(f.resizeOverlay,1e3*a+200)})}}var c,e=a("./El"),f=a("./Modal"),g=document;document.body&&b();var h=function(a,d){return b(),f(a,d,c,h.customShow,h.customHide)};return h.resizeOverlay=f.resizeOverlay,h}();nanoModal=e},{"./El":1,"./Modal":2,"./ModalEvent":3}]},{},[1,2,3,4]),"undefined"!=typeof window&&("function"==typeof window.define&&window.define.amd&&window.define(function(){return nanoModal}),window.nanoModal=nanoModal),"undefined"!=typeof module&&(module.exports=nanoModal);
+	var baseEach = __webpack_require__(106),
+	    baseFind = __webpack_require__(111),
+	    baseFindIndex = __webpack_require__(112),
+	    baseIteratee = __webpack_require__(31),
+	    isArray = __webpack_require__(30);
+	
+	/**
+	 * Iterates over elements of `collection`, returning the first element
+	 * `predicate` returns truthy for. The predicate is invoked with three arguments:
+	 * (value, index|key, collection).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Collection
+	 * @param {Array|Object} collection The collection to search.
+	 * @param {Function|Object|string} [predicate=_.identity] The function invoked per iteration.
+	 * @returns {*} Returns the matched element, else `undefined`.
+	 * @example
+	 *
+	 * var users = [
+	 *   { 'user': 'barney',  'age': 36, 'active': true },
+	 *   { 'user': 'fred',    'age': 40, 'active': false },
+	 *   { 'user': 'pebbles', 'age': 1,  'active': true }
+	 * ];
+	 *
+	 * _.find(users, function(o) { return o.age < 40; });
+	 * // => object for 'barney'
+	 *
+	 * // using the `_.matches` iteratee shorthand
+	 * _.find(users, { 'age': 1, 'active': true });
+	 * // => object for 'pebbles'
+	 *
+	 * // using the `_.matchesProperty` iteratee shorthand
+	 * _.find(users, ['active', false]);
+	 * // => object for 'fred'
+	 *
+	 * // using the `_.property` iteratee shorthand
+	 * _.find(users, 'active');
+	 * // => object for 'barney'
+	 */
+	function find(collection, predicate) {
+	  predicate = baseIteratee(predicate, 3);
+	  if (isArray(collection)) {
+	    var index = baseFindIndex(collection, predicate);
+	    return index > -1 ? collection[index] : undefined;
+	  }
+	  return baseFind(collection, predicate, baseEach);
+	}
+	
+	module.exports = find;
+
 
 /***/ },
 /* 106 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseForOwn = __webpack_require__(107),
+	    createBaseEach = __webpack_require__(110);
+	
+	/**
+	 * The base implementation of `_.forEach` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array|Object} collection The collection to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array|Object} Returns `collection`.
+	 */
+	var baseEach = createBaseEach(baseForOwn);
+	
+	module.exports = baseEach;
+
+
+/***/ },
+/* 107 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseFor = __webpack_require__(108),
+	    keys = __webpack_require__(74);
+	
+	/**
+	 * The base implementation of `_.forOwn` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Object} object The object to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Object} Returns `object`.
+	 */
+	function baseForOwn(object, iteratee) {
+	  return object && baseFor(object, iteratee, keys);
+	}
+	
+	module.exports = baseForOwn;
+
+
+/***/ },
+/* 108 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var createBaseFor = __webpack_require__(109);
+	
+	/**
+	 * The base implementation of `baseForIn` and `baseForOwn` which iterates
+	 * over `object` properties returned by `keysFunc` invoking `iteratee` for
+	 * each property. Iteratee functions may exit iteration early by explicitly
+	 * returning `false`.
+	 *
+	 * @private
+	 * @param {Object} object The object to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @param {Function} keysFunc The function to get the keys of `object`.
+	 * @returns {Object} Returns `object`.
+	 */
+	var baseFor = createBaseFor();
+	
+	module.exports = baseFor;
+
+
+/***/ },
+/* 109 */
 /***/ function(module, exports) {
 
-	"use strict";
+	/**
+	 * Creates a base function for methods like `_.forIn`.
+	 *
+	 * @private
+	 * @param {boolean} [fromRight] Specify iterating from right to left.
+	 * @returns {Function} Returns the new base function.
+	 */
+	function createBaseFor(fromRight) {
+	  return function(object, iteratee, keysFunc) {
+	    var index = -1,
+	        iterable = Object(object),
+	        props = keysFunc(object),
+	        length = props.length;
 	
-	module.exports = {
-	    "categories": [{
-	        "name": "Pizzakenyerek",
-	        "id": "pizzakenyerek"
-	    }, {
-	        "name": "Klasszikus pizzák",
-	        "id": "klasszikus-pizzak"
-	    }, {
-	        "name": "Extra pizzák",
-	        "id": "extra-pizzak"
-	    }, {
-	        "name": "Full a fullban pizzák",
-	        "id": "full-a-fullban-pizzak"
-	    }, {
-	        "name": "Meex specialitás",
-	        "id": "meex-specialitas"
-	    }, {
-	        "name": "Tészták",
-	        "id": "tesztak"
-	    }, {
-	        "name": "Rántott sajtok",
-	        "id": "rantott-sajtok"
-	    }, {
-	        "name": "Frissensültek",
-	        "id": "frissensultek"
-	    }, {
-	        "name": "Hamburgerek",
-	        "id": "hamburgerek"
-	    }, {
-	        "name": "Hamburger menük",
-	        "id": "hamburger-menuk"
-	    }, {
-	        "name": "Fitnesz szendvicsek",
-	        "id": "fitnesz-szendvicsek"
-	    }, {
-	        "name": "Saláták",
-	        "id": "salatak"
-	    }, {
-	        "name": "Édességek",
-	        "id": "edessegek"
-	    }, {
-	        "name": "Üdítők",
-	        "id": "uditok"
-	    }],
-	    "dishes": [{
-	        "categoryId": "pizzakenyerek",
-	        "id": "pizzakenyer",
-	        "category": "Pizzakenyerek",
-	        "name": "Pizzakenyér",
-	        "description": "TODO",
-	        "imageName": "pizzakenyer",
-	        "type": "none",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 500
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "pizzakenyerek",
-	        "id": "sajtos-fokhagymas-pizzakenyer",
-	        "category": "Pizzakenyerek",
-	        "name": "Sajtos-fokhagymás pizzakenyér",
-	        "description": "sajt, fokhagyma, fűszerkeverék",
-	        "imageName": "pizzakenyer",
-	        "type": "none",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 600
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "klasszikus-pizzak",
-	        "id": "margarita-pizza",
-	        "category": "Klasszikus pizzák",
-	        "name": "Margarita pizza",
-	        "description": "fűszeres paradicsomszósz, sajt",
-	        "imageName": "margarita-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 850
-	        }, {
-	            "name": "40cm",
-	            "price": 1850
-	        }, {
-	            "name": "50cm",
-	            "price": 2700
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "klasszikus-pizzak",
-	        "id": "sonkas-pizza",
-	        "category": "Klasszikus pizzák",
-	        "name": "Sonkás pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, sonka",
-	        "imageName": "sonkas-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1070
-	        }, {
-	            "name": "40cm",
-	            "price": 2070
-	        }, {
-	            "name": "50cm",
-	            "price": 2920
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "klasszikus-pizzak",
-	        "id": "szalamis-pizza",
-	        "category": "Klasszikus pizzák",
-	        "name": "Szalámis pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, paprikás szalámi",
-	        "imageName": "szalamis-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1070
-	        }, {
-	            "name": "40cm",
-	            "price": 2070
-	        }, {
-	            "name": "50cm",
-	            "price": 2920
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "klasszikus-pizzak",
-	        "id": "sonka-ku-pizza",
-	        "category": "Klasszikus pizzák",
-	        "name": "Sonka-ku pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, sonka, kukorica",
-	        "imageName": "sonka-ku-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1070
-	        }, {
-	            "name": "40cm",
-	            "price": 2070
-	        }, {
-	            "name": "50cm",
-	            "price": 2920
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "klasszikus-pizzak",
-	        "id": "bacon-pizza",
-	        "category": "Klasszikus pizzák",
-	        "name": "Bacon pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, pirított bacon",
-	        "imageName": "bacon-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1070
-	        }, {
-	            "name": "40cm",
-	            "price": 2070
-	        }, {
-	            "name": "50cm",
-	            "price": 2920
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "klasszikus-pizzak",
-	        "id": "4-sajtos-pizza",
-	        "category": "Klasszikus pizzák",
-	        "name": "4 Sajtos pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, parmezán, gorgonzola, füstölt sajt",
-	        "imageName": "4-sajtos-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1070
-	        }, {
-	            "name": "40cm",
-	            "price": 2070
-	        }, {
-	            "name": "50cm",
-	            "price": 2920
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "klasszikus-pizzak",
-	        "id": "hawaii-pizza",
-	        "category": "Klasszikus pizzák",
-	        "name": "Hawaii pizza",
-	        "description": "fűszeres paradicsomszósz vagy fűszeres tejfölös szósz, sajt, sonka, ananász, füstölt sajt",
-	        "imageName": "hawaii-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1070
-	        }, {
-	            "name": "40cm",
-	            "price": 2070
-	        }, {
-	            "name": "50cm",
-	            "price": 2920
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "extra-pizzak",
-	        "id": "zoldseges-pizza",
-	        "category": "Extra pizzák",
-	        "name": "Zöldséges pizza",
-	        "description": "fokhagymás tejfölös alap, sajt, padlizsán karikák, cukkini, répa szeletek, párolt fűszeres csirkemell",
-	        "imageName": "zoldseges-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1190
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "extra-pizzak",
-	        "id": "tonhalas-pizza",
-	        "category": "Extra pizzák",
-	        "name": "Tonhalas pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek",
-	        "imageName": "tonhalas-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1190
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "extra-pizzak",
-	        "id": "piedone-pizza",
-	        "category": "Extra pizzák",
-	        "name": "Piedone pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika",
-	        "imageName": "piedone-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1190
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "extra-pizzak",
-	        "id": "joasszony-pizza",
-	        "category": "Extra pizzák",
-	        "name": "Jóasszony pizza",
-	        "description": "fűszeres paradicsomszósz alap, sajt, paprikás szalámi, csípős cseresznyepaprika, csiperke gomba, hagyma",
-	        "imageName": "joasszony-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1190
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "extra-pizzak",
-	        "id": "3-kivansag-pizza",
-	        "category": "Extra pizzák",
-	        "name": "3 Kívánság pizza",
-	        "description": "szabadon választott szósz alap, sajt, és pluszban három feltét",
-	        "imageName": "3-kivansag-pizza",
-	        "type": "pizza-3-free-options",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1190
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "victorio-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Victorio pizza",
-	        "description": "fokhagymás tejfölös alap, sajt, póréhagyma, mozzarella golyó, pirított bacon, juhturó",
-	        "imageName": "victorio-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "hus-zabalo-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Hús-zabáló pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, csirkemell, sült tarja, sonka, bacon",
-	        "imageName": "hus-zabalo-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "master-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Master pizza",
-	        "description": "tejfölös mustáros tárkonyos ízvilág, sajt, sonka, kukorica, pirított bacon, csiperke gomba",
-	        "imageName": "master-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "barbeque-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Barbeque pizza",
-	        "description": "bbq alap szósz, sajt, bacon vagy csirkemell, vöröshagyma, pritamin paprika szeletek",
-	        "imageName": "barbeque-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "jalapeno-barbeque-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Jalapeno Barbeque pizza",
-	        "description": "fokhagymás bbq szósz, sajt, csirkemell, pirított póréhagyma, paradicsomkarika , jalapeno",
-	        "imageName": "jalapeno-barbeque-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "tenger-kincsei-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Tenger kincsei pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, pácban érlelt tenger gyümölcsei, vegyes magozott olíva bogyó",
-	        "imageName": "tenger-kincsei-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "dani-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Dani pizza",
-	        "description": "tejfölös fokhagymás alap, sajt, főtt tarja, lila hagyma, bacon, szeletekre vágott jalapeno paprika",
-	        "imageName": "dani-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "meex-toltott-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Meex töltött pizza",
-	        "description": "tejfölös alap, paprikás szalámi, ruccola, ízletes cheddar sajt, jalapeno paprika",
-	        "imageName": "meex-toltott-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "bossy-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Bossy pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, pármai sonka, frissen vágott ruccola, koktél paradicsom",
-	        "imageName": "bossy-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "meex-specialitas",
-	        "id": "akay-torok-pizza",
-	        "category": "Meex specialitás",
-	        "name": "Akay - török pizza",
-	        "description": "fűszeres paradicsomos alap, sajt, sonka",
-	        "imageName": "akay-torok-pizza",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 490
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "meex-specialitas",
-	        "id": "banu-torok-pizza",
-	        "category": "Meex specialitás",
-	        "name": "Banu - török pizza",
-	        "description": "tejfölös alap, sajt, tarja, pirított fokhagyma",
-	        "imageName": "banu-torok-pizza",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 490
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "meex-specialitas",
-	        "id": "cahil-torok-pizza",
-	        "category": "Meex specialitás",
-	        "name": "Cahil - török pizza",
-	        "description": "bbq alap, sajt, ropogós bacon",
-	        "imageName": "cahil-torok-pizza",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 490
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "tesztak",
-	        "id": "carbonara",
-	        "category": "Tészták",
-	        "name": "Carbonara",
-	        "description": "bacon, sonka, tojás, tejszín, parmezán sajt, spagetti",
-	        "imageName": "carbonara",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "tesztak",
-	        "id": "milanoi",
-	        "category": "Tészták",
-	        "name": "Milánói",
-	        "description": "paradicsomszósz, sonka, gomba, trappista sajt, spagetti",
-	        "imageName": "milanoi",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "tesztak",
-	        "id": "peperoncino",
-	        "category": "Tészták",
-	        "name": "Peperoncino",
-	        "description": "pirított fokhagymás olívaolaj, chili, petrezselyem, csípős, spagetti",
-	        "imageName": "peperoncino",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "tesztak",
-	        "id": "meex",
-	        "category": "Tészták",
-	        "name": "Meex",
-	        "description": "csirke, gomba, fokhagyma, fűszeres tejszínes szósz, parmezán, spagetti",
-	        "imageName": "meex",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1190
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "rantott-sajtok",
-	        "id": "izletes-cheddar-sajtfalatkak",
-	        "category": "Rántott sajtok",
-	        "name": "Ízletes cheddar sajtfalatkák",
-	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
-	        "imageName": "rantottsajt-cheddar",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1390
-	        }],
-	        "options": [{
-	            "name": "Köretek",
-	            "list": ["hasábburgonya", "steakburgonya"]
-	        }, {
-	            "name": "Szószok",
-	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
-	        }]
-	    }, {
-	        "categoryId": "rantott-sajtok",
-	        "id": "camembert-sajt",
-	        "category": "Rántott sajtok",
-	        "name": "Camembert sajt",
-	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
-	        "imageName": "rantottsajt-camambert",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1290
-	        }],
-	        "options": [{
-	            "name": "Köretek",
-	            "list": ["hasábburgonya", "steakburgonya"]
-	        }, {
-	            "name": "Szószok",
-	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
-	        }]
-	    }, {
-	        "categoryId": "rantott-sajtok",
-	        "id": "trappista-sajt",
-	        "category": "Rántott sajtok",
-	        "name": "Trappista sajt",
-	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
-	        "imageName": "rantottsajt-trappista",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1190
-	        }],
-	        "options": [{
-	            "name": "Köretek",
-	            "list": ["hasábburgonya", "steakburgonya"]
-	        }, {
-	            "name": "Szószok",
-	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
-	        }]
-	    }, {
-	        "categoryId": "frissensultek",
-	        "id": "buffalo-csirkeszarnyak",
-	        "category": "Frissensültek",
-	        "name": "Buffalo csirkeszárnyak",
-	        "description": "TODO",
-	        "imageName": "buffalo-csirkeszarnyak",
-	        "type": "none",
-	        "variants": [{
-	            "name": "6 darabos",
-	            "price": 780
-	        }, {
-	            "name": "12 darabos",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "frissensultek",
-	        "id": "buffalo-csirkeszarnyak-menu",
-	        "category": "Frissensültek",
-	        "name": "Buffalo csirkeszárnyak menü",
-	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
-	        "imageName": "buffalo-csirkeszarnyak",
-	        "type": "none",
-	        "variants": [{
-	            "name": "6 darabos",
-	            "price": 1190
-	        }, {
-	            "name": "12 darabos",
-	            "price": 1350
-	        }],
-	        "options": [{
-	            "name": "Köretek",
-	            "list": ["hasábburgonya", "steakburgonya"]
-	        }, {
-	            "name": "Szószok",
-	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
-	        }]
-	    }, {
-	        "categoryId": "hamburgerek",
-	        "id": "meex-burger",
-	        "category": "Hamburgerek",
-	        "name": "Meex burger",
-	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa",
-	        "imageName": "meex-burger",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "",
-	            "price": 750
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "hamburgerek",
-	        "id": "meex-sajtburger",
-	        "category": "Hamburgerek",
-	        "name": "Meex sajtburger",
-	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt",
-	        "imageName": "meex-burger",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "",
-	            "price": 850
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "hamburgerek",
-	        "id": "dupla-meex-burger",
-	        "category": "Hamburgerek",
-	        "name": "Dupla Meex burger",
-	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa",
-	        "imageName": "meex-burger",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "",
-	            "price": 1250
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "hamburgerek",
-	        "id": "dupla-meex-sajtburger",
-	        "category": "Hamburgerek",
-	        "name": "Dupla Meex sajtburger",
-	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt",
-	        "imageName": "meex-burger",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "",
-	            "price": 1450
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "hamburger-menuk",
-	        "id": "meex-burger-menu",
-	        "category": "Hamburger menük",
-	        "name": "Meex Burger Menü",
-	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
-	        "imageName": "meex-burger-menu",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "",
-	            "price": 990
-	        }],
-	        "options": [{
-	            "name": "Köretek",
-	            "list": ["hasábburgonya", "steakburgonya"]
-	        }, {
-	            "name": "Szószok",
-	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
-	        }]
-	    }, {
-	        "categoryId": "hamburger-menuk",
-	        "id": "meex-sajtburger-menu",
-	        "category": "Hamburger menük",
-	        "name": "Meex Sajtburger Menü",
-	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
-	        "imageName": "meex-burger-menu",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "",
-	            "price": 1090
-	        }],
-	        "options": [{
-	            "name": "Köretek",
-	            "list": ["hasábburgonya", "steakburgonya"]
-	        }, {
-	            "name": "Szószok",
-	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
-	        }]
-	    }, {
-	        "categoryId": "hamburger-menuk",
-	        "id": "dupla-meex-burger-menu",
-	        "category": "Hamburger menük",
-	        "name": "Dupla Meex Burger Menü",
-	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
-	        "imageName": "meex-burger-menu",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "",
-	            "price": 1490
-	        }],
-	        "options": [{
-	            "name": "Köretek",
-	            "list": ["hasábburgonya", "steakburgonya"]
-	        }, {
-	            "name": "Szószok",
-	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
-	        }]
-	    }, {
-	        "categoryId": "hamburger-menuk",
-	        "id": "dupla-meex-sajtburger-menu",
-	        "category": "Hamburger menük",
-	        "name": "Dupla Meex Sajtburger Menü",
-	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
-	        "imageName": "meex-burger-menu",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "",
-	            "price": 1490
-	        }],
-	        "options": [{
-	            "name": "Köretek",
-	            "list": ["hasábburgonya", "steakburgonya"]
-	        }, {
-	            "name": "Szószok",
-	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
-	        }]
-	    }, {
-	        "categoryId": "fitnesz-szendvicsek",
-	        "id": "purpur",
-	        "category": "Fitnesz szendvicsek",
-	        "name": "Purpur",
-	        "description": "szénhidrátcsökkentett magvas baguette, friss jégsaláta, paradicsom, uborka, fűszeres grillezett csirkemell (16dkg)",
-	        "imageName": "purpur",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 590
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "salatak",
-	        "id": "primor-salata",
-	        "category": "Saláták",
-	        "name": "Primőr saláta",
-	        "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola nyakon öntve vinegrettével, pizzakenyér szeletekkel tálalva",
-	        "imageName": "primor-salata",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 650
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "salatak",
-	        "id": "mozarella-salata",
-	        "category": "Saláták",
-	        "name": "Mozarella saláta",
-	        "description": "mozarella golyók, paradicsomkarikák, olívaolajos bazsalikommal és oregánóval, pizzakenyér szeletekkel tálalva",
-	        "imageName": "mozarella-salata",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 800
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "salatak",
-	        "id": "tonhal-salata",
-	        "category": "Saláták",
-	        "name": "Tonhal saláta",
-	        "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, tonhaltörzs, sajtkocka, pizzakenyér szeletekkel tálalva",
-	        "imageName": "tonhal-salata",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1080
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "salatak",
-	        "id": "cezar-salata",
-	        "category": "Saláták",
-	        "name": "Cézár saláta",
-	        "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, grillezett fűszeres csirkemell, parmezán, pizzakenyér szeletekkel tálalva",
-	        "imageName": "cezar-salata",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1080
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "edessegek",
-	        "id": "profiterol",
-	        "category": "Édességek",
-	        "name": "Profiterol",
-	        "description": "Profiterol golyók fehér- és tejcsokoládé bevonattal, tejszínhab koronával",
-	        "imageName": "profiterol",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 600
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "uditok",
-	        "id": "pepsi",
-	        "category": "Üdítők",
-	        "name": "Pepsi",
-	        "description": "",
-	        "imageName": "pepsi",
-	        "type": "none",
-	        "variants": [{
-	            "name": "1,75 literes",
-	            "price": 480
-	        }, {
-	            "name": "1 literes",
-	            "price": 350
-	        }, {
-	            "name": "0,33 literes",
-	            "price": 190
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "uditok",
-	        "id": "pepsi-max",
-	        "category": "Üdítők",
-	        "name": "Pepsi Max",
-	        "description": "",
-	        "imageName": "pepsi-max",
-	        "type": "none",
-	        "variants": [{
-	            "name": "1,75 literes",
-	            "price": 480
-	        }, {
-	            "name": "1 literes",
-	            "price": 350
-	        }, {
-	            "name": "0,33 literes",
-	            "price": 190
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "uditok",
-	        "id": "mirinda",
-	        "category": "Üdítők",
-	        "name": "Mirinda",
-	        "description": "",
-	        "imageName": "mirinda",
-	        "type": "none",
-	        "variants": [{
-	            "name": "1,75 literes",
-	            "price": 480
-	        }, {
-	            "name": "1 literes",
-	            "price": 350
-	        }, {
-	            "name": "0,33 literes",
-	            "price": 190
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "uditok",
-	        "id": "canada-dry",
-	        "category": "Üdítők",
-	        "name": "Canada Dry",
-	        "description": "",
-	        "imageName": "canada-dry",
-	        "type": "none",
-	        "variants": [{
-	            "name": "1,75 literes",
-	            "price": 480
-	        }, {
-	            "name": "1 literes",
-	            "price": 350
-	        }, {
-	            "name": "0,33 literes",
-	            "price": 190
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "uditok",
-	        "id": "lipton-ice-tea",
-	        "category": "Üdítők",
-	        "name": "Lipton Ice Tea",
-	        "description": "",
-	        "imageName": "lipton-ice-tea",
-	        "type": "none",
-	        "variants": [{
-	            "name": "0,33 literes",
-	            "price": 190
-	        }],
-	        "options": []
-	    }],
-	    "pizzaExtras": [{
-	        "name": "Húsok",
-	        "price": 250,
-	        "list": ["sonka", "tarja", "bacon", "szalámi", "csirkemell"]
-	    }, {
-	        "name": "Halféleségek",
-	        "price": 300,
-	        "list": ["tengergyümölcsei", "tonhal"]
-	    }, {
-	        "name": "Prémium sonkák",
-	        "price": 450,
-	        "list": ["pármai", "serrano", "mangalica"]
-	    }, {
-	        "name": "Tejes készítmények, sajtok",
-	        "price": 250,
-	        "list": ["tejföl", "juhtúró", "sajt", "füstölt sajt"]
-	    }, {
-	        "name": "Prémium sajtok",
-	        "price": 300,
-	        "list": ["gorgonzola sajt", "parmezán sajt", "mozzarella golyó", "feta sajt"]
-	    }, {
-	        "name": "Zöldségek",
-	        "price": 150,
-	        "list": ["kukorica", "gomba", "fokhagyma", "hagyma", "póréhagyma", "capribogyó", "fehér és vörös óriásbab", "édes pepperóni", "erős cseresznyepaprika", "jalapeno paprika", "padlizsán", "cukkini", "répa", "pritamin paprika", "magozott zöld és fekete olívabogyó", "ruccola", "paradicsom", "brokkoli"]
-	    }, {
-	        "name": "Gyümölcsök",
-	        "price": 150,
-	        "list": ["ananász", "citrom"]
-	    }],
-	    "hamburgerExtras": [{
-	        "name": "Zöldségek",
-	        "price": 100,
-	        "list": ["jégsaláta", "paradicsom", "uborka"]
-	    }, {
-	        "name": "Húsok",
-	        "price": 300,
-	        "list": ["Húspogácsa"]
-	    }, {
-	        "name": "Sajtok",
-	        "price": 150,
-	        "list": ["parmezán", "gorgonzola", "cheddar"]
-	    }],
-	    "version": "0c23a4c8fa1a92bfac5e83e030452f01"
-	};
+	    while (length--) {
+	      var key = props[fromRight ? length : ++index];
+	      if (iteratee(iterable[key], key, iterable) === false) {
+	        break;
+	      }
+	    }
+	    return object;
+	  };
+	}
+	
+	module.exports = createBaseFor;
+
+
+/***/ },
+/* 110 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isArrayLike = __webpack_require__(23);
+	
+	/**
+	 * Creates a `baseEach` or `baseEachRight` function.
+	 *
+	 * @private
+	 * @param {Function} eachFunc The function to iterate over a collection.
+	 * @param {boolean} [fromRight] Specify iterating from right to left.
+	 * @returns {Function} Returns the new base function.
+	 */
+	function createBaseEach(eachFunc, fromRight) {
+	  return function(collection, iteratee) {
+	    if (collection == null) {
+	      return collection;
+	    }
+	    if (!isArrayLike(collection)) {
+	      return eachFunc(collection, iteratee);
+	    }
+	    var length = collection.length,
+	        index = fromRight ? length : -1,
+	        iterable = Object(collection);
+	
+	    while ((fromRight ? index-- : ++index < length)) {
+	      if (iteratee(iterable[index], index, iterable) === false) {
+	        break;
+	      }
+	    }
+	    return collection;
+	  };
+	}
+	
+	module.exports = createBaseEach;
+
+
+/***/ },
+/* 111 */
+/***/ function(module, exports) {
+
+	/**
+	 * The base implementation of methods like `_.find` and `_.findKey`, without
+	 * support for iteratee shorthands, which iterates over `collection` using
+	 * `eachFunc`.
+	 *
+	 * @private
+	 * @param {Array|Object} collection The collection to search.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @param {Function} eachFunc The function to iterate over `collection`.
+	 * @param {boolean} [retKey] Specify returning the key of the found element instead of the element itself.
+	 * @returns {*} Returns the found element or its key, else `undefined`.
+	 */
+	function baseFind(collection, predicate, eachFunc, retKey) {
+	  var result;
+	  eachFunc(collection, function(value, key, collection) {
+	    if (predicate(value, key, collection)) {
+	      result = retKey ? key : value;
+	      return false;
+	    }
+	  });
+	  return result;
+	}
+	
+	module.exports = baseFind;
+
+
+/***/ },
+/* 112 */
+/***/ function(module, exports) {
+
+	/**
+	 * The base implementation of `_.findIndex` and `_.findLastIndex` without
+	 * support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array} array The array to search.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @param {boolean} [fromRight] Specify iterating from right to left.
+	 * @returns {number} Returns the index of the matched value, else `-1`.
+	 */
+	function baseFindIndex(array, predicate, fromRight) {
+	  var length = array.length,
+	      index = fromRight ? length : -1;
+	
+	  while ((fromRight ? index-- : ++index < length)) {
+	    if (predicate(array[index], index, array)) {
+	      return index;
+	    }
+	  }
+	  return -1;
+	}
+	
+	module.exports = baseFindIndex;
+
+
+/***/ },
+/* 113 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var require;var require;var nanoModal;!function a(b,c,d){function e(g,h){if(!c[g]){if(!b[g]){var i="function"==typeof require&&require;if(!h&&i)return require(g,!0);if(f)return f(g,!0);throw new Error("Cannot find module '"+g+"'")}var j=c[g]={exports:{}};b[g][0].call(j.exports,function(a){var c=b[g][1][a];return e(c?c:a)},j,j.exports,a,b,c,d)}return c[g].exports}for(var f="function"==typeof require&&require,g=0;g<d.length;g++)e(d[g]);return e}({1:[function(a,b,c){function d(a,b){var c=document,d=a.nodeType||a===window?a:c.createElement(a),f=[];b&&(d.className=b);var g=e(),h=e(),i=function(a,b){d.addEventListener?d.addEventListener(a,b,!1):d.attachEvent("on"+a,b),f.push({event:a,handler:b})},j=function(a,b){d.removeEventListener?d.removeEventListener(a,b):d.detachEvent("on"+a,b);for(var c,e=f.length;e-->0;)if(c=f[e],c.event===a&&c.handler===b){f.splice(e,1);break}},k=function(a){var b=!1,c=function(c){b||(b=!0,setTimeout(function(){b=!1},100),a(c))};i("touchstart",c),i("mousedown",c)},l=function(a){d&&(d.style.display="block",g.fire(a))},m=function(a){d&&(d.style.display="none",h.fire(a))},n=function(){return d.style&&"block"===d.style.display},o=function(a){d&&(d.innerHTML=a)},p=function(a){d&&(o(""),d.appendChild(c.createTextNode(a)))},q=function(){if(d.parentNode){for(var a,b=f.length;b-->0;)a=f[b],j(a.event,a.handler);d.parentNode.removeChild(d),g.removeAllListeners(),h.removeAllListeners()}},r=function(a){var b=a.el||a;d.appendChild(b)};return{el:d,addListener:i,addClickListener:k,onShowEvent:g,onHideEvent:h,show:l,hide:m,isShowing:n,html:o,text:p,remove:q,add:r}}var e=a("./ModalEvent");b.exports=d},{"./ModalEvent":3}],2:[function(a,b,c){function d(a,b,c,f,g){if(void 0!==a){b=b||{};var h,i=e("div","nanoModal nanoModalOverride "+(b.classes||"")),j=e("div","nanoModalContent"),k=e("div","nanoModalButtons");i.add(j),i.add(k),i.el.style.display="none";var l,m=[];b.buttons=b.buttons||[{text:"Close",handler:"hide",primary:!0}];var n=function(){for(var a=m.length;a-->0;){var b=m[a];b.remove()}m=[]},o=function(){i.el.style.marginLeft=-i.el.clientWidth/2+"px"},p=function(){for(var a=document.querySelectorAll(".nanoModal"),b=a.length;b-->0;)if("none"!==a[b].style.display)return!0;return!1},q=function(){i.isShowing()||(d.resizeOverlay(),c.show(c),i.show(l),o())},r=function(){i.isShowing()&&(i.hide(l),p()||c.hide(c),b.autoRemove&&l.remove())},s=function(a){var b={};for(var c in a)a.hasOwnProperty(c)&&(b[c]=a[c]);return b};return l={modal:i,overlay:c,show:function(){return f?f(q,l):q(),l},hide:function(){return g?g(r,l):r(),l},onShow:function(a){return i.onShowEvent.addListener(function(){a(l)}),l},onHide:function(a){return i.onHideEvent.addListener(function(){a(l)}),l},remove:function(){c.onRequestHide.removeListener(h),h=null,n(),i.remove()},setButtons:function(a){var b,c,d,f=a.length,g=function(a,b){var c=s(l);a.addClickListener(function(a){c.event=a||window.event,b.handler(c)})};if(n(),0===f)k.hide();else for(k.show();f-->0;)b=a[f],d="nanoModalBtn",b.primary&&(d+=" nanoModalBtnPrimary"),d+=b.classes?" "+b.classes:"",c=e("button",d),"hide"===b.handler?c.addClickListener(l.hide):b.handler&&g(c,b),c.text(b.text),k.add(c),m.push(c);return o(),l},setContent:function(b){return b.nodeType?(j.html(""),j.add(b)):j.html(b),o(),a=b,l},getContent:function(){return a}},h=c.onRequestHide.addListener(function(){b.overlayClose!==!1&&i.isShowing()&&l.hide()}),l.setContent(a).setButtons(b.buttons),document.body.appendChild(i.el),l}}var e=a("./El"),f=document,g=function(a){var b=f.documentElement,c="scroll"+a,d="offset"+a;return Math.max(f.body[c],b[c],f.body[d],b[d],b["client"+a])};d.resizeOverlay=function(){var a=f.getElementById("nanoModalOverlay");a.style.width=g("Width")+"px",a.style.height=g("Height")+"px"},b.exports=d},{"./El":1}],3:[function(a,b,c){function d(){var a={},b=0,c=function(c){return a[b]=c,b++},d=function(b){b&&delete a[b]},e=function(){a={}},f=function(){for(var c=0,d=b;d>c;++c)a[c]&&a[c].apply(null,arguments)};return{addListener:c,removeListener:d,removeAllListeners:e,fire:f}}b.exports=d},{}],4:[function(a,b,c){var d=a("./ModalEvent"),e=function(){function b(){if(!g.querySelector("#nanoModalOverlay")){var a=e("style"),b=a.el,h=g.querySelectorAll("head")[0].childNodes[0];h.parentNode.insertBefore(b,h);var i=".nanoModal{position:absolute;top:100px;left:50%;display:none;z-index:9999;min-width:300px;padding:15px 20px 10px;-webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;background:#fff;background:-moz-linear-gradient(top,#fff 0,#ddd 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#fff),color-stop(100%,#ddd));background:-webkit-linear-gradient(top,#fff 0,#ddd 100%);background:-o-linear-gradient(top,#fff 0,#ddd 100%);background:-ms-linear-gradient(top,#fff 0,#ddd 100%);background:linear-gradient(to bottom,#fff 0,#ddd 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dddddd', GradientType=0)}.nanoModalOverlay{position:absolute;top:0;left:0;width:100%;height:100%;z-index:9998;background:#000;display:none;-ms-filter:\"alpha(Opacity=50)\";-moz-opacity:.5;-khtml-opacity:.5;opacity:.5}.nanoModalButtons{border-top:1px solid #ddd;margin-top:15px;text-align:right}.nanoModalBtn{color:#333;background-color:#fff;display:inline-block;padding:6px 12px;margin:8px 4px 0;font-size:14px;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:1px solid transparent;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px}.nanoModalBtn:active,.nanoModalBtn:focus,.nanoModalBtn:hover{color:#333;background-color:#e6e6e6;border-color:#adadad}.nanoModalBtn.nanoModalBtnPrimary{color:#fff;background-color:#428bca;border-color:#357ebd}.nanoModalBtn.nanoModalBtnPrimary:active,.nanoModalBtn.nanoModalBtnPrimary:focus,.nanoModalBtn.nanoModalBtnPrimary:hover{color:#fff;background-color:#3071a9;border-color:#285e8e}";b.styleSheet?b.styleSheet.cssText=i:a.text(i),c=e("div","nanoModalOverlay nanoModalOverride"),c.el.id="nanoModalOverlay",g.body.appendChild(c.el),c.onRequestHide=d();var j=function(){c.onRequestHide.fire()};c.addClickListener(j),e(g).addListener("keydown",function(a){var b=a.which||a.keyCode;27===b&&j()});var k,l=e(window);l.addListener("resize",function(){k&&clearTimeout(k),k=setTimeout(f.resizeOverlay,100)}),l.addListener("orientationchange",function(){for(var a=0;3>a;++a)setTimeout(f.resizeOverlay,1e3*a+200)})}}var c,e=a("./El"),f=a("./Modal"),g=document;document.body&&b();var h=function(a,d){return b(),f(a,d,c,h.customShow,h.customHide)};return h.resizeOverlay=f.resizeOverlay,h}();nanoModal=e},{"./El":1,"./Modal":2,"./ModalEvent":3}]},{},[1,2,3,4]),"undefined"!=typeof window&&("function"==typeof window.define&&window.define.amd&&window.define(function(){return nanoModal}),window.nanoModal=nanoModal),"undefined"!=typeof module&&(module.exports=nanoModal);
+
+/***/ },
+/* 114 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var H = __webpack_require__(115);
+	module.exports = function() { var T = new H.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");if(t.s(t.f("isEmpty",c,p,1),c,p,0,12,132,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<p class=\"default-content\">A kosár még üres. Az ételeket a \"Kosárba\" gomb megnyomásával adhatod hozzá a rendeléshez.</p>");});c.pop();}t.b(" ");if(t.s(t.f("lines",c,p,1),c,p,0,155,496,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<div class=\"line\"><div class=\"name\">");t.b(t.v(t.f("name",c,p,0)));t.b("</div><div class=\"price\">");t.b(t.v(t.f("price",c,p,0)));t.b(" Ft</div><div class=\"actions\"><button data-duplicate-order-item=\"");t.b(t.v(t.f("id",c,p,0)));t.b("\"><svg><use xlink:href=\"#icon-plus\"></use></svg> Még</button> <button data-remove-order-item=\"");t.b(t.v(t.f("id",c,p,0)));t.b("\"><svg><use xlink:href=\"#icon-minus\"></use></svg> Ki a kosárból</button></div></div>");});c.pop();}t.b(" ");if(t.s(t.f("deliveryFee",c,p,1),c,p,0,523,613,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<div class=\"delivery-fee\"><div>Kiszállítási díj</div><div>");t.b(t.v(t.f("deliveryFee",c,p,0)));t.b(" Ft</div></div>");});c.pop();}t.b(" ");if(t.s(t.f("total",c,p,1),c,p,0,640,685,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<div>Végösszeg</div><div>");t.b(t.v(t.f("total",c,p,0)));t.b(" Ft</div>");});c.pop();}t.b(" ");if(t.s(t.f("showMinForFreeDeliveryMessage",c,p,1),c,p,0,730,812,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<p>A minimális ");t.b(t.v(t.f("minForFreeDelivery",c,p,0)));t.b(" Ft rendelési értéket még nem érted el.</p>");});c.pop();}return t.fl(); },partials: {}, subs: {  }}, "{{#isEmpty}}<p class=\"default-content\">A kosár még üres. Az ételeket a \"Kosárba\" gomb megnyomásával adhatod hozzá a rendeléshez.</p>{{/isEmpty}} {{#lines}}<div class=\"line\"><div class=\"name\">{{ name }}</div><div class=\"price\">{{ price }} Ft</div><div class=\"actions\"><button data-duplicate-order-item=\"{{ id }}\"><svg><use xlink:href=\"#icon-plus\"></use></svg> Még</button> <button data-remove-order-item=\"{{ id }}\"><svg><use xlink:href=\"#icon-minus\"></use></svg> Ki a kosárból</button></div></div>{{/lines}} {{#deliveryFee}}<div class=\"delivery-fee\"><div>Kiszállítási díj</div><div>{{ deliveryFee }} Ft</div></div>{{/deliveryFee}} {{#total}}<div>Végösszeg</div><div>{{ total }} Ft</div>{{/total}} {{#showMinForFreeDeliveryMessage}}<p>A minimális {{ minForFreeDelivery }} Ft rendelési értéket még nem érted el.</p>{{/showMinForFreeDeliveryMessage}}", H);return T.render.apply(T, arguments); };
+
+/***/ },
+/* 115 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	 *  Copyright 2011 Twitter, Inc.
+	 *  Licensed under the Apache License, Version 2.0 (the "License");
+	 *  you may not use this file except in compliance with the License.
+	 *  You may obtain a copy of the License at
+	 *
+	 *  http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 *  Unless required by applicable law or agreed to in writing, software
+	 *  distributed under the License is distributed on an "AS IS" BASIS,
+	 *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 *  See the License for the specific language governing permissions and
+	 *  limitations under the License.
+	 */
+	
+	// This file is for use with Node.js. See dist/ for browser files.
+	
+	var Hogan = __webpack_require__(116);
+	Hogan.Template = __webpack_require__(117).Template;
+	Hogan.template = Hogan.Template;
+	module.exports = Hogan;
+
+
+/***/ },
+/* 116 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	 *  Copyright 2011 Twitter, Inc.
+	 *  Licensed under the Apache License, Version 2.0 (the "License");
+	 *  you may not use this file except in compliance with the License.
+	 *  You may obtain a copy of the License at
+	 *
+	 *  http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 *  Unless required by applicable law or agreed to in writing, software
+	 *  distributed under the License is distributed on an "AS IS" BASIS,
+	 *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 *  See the License for the specific language governing permissions and
+	 *  limitations under the License.
+	 */
+	
+	(function (Hogan) {
+	  // Setup regex  assignments
+	  // remove whitespace according to Mustache spec
+	  var rIsWhitespace = /\S/,
+	      rQuot = /\"/g,
+	      rNewline =  /\n/g,
+	      rCr = /\r/g,
+	      rSlash = /\\/g,
+	      rLineSep = /\u2028/,
+	      rParagraphSep = /\u2029/;
+	
+	  Hogan.tags = {
+	    '#': 1, '^': 2, '<': 3, '$': 4,
+	    '/': 5, '!': 6, '>': 7, '=': 8, '_v': 9,
+	    '{': 10, '&': 11, '_t': 12
+	  };
+	
+	  Hogan.scan = function scan(text, delimiters) {
+	    var len = text.length,
+	        IN_TEXT = 0,
+	        IN_TAG_TYPE = 1,
+	        IN_TAG = 2,
+	        state = IN_TEXT,
+	        tagType = null,
+	        tag = null,
+	        buf = '',
+	        tokens = [],
+	        seenTag = false,
+	        i = 0,
+	        lineStart = 0,
+	        otag = '{{',
+	        ctag = '}}';
+	
+	    function addBuf() {
+	      if (buf.length > 0) {
+	        tokens.push({tag: '_t', text: new String(buf)});
+	        buf = '';
+	      }
+	    }
+	
+	    function lineIsWhitespace() {
+	      var isAllWhitespace = true;
+	      for (var j = lineStart; j < tokens.length; j++) {
+	        isAllWhitespace =
+	          (Hogan.tags[tokens[j].tag] < Hogan.tags['_v']) ||
+	          (tokens[j].tag == '_t' && tokens[j].text.match(rIsWhitespace) === null);
+	        if (!isAllWhitespace) {
+	          return false;
+	        }
+	      }
+	
+	      return isAllWhitespace;
+	    }
+	
+	    function filterLine(haveSeenTag, noNewLine) {
+	      addBuf();
+	
+	      if (haveSeenTag && lineIsWhitespace()) {
+	        for (var j = lineStart, next; j < tokens.length; j++) {
+	          if (tokens[j].text) {
+	            if ((next = tokens[j+1]) && next.tag == '>') {
+	              // set indent to token value
+	              next.indent = tokens[j].text.toString()
+	            }
+	            tokens.splice(j, 1);
+	          }
+	        }
+	      } else if (!noNewLine) {
+	        tokens.push({tag:'\n'});
+	      }
+	
+	      seenTag = false;
+	      lineStart = tokens.length;
+	    }
+	
+	    function changeDelimiters(text, index) {
+	      var close = '=' + ctag,
+	          closeIndex = text.indexOf(close, index),
+	          delimiters = trim(
+	            text.substring(text.indexOf('=', index) + 1, closeIndex)
+	          ).split(' ');
+	
+	      otag = delimiters[0];
+	      ctag = delimiters[delimiters.length - 1];
+	
+	      return closeIndex + close.length - 1;
+	    }
+	
+	    if (delimiters) {
+	      delimiters = delimiters.split(' ');
+	      otag = delimiters[0];
+	      ctag = delimiters[1];
+	    }
+	
+	    for (i = 0; i < len; i++) {
+	      if (state == IN_TEXT) {
+	        if (tagChange(otag, text, i)) {
+	          --i;
+	          addBuf();
+	          state = IN_TAG_TYPE;
+	        } else {
+	          if (text.charAt(i) == '\n') {
+	            filterLine(seenTag);
+	          } else {
+	            buf += text.charAt(i);
+	          }
+	        }
+	      } else if (state == IN_TAG_TYPE) {
+	        i += otag.length - 1;
+	        tag = Hogan.tags[text.charAt(i + 1)];
+	        tagType = tag ? text.charAt(i + 1) : '_v';
+	        if (tagType == '=') {
+	          i = changeDelimiters(text, i);
+	          state = IN_TEXT;
+	        } else {
+	          if (tag) {
+	            i++;
+	          }
+	          state = IN_TAG;
+	        }
+	        seenTag = i;
+	      } else {
+	        if (tagChange(ctag, text, i)) {
+	          tokens.push({tag: tagType, n: trim(buf), otag: otag, ctag: ctag,
+	                       i: (tagType == '/') ? seenTag - otag.length : i + ctag.length});
+	          buf = '';
+	          i += ctag.length - 1;
+	          state = IN_TEXT;
+	          if (tagType == '{') {
+	            if (ctag == '}}') {
+	              i++;
+	            } else {
+	              cleanTripleStache(tokens[tokens.length - 1]);
+	            }
+	          }
+	        } else {
+	          buf += text.charAt(i);
+	        }
+	      }
+	    }
+	
+	    filterLine(seenTag, true);
+	
+	    return tokens;
+	  }
+	
+	  function cleanTripleStache(token) {
+	    if (token.n.substr(token.n.length - 1) === '}') {
+	      token.n = token.n.substring(0, token.n.length - 1);
+	    }
+	  }
+	
+	  function trim(s) {
+	    if (s.trim) {
+	      return s.trim();
+	    }
+	
+	    return s.replace(/^\s*|\s*$/g, '');
+	  }
+	
+	  function tagChange(tag, text, index) {
+	    if (text.charAt(index) != tag.charAt(0)) {
+	      return false;
+	    }
+	
+	    for (var i = 1, l = tag.length; i < l; i++) {
+	      if (text.charAt(index + i) != tag.charAt(i)) {
+	        return false;
+	      }
+	    }
+	
+	    return true;
+	  }
+	
+	  // the tags allowed inside super templates
+	  var allowedInSuper = {'_t': true, '\n': true, '$': true, '/': true};
+	
+	  function buildTree(tokens, kind, stack, customTags) {
+	    var instructions = [],
+	        opener = null,
+	        tail = null,
+	        token = null;
+	
+	    tail = stack[stack.length - 1];
+	
+	    while (tokens.length > 0) {
+	      token = tokens.shift();
+	
+	      if (tail && tail.tag == '<' && !(token.tag in allowedInSuper)) {
+	        throw new Error('Illegal content in < super tag.');
+	      }
+	
+	      if (Hogan.tags[token.tag] <= Hogan.tags['$'] || isOpener(token, customTags)) {
+	        stack.push(token);
+	        token.nodes = buildTree(tokens, token.tag, stack, customTags);
+	      } else if (token.tag == '/') {
+	        if (stack.length === 0) {
+	          throw new Error('Closing tag without opener: /' + token.n);
+	        }
+	        opener = stack.pop();
+	        if (token.n != opener.n && !isCloser(token.n, opener.n, customTags)) {
+	          throw new Error('Nesting error: ' + opener.n + ' vs. ' + token.n);
+	        }
+	        opener.end = token.i;
+	        return instructions;
+	      } else if (token.tag == '\n') {
+	        token.last = (tokens.length == 0) || (tokens[0].tag == '\n');
+	      }
+	
+	      instructions.push(token);
+	    }
+	
+	    if (stack.length > 0) {
+	      throw new Error('missing closing tag: ' + stack.pop().n);
+	    }
+	
+	    return instructions;
+	  }
+	
+	  function isOpener(token, tags) {
+	    for (var i = 0, l = tags.length; i < l; i++) {
+	      if (tags[i].o == token.n) {
+	        token.tag = '#';
+	        return true;
+	      }
+	    }
+	  }
+	
+	  function isCloser(close, open, tags) {
+	    for (var i = 0, l = tags.length; i < l; i++) {
+	      if (tags[i].c == close && tags[i].o == open) {
+	        return true;
+	      }
+	    }
+	  }
+	
+	  function stringifySubstitutions(obj) {
+	    var items = [];
+	    for (var key in obj) {
+	      items.push('"' + esc(key) + '": function(c,p,t,i) {' + obj[key] + '}');
+	    }
+	    return "{ " + items.join(",") + " }";
+	  }
+	
+	  function stringifyPartials(codeObj) {
+	    var partials = [];
+	    for (var key in codeObj.partials) {
+	      partials.push('"' + esc(key) + '":{name:"' + esc(codeObj.partials[key].name) + '", ' + stringifyPartials(codeObj.partials[key]) + "}");
+	    }
+	    return "partials: {" + partials.join(",") + "}, subs: " + stringifySubstitutions(codeObj.subs);
+	  }
+	
+	  Hogan.stringify = function(codeObj, text, options) {
+	    return "{code: function (c,p,i) { " + Hogan.wrapMain(codeObj.code) + " }," + stringifyPartials(codeObj) +  "}";
+	  }
+	
+	  var serialNo = 0;
+	  Hogan.generate = function(tree, text, options) {
+	    serialNo = 0;
+	    var context = { code: '', subs: {}, partials: {} };
+	    Hogan.walk(tree, context);
+	
+	    if (options.asString) {
+	      return this.stringify(context, text, options);
+	    }
+	
+	    return this.makeTemplate(context, text, options);
+	  }
+	
+	  Hogan.wrapMain = function(code) {
+	    return 'var t=this;t.b(i=i||"");' + code + 'return t.fl();';
+	  }
+	
+	  Hogan.template = Hogan.Template;
+	
+	  Hogan.makeTemplate = function(codeObj, text, options) {
+	    var template = this.makePartials(codeObj);
+	    template.code = new Function('c', 'p', 'i', this.wrapMain(codeObj.code));
+	    return new this.template(template, text, this, options);
+	  }
+	
+	  Hogan.makePartials = function(codeObj) {
+	    var key, template = {subs: {}, partials: codeObj.partials, name: codeObj.name};
+	    for (key in template.partials) {
+	      template.partials[key] = this.makePartials(template.partials[key]);
+	    }
+	    for (key in codeObj.subs) {
+	      template.subs[key] = new Function('c', 'p', 't', 'i', codeObj.subs[key]);
+	    }
+	    return template;
+	  }
+	
+	  function esc(s) {
+	    return s.replace(rSlash, '\\\\')
+	            .replace(rQuot, '\\\"')
+	            .replace(rNewline, '\\n')
+	            .replace(rCr, '\\r')
+	            .replace(rLineSep, '\\u2028')
+	            .replace(rParagraphSep, '\\u2029');
+	  }
+	
+	  function chooseMethod(s) {
+	    return (~s.indexOf('.')) ? 'd' : 'f';
+	  }
+	
+	  function createPartial(node, context) {
+	    var prefix = "<" + (context.prefix || "");
+	    var sym = prefix + node.n + serialNo++;
+	    context.partials[sym] = {name: node.n, partials: {}};
+	    context.code += 't.b(t.rp("' +  esc(sym) + '",c,p,"' + (node.indent || '') + '"));';
+	    return sym;
+	  }
+	
+	  Hogan.codegen = {
+	    '#': function(node, context) {
+	      context.code += 'if(t.s(t.' + chooseMethod(node.n) + '("' + esc(node.n) + '",c,p,1),' +
+	                      'c,p,0,' + node.i + ',' + node.end + ',"' + node.otag + " " + node.ctag + '")){' +
+	                      't.rs(c,p,' + 'function(c,p,t){';
+	      Hogan.walk(node.nodes, context);
+	      context.code += '});c.pop();}';
+	    },
+	
+	    '^': function(node, context) {
+	      context.code += 'if(!t.s(t.' + chooseMethod(node.n) + '("' + esc(node.n) + '",c,p,1),c,p,1,0,0,"")){';
+	      Hogan.walk(node.nodes, context);
+	      context.code += '};';
+	    },
+	
+	    '>': createPartial,
+	    '<': function(node, context) {
+	      var ctx = {partials: {}, code: '', subs: {}, inPartial: true};
+	      Hogan.walk(node.nodes, ctx);
+	      var template = context.partials[createPartial(node, context)];
+	      template.subs = ctx.subs;
+	      template.partials = ctx.partials;
+	    },
+	
+	    '$': function(node, context) {
+	      var ctx = {subs: {}, code: '', partials: context.partials, prefix: node.n};
+	      Hogan.walk(node.nodes, ctx);
+	      context.subs[node.n] = ctx.code;
+	      if (!context.inPartial) {
+	        context.code += 't.sub("' + esc(node.n) + '",c,p,i);';
+	      }
+	    },
+	
+	    '\n': function(node, context) {
+	      context.code += write('"\\n"' + (node.last ? '' : ' + i'));
+	    },
+	
+	    '_v': function(node, context) {
+	      context.code += 't.b(t.v(t.' + chooseMethod(node.n) + '("' + esc(node.n) + '",c,p,0)));';
+	    },
+	
+	    '_t': function(node, context) {
+	      context.code += write('"' + esc(node.text) + '"');
+	    },
+	
+	    '{': tripleStache,
+	
+	    '&': tripleStache
+	  }
+	
+	  function tripleStache(node, context) {
+	    context.code += 't.b(t.t(t.' + chooseMethod(node.n) + '("' + esc(node.n) + '",c,p,0)));';
+	  }
+	
+	  function write(s) {
+	    return 't.b(' + s + ');';
+	  }
+	
+	  Hogan.walk = function(nodelist, context) {
+	    var func;
+	    for (var i = 0, l = nodelist.length; i < l; i++) {
+	      func = Hogan.codegen[nodelist[i].tag];
+	      func && func(nodelist[i], context);
+	    }
+	    return context;
+	  }
+	
+	  Hogan.parse = function(tokens, text, options) {
+	    options = options || {};
+	    return buildTree(tokens, '', [], options.sectionTags || []);
+	  }
+	
+	  Hogan.cache = {};
+	
+	  Hogan.cacheKey = function(text, options) {
+	    return [text, !!options.asString, !!options.disableLambda, options.delimiters, !!options.modelGet].join('||');
+	  }
+	
+	  Hogan.compile = function(text, options) {
+	    options = options || {};
+	    var key = Hogan.cacheKey(text, options);
+	    var template = this.cache[key];
+	
+	    if (template) {
+	      var partials = template.partials;
+	      for (var name in partials) {
+	        delete partials[name].instance;
+	      }
+	      return template;
+	    }
+	
+	    template = this.generate(this.parse(this.scan(text, options.delimiters), text, options), text, options);
+	    return this.cache[key] = template;
+	  }
+	})( true ? exports : Hogan);
+
+
+/***/ },
+/* 117 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	 *  Copyright 2011 Twitter, Inc.
+	 *  Licensed under the Apache License, Version 2.0 (the "License");
+	 *  you may not use this file except in compliance with the License.
+	 *  You may obtain a copy of the License at
+	 *
+	 *  http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 *  Unless required by applicable law or agreed to in writing, software
+	 *  distributed under the License is distributed on an "AS IS" BASIS,
+	 *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 *  See the License for the specific language governing permissions and
+	 *  limitations under the License.
+	 */
+	
+	var Hogan = {};
+	
+	(function (Hogan) {
+	  Hogan.Template = function (codeObj, text, compiler, options) {
+	    codeObj = codeObj || {};
+	    this.r = codeObj.code || this.r;
+	    this.c = compiler;
+	    this.options = options || {};
+	    this.text = text || '';
+	    this.partials = codeObj.partials || {};
+	    this.subs = codeObj.subs || {};
+	    this.buf = '';
+	  }
+	
+	  Hogan.Template.prototype = {
+	    // render: replaced by generated code.
+	    r: function (context, partials, indent) { return ''; },
+	
+	    // variable escaping
+	    v: hoganEscape,
+	
+	    // triple stache
+	    t: coerceToString,
+	
+	    render: function render(context, partials, indent) {
+	      return this.ri([context], partials || {}, indent);
+	    },
+	
+	    // render internal -- a hook for overrides that catches partials too
+	    ri: function (context, partials, indent) {
+	      return this.r(context, partials, indent);
+	    },
+	
+	    // ensurePartial
+	    ep: function(symbol, partials) {
+	      var partial = this.partials[symbol];
+	
+	      // check to see that if we've instantiated this partial before
+	      var template = partials[partial.name];
+	      if (partial.instance && partial.base == template) {
+	        return partial.instance;
+	      }
+	
+	      if (typeof template == 'string') {
+	        if (!this.c) {
+	          throw new Error("No compiler available.");
+	        }
+	        template = this.c.compile(template, this.options);
+	      }
+	
+	      if (!template) {
+	        return null;
+	      }
+	
+	      // We use this to check whether the partials dictionary has changed
+	      this.partials[symbol].base = template;
+	
+	      if (partial.subs) {
+	        // Make sure we consider parent template now
+	        if (!partials.stackText) partials.stackText = {};
+	        for (key in partial.subs) {
+	          if (!partials.stackText[key]) {
+	            partials.stackText[key] = (this.activeSub !== undefined && partials.stackText[this.activeSub]) ? partials.stackText[this.activeSub] : this.text;
+	          }
+	        }
+	        template = createSpecializedPartial(template, partial.subs, partial.partials,
+	          this.stackSubs, this.stackPartials, partials.stackText);
+	      }
+	      this.partials[symbol].instance = template;
+	
+	      return template;
+	    },
+	
+	    // tries to find a partial in the current scope and render it
+	    rp: function(symbol, context, partials, indent) {
+	      var partial = this.ep(symbol, partials);
+	      if (!partial) {
+	        return '';
+	      }
+	
+	      return partial.ri(context, partials, indent);
+	    },
+	
+	    // render a section
+	    rs: function(context, partials, section) {
+	      var tail = context[context.length - 1];
+	
+	      if (!isArray(tail)) {
+	        section(context, partials, this);
+	        return;
+	      }
+	
+	      for (var i = 0; i < tail.length; i++) {
+	        context.push(tail[i]);
+	        section(context, partials, this);
+	        context.pop();
+	      }
+	    },
+	
+	    // maybe start a section
+	    s: function(val, ctx, partials, inverted, start, end, tags) {
+	      var pass;
+	
+	      if (isArray(val) && val.length === 0) {
+	        return false;
+	      }
+	
+	      if (typeof val == 'function') {
+	        val = this.ms(val, ctx, partials, inverted, start, end, tags);
+	      }
+	
+	      pass = !!val;
+	
+	      if (!inverted && pass && ctx) {
+	        ctx.push((typeof val == 'object') ? val : ctx[ctx.length - 1]);
+	      }
+	
+	      return pass;
+	    },
+	
+	    // find values with dotted names
+	    d: function(key, ctx, partials, returnFound) {
+	      var found,
+	          names = key.split('.'),
+	          val = this.f(names[0], ctx, partials, returnFound),
+	          doModelGet = this.options.modelGet,
+	          cx = null;
+	
+	      if (key === '.' && isArray(ctx[ctx.length - 2])) {
+	        val = ctx[ctx.length - 1];
+	      } else {
+	        for (var i = 1; i < names.length; i++) {
+	          found = findInScope(names[i], val, doModelGet);
+	          if (found !== undefined) {
+	            cx = val;
+	            val = found;
+	          } else {
+	            val = '';
+	          }
+	        }
+	      }
+	
+	      if (returnFound && !val) {
+	        return false;
+	      }
+	
+	      if (!returnFound && typeof val == 'function') {
+	        ctx.push(cx);
+	        val = this.mv(val, ctx, partials);
+	        ctx.pop();
+	      }
+	
+	      return val;
+	    },
+	
+	    // find values with normal names
+	    f: function(key, ctx, partials, returnFound) {
+	      var val = false,
+	          v = null,
+	          found = false,
+	          doModelGet = this.options.modelGet;
+	
+	      for (var i = ctx.length - 1; i >= 0; i--) {
+	        v = ctx[i];
+	        val = findInScope(key, v, doModelGet);
+	        if (val !== undefined) {
+	          found = true;
+	          break;
+	        }
+	      }
+	
+	      if (!found) {
+	        return (returnFound) ? false : "";
+	      }
+	
+	      if (!returnFound && typeof val == 'function') {
+	        val = this.mv(val, ctx, partials);
+	      }
+	
+	      return val;
+	    },
+	
+	    // higher order templates
+	    ls: function(func, cx, partials, text, tags) {
+	      var oldTags = this.options.delimiters;
+	
+	      this.options.delimiters = tags;
+	      this.b(this.ct(coerceToString(func.call(cx, text)), cx, partials));
+	      this.options.delimiters = oldTags;
+	
+	      return false;
+	    },
+	
+	    // compile text
+	    ct: function(text, cx, partials) {
+	      if (this.options.disableLambda) {
+	        throw new Error('Lambda features disabled.');
+	      }
+	      return this.c.compile(text, this.options).render(cx, partials);
+	    },
+	
+	    // template result buffering
+	    b: function(s) { this.buf += s; },
+	
+	    fl: function() { var r = this.buf; this.buf = ''; return r; },
+	
+	    // method replace section
+	    ms: function(func, ctx, partials, inverted, start, end, tags) {
+	      var textSource,
+	          cx = ctx[ctx.length - 1],
+	          result = func.call(cx);
+	
+	      if (typeof result == 'function') {
+	        if (inverted) {
+	          return true;
+	        } else {
+	          textSource = (this.activeSub && this.subsText && this.subsText[this.activeSub]) ? this.subsText[this.activeSub] : this.text;
+	          return this.ls(result, cx, partials, textSource.substring(start, end), tags);
+	        }
+	      }
+	
+	      return result;
+	    },
+	
+	    // method replace variable
+	    mv: function(func, ctx, partials) {
+	      var cx = ctx[ctx.length - 1];
+	      var result = func.call(cx);
+	
+	      if (typeof result == 'function') {
+	        return this.ct(coerceToString(result.call(cx)), cx, partials);
+	      }
+	
+	      return result;
+	    },
+	
+	    sub: function(name, context, partials, indent) {
+	      var f = this.subs[name];
+	      if (f) {
+	        this.activeSub = name;
+	        f(context, partials, this, indent);
+	        this.activeSub = false;
+	      }
+	    }
+	
+	  };
+	
+	  //Find a key in an object
+	  function findInScope(key, scope, doModelGet) {
+	    var val;
+	
+	    if (scope && typeof scope == 'object') {
+	
+	      if (scope[key] !== undefined) {
+	        val = scope[key];
+	
+	      // try lookup with get for backbone or similar model data
+	      } else if (doModelGet && scope.get && typeof scope.get == 'function') {
+	        val = scope.get(key);
+	      }
+	    }
+	
+	    return val;
+	  }
+	
+	  function createSpecializedPartial(instance, subs, partials, stackSubs, stackPartials, stackText) {
+	    function PartialTemplate() {};
+	    PartialTemplate.prototype = instance;
+	    function Substitutions() {};
+	    Substitutions.prototype = instance.subs;
+	    var key;
+	    var partial = new PartialTemplate();
+	    partial.subs = new Substitutions();
+	    partial.subsText = {};  //hehe. substext.
+	    partial.buf = '';
+	
+	    stackSubs = stackSubs || {};
+	    partial.stackSubs = stackSubs;
+	    partial.subsText = stackText;
+	    for (key in subs) {
+	      if (!stackSubs[key]) stackSubs[key] = subs[key];
+	    }
+	    for (key in stackSubs) {
+	      partial.subs[key] = stackSubs[key];
+	    }
+	
+	    stackPartials = stackPartials || {};
+	    partial.stackPartials = stackPartials;
+	    for (key in partials) {
+	      if (!stackPartials[key]) stackPartials[key] = partials[key];
+	    }
+	    for (key in stackPartials) {
+	      partial.partials[key] = stackPartials[key];
+	    }
+	
+	    return partial;
+	  }
+	
+	  var rAmp = /&/g,
+	      rLt = /</g,
+	      rGt = />/g,
+	      rApos = /\'/g,
+	      rQuot = /\"/g,
+	      hChars = /[&<>\"\']/;
+	
+	  function coerceToString(val) {
+	    return String((val === null || val === undefined) ? '' : val);
+	  }
+	
+	  function hoganEscape(str) {
+	    str = coerceToString(str);
+	    return hChars.test(str) ?
+	      str
+	        .replace(rAmp, '&amp;')
+	        .replace(rLt, '&lt;')
+	        .replace(rGt, '&gt;')
+	        .replace(rApos, '&#39;')
+	        .replace(rQuot, '&quot;') :
+	      str;
+	  }
+	
+	  var isArray = Array.isArray || function(a) {
+	    return Object.prototype.toString.call(a) === '[object Array]';
+	  };
+	
+	})( true ? exports : Hogan);
+
 
 /***/ }
 /******/ ]);

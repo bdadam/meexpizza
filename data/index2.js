@@ -10,6 +10,7 @@ const getslug = text => require('speakingurl')(text, { lang: 'hu' });
 const menucardYaml = yaml.safeLoad(fs.readFileSync(path.resolve(__dirname, './menu.yml'), 'utf8'));
 const pizzaExtrasYaml = yaml.safeLoad(fs.readFileSync(path.resolve(__dirname, './pizza-feltetek.yml'), 'utf8'));
 const hamburgerExtrasYaml = yaml.safeLoad(fs.readFileSync(path.resolve(__dirname, './hamburger-feltetek.yml'), 'utf8'));
+const deliveryFeesYaml = yaml.safeLoad(fs.readFileSync(path.resolve(__dirname, './delivery-fees.yml'), 'utf8'));
 
 const dishes = [];
 const categories = [];
@@ -82,7 +83,8 @@ const menucard = {
     categories,
     dishes,
     pizzaExtras,
-    hamburgerExtras
+    hamburgerExtras,
+    deliveryFees: deliveryFeesYaml
 };
 
 menucard.version = require('crypto').createHash('md5').update(JSON.stringify(menucard)).digest("hex");

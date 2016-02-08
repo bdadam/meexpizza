@@ -1,31 +1,33 @@
-<div id="side-cart">
-    <h2>Kosár</h2>
-    <div class="cart-content">
-        <p class="default-content">
-            A kosár még üres.
-            Az ételeket a "Kosárba" gomb megnyomásával adhatod hozzá a rendeléshez.
-        </p>
-        <table class="items"></table>
-        <form class="order-form">
-            <label for="city">Város</label>
-            <select id="city" name="city">
-                {{#cities}}
-                    <option>{{ . }}</option>
-                {{/cities}}
-            </select>
+{{#isEmpty}}
+<p class="default-content">
+    A kosár még üres.
+    Az ételeket a "Kosárba" gomb megnyomásával adhatod hozzá a rendeléshez.
+</p>
+{{/isEmpty}}
 
-            <label for="name">Neved</label>
-            <input type="text" name="name" id="name" value="{{ address.name }}">
-
-            <label for="street">Utca, házszám</label>
-            <input type="text" name="street" id="street" value="{{ address.street }}">
-
-            <label for="phone">Telefonszámod</label>
-            <input type="text" name="phone" id="phone" value="{{ address.phone }}">
-
-            <label for="notes">Megjegyzések</label>
-            <textarea rows="3" name="notes" id="notes" placeholder="Egyéb megjegyzés, pl. pontos helszín (belső udvar, emelet) stb.">{{ notes }}</textarea>
-            <button class="order">Megrendelés</button>
-        </form>
+{{#lines}}
+    <div class="line">
+        <div class="name">{{ name }}</div>
+        <div class="price">{{ price }} Ft</div>
+        <div class="actions">
+            <button data-duplicate-order-item="{{ id }}"><svg><use xlink:href="#icon-plus"></use></svg> Még</button>
+            <button data-remove-order-item="{{ id }}"><svg><use xlink:href="#icon-minus"></use></svg> Ki a kosárból</button>
+        </div>
     </div>
+{{/lines}}
+
+{{#deliveryFee}}
+<div class="delivery-fee">
+    <div>Kiszállítási díj</div>
+    <div>{{ deliveryFee }} Ft</div>
 </div>
+{{/deliveryFee}}
+
+{{#total}}
+<div>Végösszeg</div>
+<div>{{ total }} Ft</div>
+{{/total}}
+
+{{#showMinForFreeDeliveryMessage}}
+<p>A minimális {{ minForFreeDelivery }} Ft rendelési értéket még nem érted el.</p>
+{{/showMinForFreeDeliveryMessage}}

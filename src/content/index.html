@@ -26,56 +26,13 @@
                 </ul>
             </section>
         {% endfor %}
-
-
-        {% for cat in menu.menu %}
-        <a id="{{ cat.id }}" class="section-anchor"></a>
-        <section class="card menu-category">
-            <h2 class="card-title">{{ cat.name }}</h2>
-            <ul>
-            {% for item in cat.items %}
-                <li class="item" data-dish-id="{{ item.id }}">
-                    <div class="xxx">
-                        <div class="img"><div class="icon-{{ item.imageName }}"></div></div>
-                        <div class="text">
-                            <h3>{{ item.name }}</h3>
-                            <p>{{ item.text }}</p>
-                            <p class="in-cart-count"></p>
-                        </div>
-                    </div>
-                    <div class="prices">
-                        <add-to-cart dishid="{{ item.id }}"></add-to-cart>
-                        {# <button data-add-to-cart="{{ item.id }}" data-variant><svg class="icon-cart white"><use xlink:href="#icon-cart"></use></svg> Kosárba</button> #}
-
-                        {# <x-btn dishid="{{ item.id }}"></x-btn> #}
-{#
-                        {% if item.hasMultiVariants %}
-                            <select name="variant">
-                                {% for variant, variantprice in item.variants %}
-                                    <option value="{{ variant }}">{{ variant }} - {{ variantprice }} Ft</option>
-                                {% endfor %}
-                            </select>
-                            <button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
-                        {% else %}
-                            {% for variant, variantprice in item.variants %}
-                                {% if variant %}
-                                    <div><span data-variant>{{ variant }}</span> - <b>{{ variantprice }} Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
-                                {% else %}
-                                    <div><b>{{ variantprice }} Ft</b></div><button data-add-to-cart><i class="icon-crt-inv"></i> Kosárba</button>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %} #}
-                    </div>
-                </li>
-            {% endfor %}
-            </ul>
-        </section>
-        {% endfor %}
     </div>
     <aside id="side-cart-container">
         <div id="side-cart" class="card">
             <h2 class="card-title">Kosár</h2>
             <div class="cart-content">
+                <div class="cart-calculation"></div>
+
                 <p class="default-content">
                     A kosár még üres.
                     Az ételeket a "Kosárba" gomb megnyomásával adhatod hozzá a rendeléshez.

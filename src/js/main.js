@@ -23,6 +23,7 @@ var defaultState = {
 };
 
 const flatMap = require('lodash/flatMap');
+const find = require('lodash/find');
 
 const shoppingCart = redux.createStore((state = defaultState, action) => {
     let newState = defaultState;
@@ -133,22 +134,57 @@ shoppingCart.subscribe(() => {
         $('#side-cart button.order').attr('disabled', false);
     }
 
+
+    const viewModel = {
+        showEmptyMessage: state.inCart.length === 0,
+        isEmpty: state.inCart.length === 0,
+        lines: state.inCart.map(item => {
+            const dishFromCard = find(menucard.dishes, dish => dish.id === item.dish.id); //menucard.dishes.filter()
+            return { id: item.timestamp, name: `${dishFromCard.name} (${item.dish.variant})`, price: find(dishFromCard.variants, v => v.name === item.dish.variant).price }
+        }),
+        deliveryFee: menucard.deliveryFees[state.address.city].fix || 0,
+        minForFreeDelivery: menucard.deliveryFees[state.address.city].min || 0
+    };
+
+    viewModel.total = viewModel.lines.reduce((prev, l) => prev + l.price, 0) + viewModel.deliveryFee;
+    viewModel.minTotalNotReached = viewModel.total < viewModel.minForFreeDelivery;
+    viewModel.showMinForFreeDeliveryMessage = state.inCart.length > 0 && viewModel.minTotalNotReached;
+
+    var tpl = require('./templates/shopping-cart.html');
+    $('.cart-calculation').html(tpl(viewModel));
+
+
+    /*
     const itemsContainer = $('#side-cart .items');
     itemsContainer.empty();
 
     state.inCart.forEach(item => {
         const x = menucard.dishes.filter(dish => dish.id === item.dish.id)[0];
-        itemsContainer.append(`<tr><td>${x.name} (${item.dish.variant})<br><a href="" style="font-size:0.875rem;"><svg style="width: 16px;height:16px;"><use xlink:href="#icon-plus"></use></svg> Még</a>&nbsp;&nbsp;<a href=""><svg style="width: 16px;height:16px;"><use xlink:href="#icon-minus"></use></svg> Nem kérem</a> <a href="">Extrák</a></td><td><button data-duplicate-order-item="${item.timestamp}"><svg><use xlink:href="#icon-plus"></use></svg></button><button data-remove-order-item="${item.timestamp}"><svg><use xlink:href="#icon-minus"></use></svg></button></div></td><td>${x.variants[item.dish.variant]}&nbsp;Ft</td></tr>`);
+        const variant = x.variants.filter(v => v.name === item.dish.variant)[0];
+        const price = variant.price;
+
+        itemsContainer.append(`<tr><td>${x.name} (${item.dish.variant})<br><a href="" style="font-size:0.875rem;"><svg style="width: 16px;height:16px;"><use xlink:href="#icon-plus"></use></svg> Még</a>&nbsp;&nbsp;<a href=""><svg style="width: 16px;height:16px;"><use xlink:href="#icon-minus"></use></svg> Nem kérem</a> <a href="">Extrák</a></td><td><button data-duplicate-order-item="${item.timestamp}"><svg><use xlink:href="#icon-plus"></use></svg></button><button data-remove-order-item="${item.timestamp}"><svg><use xlink:href="#icon-minus"></use></svg></button></div></td><td>${price}&nbsp;Ft</td></tr>`);
     });
 
     if (!state.isEmpty) {
-        const sum = state.inCart.reduce((prev, item) => {
-            var x = menucard.dishes.filter(dish => dish.id === item.dish.id)[0];
-            return prev + x.variants[item.dish.variant];
+        let sum = state.inCart.reduce((prev, item) => {
+            var dish = menucard.dishes.filter(dish => dish.id === item.dish.id)[0];
+            const variant = dish.variants.filter(v => v.name === item.dish.variant)[0];
+            return prev + variant.price;
         }, 0);
+
+        const deliveryRule = menucard.deliveryFees[state.address.city];
+
+        if (deliveryRule.fix) {
+            sum += deliveryRule.fix;
+            itemsContainer.append(`<tfoot><tr><td>Kiszállítási díj</td><td colspan="2">${deliveryRule.fix}&nbsp;Ft</td></tr></tfoot>`);
+        } else if (deliveryRule.min && sum < deliveryRule.min) {
+            itemsContainer.append(`<tfoot><tr><td colspan="3">A minimális ${deliveryRule.min} Ft rendelési értéket még nem érted el.</td></tr></tfoot>`);
+        }
 
         itemsContainer.append(`<tfoot><tr><td>Végösszeg</td><td colspan="2">${sum}&nbsp;Ft</td></tr></tfoot>`);
     }
+    */
 });
 
 
@@ -262,18 +298,10 @@ document.registerElement('google-map', {
 document.registerElement('add-to-cart', {
     prototype: Object.create(HTMLElement.prototype, {
         attachedCallback: { value: function() {
-            var itemid = this.getAttribute('dishid');
-
             const el = $(this);
+            const itemid = el.attr('dishid');
             const dish = menucard.dishes.filter(dish => dish.id === itemid)[0];
-
-            if (!dish) {
-                console.log(itemid);
-                return;
-            }
-
             const variants = dish.variants;
-
             const button = $(`<button data-add-to-cart="${dish.id}" data-variant="${variants[0].name}"><svg class="icon-cart white"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>`);
 
             if (variants.length > 1) {

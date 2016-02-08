@@ -1256,5 +1256,43 @@ module.exports = {
             ]
         }
     ],
-    "version": "0c23a4c8fa1a92bfac5e83e030452f01"
+    "deliveryFees": {
+        "Gyöngyös": {
+            "min": 1000
+        },
+        "Karácsondi úti gyártelep": {
+            "min": 2000
+        },
+        "KRF Kollégium": {
+            "min": 2000
+        },
+        "Abasár": {
+            "fix": 800
+        },
+        "Detk": {
+            "fix": 800
+        },
+        "Gyöngyöshalász": {
+            "fix": 800
+        },
+        "Gyöngyössolymos": {
+            "fix": 800
+        },
+        "Gyöngyöstarján": {
+            "fix": 800
+        },
+        "Mátrafüred": {
+            "fix": 800
+        },
+        "Nagyréde": {
+            "fix": 800
+        },
+        "Pálosvörösmart": {
+            "fix": 800
+        },
+        "Visonta": {
+            "fix": 1000
+        }
+    },
+    "version": "95084fb00b4b748ebf3782f89d62d9e8"
 };
