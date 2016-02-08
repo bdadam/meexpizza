@@ -105,35 +105,15 @@ shoppingCart.subscribe(() => {
 });
 
 shoppingCart.subscribe(() => {
-
     const state = shoppingCart.getState();
 
-    const shcart = {
-        lines: [
-            // { id, name, price, extras: [
-                    // { name, price }
-            // ] }
-        ],
-        deliveryFee: 1000,
-        missingSumToFreeDelivery: 300,
-        address: {
-            // city
-            // name
-            // street
-            // phone
-        }
-    };
-
-
-
     if (state.isEmpty) {
-        $('#side-cart .default-content').show();
+        // $('#side-cart .default-content').show();
         $('#side-cart button.order').attr('disabled', true);
     } else {
-        $('#side-cart .default-content').hide();
+        // $('#side-cart .default-content').hide();
         $('#side-cart button.order').attr('disabled', false);
     }
-
 
     const viewModel = {
         showEmptyMessage: state.inCart.length === 0,
@@ -223,6 +203,43 @@ $(document).on('click', 'button[data-add-to-cart]', function (e) {
     const el = $(this);
     const id = el.data('add-to-cart');
     const variant = el.data('variant');
+
+    const type = find(menucard.dishes, d => d.id === id).type;
+    const options = find(menucard.dishes, d => d.id === id).options;
+
+    const order = {
+        dish: { id, variant },
+        timestamp: +new Date()
+    };
+
+    // showPizzaModalIfNeeded(type, order)
+    // show3KivPizzaModalIfNeeded(type, order)
+    // showHamburgerModalIfNeeded(type, order)
+    // showOptionsModalIfNeeded(options, order)
+    // placeOrderIfEverythingIsFine(order);
+
+    // switch(type) {
+    //     case 'pizza':
+    //         break;
+    //     case '3kiv':
+    //         break;
+    //     case 'hamburger':
+    //         break;
+    //
+    //     default:
+    //         if (options && options.length) {}
+    // }
+
+    // if (type === 'pizza') {
+    //     // show pizza modal
+    // } else if () {} else if (type === 'hamburger') {
+    //     // show hamburger modal
+    // } else if (options && options.length) {
+    //     // // show options modal
+    // } else {
+    //     shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
+    // }
+
     shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
 
     // const template = require('./templates/pizza-options.html');
