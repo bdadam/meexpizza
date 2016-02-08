@@ -12,7 +12,7 @@ require('./navi').init();
 
 const redux = require('redux');
 
-const menucard = require('../../data/menucard.generated');
+const menucard = require('../../data/menucard2.generated');
 const deliveryFees = require('../../data/delivery-fees.generated');
 
 var defaultState = {
@@ -266,19 +266,25 @@ document.registerElement('add-to-cart', {
 
             const el = $(this);
             const dish = menucard.dishes.filter(dish => dish.id === itemid)[0];
-            const variants = dish.variants;
-            const variantNames = Object.keys(variants);
-            const button = $(`<button data-add-to-cart="${dish.id}" data-variant="${variantNames[0]}"><svg class="icon-cart white"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>`);
 
-            if (variantNames.length > 1) {
-                const select = $('<select>' + variantNames.map(v => `<option value="${v}">${v} - ${variants[v]} Ft</option>`) + '</select>').on('change', e => button.data('variant', select.val()));
+            if (!dish) {
+                console.log(itemid);
+                return;
+            }
+
+            const variants = dish.variants;
+
+            const button = $(`<button data-add-to-cart="${dish.id}" data-variant="${variants[0].name}"><svg class="icon-cart white"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>`);
+
+            if (variants.length > 1) {
+                const select = $('<select>' + variants.map(v => `<option value="${v.name}">${v.name} - ${v.price} Ft</option>`) + '</select>').on('change', e => button.data('variant', select.val()));
                 el.append(select);
             } else {
-                if (variantNames[0]) {
-                    el.append(`${variantNames[0]} - `);
+                if (variants[0].name) {
+                    el.append(`${variants[0].name} - `);
                 }
 
-                el.append(`<b>${variants[variantNames[0]]} Ft</b>`)
+                el.append(`<b>${variants[0].price} Ft</b>`)
             }
 
             el.append(button);

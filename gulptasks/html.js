@@ -33,9 +33,23 @@ module.exports = (gulp) => {
         delete require.cache[require.resolve('../data/index')];
         var menu = require('../data/index');
 
+        delete require.cache[require.resolve('../data/menucard2.generated')];
+        const menucard = require('../data/menucard2.generated');
+        const viewModel = {
+            categories: menucard.categories.map(cat => {
+                return {
+                    id: cat.id,
+                    name: cat.name,
+                    dishes: menucard.dishes.filter(dish => dish.category === cat.name)
+                };
+            })
+        };
+
         const html = nunjucks.render('index.html', {
             // menucard,
             // menucardJson: JSON.stringify(menucard),
+            viewModel,
+            menucard,
             menu,
             // menuJson: JSON.stringify(menu)
         });

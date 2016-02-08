@@ -64,6 +64,7 @@ module.exports = {
             "category": "Pizzakenyerek",
             "name": "Pizzakenyér",
             "description": "TODO",
+            "imageName": "pizzakenyer",
             "type": "none",
             "variants": [
                 {
@@ -79,6 +80,7 @@ module.exports = {
             "category": "Pizzakenyerek",
             "name": "Sajtos-fokhagymás pizzakenyér",
             "description": "sajt, fokhagyma, fűszerkeverék",
+            "imageName": "pizzakenyer",
             "type": "none",
             "variants": [
                 {
@@ -94,6 +96,7 @@ module.exports = {
             "category": "Klasszikus pizzák",
             "name": "Margarita pizza",
             "description": "fűszeres paradicsomszósz, sajt",
+            "imageName": "margarita-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -117,6 +120,7 @@ module.exports = {
             "category": "Klasszikus pizzák",
             "name": "Sonkás pizza",
             "description": "fűszeres paradicsomszósz, sajt, sonka",
+            "imageName": "sonkas-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -140,6 +144,7 @@ module.exports = {
             "category": "Klasszikus pizzák",
             "name": "Szalámis pizza",
             "description": "fűszeres paradicsomszósz, sajt, paprikás szalámi",
+            "imageName": "szalamis-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -163,6 +168,7 @@ module.exports = {
             "category": "Klasszikus pizzák",
             "name": "Sonka-ku pizza",
             "description": "fűszeres paradicsomszósz, sajt, sonka, kukorica",
+            "imageName": "sonka-ku-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -186,6 +192,7 @@ module.exports = {
             "category": "Klasszikus pizzák",
             "name": "Bacon pizza",
             "description": "fűszeres paradicsomszósz, sajt, pirított bacon",
+            "imageName": "bacon-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -209,6 +216,7 @@ module.exports = {
             "category": "Klasszikus pizzák",
             "name": "4 Sajtos pizza",
             "description": "fűszeres paradicsomszósz, sajt, parmezán, gorgonzola, füstölt sajt",
+            "imageName": "4-sajtos-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -232,6 +240,7 @@ module.exports = {
             "category": "Klasszikus pizzák",
             "name": "Hawaii pizza",
             "description": "fűszeres paradicsomszósz vagy fűszeres tejfölös szósz, sajt, sonka, ananász, füstölt sajt",
+            "imageName": "hawaii-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -255,6 +264,7 @@ module.exports = {
             "category": "Extra pizzák",
             "name": "Zöldséges pizza",
             "description": "fokhagymás tejfölös alap, sajt, padlizsán karikák, cukkini, répa szeletek, párolt fűszeres csirkemell",
+            "imageName": "zoldseges-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -270,6 +280,7 @@ module.exports = {
             "category": "Extra pizzák",
             "name": "Tonhalas pizza",
             "description": "fűszeres paradicsomszósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek",
+            "imageName": "tonhalas-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -285,6 +296,7 @@ module.exports = {
             "category": "Extra pizzák",
             "name": "Piedone pizza",
             "description": "fűszeres paradicsomszósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika",
+            "imageName": "piedone-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -300,6 +312,7 @@ module.exports = {
             "category": "Extra pizzák",
             "name": "Jóasszony pizza",
             "description": "fűszeres paradicsomszósz alap, sajt, paprikás szalámi, csípős cseresznyepaprika, csiperke gomba, hagyma",
+            "imageName": "joasszony-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -315,6 +328,7 @@ module.exports = {
             "category": "Extra pizzák",
             "name": "3 Kívánság pizza",
             "description": "szabadon választott szósz alap, sajt, és pluszban három feltét",
+            "imageName": "3-kivansag-pizza",
             "type": "pizza-3-free-options",
             "variants": [
                 {
@@ -330,6 +344,7 @@ module.exports = {
             "category": "Full a fullban pizzák",
             "name": "Victorio pizza",
             "description": "fokhagymás tejfölös alap, sajt, póréhagyma, mozzarella golyó, pirított bacon, juhturó",
+            "imageName": "victorio-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -345,6 +360,7 @@ module.exports = {
             "category": "Full a fullban pizzák",
             "name": "Hús-zabáló pizza",
             "description": "fűszeres paradicsomszósz, sajt, csirkemell, sült tarja, sonka, bacon",
+            "imageName": "hus-zabalo-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -360,6 +376,7 @@ module.exports = {
             "category": "Full a fullban pizzák",
             "name": "Master pizza",
             "description": "tejfölös mustáros tárkonyos ízvilág, sajt, sonka, kukorica, pirított bacon, csiperke gomba",
+            "imageName": "master-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -375,6 +392,7 @@ module.exports = {
             "category": "Full a fullban pizzák",
             "name": "Barbeque pizza",
             "description": "bbq alap szósz, sajt, bacon vagy csirkemell, vöröshagyma, pritamin paprika szeletek",
+            "imageName": "barbeque-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -390,6 +408,7 @@ module.exports = {
             "category": "Full a fullban pizzák",
             "name": "Jalapeno Barbeque pizza",
             "description": "fokhagymás bbq szósz, sajt, csirkemell, pirított póréhagyma, paradicsomkarika , jalapeno",
+            "imageName": "jalapeno-barbeque-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -405,6 +424,7 @@ module.exports = {
             "category": "Full a fullban pizzák",
             "name": "Tenger kincsei pizza",
             "description": "fűszeres paradicsomszósz, sajt, pácban érlelt tenger gyümölcsei, vegyes magozott olíva bogyó",
+            "imageName": "tenger-kincsei-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -420,6 +440,7 @@ module.exports = {
             "category": "Full a fullban pizzák",
             "name": "Dani pizza",
             "description": "tejfölös fokhagymás alap, sajt, főtt tarja, lila hagyma, bacon, szeletekre vágott jalapeno paprika",
+            "imageName": "dani-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -435,6 +456,7 @@ module.exports = {
             "category": "Full a fullban pizzák",
             "name": "Meex töltött pizza",
             "description": "tejfölös alap, paprikás szalámi, ruccola, ízletes cheddar sajt, jalapeno paprika",
+            "imageName": "meex-toltott-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -450,6 +472,7 @@ module.exports = {
             "category": "Full a fullban pizzák",
             "name": "Bossy pizza",
             "description": "fűszeres paradicsomszósz, sajt, pármai sonka, frissen vágott ruccola, koktél paradicsom",
+            "imageName": "bossy-pizza",
             "type": "pizza",
             "variants": [
                 {
@@ -465,6 +488,7 @@ module.exports = {
             "category": "Meex specialitás",
             "name": "Akay - török pizza",
             "description": "fűszeres paradicsomos alap, sajt, sonka",
+            "imageName": "akay-torok-pizza",
             "type": "none",
             "variants": [
                 {
@@ -480,6 +504,7 @@ module.exports = {
             "category": "Meex specialitás",
             "name": "Banu - török pizza",
             "description": "tejfölös alap, sajt, tarja, pirított fokhagyma",
+            "imageName": "banu-torok-pizza",
             "type": "none",
             "variants": [
                 {
@@ -495,6 +520,7 @@ module.exports = {
             "category": "Meex specialitás",
             "name": "Cahil - török pizza",
             "description": "bbq alap, sajt, ropogós bacon",
+            "imageName": "cahil-torok-pizza",
             "type": "none",
             "variants": [
                 {
@@ -510,6 +536,7 @@ module.exports = {
             "category": "Tészták",
             "name": "Carbonara",
             "description": "bacon, sonka, tojás, tejszín, parmezán sajt, spagetti",
+            "imageName": "carbonara",
             "type": "none",
             "variants": [
                 {
@@ -525,6 +552,7 @@ module.exports = {
             "category": "Tészták",
             "name": "Milánói",
             "description": "paradicsomszósz, sonka, gomba, trappista sajt, spagetti",
+            "imageName": "milanoi",
             "type": "none",
             "variants": [
                 {
@@ -540,6 +568,7 @@ module.exports = {
             "category": "Tészták",
             "name": "Peperoncino",
             "description": "pirított fokhagymás olívaolaj, chili, petrezselyem, csípős, spagetti",
+            "imageName": "peperoncino",
             "type": "none",
             "variants": [
                 {
@@ -555,6 +584,7 @@ module.exports = {
             "category": "Tészták",
             "name": "Meex",
             "description": "csirke, gomba, fokhagyma, fűszeres tejszínes szósz, parmezán, spagetti",
+            "imageName": "meex",
             "type": "none",
             "variants": [
                 {
@@ -570,6 +600,7 @@ module.exports = {
             "category": "Rántott sajtok",
             "name": "Ízletes cheddar sajtfalatkák",
             "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+            "imageName": "rantottsajt-cheddar",
             "type": "none",
             "variants": [
                 {
@@ -601,6 +632,7 @@ module.exports = {
             "category": "Rántott sajtok",
             "name": "Camembert sajt",
             "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+            "imageName": "rantottsajt-camambert",
             "type": "none",
             "variants": [
                 {
@@ -632,6 +664,7 @@ module.exports = {
             "category": "Rántott sajtok",
             "name": "Trappista sajt",
             "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+            "imageName": "rantottsajt-trappista",
             "type": "none",
             "variants": [
                 {
@@ -663,6 +696,7 @@ module.exports = {
             "category": "Frissensültek",
             "name": "Buffalo csirkeszárnyak",
             "description": "TODO",
+            "imageName": "buffalo-csirkeszarnyak",
             "type": "none",
             "variants": [
                 {
@@ -682,6 +716,7 @@ module.exports = {
             "category": "Frissensültek",
             "name": "Buffalo csirkeszárnyak menü",
             "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+            "imageName": "buffalo-csirkeszarnyak",
             "type": "none",
             "variants": [
                 {
@@ -717,6 +752,7 @@ module.exports = {
             "category": "Hamburgerek",
             "name": "Meex burger",
             "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa",
+            "imageName": "meex-burger",
             "type": "hamburger",
             "variants": [
                 {
@@ -732,6 +768,7 @@ module.exports = {
             "category": "Hamburgerek",
             "name": "Meex sajtburger",
             "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt",
+            "imageName": "meex-burger",
             "type": "hamburger",
             "variants": [
                 {
@@ -747,6 +784,7 @@ module.exports = {
             "category": "Hamburgerek",
             "name": "Dupla Meex burger",
             "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa",
+            "imageName": "meex-burger",
             "type": "hamburger",
             "variants": [
                 {
@@ -762,6 +800,7 @@ module.exports = {
             "category": "Hamburgerek",
             "name": "Dupla Meex sajtburger",
             "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt",
+            "imageName": "meex-burger",
             "type": "hamburger",
             "variants": [
                 {
@@ -777,6 +816,7 @@ module.exports = {
             "category": "Hamburger menük",
             "name": "Meex Burger Menü",
             "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
+            "imageName": "meex-burger-menu",
             "type": "hamburger",
             "variants": [
                 {
@@ -808,6 +848,7 @@ module.exports = {
             "category": "Hamburger menük",
             "name": "Meex Sajtburger Menü",
             "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
+            "imageName": "meex-burger-menu",
             "type": "hamburger",
             "variants": [
                 {
@@ -839,6 +880,7 @@ module.exports = {
             "category": "Hamburger menük",
             "name": "Dupla Meex Burger Menü",
             "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
+            "imageName": "meex-burger-menu",
             "type": "hamburger",
             "variants": [
                 {
@@ -870,6 +912,7 @@ module.exports = {
             "category": "Hamburger menük",
             "name": "Dupla Meex Sajtburger Menü",
             "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
+            "imageName": "meex-burger-menu",
             "type": "hamburger",
             "variants": [
                 {
@@ -901,6 +944,7 @@ module.exports = {
             "category": "Fitnesz szendvicsek",
             "name": "Purpur",
             "description": "szénhidrátcsökkentett magvas baguette, friss jégsaláta, paradicsom, uborka, fűszeres grillezett csirkemell (16dkg)",
+            "imageName": "purpur",
             "type": "none",
             "variants": [
                 {
@@ -916,6 +960,7 @@ module.exports = {
             "category": "Saláták",
             "name": "Primőr saláta",
             "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola nyakon öntve vinegrettével, pizzakenyér szeletekkel tálalva",
+            "imageName": "primor-salata",
             "type": "none",
             "variants": [
                 {
@@ -931,6 +976,7 @@ module.exports = {
             "category": "Saláták",
             "name": "Mozarella saláta",
             "description": "mozarella golyók, paradicsomkarikák, olívaolajos bazsalikommal és oregánóval, pizzakenyér szeletekkel tálalva",
+            "imageName": "mozarella-salata",
             "type": "none",
             "variants": [
                 {
@@ -946,6 +992,7 @@ module.exports = {
             "category": "Saláták",
             "name": "Tonhal saláta",
             "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, tonhaltörzs, sajtkocka, pizzakenyér szeletekkel tálalva",
+            "imageName": "tonhal-salata",
             "type": "none",
             "variants": [
                 {
@@ -961,6 +1008,7 @@ module.exports = {
             "category": "Saláták",
             "name": "Cézár saláta",
             "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, grillezett fűszeres csirkemell, parmezán, pizzakenyér szeletekkel tálalva",
+            "imageName": "cezar-salata",
             "type": "none",
             "variants": [
                 {
@@ -976,6 +1024,7 @@ module.exports = {
             "category": "Édességek",
             "name": "Profiterol",
             "description": "Profiterol golyók fehér- és tejcsokoládé bevonattal, tejszínhab koronával",
+            "imageName": "profiterol",
             "type": "none",
             "variants": [
                 {
@@ -991,6 +1040,7 @@ module.exports = {
             "category": "Üdítők",
             "name": "Pepsi",
             "description": "",
+            "imageName": "pepsi",
             "type": "none",
             "variants": [
                 {
@@ -1014,6 +1064,7 @@ module.exports = {
             "category": "Üdítők",
             "name": "Pepsi Max",
             "description": "",
+            "imageName": "pepsi-max",
             "type": "none",
             "variants": [
                 {
@@ -1037,6 +1088,7 @@ module.exports = {
             "category": "Üdítők",
             "name": "Mirinda",
             "description": "",
+            "imageName": "mirinda",
             "type": "none",
             "variants": [
                 {
@@ -1060,6 +1112,7 @@ module.exports = {
             "category": "Üdítők",
             "name": "Canada Dry",
             "description": "",
+            "imageName": "canada-dry",
             "type": "none",
             "variants": [
                 {
@@ -1083,6 +1136,7 @@ module.exports = {
             "category": "Üdítők",
             "name": "Lipton Ice Tea",
             "description": "",
+            "imageName": "lipton-ice-tea",
             "type": "none",
             "variants": [
                 {
@@ -1202,5 +1256,5 @@ module.exports = {
             ]
         }
     ],
-    "version": "021a4c08d56c4bffd77476eac3e0462c"
+    "version": "0c23a4c8fa1a92bfac5e83e030452f01"
 };

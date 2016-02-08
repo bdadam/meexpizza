@@ -13,22 +13,6 @@
     <script src="main.js" defer></script>
 </head>
 <body>
-    <div style="display: none;">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
-            <symbol id="icon-cart" viewBox="0 0 1024 1024">
-                <path class="path1" d="M384 928c0 53.019-42.981 96-96 96s-96-42.981-96-96c0-53.019 42.981-96 96-96s96 42.981 96 96z"></path>
-                <path class="path2" d="M1024 928c0 53.019-42.981 96-96 96s-96-42.981-96-96c0-53.019 42.981-96 96-96s96 42.981 96 96z"></path>
-                <path class="path3" d="M1024 512v-384h-768c0-35.346-28.654-64-64-64h-192v64h128l48.074 412.054c-29.294 23.458-48.074 59.5-48.074 99.946 0 70.696 57.308 128 128 128h768v-64h-768c-35.346 0-64-28.654-64-64 0-0.218 0.014-0.436 0.016-0.656l831.984-127.344z"></path>
-            </symbol>
-            <symbol id="icon-plus" viewBox="0 0 16 16">
-                <path d="M15.5 6h-5.5v-5.5c0-0.276-0.224-0.5-0.5-0.5h-3c-0.276 0-0.5 0.224-0.5 0.5v5.5h-5.5c-0.276 0-0.5 0.224-0.5 0.5v3c0 0.276 0.224 0.5 0.5 0.5h5.5v5.5c0 0.276 0.224 0.5 0.5 0.5h3c0.276 0 0.5-0.224 0.5-0.5v-5.5h5.5c0.276 0 0.5-0.224 0.5-0.5v-3c0-0.276-0.224-0.5-0.5-0.5z"></path>
-            </symbol>
-            <symbol id="icon-minus" viewBox="0 0 16 16">
-                <path d="M0 6.5v3c0 0.276 0.224 0.5 0.5 0.5h15c0.276 0 0.5-0.224 0.5-0.5v-3c0-0.276-0.224-0.5-0.5-0.5h-15c-0.276 0-0.5 0.224-0.5 0.5z"></path>
-            </symbol>
-        </svg>
-    </div>
-
 <header id="site-header">
     <div class="container">
         <div class="brand"><a href="/" title="Meexpizza - Gyöngyös">Meexpizza</a></div>
@@ -50,6 +34,877 @@
 
 <main class="container">
     <div id="menucard">
+        
+            <a id="pizzakenyerek" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">Pizzakenyerek</h2>
+                <ul>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-pizzakenyer"></div></div>
+                            <div class="text">
+                                <h3>Pizzakenyér</h3>
+                                <p>TODO</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="pizzakenyer"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-pizzakenyer"></div></div>
+                            <div class="text">
+                                <h3>Sajtos-fokhagymás pizzakenyér</h3>
+                                <p>sajt, fokhagyma, fűszerkeverék</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="sajtos-fokhagymas-pizzakenyer"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+        
+            <a id="klasszikus-pizzak" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">Klasszikus pizzák</h2>
+                <ul>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-margarita-pizza"></div></div>
+                            <div class="text">
+                                <h3>Margarita pizza</h3>
+                                <p>fűszeres paradicsomszósz, sajt</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="margarita-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-sonkas-pizza"></div></div>
+                            <div class="text">
+                                <h3>Sonkás pizza</h3>
+                                <p>fűszeres paradicsomszósz, sajt, sonka</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="sonkas-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-szalamis-pizza"></div></div>
+                            <div class="text">
+                                <h3>Szalámis pizza</h3>
+                                <p>fűszeres paradicsomszósz, sajt, paprikás szalámi</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="szalamis-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-sonka-ku-pizza"></div></div>
+                            <div class="text">
+                                <h3>Sonka-ku pizza</h3>
+                                <p>fűszeres paradicsomszósz, sajt, sonka, kukorica</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="sonka-ku-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-bacon-pizza"></div></div>
+                            <div class="text">
+                                <h3>Bacon pizza</h3>
+                                <p>fűszeres paradicsomszósz, sajt, pirított bacon</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="bacon-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-4-sajtos-pizza"></div></div>
+                            <div class="text">
+                                <h3>4 Sajtos pizza</h3>
+                                <p>fűszeres paradicsomszósz, sajt, parmezán, gorgonzola, füstölt sajt</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="4-sajtos-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-hawaii-pizza"></div></div>
+                            <div class="text">
+                                <h3>Hawaii pizza</h3>
+                                <p>fűszeres paradicsomszósz vagy fűszeres tejfölös szósz, sajt, sonka, ananász, füstölt sajt</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="hawaii-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+        
+            <a id="extra-pizzak" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">Extra pizzák</h2>
+                <ul>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-zoldseges-pizza"></div></div>
+                            <div class="text">
+                                <h3>Zöldséges pizza</h3>
+                                <p>fokhagymás tejfölös alap, sajt, padlizsán karikák, cukkini, répa szeletek, párolt fűszeres csirkemell</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="zoldseges-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-tonhalas-pizza"></div></div>
+                            <div class="text">
+                                <h3>Tonhalas pizza</h3>
+                                <p>fűszeres paradicsomszósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="tonhalas-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-piedone-pizza"></div></div>
+                            <div class="text">
+                                <h3>Piedone pizza</h3>
+                                <p>fűszeres paradicsomszósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="piedone-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-joasszony-pizza"></div></div>
+                            <div class="text">
+                                <h3>Jóasszony pizza</h3>
+                                <p>fűszeres paradicsomszósz alap, sajt, paprikás szalámi, csípős cseresznyepaprika, csiperke gomba, hagyma</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="joasszony-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-3-kivansag-pizza"></div></div>
+                            <div class="text">
+                                <h3>3 Kívánság pizza</h3>
+                                <p>szabadon választott szósz alap, sajt, és pluszban három feltét</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="3-kivansag-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+        
+            <a id="full-a-fullban-pizzak" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">Full a fullban pizzák</h2>
+                <ul>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-victorio-pizza"></div></div>
+                            <div class="text">
+                                <h3>Victorio pizza</h3>
+                                <p>fokhagymás tejfölös alap, sajt, póréhagyma, mozzarella golyó, pirított bacon, juhturó</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="victorio-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-hus-zabalo-pizza"></div></div>
+                            <div class="text">
+                                <h3>Hús-zabáló pizza</h3>
+                                <p>fűszeres paradicsomszósz, sajt, csirkemell, sült tarja, sonka, bacon</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="hus-zabalo-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-master-pizza"></div></div>
+                            <div class="text">
+                                <h3>Master pizza</h3>
+                                <p>tejfölös mustáros tárkonyos ízvilág, sajt, sonka, kukorica, pirított bacon, csiperke gomba</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="master-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-barbeque-pizza"></div></div>
+                            <div class="text">
+                                <h3>Barbeque pizza</h3>
+                                <p>bbq alap szósz, sajt, bacon vagy csirkemell, vöröshagyma, pritamin paprika szeletek</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="barbeque-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-jalapeno-barbeque-pizza"></div></div>
+                            <div class="text">
+                                <h3>Jalapeno Barbeque pizza</h3>
+                                <p>fokhagymás bbq szósz, sajt, csirkemell, pirított póréhagyma, paradicsomkarika , jalapeno</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="jalapeno-barbeque-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-tenger-kincsei-pizza"></div></div>
+                            <div class="text">
+                                <h3>Tenger kincsei pizza</h3>
+                                <p>fűszeres paradicsomszósz, sajt, pácban érlelt tenger gyümölcsei, vegyes magozott olíva bogyó</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="tenger-kincsei-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-dani-pizza"></div></div>
+                            <div class="text">
+                                <h3>Dani pizza</h3>
+                                <p>tejfölös fokhagymás alap, sajt, főtt tarja, lila hagyma, bacon, szeletekre vágott jalapeno paprika</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="dani-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-meex-toltott-pizza"></div></div>
+                            <div class="text">
+                                <h3>Meex töltött pizza</h3>
+                                <p>tejfölös alap, paprikás szalámi, ruccola, ízletes cheddar sajt, jalapeno paprika</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="meex-toltott-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-bossy-pizza"></div></div>
+                            <div class="text">
+                                <h3>Bossy pizza</h3>
+                                <p>fűszeres paradicsomszósz, sajt, pármai sonka, frissen vágott ruccola, koktél paradicsom</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="bossy-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+        
+            <a id="meex-specialitas" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">Meex specialitás</h2>
+                <ul>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-akay-torok-pizza"></div></div>
+                            <div class="text">
+                                <h3>Akay - török pizza</h3>
+                                <p>fűszeres paradicsomos alap, sajt, sonka</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="akay-torok-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-banu-torok-pizza"></div></div>
+                            <div class="text">
+                                <h3>Banu - török pizza</h3>
+                                <p>tejfölös alap, sajt, tarja, pirított fokhagyma</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="banu-torok-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-cahil-torok-pizza"></div></div>
+                            <div class="text">
+                                <h3>Cahil - török pizza</h3>
+                                <p>bbq alap, sajt, ropogós bacon</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="cahil-torok-pizza"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+        
+            <a id="tesztak" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">Tészták</h2>
+                <ul>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-carbonara"></div></div>
+                            <div class="text">
+                                <h3>Carbonara</h3>
+                                <p>bacon, sonka, tojás, tejszín, parmezán sajt, spagetti</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="carbonara"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-milanoi"></div></div>
+                            <div class="text">
+                                <h3>Milánói</h3>
+                                <p>paradicsomszósz, sonka, gomba, trappista sajt, spagetti</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="milanoi"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-peperoncino"></div></div>
+                            <div class="text">
+                                <h3>Peperoncino</h3>
+                                <p>pirított fokhagymás olívaolaj, chili, petrezselyem, csípős, spagetti</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="peperoncino"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-meex"></div></div>
+                            <div class="text">
+                                <h3>Meex</h3>
+                                <p>csirke, gomba, fokhagyma, fűszeres tejszínes szósz, parmezán, spagetti</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="meex"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+        
+            <a id="rantott-sajtok" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">Rántott sajtok</h2>
+                <ul>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-rantottsajt-cheddar"></div></div>
+                            <div class="text">
+                                <h3>Ízletes cheddar sajtfalatkák</h3>
+                                <p>választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="izletes-cheddar-sajtfalatkak"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-rantottsajt-camambert"></div></div>
+                            <div class="text">
+                                <h3>Camembert sajt</h3>
+                                <p>választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="camembert-sajt"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-rantottsajt-trappista"></div></div>
+                            <div class="text">
+                                <h3>Trappista sajt</h3>
+                                <p>választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="trappista-sajt"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+        
+            <a id="frissensultek" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">Frissensültek</h2>
+                <ul>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-buffalo-csirkeszarnyak"></div></div>
+                            <div class="text">
+                                <h3>Buffalo csirkeszárnyak</h3>
+                                <p>TODO</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="buffalo-csirkeszarnyak"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-buffalo-csirkeszarnyak"></div></div>
+                            <div class="text">
+                                <h3>Buffalo csirkeszárnyak menü</h3>
+                                <p>választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="buffalo-csirkeszarnyak-menu"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+        
+            <a id="hamburgerek" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">Hamburgerek</h2>
+                <ul>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-meex-burger"></div></div>
+                            <div class="text">
+                                <h3>Meex burger</h3>
+                                <p>friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="meex-burger"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-meex-burger"></div></div>
+                            <div class="text">
+                                <h3>Meex sajtburger</h3>
+                                <p>friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="meex-sajtburger"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-meex-burger"></div></div>
+                            <div class="text">
+                                <h3>Dupla Meex burger</h3>
+                                <p>friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="dupla-meex-burger"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-meex-burger"></div></div>
+                            <div class="text">
+                                <h3>Dupla Meex sajtburger</h3>
+                                <p>friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="dupla-meex-sajtburger"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+        
+            <a id="hamburger-menuk" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">Hamburger menük</h2>
+                <ul>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-meex-burger-menu"></div></div>
+                            <div class="text">
+                                <h3>Meex Burger Menü</h3>
+                                <p>friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="meex-burger-menu"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-meex-burger-menu"></div></div>
+                            <div class="text">
+                                <h3>Meex Sajtburger Menü</h3>
+                                <p>friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="meex-sajtburger-menu"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-meex-burger-menu"></div></div>
+                            <div class="text">
+                                <h3>Dupla Meex Burger Menü</h3>
+                                <p>friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="dupla-meex-burger-menu"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-meex-burger-menu"></div></div>
+                            <div class="text">
+                                <h3>Dupla Meex Sajtburger Menü</h3>
+                                <p>friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="dupla-meex-sajtburger-menu"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+        
+            <a id="fitnesz-szendvicsek" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">Fitnesz szendvicsek</h2>
+                <ul>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-purpur"></div></div>
+                            <div class="text">
+                                <h3>Purpur</h3>
+                                <p>szénhidrátcsökkentett magvas baguette, friss jégsaláta, paradicsom, uborka, fűszeres grillezett csirkemell (16dkg)</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="purpur"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+        
+            <a id="salatak" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">Saláták</h2>
+                <ul>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-primor-salata"></div></div>
+                            <div class="text">
+                                <h3>Primőr saláta</h3>
+                                <p>friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola nyakon öntve vinegrettével, pizzakenyér szeletekkel tálalva</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="primor-salata"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-mozarella-salata"></div></div>
+                            <div class="text">
+                                <h3>Mozarella saláta</h3>
+                                <p>mozarella golyók, paradicsomkarikák, olívaolajos bazsalikommal és oregánóval, pizzakenyér szeletekkel tálalva</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="mozarella-salata"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-tonhal-salata"></div></div>
+                            <div class="text">
+                                <h3>Tonhal saláta</h3>
+                                <p>friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, tonhaltörzs, sajtkocka, pizzakenyér szeletekkel tálalva</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="tonhal-salata"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-cezar-salata"></div></div>
+                            <div class="text">
+                                <h3>Cézár saláta</h3>
+                                <p>friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, grillezett fűszeres csirkemell, parmezán, pizzakenyér szeletekkel tálalva</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="cezar-salata"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+        
+            <a id="edessegek" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">Édességek</h2>
+                <ul>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-profiterol"></div></div>
+                            <div class="text">
+                                <h3>Profiterol</h3>
+                                <p>Profiterol golyók fehér- és tejcsokoládé bevonattal, tejszínhab koronával</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="profiterol"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+        
+            <a id="uditok" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">Üdítők</h2>
+                <ul>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-pepsi"></div></div>
+                            <div class="text">
+                                <h3>Pepsi</h3>
+                                <p></p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="pepsi"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-pepsi-max"></div></div>
+                            <div class="text">
+                                <h3>Pepsi Max</h3>
+                                <p></p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="pepsi-max"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-mirinda"></div></div>
+                            <div class="text">
+                                <h3>Mirinda</h3>
+                                <p></p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="mirinda"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-canada-dry"></div></div>
+                            <div class="text">
+                                <h3>Canada Dry</h3>
+                                <p></p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="canada-dry"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-lipton-ice-tea"></div></div>
+                            <div class="text">
+                                <h3>Lipton Ice Tea</h3>
+                                <p></p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="lipton-ice-tea"></add-to-cart>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+        
+
+
         
         <a id="pizzakenyerek" class="section-anchor"></a>
         <section class="card menu-category">
@@ -1227,49 +2082,27 @@
 
 
 <footer id="site-footer">
-    <div class="container">
-        <div class="box">
-            <h4>Nyitvatartás</h4>
-            <dl class="opening-hours">
-                <dd>Hétfő</dd><dt>11:00 -22:00</dt>
-                <dd>Kedd</dd><dt>11:00 -22:00</dt>
-                <dd>Szerda</dd><dt>11:00 -22:00</dt>
-                <dd>Csütörtök</dd><dt>11:00 -22:00</dt>
-                <dd>Péntek</dd><dt>11:00 -23:00</dt>
-                <dd>Szombat</dd><dt>11:00 -23:00</dt>
-                <dd>Vasárnap</dd><dt>11:00 -21:00</dt>
-            </dl>
-        </div>
-
-        <div class="box">
-            <h4>Kiszállítás</h4>
-            <p>
-                Ingyenes kiszállítás Gyöngyös területén 1000 Ft felett.
-                KRF kollégium és karácsondi gyártelepek 2000 Ft felett ingyenes.
-                Környező falvak: Gyöngyöstarján, Gyöngyössolymos, Gyöngyöshalász, Mátrafüred és Abasár esetén érdeklődj telefonon a kiszállítás díjáról!
-            </p>
-        </div>
-
-        <div class="box">
-            <h4>Elérhetőségek</h4>
-            <p>Meex Pizza & Food</p>
-            <p>3200 Gyöngyös, Orczy út 1.</p>
-            <p>+36 30 2111 212</p>
-            <p><a href="mailto:info@meexpizza.hu">info@meexpizza.hu</a></p>
-            <p><a href="http://www.meexpizza.hu">www.meexpizza.hu</a></p>
-        </div>
-    </div>
+    <span>Meex Pizza & Food</span>
+    <span>3200 Gyöngyös, Orczy út 1.</span>
+    <span>Minden jog fenntartva! &copy; 2016</span>
+    <span><a href="https://bdadam.com/" target="_blank">made by bdadam.com</a></span>
 </footer>
 
-<div id="modal">
-    <p class="modal-title">Válassz!</p>
-    <p>Pizza margarita</p>
-    <p>
-        <select><option>30cm</option><option>40cm</option><option>50cm</option></select>
-    </p>
-    <p>
-        Feltét
-    </p>
+<div style="display: none;">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="icon-cart" viewBox="0 0 1024 1024">
+            <path class="path1" d="M384 928c0 53.019-42.981 96-96 96s-96-42.981-96-96c0-53.019 42.981-96 96-96s96 42.981 96 96z"></path>
+            <path class="path2" d="M1024 928c0 53.019-42.981 96-96 96s-96-42.981-96-96c0-53.019 42.981-96 96-96s96 42.981 96 96z"></path>
+            <path class="path3" d="M1024 512v-384h-768c0-35.346-28.654-64-64-64h-192v64h128l48.074 412.054c-29.294 23.458-48.074 59.5-48.074 99.946 0 70.696 57.308 128 128 128h768v-64h-768c-35.346 0-64-28.654-64-64 0-0.218 0.014-0.436 0.016-0.656l831.984-127.344z"></path>
+        </symbol>
+        <symbol id="icon-plus" viewBox="0 0 16 16">
+            <path d="M15.5 6h-5.5v-5.5c0-0.276-0.224-0.5-0.5-0.5h-3c-0.276 0-0.5 0.224-0.5 0.5v5.5h-5.5c-0.276 0-0.5 0.224-0.5 0.5v3c0 0.276 0.224 0.5 0.5 0.5h5.5v5.5c0 0.276 0.224 0.5 0.5 0.5h3c0.276 0 0.5-0.224 0.5-0.5v-5.5h5.5c0.276 0 0.5-0.224 0.5-0.5v-3c0-0.276-0.224-0.5-0.5-0.5z"></path>
+        </symbol>
+        <symbol id="icon-minus" viewBox="0 0 16 16">
+            <path d="M0 6.5v3c0 0.276 0.224 0.5 0.5 0.5h15c0.276 0 0.5-0.224 0.5-0.5v-3c0-0.276-0.224-0.5-0.5-0.5h-15c-0.276 0-0.5 0.224-0.5 0.5z"></path>
+        </symbol>
+    </svg>
 </div>
+
 </body>
 </html>

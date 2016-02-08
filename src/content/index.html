@@ -3,6 +3,31 @@
 {% block body %}
 <main class="container">
     <div id="menucard">
+        {% for category in viewModel.categories %}
+            <a id="{{ category.id }}" class="section-anchor"></a>
+            <section class="card menu-category">
+                <h2 class="card-title">{{ category.name }}</h2>
+                <ul>
+                    {% for dish in category.dishes %}
+                    <li class="item">
+                        <div class="xxx">
+                            <div class="img"><div class="icon-{{ dish.imageName }}"></div></div>
+                            <div class="text">
+                                <h3>{{ dish.name }}</h3>
+                                <p>{{ dish.description }}</p>
+                                <p class="in-cart-count"></p>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <add-to-cart dishid="{{ dish.id }}"></add-to-cart>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endfor %}
+
+
         {% for cat in menu.menu %}
         <a id="{{ cat.id }}" class="section-anchor"></a>
         <section class="card menu-category">

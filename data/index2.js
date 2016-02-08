@@ -26,6 +26,7 @@ Object.keys(menucardYaml).forEach(category => {
         const description = dish['Leírás'] || '';
         const type = dish.type || 'none';
         const variantsObj = dish['Árak'];
+        const imageName = dish.image || getslug(dishName);
 
         const variants = [];
 
@@ -51,6 +52,7 @@ Object.keys(menucardYaml).forEach(category => {
             category,
             name: dishName,
             description,
+            imageName,
             type,
             variants,
             options

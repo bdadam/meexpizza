@@ -1,4 +1,5767 @@
-!function(t){function e(r){if(n[r])return n[r].exports;var a=n[r]={exports:{},id:r,loaded:!1};return t[r].call(a.exports,a,a.exports,e),a.loaded=!0,a.exports}var n={};return e.m=t,e.c=n,e.p="",e(0)}([function(t,e,n){"use strict";function r(t){if(Array.isArray(t)){for(var e=0,n=Array(t.length);e<t.length;e++)n[e]=t[e];return n}return Array.from(t)}n(42).polyfill(),n(43),n(41),n(40).init();var a=n(104),o=n(39),i=n(38),u={inCart:[],serializedForm:"",isEmpty:!0,address:{city:"Gyöngyös"}},s=n(45),c=a.createStore(function(){var t=arguments.length<=0||void 0===arguments[0]?u:arguments[0],e=arguments[1],n=u;switch(e.type){case"ADD":n=Object.assign({},t,{inCart:[].concat(r(t.inCart),[{dish:e.dish,timestamp:e.timestamp}])});break;case"REMOVE":var a=t.inCart.filter(function(t){return t.timestamp!==e.timestamp});n=Object.assign({},t,{inCart:a});break;case"DUPLICATE":n=Object.assign({},t,{inCart:s(t.inCart,function(t){return t.timestamp!==e.timestamp?t:[t,Object.assign({},t,{timestamp:+new Date})]})});break;case"RESTORE":n=Object.assign({},t,u,e.state);break;case"ADDRESS_CHANGE":n=Object.assign({},t,{address:e.address});break;case"EMPTY_CART":n=Object.assign({},t,{inCart:[]});break;default:return t}return n.isEmpty=0===n.inCart.length,n.deliveryFee=i[n.address.city].fix||0,n.deliveryFreeFrom=i[n.address.city].min||0,n});c.subscribe(function(){try{localStorage.shoppingCart=JSON.stringify(c.getState())}catch(t){}}),setTimeout(function(){try{var t=JSON.parse(localStorage.shoppingCart);c.dispatch({type:"RESTORE",state:t})}catch(e){}});var l=n(37);n(100);c.subscribe(function(){var t=c.getState(),e={};t.inCart.forEach(function(t){e[t.dish.id]=(e[t.dish.id]||0)+1}),l("[data-dish-id] .in-cart-count").text(""),Object.keys(e).forEach(function(t){var n=e[t];l("[data-dish-id="+t+"] .in-cart-count").text(n+" db a kosárban")})}),c.subscribe(function(){var t=c.getState();l("[data-shopping-cart-count]").text(t.inCart.length+" × ")}),c.subscribe(function(){var t=c.getState();t.isEmpty?(l("#side-cart .default-content").show(),l("#side-cart button.order").attr("disabled",!0)):(l("#side-cart .default-content").hide(),l("#side-cart button.order").attr("disabled",!1));var e=l("#side-cart .items");if(e.empty(),t.inCart.forEach(function(t){var n=o.dishes.filter(function(e){return e.id===t.dish.id})[0];e.append("<tr><td>"+n.name+" ("+t.dish.variant+')<br><a href="" style="font-size:0.875rem;"><svg style="width: 16px;height:16px;"><use xlink:href="#icon-plus"></use></svg> Még</a>&nbsp;&nbsp;<a href=""><svg style="width: 16px;height:16px;"><use xlink:href="#icon-minus"></use></svg> Nem kérem</a> <a href="">Extrák</a></td><td><button data-duplicate-order-item="'+t.timestamp+'"><svg><use xlink:href="#icon-plus"></use></svg></button><button data-remove-order-item="'+t.timestamp+'"><svg><use xlink:href="#icon-minus"></use></svg></button></div></td><td>'+n.variants[t.dish.variant]+"&nbsp;Ft</td></tr>")}),!t.isEmpty){var n=t.inCart.reduce(function(t,e){var n=o.dishes.filter(function(t){return t.id===e.dish.id})[0];return t+n.variants[e.dish.variant]},0);e.append('<tfoot><tr><td>Végösszeg</td><td colspan="2">'+n+"&nbsp;Ft</td></tr></tfoot>")}}),c.subscribe(function(){var t=c.getState().address,e=l("#side-cart .order-form");e.find("[name=city]").val(t.city),e.find("[name=name]").val(t.name),e.find("[name=street]").val(t.street),e.find("[name=phone]").val(t.phone)});var f=l("#side-cart .order-form").on("input change",function(t){var e={city:f.find("[name=city]").val(),name:f.find("[name=name]").val(),street:f.find("[name=street]").val(),phone:f.find("[name=phone]").val()};c.dispatch({type:"ADDRESS_CHANGE",address:e})});l(document).on("click","button[data-remove-order-item]",function(t){var e=l(this).data("removeOrderItem");c.dispatch({type:"REMOVE",timestamp:e})}),l(document).on("click","button[data-duplicate-order-item]",function(t){var e=l(this).data("duplicateOrderItem");c.dispatch({type:"DUPLICATE",timestamp:e})}),l(document).on("click","button[data-add-to-cart]",function(t){var e=l(this),n=e.data("add-to-cart"),r=e.data("variant");c.dispatch({type:"ADD",dish:{id:n,variant:r},timestamp:+new Date})}),window.sc=c,document.registerElement("google-map",{"extends":"a",prototype:Object.create(HTMLElement.prototype,{attachedCallback:{value:function(){var t=this;setTimeout(function(){var e=0|t.clientWidth;if(0!==e){var n=.75*e|0,r=window.devicePixelRatio>1?2:1,a="https://maps.googleapis.com/maps/api/staticmap?zoom=15&size="+e+"x"+n+"&scale="+r+"&maptype=roadmap&markers=color:blue%7Clabel:M%7C3200+Gyöngyös,+Orczy+út+1.&format=png",o=document.createElement("img");o.alt=t.getAttribute("title"),o.src=a,t.insertBefore(o,t.firstChild)}})}}})}),document.registerElement("add-to-cart",{prototype:Object.create(HTMLElement.prototype,{attachedCallback:{value:function(){var t=this.getAttribute("dishid"),e=l(this),n=o.dishes.filter(function(e){return e.id===t})[0],r=n.variants,a=Object.keys(r),i=l('<button data-add-to-cart="'+n.id+'" data-variant="'+a[0]+'"><svg class="icon-cart white"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>');a.length>1?!function(){var t=l("<select>"+a.map(function(t){return'<option value="'+t+'">'+t+" - "+r[t]+" Ft</option>"})+"</select>").on("change",function(e){return i.data("variant",t.val())});e.append(t)}():(a[0]&&e.append(a[0]+" - "),e.append("<b>"+r[a[0]]+" Ft</b>")),e.append(i)}}})});var d=(new Date).getDay()||7;l("#opening-hours dd:nth-of-type("+d+"), #opening-hours dt:nth-of-type("+d+")").css({fontWeight:700})},function(t,e){var n=Array.isArray;t.exports=n},function(t,e,n){(function(e){var r=n(8),a=r(e,"Map");t.exports=a}).call(e,function(){return this}())},function(t,e){function n(t){return!!t&&"object"==typeof t}t.exports=n},function(t,e,n){function r(t,e){for(var n=t.length;n--;)if(a(t[n][0],e))return n;return-1}var a=n(44);t.exports=r},function(t,e){function n(t){var e=typeof t;return"number"==e||"boolean"==e||"string"==e&&"__proto__"!==t||null==t}t.exports=n},function(t,e,n){var r=n(8),a=r(Object,"create");t.exports=a},function(t,e){function n(t){return"number"==typeof t&&t>-1&&t%1==0&&r>=t}var r=9007199254740991;t.exports=n},function(t,e,n){function r(t,e){var n=null==t?void 0:t[e];return a(n)?n:void 0}var a=n(93);t.exports=r},function(t,e,n){function r(t,e){return"number"==typeof t?!0:!a(t)&&(i.test(t)||!o.test(t)||null!=e&&t in Object(e))}var a=n(1),o=/\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,i=/^\w*$/;t.exports=r},function(t,e,n){(function(e){function r(t){return a(t)&&u.call(t,"callee")&&(!c.call(t,"callee")||s.call(t)==o)}var a=n(29),o="[object Arguments]",i=e.Object.prototype,u=i.hasOwnProperty,s=i.toString,c=i.propertyIsEnumerable;t.exports=r}).call(e,function(){return this}())},function(t,e){function n(t){var e=typeof t;return!!t&&("object"==e||"function"==e)}t.exports=n},function(t,e,n){function r(t,e,n){var r=null==t?void 0:a(t,e);return void 0===r?n:r}var a=n(20);t.exports=r},function(t,e,n){function r(t){var e=-1,n=t?t.length:0;for(this.clear();++e<n;){var r=t[e];this.set(r[0],r[1])}}var a=n(87),o=n(88),i=n(89),u=n(90),s=n(91);r.prototype.clear=a,r.prototype["delete"]=o,r.prototype.get=i,r.prototype.has=u,r.prototype.set=s,t.exports=r},function(t,e){(function(e){var n=e.Symbol;t.exports=n}).call(e,function(){return this}())},function(t,e){function n(t,e){for(var n=-1,r=t.length,a=Array(r);++n<r;)a[n]=e(t[n],n,t);return a}t.exports=n},function(t,e,n){(function(e){function r(t,e){var n=a(t,e);if(0>n)return!1;var r=t.length-1;return n==r?t.pop():i.call(t,n,1),!0}var a=n(4),o=e.Array.prototype,i=o.splice;t.exports=r}).call(e,function(){return this}())},function(t,e,n){function r(t,e){var n=a(t,e);return 0>n?void 0:t[n][1]}var a=n(4);t.exports=r},function(t,e,n){function r(t,e){return a(t,e)>-1}var a=n(4);t.exports=r},function(t,e,n){function r(t,e,n){var r=a(t,e);0>r?t.push([e,n]):t[r][1]=n}var a=n(4);t.exports=r},function(t,e,n){function r(t,e){e=o(e,t)?[e+""]:a(e);for(var n=0,r=e.length;null!=t&&r>n;)t=t[e[n++]];return n&&n==r?t:void 0}var a=n(24),o=n(9);t.exports=r},function(t,e){(function(e){function n(t,e){return a.call(t,e)||"object"==typeof t&&e in t&&null===o(t)}var r=e.Object.prototype,a=r.hasOwnProperty,o=Object.getPrototypeOf;t.exports=n}).call(e,function(){return this}())},function(t,e,n){function r(t,e,n,u,s){return t===e?!0:null==t||null==e||!o(t)&&!i(e)?t!==t&&e!==e:a(t,e,r,n,u,s)}var a=n(56),o=n(11),i=n(3);t.exports=r},function(t,e){function n(t){return function(e){return null==e?void 0:e[t]}}t.exports=n},function(t,e,n){function r(t){return a(t)?t:o(t)}var a=n(1),o=n(92);t.exports=r},function(t,e,n){(function(e){function r(t,e){return a?void 0!==t[e]:i.call(t,e)}var a=n(6),o=e.Object.prototype,i=o.hasOwnProperty;t.exports=r}).call(e,function(){return this}())},function(t,e){function n(t){var e=!1;if(null!=t&&"function"!=typeof t.toString)try{e=!!(t+"")}catch(n){}return e}t.exports=n},function(t,e){function n(t,e){return t="number"==typeof t||a.test(t)?+t:-1,e=null==e?r:e,t>-1&&t%1==0&&e>t}var r=9007199254740991,a=/^(?:0|[1-9]\d*)$/;t.exports=n},function(t,e,n){function r(t){return null!=t&&!("function"==typeof t&&o(t))&&i(a(t))}var a=n(69),o=n(30),i=n(7);t.exports=r},function(t,e,n){function r(t){return o(t)&&a(t)}var a=n(28),o=n(3);t.exports=r},function(t,e,n){(function(e){function r(t){var e=a(t)?s.call(t):"";return e==o||e==i}var a=n(11),o="[object Function]",i="[object GeneratorFunction]",u=e.Object.prototype,s=u.toString;t.exports=r}).call(e,function(){return this}())},function(t,e,n){(function(e){function r(t){return"string"==typeof t||!a(t)&&o(t)&&s.call(t)==i}var a=n(1),o=n(3),i="[object String]",u=e.Object.prototype,s=u.toString;t.exports=r}).call(e,function(){return this}())},function(t,e,n){function r(t){var e=c(t);if(!e&&!u(t))return o(t);var n=i(t),r=!!n,l=n||[],f=l.length;for(var d in t)!a(t,d)||r&&("length"==d||s(d,f))||e&&"constructor"==d||l.push(d);return l}var a=n(21),o=n(59),i=n(76),u=n(28),s=n(27),c=n(77);t.exports=r},function(t,e){"use strict";function n(){for(var t=arguments.length,e=Array(t),n=0;t>n;n++)e[n]=arguments[n];return function(){if(0===e.length)return arguments[0];var t=e[e.length-1],n=e.slice(0,-1);return n.reduceRight(function(t,e){return e(t)},t.apply(void 0,arguments))}}e.__esModule=!0,e["default"]=n,t.exports=e["default"]},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t}}function a(t,e){function n(){return c}function r(t){l.push(t);var e=!0;return function(){if(e){e=!1;var n=l.indexOf(t);l.splice(n,1)}}}function a(t){if(!i["default"](t))throw new Error("Actions must be plain objects. Use custom middleware for async actions.");if("undefined"==typeof t.type)throw new Error('Actions may not have an undefined "type" property. Have you misspelled a constant?');if(f)throw new Error("Reducers may not dispatch actions.");try{f=!0,c=s(c,t)}finally{f=!1}return l.slice().forEach(function(t){return t()}),t}function o(t){s=t,a({type:u.INIT})}if("function"!=typeof t)throw new Error("Expected the reducer to be a function.");var s=t,c=e,l=[],f=!1;return a({type:u.INIT}),{dispatch:a,subscribe:r,getState:n,replaceReducer:o}}e.__esModule=!0,e["default"]=a;var o=n(35),i=r(o),u={INIT:"@@redux/INIT"};e.ActionTypes=u},function(t,e){"use strict";function n(t){if(!t||"object"!=typeof t)return!1;var e="function"==typeof t.constructor?Object.getPrototypeOf(t):Object.prototype;if(null===e)return!0;var n=e.constructor;return"function"==typeof n&&n instanceof n&&r(n)===a}e.__esModule=!0,e["default"]=n;var r=function(t){return Function.prototype.toString.call(t)},a=r(Object);t.exports=e["default"]},function(t,e){"use strict";function n(t,e){return Object.keys(t).reduce(function(n,r){return n[r]=e(t[r],r),n},{})}e.__esModule=!0,e["default"]=n,t.exports=e["default"]},function(t,e){t.exports=jQuery},function(t,e){"use strict";t.exports={"Gyöngyös":{min:1e3},"Karácsondi úti gyártelep":{min:2e3},"KRF Kollégium":{min:2e3},"Abasár":{fix:800},Detk:{fix:800},"Gyöngyöshalász":{fix:800},"Gyöngyössolymos":{fix:800},"Gyöngyöstarján":{fix:800},"Mátrafüred":{fix:800},"Nagyréde":{fix:800},"Pálosvörösmart":{fix:800},Visonta:{fix:1e3}}},function(t,e){"use strict";t.exports={dishes:[{categoryId:"pizzakenyerek",name:"Pizzakenyér",id:"pizzakenyerek-pizzakenyer",variants:{"30cm":500}},{categoryId:"pizzakenyerek",name:"Sajtos-fokhagymás pizzakenyér",id:"pizzakenyerek-sajtos-fokhagymas-pizzakenyer",variants:{"30cm":600}},{categoryId:"klasszikus-pizzak",name:"Margarita pizza",id:"klasszikus-pizzak-margarita-pizza",variants:{"30cm":850,"40cm":1850,"50cm":2700}},{categoryId:"klasszikus-pizzak",name:"Sonkás pizza",id:"klasszikus-pizzak-sonkas-pizza",variants:{"30cm":1070,"40cm":2070,"50cm":2920}},{categoryId:"klasszikus-pizzak",name:"Szalámis pizza",id:"klasszikus-pizzak-szalamis-pizza",variants:{"30cm":1070,"40cm":2070,"50cm":2920}},{categoryId:"klasszikus-pizzak",name:"Sonka-ku pizza",id:"klasszikus-pizzak-sonka-ku-pizza",variants:{"30cm":1070,"40cm":2070,"50cm":2920}},{categoryId:"klasszikus-pizzak",name:"Bacon pizza",id:"klasszikus-pizzak-bacon-pizza",variants:{"30cm":1070,"40cm":2070,"50cm":2920}},{categoryId:"klasszikus-pizzak",name:"4 Sajtos pizza",id:"klasszikus-pizzak-4-sajtos-pizza",variants:{"30cm":1070,"40cm":2070,"50cm":2920}},{categoryId:"klasszikus-pizzak",name:"Hawaii pizza",id:"klasszikus-pizzak-hawaii-pizza",variants:{"30cm":1070,"40cm":2070,"50cm":2920}},{categoryId:"extra-pizzak",name:"Zöldséges pizza",id:"extra-pizzak-zoldseges-pizza",variants:{"30cm":1190}},{categoryId:"extra-pizzak",name:"Tonhalas pizza",id:"extra-pizzak-tonhalas-pizza",variants:{"30cm":1190}},{categoryId:"extra-pizzak",name:"Piedone pizza",id:"extra-pizzak-piedone-pizza",variants:{"30cm":1190}},{categoryId:"extra-pizzak",name:"Jóasszony pizza",id:"extra-pizzak-joasszony-pizza",variants:{"30cm":1190}},{categoryId:"extra-pizzak",name:"3 Kívánság pizza",id:"extra-pizzak-3-kivansag-pizza",variants:{"30cm":1190}},{categoryId:"full-a-fullban-pizzak",name:"Victorio pizza",id:"full-a-fullban-pizzak-victorio-pizza",variants:{"30cm":1450}},{categoryId:"full-a-fullban-pizzak",name:"Hús-zabáló pizza",id:"full-a-fullban-pizzak-hus-zabalo-pizza",variants:{"30cm":1450}},{categoryId:"full-a-fullban-pizzak",name:"Master pizza",id:"full-a-fullban-pizzak-master-pizza",variants:{"30cm":1450}},{categoryId:"full-a-fullban-pizzak",name:"Barbeque pizza",id:"full-a-fullban-pizzak-barbeque-pizza",variants:{"30cm":1450}},{categoryId:"full-a-fullban-pizzak",name:"Jalapeno Barbeque pizza",id:"full-a-fullban-pizzak-jalapeno-barbeque-pizza",variants:{"30cm":1450}},{categoryId:"full-a-fullban-pizzak",name:"Tenger kincsei pizza",id:"full-a-fullban-pizzak-tenger-kincsei-pizza",variants:{"30cm":1450}},{categoryId:"full-a-fullban-pizzak",name:"Dani pizza",id:"full-a-fullban-pizzak-dani-pizza",variants:{"30cm":1450}},{categoryId:"full-a-fullban-pizzak",name:"Meex töltött pizza",id:"full-a-fullban-pizzak-meex-toltott-pizza",variants:{"30cm":1450}},{categoryId:"full-a-fullban-pizzak",name:"Bossy pizza",id:"full-a-fullban-pizzak-bossy-pizza",variants:{"30cm":1450}},{categoryId:"meex-specialitas",name:"Akay - török pizza",id:"meex-specialitas-akay-torok-pizza",variants:{"":490}},{categoryId:"meex-specialitas",name:"Banu - török pizza",id:"meex-specialitas-banu-torok-pizza",variants:{"":490}},{categoryId:"meex-specialitas",name:"Cahil - török pizza",id:"meex-specialitas-cahil-torok-pizza",variants:{"":490}},{categoryId:"tesztak",name:"Carbonara",id:"tesztak-carbonara",variants:{"":1090}},{categoryId:"tesztak",name:"Milánói",id:"tesztak-milanoi",variants:{"":1090}},{categoryId:"tesztak",name:"Peperoncino",id:"tesztak-peperoncino",variants:{"":1090}},{categoryId:"tesztak",name:"Meex",id:"tesztak-meex",variants:{"":1190}},{categoryId:"rantott-sajtok",name:"Ízletes cheddar sajtfalatkák",id:"rantott-sajtok-izletes-cheddar-sajtfalatkak",variants:{"":1390}},{categoryId:"rantott-sajtok",name:"Camembert sajt",id:"rantott-sajtok-camembert-sajt",variants:{"":1290}},{categoryId:"rantott-sajtok",name:"Trappista sajt",id:"rantott-sajtok-trappista-sajt",variants:{"":1190}},{categoryId:"frissensultek",name:"Buffalo csirkeszárnyak",id:"frissensultek-buffalo-csirkeszarnyak",variants:{"6 darabos":780,"12 darabos":1090}},{categoryId:"frissensultek",name:"Buffalo csirkeszárnyak menü",id:"frissensultek-buffalo-csirkeszarnyak-menu",variants:{"6 darabos":1190,"12 darabos":1350}},{categoryId:"hamburgerek",name:"Meex burger",id:"hamburgerek-meex-burger",variants:{"":750}},{categoryId:"hamburgerek",name:"Meex sajtburger",id:"hamburgerek-meex-sajtburger",variants:{"":850}},{categoryId:"hamburgerek",name:"Dupla Meex burger",id:"hamburgerek-dupla-meex-burger",variants:{"":1250}},{categoryId:"hamburgerek",name:"Dupla Meex sajtburger",id:"hamburgerek-dupla-meex-sajtburger",variants:{"":1450}},{categoryId:"hamburger-menuk",name:"Meex Burger Menü",id:"hamburger-menuk-meex-burger-menu",variants:{"":990}},{categoryId:"hamburger-menuk",name:"Meex Sajtburger Menü",id:"hamburger-menuk-meex-sajtburger-menu",variants:{"":1090}},{categoryId:"hamburger-menuk",name:"Dupla Meex Burger Menü",id:"hamburger-menuk-dupla-meex-burger-menu",variants:{"":1490}},{categoryId:"hamburger-menuk",name:"Dupla Meex Sajtburger Menü",id:"hamburger-menuk-dupla-meex-sajtburger-menu",variants:{"":1490}},{categoryId:"fitnesz-szendvicsek",name:"Purpur",id:"fitnesz-szendvicsek-purpur",variants:{"":590}},{categoryId:"salatak",name:"Primőr saláta",id:"salatak-primor-salata",variants:{"":650}},{categoryId:"salatak",name:"Mozarella saláta",id:"salatak-mozarella-salata",variants:{"":800}},{categoryId:"salatak",name:"Tonhal saláta",id:"salatak-tonhal-salata",variants:{"":1080}},{categoryId:"salatak",name:"Cézár saláta",id:"salatak-cezar-salata",variants:{"":1080}},{categoryId:"edessegek",name:"Profiterol",id:"edessegek-profiterol",variants:{"":600}},{categoryId:"uditok",name:"Pepsi",id:"uditok-pepsi",variants:{"1,75 literes":480,"1 literes":350,"0,33 literes":190}},{categoryId:"uditok",name:"Pepsi Max",id:"uditok-pepsi-max",variants:{"1,75 literes":480,"1 literes":350,"0,33 literes":190}},{categoryId:"uditok",name:"Mirinda",id:"uditok-mirinda",variants:{"1,75 literes":480,"1 literes":350,"0,33 literes":190}},{categoryId:"uditok",name:"Canada Dry",id:"uditok-canada-dry",variants:{"1,75 literes":480,"1 literes":350,"0,33 literes":190}},{categoryId:"uditok",name:"Lipton Ice Tea",id:"uditok-lipton-ice-tea",variants:{"0,33 literes":190}}]}},function(t,e,n){"use strict";var r=n(37);t.exports={init:function(){var t=r("#site-navigation"),e=r(".menu-toggle").on("click",function(){e.toggleClass("active"),t.toggleClass("open")});t.on("click","a",function(){e.removeClass("active"),t.removeClass("open")})}}},function(t,e){/*! (C) WebReflection Mit Style License */
-!function(t,e,n,r){"use strict";function a(t,e){for(var n=0,r=t.length;r>n;n++)h(t[n],e)}function o(t){for(var e,n=0,r=t.length;r>n;n++)e=t[n],w(e,D[u(e)])}function i(t){return function(e){rt(e)&&(h(e,t),a(e.querySelectorAll(F),t))}}function u(t){var e=t.getAttribute("is"),n=t.nodeName.toUpperCase(),r=V.call(R,e?L+e.toUpperCase():T+n);return e&&r>-1&&!s(n,e)?-1:r}function s(t,e){return-1<F.indexOf(t+'[is="'+e+'"]')}function c(t){var e=t.currentTarget,n=t.attrChange,r=t.attrName,a=t.target;mt&&(!a||a===e)&&e.attributeChangedCallback&&"style"!==r&&t.prevValue!==t.newValue&&e.attributeChangedCallback(r,n===t[A]?null:t.prevValue,n===t[M]?null:t.newValue)}function l(t){var e=i(t);return function(t){y.push(e,t.target)}}function f(t){vt&&(vt=!1,t.currentTarget.removeEventListener(S,f)),a((t.target||e).querySelectorAll(F),t.detail===E?E:C),nt&&v()}function d(t,e){var n=this;it.call(n,t,e),g.call(n,{target:n})}function p(t,e){Q(t,e),k?k.observe(t,ct):(pt&&(t.setAttribute=d,t[j]=z(t),t.addEventListener(N,g)),t.addEventListener(I,c)),t.createdCallback&&mt&&(t.created=!0,t.createdCallback(),t.created=!1)}function v(){for(var t,e=0,n=at.length;n>e;e++)t=at[e],H.contains(t)||(n--,at.splice(e--,1),h(t,E))}function m(t){throw new Error("A "+t+" type is already registered")}function h(t,e){var n,r=u(t);r>-1&&(x(t,D[r]),r=0,e!==C||t[C]?e===E&&!t[E]&&(t[C]=!1,t[E]=!0,r=1):(t[E]=!1,t[C]=!0,r=1,nt&&V.call(at,t)<0&&at.push(t)),r&&(n=t[e+"Callback"])&&n.call(t))}if(!(r in e)){var y,g,b,z,k,x,w,j="__"+r+(1e5*Math.random()>>0),C="attached",E="detached",O="extends",A="ADDITION",_="MODIFICATION",M="REMOVAL",I="DOMAttrModified",S="DOMContentLoaded",N="DOMSubtreeModified",T="<",L="=",P=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,B=["ANNOTATION-XML","COLOR-PROFILE","FONT-FACE","FONT-FACE-SRC","FONT-FACE-URI","FONT-FACE-FORMAT","FONT-FACE-NAME","MISSING-GLYPH"],R=[],D=[],F="",H=e.documentElement,V=R.indexOf||function(t){for(var e=this.length;e--&&this[e]!==t;);return e},q=n.prototype,W=q.hasOwnProperty,U=q.isPrototypeOf,$=n.defineProperty,G=n.getOwnPropertyDescriptor,K=n.getOwnPropertyNames,J=n.getPrototypeOf,Z=n.setPrototypeOf,X=!!n.__proto__,Y=n.create||function ht(t){return t?(ht.prototype=t,new ht):this},Q=Z||(X?function(t,e){return t.__proto__=e,t}:K&&G?function(){function t(t,e){for(var n,r=K(e),a=0,o=r.length;o>a;a++)n=r[a],W.call(t,n)||$(t,n,G(e,n))}return function(e,n){do t(e,n);while((n=J(n))&&!U.call(n,e));return e}}():function(t,e){for(var n in e)t[n]=e[n];return t}),tt=t.MutationObserver||t.WebKitMutationObserver,et=(t.HTMLElement||t.Element||t.Node).prototype,nt=!U.call(et,H),rt=nt?function(t){return 1===t.nodeType}:function(t){return U.call(et,t)},at=nt&&[],ot=et.cloneNode,it=et.setAttribute,ut=et.removeAttribute,st=e.createElement,ct=tt&&{attributes:!0,characterData:!0,attributeOldValue:!0},lt=tt||function(t){pt=!1,H.removeEventListener(I,lt)},ft=t.requestAnimationFrame||t.webkitRequestAnimationFrame||t.mozRequestAnimationFrame||t.msRequestAnimationFrame||function(t){setTimeout(t,10)},dt=!1,pt=!0,vt=!0,mt=!0;Z||X?(x=function(t,e){U.call(e,t)||p(t,e)},w=p):(x=function(t,e){t[j]||(t[j]=n(!0),p(t,e))},w=x),nt?(pt=!1,function(){var t=G(et,"addEventListener"),e=t.value,n=function(t){var e=new CustomEvent(I,{bubbles:!0});e.attrName=t,e.prevValue=this.getAttribute(t),e.newValue=null,e[M]=e.attrChange=2,ut.call(this,t),this.dispatchEvent(e)},r=function(t,e){var n=this.hasAttribute(t),r=n&&this.getAttribute(t),a=new CustomEvent(I,{bubbles:!0});it.call(this,t,e),a.attrName=t,a.prevValue=n?r:null,a.newValue=e,n?a[_]=a.attrChange=1:a[A]=a.attrChange=0,this.dispatchEvent(a)},a=function(t){var e,n=t.currentTarget,r=n[j],a=t.propertyName;r.hasOwnProperty(a)&&(r=r[a],e=new CustomEvent(I,{bubbles:!0}),e.attrName=r.name,e.prevValue=r.value||null,e.newValue=r.value=n[a]||null,null==e.prevValue?e[A]=e.attrChange=0:e[_]=e.attrChange=1,n.dispatchEvent(e))};t.value=function(t,o,i){t===I&&this.attributeChangedCallback&&this.setAttribute!==r&&(this[j]={className:{name:"class",value:this.className}},this.setAttribute=r,this.removeAttribute=n,e.call(this,"propertychange",a)),e.call(this,t,o,i)},$(et,"addEventListener",t)}()):tt||(H.addEventListener(I,lt),H.setAttribute(j,1),H.removeAttribute(j),pt&&(g=function(t){var e,n,r,a=this;if(a===t.target){e=a[j],a[j]=n=z(a);for(r in n){if(!(r in e))return b(0,a,r,e[r],n[r],A);if(n[r]!==e[r])return b(1,a,r,e[r],n[r],_)}for(r in e)if(!(r in n))return b(2,a,r,e[r],n[r],M)}},b=function(t,e,n,r,a,o){var i={attrChange:t,currentTarget:e,attrName:n,prevValue:r,newValue:a};i[o]=t,c(i)},z=function(t){for(var e,n,r={},a=t.attributes,o=0,i=a.length;i>o;o++)e=a[o],n=e.name,"setAttribute"!==n&&(r[n]=e.value);return r})),e[r]=function(t,n){if(r=t.toUpperCase(),dt||(dt=!0,tt?(k=function(t,e){function n(t,e){for(var n=0,r=t.length;r>n;e(t[n++]));}return new tt(function(r){for(var a,o,i,u=0,s=r.length;s>u;u++)a=r[u],"childList"===a.type?(n(a.addedNodes,t),n(a.removedNodes,e)):(o=a.target,mt&&o.attributeChangedCallback&&"style"!==a.attributeName&&(i=o.getAttribute(a.attributeName),i!==a.oldValue&&o.attributeChangedCallback(a.attributeName,a.oldValue,i)))})}(i(C),i(E)),k.observe(e,{childList:!0,subtree:!0})):(y=[],ft(function g(){for(;y.length;)y.shift().call(null,y.shift());ft(g)}),e.addEventListener("DOMNodeInserted",l(C)),e.addEventListener("DOMNodeRemoved",l(E))),e.addEventListener(S,f),e.addEventListener("readystatechange",f),e.createElement=function(t,n){var r=st.apply(e,arguments),a=""+t,o=V.call(R,(n?L:T)+(n||a).toUpperCase()),i=o>-1;return n&&(r.setAttribute("is",n=n.toLowerCase()),i&&(i=s(a.toUpperCase(),n))),mt=!e.createElement.innerHTMLHelper,i&&w(r,D[o]),r},et.cloneNode=function(t){var e=ot.call(this,!!t),n=u(e);return n>-1&&w(e,D[n]),t&&o(e.querySelectorAll(F)),e}),-2<V.call(R,L+r)+V.call(R,T+r)&&m(t),!P.test(r)||-1<V.call(B,r))throw new Error("The type "+t+" is invalid");var r,c,d=function(){return v?e.createElement(h,r):e.createElement(h)},p=n||q,v=W.call(p,O),h=v?n[O].toUpperCase():r;return v&&-1<V.call(R,T+h)&&m(h),c=R.push((v?L:T)+r)-1,F=F.concat(F.length?",":"",v?h+'[is="'+t.toLowerCase()+'"]':h),d.prototype=D[c]=W.call(p,"prototype")?p.prototype:Y(et),a(e.querySelectorAll(F),C),d}}}(window,document,Object,"registerElement")},function(t,e){"use strict";function n(t,e){if(void 0===t||null===t)throw new TypeError("Cannot convert first argument to object");for(var n=Object(t),r=1;r<arguments.length;r++){var a=arguments[r];if(void 0!==a&&null!==a)for(var o=Object.keys(Object(a)),i=0,u=o.length;u>i;i++){var s=o[i],c=Object.getOwnPropertyDescriptor(a,s);void 0!==c&&c.enumerable&&(n[s]=a[s])}}return n}function r(){Object.assign||Object.defineProperty(Object,"assign",{enumerable:!1,configurable:!0,writable:!0,value:n})}t.exports={assign:n,polyfill:r}},function(t,e,n){var r,a;!function(o,i){var u=i(o,o.document);o.lazySizes=u,"object"==typeof t&&t.exports?t.exports=u:(r=u,a="function"==typeof r?r.call(e,n,e,t):r,!(void 0!==a&&(t.exports=a)))}(window,function(t,e){"use strict";if(e.getElementsByClassName){var n,r=e.documentElement,a=t.HTMLPictureElement&&"sizes"in e.createElement("img"),o="addEventListener",i="getAttribute",u=t[o],s=t.setTimeout,c=t.requestAnimationFrame||s,l=/^picture$/i,f=["load","error","lazyincluded","_lazyloaded"],d={},p=Array.prototype.forEach,v=function(t,e){return d[e]||(d[e]=new RegExp("(\\s|^)"+e+"(\\s|$)")),d[e].test(t[i]("class")||"")&&d[e]},m=function(t,e){v(t,e)||t.setAttribute("class",(t[i]("class")||"").trim()+" "+e)},h=function(t,e){var n;(n=v(t,e))&&t.setAttribute("class",(t[i]("class")||"").replace(n," "))},y=function(t,e,n){var r=n?o:"removeEventListener";n&&y(t,e),f.forEach(function(n){t[r](n,e)})},g=function(t,n,r,a,o){var i=e.createEvent("CustomEvent");return i.initCustomEvent(n,!a,!o,r||{}),t.dispatchEvent(i),i},b=function(e,r){var o;!a&&(o=t.picturefill||n.pf)?o({reevaluate:!0,elements:[e]}):r&&r.src&&(e.src=r.src)},z=function(t,e){return(getComputedStyle(t,null)||{})[e]},k=function(t,e,r){for(r=r||t.offsetWidth;r<n.minSize&&e&&!t._lazysizesWidth;)r=e.offsetWidth,e=e.parentNode;return r},x=function(e){var n,r=0,a=t.Date,o=function(){n=!1,r=a.now(),e()},i=function(){s(o)},u=function(){c(i)};return function(){if(!n){var t=125-(a.now()-r);n=!0,6>t&&(t=6),s(u,t)}}},w=function(){var a,f,d,k,w,C,E,O,A,_,M,I,S,N,T,L=/^img$/i,P=/^iframe$/i,B="onscroll"in t&&!/glebot/.test(navigator.userAgent),R=0,D=0,F=0,H=0,V=function(t){F--,t&&t.target&&y(t.target,V),(!t||0>F||!t.target)&&(F=0)},q=function(t,n){var a,o=t,i="hidden"==z(e.body,"visibility")||"hidden"!=z(t,"visibility");for(A-=n,I+=n,_-=n,M+=n;i&&(o=o.offsetParent)&&o!=e.body&&o!=r;)i=(z(o,"opacity")||1)>0,i&&"visible"!=z(o,"overflow")&&(a=o.getBoundingClientRect(),i=M>a.left&&_<a.right&&I>a.top-1&&A<a.bottom+1);return i},W=function(){var t,e,o,u,s,c,l,p,v;if((w=n.loadMode)&&8>F&&(t=a.length)){e=0,H++,null==N&&("expand"in n||(n.expand=r.clientHeight>600?r.clientWidth>860?500:410:359),S=n.expand,N=S*n.expFactor),N>D&&1>F&&H>3&&w>2?(D=N,H=0):D=w>1&&H>2&&6>F?S:R;for(;t>e;e++)if(a[e]&&!a[e]._lazyRace)if(B)if((p=a[e][i]("data-expand"))&&(c=1*p)||(c=D),v!==c&&(E=innerWidth+c*T,O=innerHeight+c,l=-1*c,v=c),o=a[e].getBoundingClientRect(),(I=o.bottom)>=l&&(A=o.top)<=O&&(M=o.right)>=l*T&&(_=o.left)<=E&&(I||M||_||A)&&(d&&3>F&&!p&&(3>w||4>H)||q(a[e],c))){if(Z(a[e]),s=!0,F>9)break}else!s&&d&&!u&&4>F&&4>H&&w>2&&(f[0]||n.preloadAfterLoad)&&(f[0]||!p&&(I||M||_||A||"auto"!=a[e][i](n.sizesAttr)))&&(u=f[0]||a[e]);else Z(a[e]);u&&!s&&Z(u)}},U=x(W),$=function(t){m(t.target,n.loadedClass),h(t.target,n.loadingClass),y(t.target,$)},G=function(t,e){try{t.contentWindow.location.replace(e)}catch(n){t.src=e}},K=function(t){var e,r,a=t[i](n.srcsetAttr);(e=n.customMedia[t[i]("data-media")||t[i]("media")])&&t.setAttribute("media",e),a&&t.setAttribute("srcset",a),e&&(r=t.parentNode,r.insertBefore(t.cloneNode(),t),r.removeChild(t))},J=function(){var t,e=[],n=function(){for(;e.length;)e.shift()();t=!1};return function(r){e.push(r),t||(t=!0,c(n))}}(),Z=function(t){var e,r,a,o,u,c,f,z=L.test(t.nodeName),x=z&&(t[i](n.sizesAttr)||t[i]("sizes")),w="auto"==x;(!w&&d||!z||!t.src&&!t.srcset||t.complete||v(t,n.errorClass))&&(w&&(f=t.offsetWidth),t._lazyRace=!0,F++,J(function(){t._lazyRace&&delete t._lazyRace,(u=g(t,"lazybeforeunveil")).defaultPrevented||(x&&(w?(j.updateElem(t,!0,f),m(t,n.autosizesClass)):t.setAttribute("sizes",x)),r=t[i](n.srcsetAttr),e=t[i](n.srcAttr),z&&(a=t.parentNode,o=a&&l.test(a.nodeName||"")),c=u.detail.firesLoad||"src"in t&&(r||e||o),u={target:t},c&&(y(t,V,!0),clearTimeout(k),k=s(V,2500),m(t,n.loadingClass),y(t,$,!0)),o&&p.call(a.getElementsByTagName("source"),K),r?t.setAttribute("srcset",r):e&&!o&&(P.test(t.nodeName)?G(t,e):t.src=e),(r||o)&&b(t,{src:e})),h(t,n.lazyClass),(!c||t.complete)&&(c?V(u):F--,$(u))}))},X=function(){if(!d){if(Date.now()-C<999)return void s(X,999);var t,e=function(){n.loadMode=3,U()};d=!0,n.loadMode=3,F||(H?U():s(W)),u("scroll",function(){3==n.loadMode&&(n.loadMode=2),clearTimeout(t),t=s(e,99)},!0)}};return{_:function(){C=Date.now(),a=e.getElementsByClassName(n.lazyClass),f=e.getElementsByClassName(n.lazyClass+" "+n.preloadClass),T=n.hFac,u("scroll",U,!0),u("resize",U,!0),t.MutationObserver?new MutationObserver(U).observe(r,{childList:!0,subtree:!0,attributes:!0}):(r[o]("DOMNodeInserted",U,!0),r[o]("DOMAttrModified",U,!0),setInterval(U,999)),u("hashchange",U,!0),["focus","mouseover","click","load","transitionend","animationend","webkitAnimationEnd"].forEach(function(t){e[o](t,U,!0)}),/d$|^c/.test(e.readyState)?X():(u("load",X),e[o]("DOMContentLoaded",U),s(X,2e4)),U(a.length>0)},checkElems:U,unveil:Z}}(),j=function(){var t,r=function(t,e,n){var r,a,o,i,u=t.parentNode;if(u&&(n=k(t,u,n),i=g(t,"lazybeforesizes",{width:n,dataAttr:!!e}),!i.defaultPrevented&&(n=i.detail.width,n&&n!==t._lazysizesWidth))){if(t._lazysizesWidth=n,n+="px",t.setAttribute("sizes",n),l.test(u.nodeName||""))for(r=u.getElementsByTagName("source"),a=0,o=r.length;o>a;a++)r[a].setAttribute("sizes",n);i.detail.dataAttr||b(t,i.detail)}},a=function(){var e,n=t.length;if(n)for(e=0;n>e;e++)r(t[e])},o=x(a);return{_:function(){t=e.getElementsByClassName(n.autosizesClass),u("resize",o)},checkElems:o,updateElem:r}}(),C=function(){C.i||(C.i=!0,j._(),w._())};return function(){var e,r={lazyClass:"lazyload",loadedClass:"lazyloaded",loadingClass:"lazyloading",preloadClass:"lazypreload",errorClass:"lazyerror",autosizesClass:"lazyautosizes",srcAttr:"data-src",srcsetAttr:"data-srcset",sizesAttr:"data-sizes",minSize:40,customMedia:{},init:!0,expFactor:1.7,hFac:.8,loadMode:2};n=t.lazySizesConfig||t.lazysizesConfig||{};for(e in r)e in n||(n[e]=r[e]);t.lazySizesConfig=n,s(function(){n.init&&C()})}(),{cfg:n,autoSizer:j,loader:w,init:C,uP:b,aC:m,rC:h,hC:v,fire:g,gW:k}}})},function(t,e){function n(t,e){return t===e||t!==t&&e!==e}t.exports=n},function(t,e,n){function r(t,e){var n=t?t.length:0;return n?o(a(t,i(e,3))):[]}var a=n(15),o=n(54),i=n(58);t.exports=r},function(t,e,n){function r(t,e){return o(t,e,a)}var a=n(55),o=n(72);t.exports=r},function(t,e){function n(t){return t}t.exports=n},function(t,e,n){(function(e){function r(){}var a=n(6),o=e.Object.prototype;r.prototype=a?a(null):o,t.exports=r}).call(e,function(){return this}())},function(t,e,n){function r(t){var e=-1,n=t?t.length:0;for(this.clear();++e<n;){var r=t[e];this.set(r[0],r[1])}}var a=n(79),o=n(80),i=n(81),u=n(82),s=n(83);r.prototype.clear=a,r.prototype["delete"]=o,r.prototype.get=i,r.prototype.has=u,r.prototype.set=s,t.exports=r},function(t,e,n){(function(e){var r=n(8),a=r(e,"Set");t.exports=a}).call(e,function(){return this}())},function(t,e){(function(e){var n=e.Uint8Array;t.exports=n}).call(e,function(){return this}())},function(t,e){function n(t,e){for(var n=-1,r=e.length,a=t.length;++n<r;)t[a+n]=e[n];return t}t.exports=n},function(t,e){function n(t,e){for(var n=-1,r=t.length;++n<r;)if(e(t[n],n,t))return!0;return!1}t.exports=n},function(t,e,n){function r(t,e,n,s){s||(s=[]);for(var c=-1,l=t.length;++c<l;){var f=t[c];u(f)&&(n||i(f)||o(f))?e?r(f,e,n,s):a(s,f):n||(s[s.length]=f)}return s}var a=n(52),o=n(10),i=n(1),u=n(29);t.exports=r},function(t,e){function n(t,e){return e in Object(t)}t.exports=n},function(t,e,n){(function(e){function r(t,e,n,r,h,g){var b=c(t),z=c(e),k=v,x=v;b||(k=s(t),k==p?k=m:k!=m&&(b=f(t))),z||(x=s(e),x==p?x=m:x!=m&&(z=f(e)));var w=k==m&&!l(t),j=x==m&&!l(e),C=k==x;if(C&&!b&&!w)return i(t,e,k,n,r,h);var E=h&d;if(!E){var O=w&&y.call(t,"__wrapped__"),A=j&&y.call(e,"__wrapped__");if(O||A)return n(O?t.value():t,A?e.value():e,r,h,g)}return C?(g||(g=new a),(b?o:u)(t,e,n,r,h,g)):!1}var a=n(13),o=n(66),i=n(67),u=n(68),s=n(71),c=n(1),l=n(26),f=n(95),d=2,p="[object Arguments]",v="[object Array]",m="[object Object]",h=e.Object.prototype,y=h.hasOwnProperty;t.exports=r}).call(e,function(){return this}())},function(t,e,n){function r(t,e,n,r){var s=n.length,c=s,l=!r;if(null==t)return!c;for(t=Object(t);s--;){var f=n[s];if(l&&f[2]?f[1]!==t[f[0]]:!(f[0]in t))return!1}for(;++s<c;){f=n[s];var d=f[0],p=t[d],v=f[1];if(l&&f[2]){if(void 0===p&&!(d in t))return!1}else{var m=new a,h=r?r(p,v,d,t,e,m):void 0;if(!(void 0===h?o(v,p,r,i|u,m):h))return!1}}return!0}var a=n(13),o=n(22),i=1,u=2;t.exports=r},function(t,e,n){function r(t){var e=typeof t;return"function"==e?t:null==t?i:"object"==e?u(t)?o(t[0],t[1]):a(t):s(t)}var a=n(60),o=n(61),i=n(47),u=n(1),s=n(97);t.exports=r},function(t,e){function n(t){return r(Object(t))}var r=Object.keys;t.exports=n},function(t,e,n){function r(t){var e=o(t);if(1==e.length&&e[0][2]){var n=e[0][0],r=e[0][1];return function(t){return null==t?!1:t[n]===r&&(void 0!==r||n in Object(t))}}return function(n){return n===t||a(n,t,e)}}var a=n(57),o=n(70);t.exports=r},function(t,e,n){function r(t,e){return function(n){var r=o(n,t);return void 0===r&&r===e?i(n,t):a(e,r,void 0,u|s)}}var a=n(22),o=n(12),i=n(46),u=1,s=2;t.exports=r},function(t,e,n){function r(t){return function(e){return a(e,t)}}var a=n(20);t.exports=r},function(t,e){function n(t,e,n){var r=-1,a=t.length;0>e&&(e=-e>a?0:a+e),n=n>a?a:n,0>n&&(n+=a),a=e>n?0:n-e>>>0,e>>>=0;for(var o=Array(a);++r<a;)o[r]=t[r+e];return o}t.exports=n},function(t,e){function n(t,e){for(var n=-1,r=Array(t);++n<t;)r[n]=e(n);return r}t.exports=n},function(t,e,n){function r(t,e){return a(e,function(e){return[e,t[e]]})}var a=n(15);t.exports=r},function(t,e,n){function r(t,e,n,r,u,s){var c=-1,l=u&i,f=u&o,d=t.length,p=e.length;if(d!=p&&!(l&&p>d))return!1;var v=s.get(t);if(v)return v==e;var m=!0;for(s.set(t,e);++c<d;){var h=t[c],y=e[c];if(r)var g=l?r(y,h,c,e,t,s):r(h,y,c,t,e,s);if(void 0!==g){if(g)continue;m=!1;break}if(f){if(!a(e,function(t){return h===t||n(h,t,r,u,s)})){m=!1;break}}else if(h!==y&&!n(h,y,r,u,s)){m=!1;break}}return s["delete"](t),m}var a=n(53),o=1,i=2;t.exports=r},function(t,e,n){function r(t,e,n,r,z,x){switch(n){case b:return t.byteLength==e.byteLength&&r(new o(t),new o(e))?!0:!1;case l:case f:return+t==+e;case d:return t.name==e.name&&t.message==e.message;case v:return t!=+t?e!=+e:t==+e;case m:case y:return t==e+"";case p:var w=i;case h:var j=x&c;return w||(w=u),(j||t.size==e.size)&&r(w(t),w(e),z,x|s);case g:return!!a&&k.call(t)==k.call(e)}return!1}var a=n(14),o=n(51),i=n(84),u=n(86),s=1,c=2,l="[object Boolean]",f="[object Date]",d="[object Error]",p="[object Map]",v="[object Number]",m="[object RegExp]",h="[object Set]",y="[object String]",g="[object Symbol]",b="[object ArrayBuffer]",z=a?a.prototype:void 0,k=a?z.valueOf:void 0;t.exports=r},function(t,e,n){function r(t,e,n,r,u,s){var c=u&i,l=o(t),f=l.length,d=o(e),p=d.length;if(f!=p&&!c)return!1;for(var v=f;v--;){var m=l[v];if(!(c?m in e:a(e,m)))return!1}var h=s.get(t);if(h)return h==e;var y=!0;s.set(t,e);for(var g=c;++v<f;){m=l[v];var b=t[m],z=e[m];if(r)var k=c?r(z,b,m,e,t,s):r(b,z,m,t,e,s);if(!(void 0===k?b===z||n(b,z,r,u,s):k)){y=!1;break}g||(g="constructor"==m)}if(y&&!g){var x=t.constructor,w=e.constructor;x!=w&&"constructor"in t&&"constructor"in e&&!("function"==typeof x&&x instanceof x&&"function"==typeof w&&w instanceof w)&&(y=!1)}return s["delete"](t),y}var a=n(21),o=n(32),i=2;t.exports=r},function(t,e,n){var r=n(23),a=r("length");t.exports=a},function(t,e,n){function r(t){for(var e=o(t),n=e.length;n--;)e[n][2]=a(e[n][1]);return e}var a=n(78),o=n(98);t.exports=r},function(t,e,n){(function(e){function r(t){return f.call(t)}var a=n(2),o=n(50),i="[object Map]",u="[object Object]",s="[object Set]",c=e.Object.prototype,l=e.Function.prototype.toString,f=c.toString,d=a?l.call(a):"",p=o?l.call(o):"";(a&&r(new a)!=i||o&&r(new o)!=s)&&(r=function(t){var e=f.call(t),n=e==u?t.constructor:null,r="function"==typeof n?l.call(n):"";if(r){if(r==d)return i;if(r==p)return s}return e}),t.exports=r}).call(e,function(){return this}())},function(t,e,n){function r(t,e,n){if(null==t)return!1;var r=n(t,e);return r||s(e)||(e=a(e),t=d(t,e),null!=t&&(e=f(e),r=n(t,e))),r||c(t&&t.length)&&u(e,t.length)&&(i(t)||l(t)||o(t))}var a=n(24),o=n(10),i=n(1),u=n(27),s=n(9),c=n(7),l=n(31),f=n(96),d=n(85);t.exports=r},function(t,e,n){function r(t,e){return a(t,e)&&delete t[e]}var a=n(25);t.exports=r},function(t,e,n){(function(e){function r(t,e){if(a){var n=t[e];return n===o?void 0:n}return u.call(t,e)?t[e]:void 0}var a=n(6),o="__lodash_hash_undefined__",i=e.Object.prototype,u=i.hasOwnProperty;t.exports=r}).call(e,function(){return this}())},function(t,e,n){function r(t,e,n){t[e]=a&&void 0===n?o:n}var a=n(6),o="__lodash_hash_undefined__";t.exports=r},function(t,e,n){function r(t){var e=t?t.length:void 0;return u(e)&&(i(t)||s(t)||o(t))?a(e,String):null}var a=n(64),o=n(10),i=n(1),u=n(7),s=n(31);t.exports=r},function(t,e){(function(e){function n(t){var e=t&&t.constructor,n="function"==typeof e&&e.prototype||r;return t===n}var r=e.Object.prototype;t.exports=n}).call(e,function(){return this}())},function(t,e,n){function r(t){return t===t&&!a(t)}var a=n(11);t.exports=r},function(t,e,n){function r(){this.__data__={hash:new a,map:o?new o:[],string:new a}}var a=n(48),o=n(2);t.exports=r},function(t,e,n){function r(t){var e=this.__data__;return u(t)?i("string"==typeof t?e.string:e.hash,t):a?e.map["delete"](t):o(e.map,t)}var a=n(2),o=n(16),i=n(73),u=n(5);t.exports=r},function(t,e,n){function r(t){var e=this.__data__;return u(t)?i("string"==typeof t?e.string:e.hash,t):a?e.map.get(t):o(e.map,t)}var a=n(2),o=n(17),i=n(74),u=n(5);t.exports=r},function(t,e,n){function r(t){var e=this.__data__;return u(t)?i("string"==typeof t?e.string:e.hash,t):a?e.map.has(t):o(e.map,t)}var a=n(2),o=n(18),i=n(25),u=n(5);t.exports=r},function(t,e,n){function r(t,e){var n=this.__data__;return u(t)?i("string"==typeof t?n.string:n.hash,t,e):a?n.map.set(t,e):o(n.map,t,e),this}var a=n(2),o=n(19),i=n(75),u=n(5);t.exports=r},function(t,e){function n(t){var e=-1,n=Array(t.size);return t.forEach(function(t,r){n[++e]=[r,t]}),n}t.exports=n},function(t,e,n){function r(t,e){return 1==e.length?t:o(t,a(e,0,-1))}var a=n(63),o=n(12);t.exports=r},function(t,e){function n(t){var e=-1,n=Array(t.size);return t.forEach(function(t){n[++e]=t}),n}t.exports=n},function(t,e){function n(){this.__data__={array:[],map:null}}t.exports=n},function(t,e,n){function r(t){var e=this.__data__,n=e.array;return n?a(n,t):e.map["delete"](t)}var a=n(16);t.exports=r},function(t,e,n){function r(t){var e=this.__data__,n=e.array;return n?a(n,t):e.map.get(t)}var a=n(17);t.exports=r},function(t,e,n){function r(t){var e=this.__data__,n=e.array;return n?a(n,t):e.map.has(t)}var a=n(18);t.exports=r},function(t,e,n){function r(t,e){var n=this.__data__,r=n.array;r&&(r.length<i-1?o(r,t,e):(n.array=null,n.map=new a(r)));var u=n.map;return u&&u.set(t,e),this}var a=n(49),o=n(19),i=200;t.exports=r},function(t,e,n){function r(t){var e=[];return a(t).replace(o,function(t,n,r,a){e.push(r?a.replace(i,"$1"):n||t)}),e}var a=n(99),o=/[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]/g,i=/\\(\\)?/g;t.exports=r},function(t,e,n){(function(e){function r(t){return null==t?!1:a(t)?d.test(l.call(t)):i(t)&&(o(t)?d:s).test(t)}var a=n(30),o=n(26),i=n(3),u=/[\\^$.*+?()[\]{}|]/g,s=/^\[object .+?Constructor\]$/,c=e.Object.prototype,l=e.Function.prototype.toString,f=c.hasOwnProperty,d=RegExp("^"+l.call(f).replace(u,"\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g,"$1.*?")+"$");t.exports=r}).call(e,function(){return this}())},function(t,e,n){(function(e){function r(t){return"symbol"==typeof t||a(t)&&u.call(t)==o}var a=n(3),o="[object Symbol]",i=e.Object.prototype,u=i.toString;t.exports=r}).call(e,function(){return this}())},function(t,e,n){(function(e){function r(t){return o(t)&&a(t.length)&&!!_[I.call(t)]}var a=n(7),o=n(3),i="[object Arguments]",u="[object Array]",s="[object Boolean]",c="[object Date]",l="[object Error]",f="[object Function]",d="[object Map]",p="[object Number]",v="[object Object]",m="[object RegExp]",h="[object Set]",y="[object String]",g="[object WeakMap]",b="[object ArrayBuffer]",z="[object Float32Array]",k="[object Float64Array]",x="[object Int8Array]",w="[object Int16Array]",j="[object Int32Array]",C="[object Uint8Array]",E="[object Uint8ClampedArray]",O="[object Uint16Array]",A="[object Uint32Array]",_={};_[z]=_[k]=_[x]=_[w]=_[j]=_[C]=_[E]=_[O]=_[A]=!0,_[i]=_[u]=_[b]=_[s]=_[c]=_[l]=_[f]=_[d]=_[p]=_[v]=_[m]=_[h]=_[y]=_[g]=!1;var M=e.Object.prototype,I=M.toString;t.exports=r}).call(e,function(){return this}())},function(t,e){function n(t){var e=t?t.length:0;return e?t[e-1]:void 0}t.exports=n},function(t,e,n){function r(t){return i(t)?a(t):o(t)}var a=n(23),o=n(62),i=n(9);t.exports=r},function(t,e,n){function r(t){return a(t,o(t))}var a=n(65),o=n(32);t.exports=r},function(t,e,n){function r(t){if("string"==typeof t)return t;if(null==t)return"";if(o(t))return a?s.call(t):"";var e=t+"";return"0"==e&&1/t==-i?"-0":e}var a=n(14),o=n(94),i=1/0,u=a?a.prototype:void 0,s=a?u.toString:void 0;t.exports=r},function(t,e,n){var r,r,a;!function o(t,e,n){function a(u,s){if(!e[u]){if(!t[u]){var c="function"==typeof r&&r;if(!s&&c)return r(u,!0);if(i)return i(u,!0);throw new Error("Cannot find module '"+u+"'")}var l=e[u]={exports:{}};t[u][0].call(l.exports,function(e){var n=t[u][1][e];return a(n?n:e)},l,l.exports,o,t,e,n)}return e[u].exports}for(var i="function"==typeof r&&r,u=0;u<n.length;u++)a(n[u]);return a}({1:[function(t,e,n){function r(t,e){var n=document,r=t.nodeType||t===window?t:n.createElement(t),o=[];e&&(r.className=e);var i=a(),u=a(),s=function(t,e){r.addEventListener?r.addEventListener(t,e,!1):r.attachEvent("on"+t,e),o.push({event:t,handler:e})},c=function(t,e){r.removeEventListener?r.removeEventListener(t,e):r.detachEvent("on"+t,e);for(var n,a=o.length;a-- >0;)if(n=o[a],n.event===t&&n.handler===e){o.splice(a,1);break}},l=function(t){var e=!1,n=function(n){e||(e=!0,setTimeout(function(){e=!1},100),t(n))};s("touchstart",n),s("mousedown",n)},f=function(t){r&&(r.style.display="block",i.fire(t))},d=function(t){r&&(r.style.display="none",u.fire(t))},p=function(){return r.style&&"block"===r.style.display},v=function(t){r&&(r.innerHTML=t)},m=function(t){r&&(v(""),r.appendChild(n.createTextNode(t)))},h=function(){if(r.parentNode){for(var t,e=o.length;e-- >0;)t=o[e],c(t.event,t.handler);r.parentNode.removeChild(r),i.removeAllListeners(),u.removeAllListeners()}},y=function(t){var e=t.el||t;r.appendChild(e)};return{el:r,addListener:s,addClickListener:l,onShowEvent:i,onHideEvent:u,show:f,hide:d,isShowing:p,html:v,text:m,remove:h,add:y}}var a=t("./ModalEvent");e.exports=r},{"./ModalEvent":3}],2:[function(t,e,n){function r(t,e,n,o,i){if(void 0!==t){e=e||{};var u,s=a("div","nanoModal nanoModalOverride "+(e.classes||"")),c=a("div","nanoModalContent"),l=a("div","nanoModalButtons");s.add(c),s.add(l),s.el.style.display="none";var f,d=[];e.buttons=e.buttons||[{text:"Close",handler:"hide",primary:!0}];var p=function(){for(var t=d.length;t-- >0;){var e=d[t];e.remove()}d=[]},v=function(){s.el.style.marginLeft=-s.el.clientWidth/2+"px"},m=function(){for(var t=document.querySelectorAll(".nanoModal"),e=t.length;e-- >0;)if("none"!==t[e].style.display)return!0;return!1},h=function(){s.isShowing()||(r.resizeOverlay(),n.show(n),s.show(f),v())},y=function(){s.isShowing()&&(s.hide(f),m()||n.hide(n),e.autoRemove&&f.remove())},g=function(t){var e={};for(var n in t)t.hasOwnProperty(n)&&(e[n]=t[n]);return e};return f={modal:s,overlay:n,show:function(){return o?o(h,f):h(),f},hide:function(){return i?i(y,f):y(),f},onShow:function(t){return s.onShowEvent.addListener(function(){t(f)}),f},onHide:function(t){return s.onHideEvent.addListener(function(){t(f)}),f},remove:function(){n.onRequestHide.removeListener(u),u=null,p(),s.remove()},setButtons:function(t){var e,n,r,o=t.length,i=function(t,e){var n=g(f);t.addClickListener(function(t){n.event=t||window.event,e.handler(n)})};if(p(),0===o)l.hide();else for(l.show();o-- >0;)e=t[o],r="nanoModalBtn",e.primary&&(r+=" nanoModalBtnPrimary"),r+=e.classes?" "+e.classes:"",n=a("button",r),"hide"===e.handler?n.addClickListener(f.hide):e.handler&&i(n,e),n.text(e.text),l.add(n),d.push(n);return v(),f},setContent:function(e){return e.nodeType?(c.html(""),c.add(e)):c.html(e),v(),t=e,f},getContent:function(){return t}},u=n.onRequestHide.addListener(function(){e.overlayClose!==!1&&s.isShowing()&&f.hide()}),f.setContent(t).setButtons(e.buttons),document.body.appendChild(s.el),f}}var a=t("./El"),o=document,i=function(t){var e=o.documentElement,n="scroll"+t,r="offset"+t;return Math.max(o.body[n],e[n],o.body[r],e[r],e["client"+t])};r.resizeOverlay=function(){var t=o.getElementById("nanoModalOverlay");t.style.width=i("Width")+"px",t.style.height=i("Height")+"px"},e.exports=r},{"./El":1}],3:[function(t,e,n){function r(){var t={},e=0,n=function(n){return t[e]=n,e++},r=function(e){e&&delete t[e]},a=function(){t={}},o=function(){for(var n=0,r=e;r>n;++n)t[n]&&t[n].apply(null,arguments)};return{addListener:n,removeListener:r,removeAllListeners:a,fire:o}}e.exports=r},{}],4:[function(t,e,n){var r=t("./ModalEvent"),o=function(){function e(){if(!i.querySelector("#nanoModalOverlay")){var t=a("style"),e=t.el,u=i.querySelectorAll("head")[0].childNodes[0];u.parentNode.insertBefore(e,u);var s=".nanoModal{position:absolute;top:100px;left:50%;display:none;z-index:9999;min-width:300px;padding:15px 20px 10px;-webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;background:#fff;background:-moz-linear-gradient(top,#fff 0,#ddd 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#fff),color-stop(100%,#ddd));background:-webkit-linear-gradient(top,#fff 0,#ddd 100%);background:-o-linear-gradient(top,#fff 0,#ddd 100%);background:-ms-linear-gradient(top,#fff 0,#ddd 100%);background:linear-gradient(to bottom,#fff 0,#ddd 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dddddd', GradientType=0)}.nanoModalOverlay{position:absolute;top:0;left:0;width:100%;height:100%;z-index:9998;background:#000;display:none;-ms-filter:\"alpha(Opacity=50)\";-moz-opacity:.5;-khtml-opacity:.5;opacity:.5}.nanoModalButtons{border-top:1px solid #ddd;margin-top:15px;text-align:right}.nanoModalBtn{color:#333;background-color:#fff;display:inline-block;padding:6px 12px;margin:8px 4px 0;font-size:14px;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:1px solid transparent;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px}.nanoModalBtn:active,.nanoModalBtn:focus,.nanoModalBtn:hover{color:#333;background-color:#e6e6e6;border-color:#adadad}.nanoModalBtn.nanoModalBtnPrimary{color:#fff;background-color:#428bca;border-color:#357ebd}.nanoModalBtn.nanoModalBtnPrimary:active,.nanoModalBtn.nanoModalBtnPrimary:focus,.nanoModalBtn.nanoModalBtnPrimary:hover{color:#fff;background-color:#3071a9;border-color:#285e8e}";e.styleSheet?e.styleSheet.cssText=s:t.text(s),n=a("div","nanoModalOverlay nanoModalOverride"),n.el.id="nanoModalOverlay",i.body.appendChild(n.el),n.onRequestHide=r();var c=function(){n.onRequestHide.fire()};n.addClickListener(c),a(i).addListener("keydown",function(t){var e=t.which||t.keyCode;27===e&&c()});var l,f=a(window);f.addListener("resize",function(){l&&clearTimeout(l),l=setTimeout(o.resizeOverlay,100)}),f.addListener("orientationchange",function(){for(var t=0;3>t;++t)setTimeout(o.resizeOverlay,1e3*t+200)})}}var n,a=t("./El"),o=t("./Modal"),i=document;document.body&&e();var u=function(t,r){return e(),o(t,r,n,u.customShow,u.customHide)};return u.resizeOverlay=o.resizeOverlay,u}();a=o},{"./El":1,"./Modal":2,"./ModalEvent":3}]},{},[1,2,3,4]),"undefined"!=typeof window&&("function"==typeof window.define&&window.define.amd&&window.define(function(){return a}),window.nanoModal=a),"undefined"!=typeof t&&(t.exports=a)},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t}}function a(){for(var t=arguments.length,e=Array(t),n=0;t>n;n++)e[n]=arguments[n];return function(t){return function(n,r){var a=t(n,r),i=a.dispatch,s=[],c={getState:a.getState,dispatch:function(t){return i(t)}};return s=e.map(function(t){return t(c)}),i=u["default"].apply(void 0,s)(a.dispatch),o({},a,{dispatch:i})}}}e.__esModule=!0;var o=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(t[r]=n[r])}return t};e["default"]=a;var i=n(33),u=r(i);t.exports=e["default"]},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t}}function a(t,e){return function(){return e(t.apply(void 0,arguments))}}function o(t,e){if("function"==typeof t)return a(t,e);if("object"!=typeof t||null===t||void 0===t)throw new Error("bindActionCreators expected an object or a function, instead received "+(null===t?"null":typeof t)+'. Did you write "import ActionCreators from" instead of "import * as ActionCreators from"?');return u["default"](t,function(t){return a(t,e)})}e.__esModule=!0,e["default"]=o;var i=n(36),u=r(i);t.exports=e["default"]},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t}}function a(t,e){var n=e&&e.type,r=n&&'"'+n.toString()+'"'||"an action";
-return'Reducer "'+t+'" returned undefined handling '+r+". To ignore an action, you must explicitly return the previous state."}function o(t){Object.keys(t).forEach(function(e){var n=t[e],r=n(void 0,{type:u.ActionTypes.INIT});if("undefined"==typeof r)throw new Error('Reducer "'+e+'" returned undefined during initialization. If the state passed to the reducer is undefined, you must explicitly return the initial state. The initial state may not be undefined.');var a="@@redux/PROBE_UNKNOWN_ACTION_"+Math.random().toString(36).substring(7).split("").join(".");if("undefined"==typeof n(void 0,{type:a}))throw new Error('Reducer "'+e+'" returned undefined when probed with a random type. '+("Don't try to handle "+u.ActionTypes.INIT+' or other actions in "redux/*" ')+"namespace. They are considered private. Instead, you must return the current state for any unknown actions, unless it is undefined, in which case you must return the initial state, regardless of the action type. The initial state may not be undefined.")})}function i(t){var e,n=d["default"](t,function(t){return"function"==typeof t});try{o(n)}catch(r){e=r}return function(t,r){if(void 0===t&&(t={}),e)throw e;var o=!1,i=l["default"](n,function(e,n){var i=t[n],u=e(i,r);if("undefined"==typeof u){var s=a(n,r);throw new Error(s)}return o=o||u!==i,u});return o?i:t}}e.__esModule=!0,e["default"]=i;var u=n(34),s=n(35),c=(r(s),n(36)),l=r(c),f=n(105),d=r(f);t.exports=e["default"]},function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{"default":t}}function a(){}e.__esModule=!0;var o=n(34),i=r(o),u=n(103),s=r(u),c=n(102),l=r(c),f=n(101),d=r(f),p=n(33),v=r(p);"isCrushed"!==a.name,1,e.createStore=i["default"],e.combineReducers=s["default"],e.bindActionCreators=l["default"],e.applyMiddleware=d["default"],e.compose=v["default"]},function(t,e){"use strict";function n(t,e){return Object.keys(t).reduce(function(n,r){return e(t[r])&&(n[r]=t[r]),n},{})}e.__esModule=!0,e["default"]=n,t.exports=e["default"]}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+/******/
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			exports: {},
+/******/ 			id: moduleId,
+/******/ 			loaded: false
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	// require('babel-polyfill');
+	
+	// require('zepto/zepto.min');
+	// import zepto from 'zepto/zepto.min.js';
+	// window.jQuery = window.$;
+	
+	__webpack_require__(1).polyfill();
+	__webpack_require__(2);
+	__webpack_require__(3);
+	
+	__webpack_require__(4).init();
+	
+	var redux = __webpack_require__(6);
+	
+	var menucard = __webpack_require__(106);
+	var deliveryFees = __webpack_require__(16);
+	
+	var defaultState = {
+	    inCart: [],
+	    serializedForm: '',
+	    isEmpty: true,
+	    address: { city: 'Gyöngyös' }
+	};
+	
+	var flatMap = __webpack_require__(17);
+	
+	var shoppingCart = redux.createStore(function () {
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? defaultState : arguments[0];
+	    var action = arguments[1];
+	
+	    var newState = defaultState;
+	
+	    switch (action.type) {
+	        case 'ADD':
+	            newState = Object.assign({}, state, { inCart: [].concat(_toConsumableArray(state.inCart), [{ dish: action.dish, timestamp: action.timestamp }]) });
+	            break;
+	        case 'REMOVE':
+	            var inCart = state.inCart.filter(function (x) {
+	                return x.timestamp !== action.timestamp;
+	            });
+	            newState = Object.assign({}, state, { inCart: inCart });
+	            break;
+	        case 'DUPLICATE':
+	            newState = Object.assign({}, state, {
+	                inCart: flatMap(state.inCart, function (item) {
+	                    return item.timestamp !== action.timestamp ? item : [item, Object.assign({}, item, { timestamp: +new Date() })];
+	                })
+	            });
+	            break;
+	        case 'RESTORE':
+	            newState = Object.assign({}, state, defaultState, action.state);
+	            break;
+	        case 'ADDRESS_CHANGE':
+	            newState = Object.assign({}, state, { address: action.address });
+	            break;
+	        case 'EMPTY_CART':
+	            newState = Object.assign({}, state, { inCart: [] });
+	            break;
+	        default:
+	            // no-op
+	            return state;
+	    }
+	
+	    // newState.total = newState.inCart.reduce(item => item.)
+	    newState.isEmpty = newState.inCart.length === 0;
+	    newState.deliveryFee = deliveryFees[newState.address.city].fix || 0;
+	    newState.deliveryFreeFrom = deliveryFees[newState.address.city].min || 0;
+	
+	    return newState;
+	});
+	
+	shoppingCart.subscribe(function () {
+	    try {
+	        localStorage.shoppingCart = JSON.stringify(shoppingCart.getState());
+	    } catch (ex) {}
+	});
+	
+	setTimeout(function () {
+	    try {
+	        var state = JSON.parse(localStorage.shoppingCart);
+	        shoppingCart.dispatch({ type: 'RESTORE', state: state });
+	    } catch (ex) {}
+	});
+	
+	var $ = __webpack_require__(5);
+	var nanoModal = __webpack_require__(105);
+	
+	shoppingCart.subscribe(function () {
+	    var state = shoppingCart.getState();
+	    var ids = {};
+	    state.inCart.forEach(function (obj) {
+	        ids[obj.dish.id] = (ids[obj.dish.id] || 0) + 1;
+	    });
+	
+	    $('[data-dish-id] .in-cart-count').text('');
+	
+	    Object.keys(ids).forEach(function (id) {
+	        var count = ids[id];
+	        $('[data-dish-id=' + id + '] .in-cart-count').text(count + ' db a kosárban');
+	    });
+	});
+	
+	shoppingCart.subscribe(function () {
+	    var state = shoppingCart.getState();
+	    $('[data-shopping-cart-count]').text(state.inCart.length + ' × ');
+	});
+	
+	shoppingCart.subscribe(function () {
+	
+	    var state = shoppingCart.getState();
+	
+	    var shcart = {
+	        lines: [
+	            // { id, name, price, extras: [
+	            // { name, price }
+	            // ] }
+	        ],
+	        deliveryFee: 1000,
+	        missingSumToFreeDelivery: 300,
+	        address: {
+	            // city
+	            // name
+	            // street
+	            // phone
+	        }
+	    };
+	
+	    if (state.isEmpty) {
+	        $('#side-cart .default-content').show();
+	        $('#side-cart button.order').attr('disabled', true);
+	    } else {
+	        $('#side-cart .default-content').hide();
+	        $('#side-cart button.order').attr('disabled', false);
+	    }
+	
+	    var itemsContainer = $('#side-cart .items');
+	    itemsContainer.empty();
+	
+	    state.inCart.forEach(function (item) {
+	        var x = menucard.dishes.filter(function (dish) {
+	            return dish.id === item.dish.id;
+	        })[0];
+	        itemsContainer.append('<tr><td>' + x.name + ' (' + item.dish.variant + ')<br><a href="" style="font-size:0.875rem;"><svg style="width: 16px;height:16px;"><use xlink:href="#icon-plus"></use></svg> Még</a>&nbsp;&nbsp;<a href=""><svg style="width: 16px;height:16px;"><use xlink:href="#icon-minus"></use></svg> Nem kérem</a> <a href="">Extrák</a></td><td><button data-duplicate-order-item="' + item.timestamp + '"><svg><use xlink:href="#icon-plus"></use></svg></button><button data-remove-order-item="' + item.timestamp + '"><svg><use xlink:href="#icon-minus"></use></svg></button></div></td><td>' + x.variants[item.dish.variant] + '&nbsp;Ft</td></tr>');
+	    });
+	
+	    if (!state.isEmpty) {
+	        var sum = state.inCart.reduce(function (prev, item) {
+	            var x = menucard.dishes.filter(function (dish) {
+	                return dish.id === item.dish.id;
+	            })[0];
+	            return prev + x.variants[item.dish.variant];
+	        }, 0);
+	
+	        itemsContainer.append('<tfoot><tr><td>Végösszeg</td><td colspan="2">' + sum + '&nbsp;Ft</td></tr></tfoot>');
+	    }
+	});
+	
+	shoppingCart.subscribe(function () {
+	    var address = shoppingCart.getState().address;
+	    var orderForm = $('#side-cart .order-form');
+	
+	    orderForm.find('[name=city]').val(address.city);
+	    orderForm.find('[name=name]').val(address.name);
+	    orderForm.find('[name=street]').val(address.street);
+	    orderForm.find('[name=phone]').val(address.phone);
+	});
+	
+	var orderForm = $('#side-cart .order-form').on('input change', function (e) {
+	    var address = {
+	        city: orderForm.find('[name=city]').val(),
+	        name: orderForm.find('[name=name]').val(),
+	        street: orderForm.find('[name=street]').val(),
+	        phone: orderForm.find('[name=phone]').val()
+	    };
+	
+	    shoppingCart.dispatch({ type: 'ADDRESS_CHANGE', address: address });
+	});
+	
+	$(document).on('click', 'button[data-remove-order-item]', function (e) {
+	    var timestamp = $(this).data('removeOrderItem');
+	    shoppingCart.dispatch({ type: 'REMOVE', timestamp: timestamp });
+	});
+	
+	$(document).on('click', 'button[data-duplicate-order-item]', function (e) {
+	    var timestamp = $(this).data('duplicateOrderItem');
+	    shoppingCart.dispatch({ type: 'DUPLICATE', timestamp: timestamp });
+	});
+	
+	$(document).on('click', 'button[data-add-to-cart]', function (e) {
+	    var el = $(this);
+	    var id = el.data('add-to-cart');
+	    var variant = el.data('variant');
+	    shoppingCart.dispatch({ type: 'ADD', dish: { id: id, variant: variant }, timestamp: +new Date() });
+	
+	    // const template = require('./templates/pizza-options.html');
+	    // const html = template();
+	    // const modal = nanoModal(html, {
+	    //     overlayClose: false,
+	    //     buttons: [{
+	    //         text: 'Hozzáadás a rendeléshez',
+	    //         handler: m => m.hide(),
+	    //         primary: true
+	    //     }, {
+	    //         text: 'Mégsem',
+	    //         handler: 'hide'
+	    //     }]
+	    // });
+	    // modal.show();
+	
+	    // $('#modal').scroll(e => {
+	    //     console.log(e);
+	    //     // e.preventDefault();
+	    //     // e.stopPropagation();
+	    // });
+	    //
+	    // var modalWithNoButtons = nanoModal($('#modal')[0], {
+	    //     overlayClose: false,
+	    //     buttons: [{
+	    //         text: "I'm sure!",
+	    //         handler: function(modal) {
+	    //             alert("doing something...");
+	    //             modal.hide();
+	    //         },
+	    //         primary: true
+	    //     }, {
+	    //         text: "Maybe not...",
+	    //         handler: "hide"
+	    //     }]
+	    // });
+	    //
+	    // modalWithNoButtons.show();
+	});
+	
+	// var orderItemTemplate = require('./templates/order-item.html');
+	// console.log(orderItemTemplate({ id: 'jfsjkfsdf', qwe: 'jshdfjkhsdfkjhs' }));
+	
+	window.sc = shoppingCart;
+	
+	document.registerElement('google-map', {
+	    extends: 'a',
+	    prototype: Object.create(HTMLElement.prototype, {
+	        attachedCallback: {
+	            value: function value() {
+	                var el = this;
+	                setTimeout(function () {
+	                    // 47.785625, 19.932675
+	                    var width = el.clientWidth | 0;
+	
+	                    if (width === 0) {
+	                        return;
+	                    }
+	
+	                    var height = width * 0.75 | 0;
+	                    var scale = window.devicePixelRatio > 1 ? 2 : 1;
+	                    var staticMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?zoom=15&size=' + width + 'x' + height + '&scale=' + scale + '&maptype=roadmap&markers=color:blue%7Clabel:M%7C3200+Gyöngyös,+Orczy+út+1.&format=png';
+	                    var img = document.createElement('img');
+	                    img.alt = el.getAttribute('title');
+	                    img.src = staticMapUrl;
+	                    el.insertBefore(img, el.firstChild);
+	                });
+	            }
+	        }
+	    })
+	});
+	
+	document.registerElement('add-to-cart', {
+	    prototype: Object.create(HTMLElement.prototype, {
+	        attachedCallback: { value: function value() {
+	                var itemid = this.getAttribute('dishid');
+	
+	                var el = $(this);
+	                var dish = menucard.dishes.filter(function (dish) {
+	                    return dish.id === itemid;
+	                })[0];
+	
+	                if (!dish) {
+	                    console.log(itemid);
+	                    return;
+	                }
+	
+	                var variants = dish.variants;
+	
+	                var button = $('<button data-add-to-cart="' + dish.id + '" data-variant="' + variants[0].name + '"><svg class="icon-cart white"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>');
+	
+	                if (variants.length > 1) {
+	                    (function () {
+	                        var select = $('<select>' + variants.map(function (v) {
+	                            return '<option value="' + v.name + '">' + v.name + ' - ' + v.price + ' Ft</option>';
+	                        }) + '</select>').on('change', function (e) {
+	                            return button.data('variant', select.val());
+	                        });
+	                        el.append(select);
+	                    })();
+	                } else {
+	                    if (variants[0].name) {
+	                        el.append(variants[0].name + ' - ');
+	                    }
+	
+	                    el.append('<b>' + variants[0].price + ' Ft</b>');
+	                }
+	
+	                el.append(button);
+	            } }
+	    })
+	});
+	
+	var dayOfWeek = new Date().getDay() || 7;
+	$('#opening-hours dd:nth-of-type(' + dayOfWeek + '), #opening-hours dt:nth-of-type(' + dayOfWeek + ')').css({ fontWeight: 700 });
+	
+	//
+	// const openModal = () => {
+	//     const tpl = require('./templates/pizza-options.html');
+	//     const html = tpl({ id: 'pizza-modal' });
+	//
+	//     const currentScroll = window.scrollY;
+	//
+	//     $(document.body).append(html);
+	//
+	//     $(document).on('click', '[data-close]', () => {
+	//         $('#pizza-modal').remove();
+	//         window.scrollY = currentScroll;
+	//     });
+	// };
+	//
+	// openModal();
+
+	// require('vue')
+
+	/*
+	Events:
+	- add-to-cart - directly
+	- add-to-cart - extras should be chosen
+	- remove from cart
+	- duplicate cart item
+	- reset cart
+	- restore state
+	- change address
+	- change notes
+	- extra added to order item
+	- extra removed from order item
+	- note added to order item
+	- variant changed in order item
+	- city changed
+
+	Pizza kérdések:
+	(- Milyen méret?)
+	- Milyen extra feltétek?
+
+	3-kívánság pizza:
+	- Milyen alap?
+	- Milyen 3 ingyenes feltét?
+
+
+	Üdítő:
+	- Milyen méret?
+
+	Hamburger:
+	- Menü vagy sem?
+	- Milyen burgonya?
+	- Milyen szósz?
+
+	Rántott sajt:
+	- Milyen burgonya?
+	- Milyen szósz?
+
+	*/
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+	/**
+	 * Code refactored from Mozilla Developer Network:
+	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+	 */
+	
+	'use strict';
+	
+	function assign(target, firstSource) {
+	  if (target === undefined || target === null) {
+	    throw new TypeError('Cannot convert first argument to object');
+	  }
+	
+	  var to = Object(target);
+	  for (var i = 1; i < arguments.length; i++) {
+	    var nextSource = arguments[i];
+	    if (nextSource === undefined || nextSource === null) {
+	      continue;
+	    }
+	
+	    var keysArray = Object.keys(Object(nextSource));
+	    for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
+	      var nextKey = keysArray[nextIndex];
+	      var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
+	      if (desc !== undefined && desc.enumerable) {
+	        to[nextKey] = nextSource[nextKey];
+	      }
+	    }
+	  }
+	  return to;
+	}
+	
+	function polyfill() {
+	  if (!Object.assign) {
+	    Object.defineProperty(Object, 'assign', {
+	      enumerable: false,
+	      configurable: true,
+	      writable: true,
+	      value: assign
+	    });
+	  }
+	}
+	
+	module.exports = {
+	  assign: assign,
+	  polyfill: polyfill
+	};
+
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function(window, factory) {
+		var lazySizes = factory(window, window.document);
+		window.lazySizes = lazySizes;
+		if(typeof module == 'object' && module.exports){
+			module.exports = lazySizes;
+		} else if (true) {
+			!(__WEBPACK_AMD_DEFINE_FACTORY__ = (lazySizes), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		}
+	}(window, function(window, document) {
+		'use strict';
+		/*jshint eqnull:true */
+		if(!document.getElementsByClassName){return;}
+	
+		var lazySizesConfig;
+	
+		var docElem = document.documentElement;
+	
+		var supportPicture = window.HTMLPictureElement && ('sizes' in document.createElement('img'));
+	
+		var _addEventListener = 'addEventListener';
+	
+		var _getAttribute = 'getAttribute';
+	
+		var addEventListener = window[_addEventListener];
+	
+		var setTimeout = window.setTimeout;
+	
+		var rAF = window.requestAnimationFrame || setTimeout;
+	
+		var regPicture = /^picture$/i;
+	
+		var loadEvents = ['load', 'error', 'lazyincluded', '_lazyloaded'];
+	
+		var regClassCache = {};
+	
+		var forEach = Array.prototype.forEach;
+	
+		var hasClass = function(ele, cls) {
+			if(!regClassCache[cls]){
+				regClassCache[cls] = new RegExp('(\\s|^)'+cls+'(\\s|$)');
+			}
+			return regClassCache[cls].test(ele[_getAttribute]('class') || '') && regClassCache[cls];
+		};
+	
+		var addClass = function(ele, cls) {
+			if (!hasClass(ele, cls)){
+				ele.setAttribute('class', (ele[_getAttribute]('class') || '').trim() + ' ' + cls);
+			}
+		};
+	
+		var removeClass = function(ele, cls) {
+			var reg;
+			if ((reg = hasClass(ele,cls))) {
+				ele.setAttribute('class', (ele[_getAttribute]('class') || '').replace(reg, ' '));
+			}
+		};
+	
+		var addRemoveLoadEvents = function(dom, fn, add){
+			var action = add ? _addEventListener : 'removeEventListener';
+			if(add){
+				addRemoveLoadEvents(dom, fn);
+			}
+			loadEvents.forEach(function(evt){
+				dom[action](evt, fn);
+			});
+		};
+	
+		var triggerEvent = function(elem, name, detail, noBubbles, noCancelable){
+			var event = document.createEvent('CustomEvent');
+	
+			event.initCustomEvent(name, !noBubbles, !noCancelable, detail || {});
+	
+			elem.dispatchEvent(event);
+			return event;
+		};
+	
+		var updatePolyfill = function (el, full){
+			var polyfill;
+			if( !supportPicture && ( polyfill = (window.picturefill || lazySizesConfig.pf) ) ){
+				polyfill({reevaluate: true, elements: [el]});
+			} else if(full && full.src){
+				el.src = full.src;
+			}
+		};
+	
+		var getCSS = function (elem, style){
+			return (getComputedStyle(elem, null) || {})[style];
+		};
+	
+		var getWidth = function(elem, parent, width){
+			width = width || elem.offsetWidth;
+	
+			while(width < lazySizesConfig.minSize && parent && !elem._lazysizesWidth){
+				width =  parent.offsetWidth;
+				parent = parent.parentNode;
+			}
+	
+			return width;
+		};
+	
+		var throttle = function(fn){
+			var running;
+			var lastTime = 0;
+			var Date = window.Date;
+			var run = function(){
+				running = false;
+				lastTime = Date.now();
+				fn();
+			};
+			var afterAF = function(){
+				setTimeout(run);
+			};
+			var getAF = function(){
+				rAF(afterAF);
+			};
+	
+			return function(){
+				if(running){
+					return;
+				}
+				var delay = 125 - (Date.now() - lastTime);
+	
+				running =  true;
+	
+				if(delay < 6){
+					delay = 6;
+				}
+				setTimeout(getAF, delay);
+			};
+		};
+	
+		/*
+		var throttle = function(fn){
+			var running;
+			var lastTime = 0;
+			var Date = window.Date;
+			var requestIdleCallback = window.requestIdleCallback;
+			var gDelay = 125;
+			var dTimeout = 999;
+			var timeout = dTimeout;
+			var fastCallThreshold = 0;
+			var run = function(){
+				running = false;
+				lastTime = Date.now();
+				fn();
+			};
+			var afterAF = function(){
+				setTimeout(run);
+			};
+			var getAF = function(){
+				rAF(afterAF);
+			};
+	
+			if(requestIdleCallback){
+				gDelay = 66;
+				fastCallThreshold = 22;
+				getAF = function(){
+					requestIdleCallback(run, {timeout: timeout});
+					if(timeout !== dTimeout){
+						timeout = dTimeout;
+					}
+				};
+			}
+	
+			return function(isPriority){
+				var delay;
+				if((isPriority = isPriority === true)){
+					timeout = 40;
+				}
+	
+				if(running){
+					return;
+				}
+	
+				running =  true;
+	
+				if(isPriority || (delay = gDelay - (Date.now() - lastTime)) < fastCallThreshold){
+					getAF();
+				} else {
+					setTimeout(getAF, delay);
+				}
+			};
+		};
+		*/
+	
+		var loader = (function(){
+			var lazyloadElems, preloadElems, isCompleted, resetPreloadingTimer, loadMode, started;
+	
+			var eLvW, elvH, eLtop, eLleft, eLright, eLbottom;
+	
+			var defaultExpand, preloadExpand, hFac;
+	
+			var regImg = /^img$/i;
+			var regIframe = /^iframe$/i;
+	
+			var supportScroll = ('onscroll' in window) && !(/glebot/.test(navigator.userAgent));
+	
+			var shrinkExpand = 0;
+			var currentExpand = 0;
+	
+			var isLoading = 0;
+			var lowRuns = 0;
+	
+			var resetPreloading = function(e){
+				isLoading--;
+				if(e && e.target){
+					addRemoveLoadEvents(e.target, resetPreloading);
+				}
+	
+				if(!e || isLoading < 0 || !e.target){
+					isLoading = 0;
+				}
+			};
+	
+			var isNestedVisible = function(elem, elemExpand){
+				var outerRect;
+				var parent = elem;
+				var visible = getCSS(document.body, 'visibility') == 'hidden' || getCSS(elem, 'visibility') != 'hidden';
+	
+				eLtop -= elemExpand;
+				eLbottom += elemExpand;
+				eLleft -= elemExpand;
+				eLright += elemExpand;
+	
+				while(visible && (parent = parent.offsetParent) && parent != document.body && parent != docElem){
+					visible = ((getCSS(parent, 'opacity') || 1) > 0);
+	
+					if(visible && getCSS(parent, 'overflow') != 'visible'){
+						outerRect = parent.getBoundingClientRect();
+						visible = eLright > outerRect.left &&
+						eLleft < outerRect.right &&
+						eLbottom > outerRect.top - 1 &&
+						eLtop < outerRect.bottom + 1
+						;
+					}
+				}
+	
+				return visible;
+			};
+	
+			var checkElements = function() {
+				var eLlen, i, rect, autoLoadElem, loadedSomething, elemExpand, elemNegativeExpand, elemExpandVal, beforeExpandVal;
+	
+				if((loadMode = lazySizesConfig.loadMode) && isLoading < 8 && (eLlen = lazyloadElems.length)){
+	
+					i = 0;
+	
+					lowRuns++;
+	
+					if(preloadExpand == null){
+						if(!('expand' in lazySizesConfig)){
+							lazySizesConfig.expand = docElem.clientHeight > 600 ? docElem.clientWidth > 860 ? 500 : 410 : 359;
+						}
+	
+						defaultExpand = lazySizesConfig.expand;
+						preloadExpand = defaultExpand * lazySizesConfig.expFactor;
+					}
+	
+					if(currentExpand < preloadExpand && isLoading < 1 && lowRuns > 3 && loadMode > 2){
+						currentExpand = preloadExpand;
+						lowRuns = 0;
+					} else if(loadMode > 1 && lowRuns > 2 && isLoading < 6){
+						currentExpand = defaultExpand;
+					} else {
+						currentExpand = shrinkExpand;
+					}
+	
+					for(; i < eLlen; i++){
+	
+						if(!lazyloadElems[i] || lazyloadElems[i]._lazyRace){continue;}
+	
+						if(!supportScroll){unveilElement(lazyloadElems[i]);continue;}
+	
+						if(!(elemExpandVal = lazyloadElems[i][_getAttribute]('data-expand')) || !(elemExpand = elemExpandVal * 1)){
+							elemExpand = currentExpand;
+						}
+	
+						if(beforeExpandVal !== elemExpand){
+							eLvW = innerWidth + (elemExpand * hFac);
+							elvH = innerHeight + elemExpand;
+							elemNegativeExpand = elemExpand * -1;
+							beforeExpandVal = elemExpand;
+						}
+	
+						rect = lazyloadElems[i].getBoundingClientRect();
+	
+						if ((eLbottom = rect.bottom) >= elemNegativeExpand &&
+							(eLtop = rect.top) <= elvH &&
+							(eLright = rect.right) >= elemNegativeExpand * hFac &&
+							(eLleft = rect.left) <= eLvW &&
+							(eLbottom || eLright || eLleft || eLtop) &&
+							((isCompleted && isLoading < 3 && !elemExpandVal && (loadMode < 3 || lowRuns < 4)) || isNestedVisible(lazyloadElems[i], elemExpand))){
+							unveilElement(lazyloadElems[i]);
+							loadedSomething = true;
+							if(isLoading > 9){break;}
+						} else if(!loadedSomething && isCompleted && !autoLoadElem &&
+							isLoading < 4 && lowRuns < 4 && loadMode > 2 &&
+							(preloadElems[0] || lazySizesConfig.preloadAfterLoad) &&
+							(preloadElems[0] || (!elemExpandVal && ((eLbottom || eLright || eLleft || eLtop) || lazyloadElems[i][_getAttribute](lazySizesConfig.sizesAttr) != 'auto')))){
+							autoLoadElem = preloadElems[0] || lazyloadElems[i];
+						}
+					}
+	
+					if(autoLoadElem && !loadedSomething){
+						unveilElement(autoLoadElem);
+					}
+				}
+			};
+	
+			var throttledCheckElements = throttle(checkElements);
+	
+			var switchLoadingClass = function(e){
+				addClass(e.target, lazySizesConfig.loadedClass);
+				removeClass(e.target, lazySizesConfig.loadingClass);
+				addRemoveLoadEvents(e.target, switchLoadingClass);
+			};
+	
+			var changeIframeSrc = function(elem, src){
+				try {
+					elem.contentWindow.location.replace(src);
+				} catch(e){
+					elem.src = src;
+				}
+			};
+	
+			var handleSources = function(source){
+				var customMedia, parent;
+	
+				var sourceSrcset = source[_getAttribute](lazySizesConfig.srcsetAttr);
+	
+				if( (customMedia = lazySizesConfig.customMedia[source[_getAttribute]('data-media') || source[_getAttribute]('media')]) ){
+					source.setAttribute('media', customMedia);
+				}
+	
+				if(sourceSrcset){
+					source.setAttribute('srcset', sourceSrcset);
+				}
+	
+				//https://bugzilla.mozilla.org/show_bug.cgi?id=1170572
+				if(customMedia){
+					parent = source.parentNode;
+					parent.insertBefore(source.cloneNode(), source);
+					parent.removeChild(source);
+				}
+			};
+	
+			var rafBatch = (function(){
+				var isRunning;
+				var batch = [];
+				var runBatch = function(){
+					while(batch.length){
+						(batch.shift())();
+					}
+					isRunning = false;
+				};
+				return function(fn){
+					batch.push(fn);
+					if(!isRunning){
+						isRunning = true;
+						rAF(runBatch);
+					}
+				};
+			})();
+	
+			var unveilElement = function (elem){
+				var src, srcset, parent, isPicture, event, firesLoad, width;
+	
+				var isImg = regImg.test(elem.nodeName);
+	
+				//allow using sizes="auto", but don't use. it's invalid. Use data-sizes="auto" or a valid value for sizes instead (i.e.: sizes="80vw")
+				var sizes = isImg && (elem[_getAttribute](lazySizesConfig.sizesAttr) || elem[_getAttribute]('sizes'));
+				var isAuto = sizes == 'auto';
+	
+				if( (isAuto || !isCompleted) && isImg && (elem.src || elem.srcset) && !elem.complete && !hasClass(elem, lazySizesConfig.errorClass)){return;}
+	
+				if(isAuto){
+					width = elem.offsetWidth;
+				}
+	
+				elem._lazyRace = true;
+				isLoading++;
+	
+				rafBatch(function lazyUnveil(){
+					if(elem._lazyRace){
+						delete elem._lazyRace;
+					}
+	
+					if(!(event = triggerEvent(elem, 'lazybeforeunveil')).defaultPrevented){
+	
+						if(sizes){
+							if(isAuto){
+								autoSizer.updateElem(elem, true, width);
+								addClass(elem, lazySizesConfig.autosizesClass);
+							} else {
+								elem.setAttribute('sizes', sizes);
+							}
+						}
+	
+						srcset = elem[_getAttribute](lazySizesConfig.srcsetAttr);
+						src = elem[_getAttribute](lazySizesConfig.srcAttr);
+	
+						if(isImg) {
+							parent = elem.parentNode;
+							isPicture = parent && regPicture.test(parent.nodeName || '');
+						}
+	
+						firesLoad = event.detail.firesLoad || (('src' in elem) && (srcset || src || isPicture));
+	
+						event = {target: elem};
+	
+						if(firesLoad){
+							addRemoveLoadEvents(elem, resetPreloading, true);
+							clearTimeout(resetPreloadingTimer);
+							resetPreloadingTimer = setTimeout(resetPreloading, 2500);
+	
+							addClass(elem, lazySizesConfig.loadingClass);
+							addRemoveLoadEvents(elem, switchLoadingClass, true);
+						}
+	
+						if(isPicture){
+							forEach.call(parent.getElementsByTagName('source'), handleSources);
+						}
+	
+						if(srcset){
+							elem.setAttribute('srcset', srcset);
+						} else if(src && !isPicture){
+							if(regIframe.test(elem.nodeName)){
+								changeIframeSrc(elem, src);
+							} else {
+								elem.src = src;
+							}
+						}
+	
+						if(srcset || isPicture){
+							updatePolyfill(elem, {src: src});
+						}
+					}
+	
+					removeClass(elem, lazySizesConfig.lazyClass);
+	
+					if( !firesLoad || elem.complete ){
+						if(firesLoad){
+							resetPreloading(event);
+						} else {
+							isLoading--;
+						}
+						switchLoadingClass(event);
+					}
+				});
+			};
+	
+			var onload = function(){
+				if(isCompleted){return;}
+				if(Date.now() - started < 999){
+					setTimeout(onload, 999);
+					return;
+				}
+				var scrollTimer;
+				var afterScroll = function(){
+					lazySizesConfig.loadMode = 3;
+					throttledCheckElements();
+				};
+	
+				isCompleted = true;
+	
+				lazySizesConfig.loadMode = 3;
+	
+				if(!isLoading){
+					if(lowRuns){
+						throttledCheckElements();
+					} else {
+						setTimeout(checkElements);
+					}
+				}
+	
+				addEventListener('scroll', function(){
+					if(lazySizesConfig.loadMode == 3){
+						lazySizesConfig.loadMode = 2;
+					}
+					clearTimeout(scrollTimer);
+					scrollTimer = setTimeout(afterScroll, 99);
+				}, true);
+			};
+	
+			/*
+			var onload = function(){
+				var scrollTimer, timestamp;
+				var wait = 99;
+				var afterScroll = function(){
+					var last = (Date.now()) - timestamp;
+	
+					// if the latest call was less that the wait period ago
+					// then we reset the timeout to wait for the difference
+					if (last < wait) {
+						scrollTimer = setTimeout(afterScroll, wait - last);
+	
+						// or if not we can null out the timer and run the latest
+					} else {
+						scrollTimer = null;
+						lazySizesConfig.loadMode = 3;
+						throttledCheckElements();
+					}
+				};
+	
+				isCompleted = true;
+				lowRuns += 8;
+	
+				lazySizesConfig.loadMode = 3;
+	
+				addEventListener('scroll', function(){
+					timestamp = Date.now();
+					if(!scrollTimer){
+						lazySizesConfig.loadMode = 2;
+						scrollTimer = setTimeout(afterScroll, wait);
+					}
+				}, true);
+			};
+			*/
+	
+			return {
+				_: function(){
+					started = Date.now();
+	
+					lazyloadElems = document.getElementsByClassName(lazySizesConfig.lazyClass);
+					preloadElems = document.getElementsByClassName(lazySizesConfig.lazyClass + ' ' + lazySizesConfig.preloadClass);
+					hFac = lazySizesConfig.hFac;
+	
+					addEventListener('scroll', throttledCheckElements, true);
+	
+					addEventListener('resize', throttledCheckElements, true);
+	
+					if(window.MutationObserver){
+						new MutationObserver( throttledCheckElements ).observe( docElem, {childList: true, subtree: true, attributes: true} );
+					} else {
+						docElem[_addEventListener]('DOMNodeInserted', throttledCheckElements, true);
+						docElem[_addEventListener]('DOMAttrModified', throttledCheckElements, true);
+						setInterval(throttledCheckElements, 999);
+					}
+	
+					addEventListener('hashchange', throttledCheckElements, true);
+	
+					//, 'fullscreenchange'
+					['focus', 'mouseover', 'click', 'load', 'transitionend', 'animationend', 'webkitAnimationEnd'].forEach(function(name){
+						document[_addEventListener](name, throttledCheckElements, true);
+					});
+	
+					if((/d$|^c/.test(document.readyState))){
+						onload();
+					} else {
+						addEventListener('load', onload);
+						document[_addEventListener]('DOMContentLoaded', throttledCheckElements);
+						setTimeout(onload, 20000);
+					}
+	
+					throttledCheckElements(lazyloadElems.length > 0);
+				},
+				checkElems: throttledCheckElements,
+				unveil: unveilElement
+			};
+		})();
+	
+	
+		var autoSizer = (function(){
+			var autosizesElems;
+	
+			var sizeElement = function (elem, dataAttr, width){
+				var sources, i, len, event;
+				var parent = elem.parentNode;
+	
+				if(parent){
+					width = getWidth(elem, parent, width);
+					event = triggerEvent(elem, 'lazybeforesizes', {width: width, dataAttr: !!dataAttr});
+	
+					if(!event.defaultPrevented){
+						width = event.detail.width;
+	
+						if(width && width !== elem._lazysizesWidth){
+							elem._lazysizesWidth = width;
+							width += 'px';
+							elem.setAttribute('sizes', width);
+	
+							if(regPicture.test(parent.nodeName || '')){
+								sources = parent.getElementsByTagName('source');
+								for(i = 0, len = sources.length; i < len; i++){
+									sources[i].setAttribute('sizes', width);
+								}
+							}
+	
+							if(!event.detail.dataAttr){
+								updatePolyfill(elem, event.detail);
+							}
+						}
+					}
+				}
+			};
+	
+			var updateElementsSizes = function(){
+				var i;
+				var len = autosizesElems.length;
+				if(len){
+					i = 0;
+	
+					for(; i < len; i++){
+						sizeElement(autosizesElems[i]);
+					}
+				}
+			};
+	
+			var throttledUpdateElementsSizes = throttle(updateElementsSizes);
+	
+			return {
+				_: function(){
+					autosizesElems = document.getElementsByClassName(lazySizesConfig.autosizesClass);
+					addEventListener('resize', throttledUpdateElementsSizes);
+				},
+				checkElems: throttledUpdateElementsSizes,
+				updateElem: sizeElement
+			};
+		})();
+	
+		var init = function(){
+			if(!init.i){
+				init.i = true;
+				autoSizer._();
+				loader._();
+			}
+		};
+	
+		(function(){
+			var prop;
+	
+			var lazySizesDefaults = {
+				lazyClass: 'lazyload',
+				loadedClass: 'lazyloaded',
+				loadingClass: 'lazyloading',
+				preloadClass: 'lazypreload',
+				errorClass: 'lazyerror',
+				//strictClass: 'lazystrict',
+				autosizesClass: 'lazyautosizes',
+				srcAttr: 'data-src',
+				srcsetAttr: 'data-srcset',
+				sizesAttr: 'data-sizes',
+				//preloadAfterLoad: false,
+				minSize: 40,
+				customMedia: {},
+				init: true,
+				expFactor: 1.7,
+				hFac: 0.8,
+				loadMode: 2
+			};
+	
+			lazySizesConfig = window.lazySizesConfig || window.lazysizesConfig || {};
+	
+			for(prop in lazySizesDefaults){
+				if(!(prop in lazySizesConfig)){
+					lazySizesConfig[prop] = lazySizesDefaults[prop];
+				}
+			}
+	
+			window.lazySizesConfig = lazySizesConfig;
+	
+			setTimeout(function(){
+				if(lazySizesConfig.init){
+					init();
+				}
+			});
+		})();
+	
+		return {
+			cfg: lazySizesConfig,
+			autoSizer: autoSizer,
+			loader: loader,
+			init: init,
+			uP: updatePolyfill,
+			aC: addClass,
+			rC: removeClass,
+			hC: hasClass,
+			fire: triggerEvent,
+			gW: getWidth
+		};
+	}));
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	/*! (C) WebReflection Mit Style License */
+	(function(e,t,n,r){"use strict";function rt(e,t){for(var n=0,r=e.length;n<r;n++)vt(e[n],t)}function it(e){for(var t=0,n=e.length,r;t<n;t++)r=e[t],nt(r,b[ot(r)])}function st(e){return function(t){j(t)&&(vt(t,e),rt(t.querySelectorAll(w),e))}}function ot(e){var t=e.getAttribute("is"),n=e.nodeName.toUpperCase(),r=S.call(y,t?v+t.toUpperCase():d+n);return t&&-1<r&&!ut(n,t)?-1:r}function ut(e,t){return-1<w.indexOf(e+'[is="'+t+'"]')}function at(e){var t=e.currentTarget,n=e.attrChange,r=e.attrName,i=e.target;Q&&(!i||i===t)&&t.attributeChangedCallback&&r!=="style"&&e.prevValue!==e.newValue&&t.attributeChangedCallback(r,n===e[a]?null:e.prevValue,n===e[l]?null:e.newValue)}function ft(e){var t=st(e);return function(e){X.push(t,e.target)}}function lt(e){K&&(K=!1,e.currentTarget.removeEventListener(h,lt)),rt((e.target||t).querySelectorAll(w),e.detail===o?o:s),B&&pt()}function ct(e,t){var n=this;q.call(n,e,t),G.call(n,{target:n})}function ht(e,t){D(e,t),et?et.observe(e,z):(J&&(e.setAttribute=ct,e[i]=Z(e),e.addEventListener(p,G)),e.addEventListener(c,at)),e.createdCallback&&Q&&(e.created=!0,e.createdCallback(),e.created=!1)}function pt(){for(var e,t=0,n=F.length;t<n;t++)e=F[t],E.contains(e)||(n--,F.splice(t--,1),vt(e,o))}function dt(e){throw new Error("A "+e+" type is already registered")}function vt(e,t){var n,r=ot(e);-1<r&&(tt(e,b[r]),r=0,t===s&&!e[s]?(e[o]=!1,e[s]=!0,r=1,B&&S.call(F,e)<0&&F.push(e)):t===o&&!e[o]&&(e[s]=!1,e[o]=!0,r=1),r&&(n=e[t+"Callback"])&&n.call(e))}if(r in t)return;var i="__"+r+(Math.random()*1e5>>0),s="attached",o="detached",u="extends",a="ADDITION",f="MODIFICATION",l="REMOVAL",c="DOMAttrModified",h="DOMContentLoaded",p="DOMSubtreeModified",d="<",v="=",m=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,g=["ANNOTATION-XML","COLOR-PROFILE","FONT-FACE","FONT-FACE-SRC","FONT-FACE-URI","FONT-FACE-FORMAT","FONT-FACE-NAME","MISSING-GLYPH"],y=[],b=[],w="",E=t.documentElement,S=y.indexOf||function(e){for(var t=this.length;t--&&this[t]!==e;);return t},x=n.prototype,T=x.hasOwnProperty,N=x.isPrototypeOf,C=n.defineProperty,k=n.getOwnPropertyDescriptor,L=n.getOwnPropertyNames,A=n.getPrototypeOf,O=n.setPrototypeOf,M=!!n.__proto__,_=n.create||function mt(e){return e?(mt.prototype=e,new mt):this},D=O||(M?function(e,t){return e.__proto__=t,e}:L&&k?function(){function e(e,t){for(var n,r=L(t),i=0,s=r.length;i<s;i++)n=r[i],T.call(e,n)||C(e,n,k(t,n))}return function(t,n){do e(t,n);while((n=A(n))&&!N.call(n,t));return t}}():function(e,t){for(var n in t)e[n]=t[n];return e}),P=e.MutationObserver||e.WebKitMutationObserver,H=(e.HTMLElement||e.Element||e.Node).prototype,B=!N.call(H,E),j=B?function(e){return e.nodeType===1}:function(e){return N.call(H,e)},F=B&&[],I=H.cloneNode,q=H.setAttribute,R=H.removeAttribute,U=t.createElement,z=P&&{attributes:!0,characterData:!0,attributeOldValue:!0},W=P||function(e){J=!1,E.removeEventListener(c,W)},X,V=e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,10)},$=!1,J=!0,K=!0,Q=!0,G,Y,Z,et,tt,nt;O||M?(tt=function(e,t){N.call(t,e)||ht(e,t)},nt=ht):(tt=function(e,t){e[i]||(e[i]=n(!0),ht(e,t))},nt=tt),B?(J=!1,function(){var e=k(H,"addEventListener"),t=e.value,n=function(e){var t=new CustomEvent(c,{bubbles:!0});t.attrName=e,t.prevValue=this.getAttribute(e),t.newValue=null,t[l]=t.attrChange=2,R.call(this,e),this.dispatchEvent(t)},r=function(e,t){var n=this.hasAttribute(e),r=n&&this.getAttribute(e),i=new CustomEvent(c,{bubbles:!0});q.call(this,e,t),i.attrName=e,i.prevValue=n?r:null,i.newValue=t,n?i[f]=i.attrChange=1:i[a]=i.attrChange=0,this.dispatchEvent(i)},s=function(e){var t=e.currentTarget,n=t[i],r=e.propertyName,s;n.hasOwnProperty(r)&&(n=n[r],s=new CustomEvent(c,{bubbles:!0}),s.attrName=n.name,s.prevValue=n.value||null,s.newValue=n.value=t[r]||null,s.prevValue==null?s[a]=s.attrChange=0:s[f]=s.attrChange=1,t.dispatchEvent(s))};e.value=function(e,o,u){e===c&&this.attributeChangedCallback&&this.setAttribute!==r&&(this[i]={className:{name:"class",value:this.className}},this.setAttribute=r,this.removeAttribute=n,t.call(this,"propertychange",s)),t.call(this,e,o,u)},C(H,"addEventListener",e)}()):P||(E.addEventListener(c,W),E.setAttribute(i,1),E.removeAttribute(i),J&&(G=function(e){var t=this,n,r,s;if(t===e.target){n=t[i],t[i]=r=Z(t);for(s in r){if(!(s in n))return Y(0,t,s,n[s],r[s],a);if(r[s]!==n[s])return Y(1,t,s,n[s],r[s],f)}for(s in n)if(!(s in r))return Y(2,t,s,n[s],r[s],l)}},Y=function(e,t,n,r,i,s){var o={attrChange:e,currentTarget:t,attrName:n,prevValue:r,newValue:i};o[s]=e,at(o)},Z=function(e){for(var t,n,r={},i=e.attributes,s=0,o=i.length;s<o;s++)t=i[s],n=t.name,n!=="setAttribute"&&(r[n]=t.value);return r})),t[r]=function(n,r){c=n.toUpperCase(),$||($=!0,P?(et=function(e,t){function n(e,t){for(var n=0,r=e.length;n<r;t(e[n++]));}return new P(function(r){for(var i,s,o,u=0,a=r.length;u<a;u++)i=r[u],i.type==="childList"?(n(i.addedNodes,e),n(i.removedNodes,t)):(s=i.target,Q&&s.attributeChangedCallback&&i.attributeName!=="style"&&(o=s.getAttribute(i.attributeName),o!==i.oldValue&&s.attributeChangedCallback(i.attributeName,i.oldValue,o)))})}(st(s),st(o)),et.observe(t,{childList:!0,subtree:!0})):(X=[],V(function E(){while(X.length)X.shift().call(null,X.shift());V(E)}),t.addEventListener("DOMNodeInserted",ft(s)),t.addEventListener("DOMNodeRemoved",ft(o))),t.addEventListener(h,lt),t.addEventListener("readystatechange",lt),t.createElement=function(e,n){var r=U.apply(t,arguments),i=""+e,s=S.call(y,(n?v:d)+(n||i).toUpperCase()),o=-1<s;return n&&(r.setAttribute("is",n=n.toLowerCase()),o&&(o=ut(i.toUpperCase(),n))),Q=!t.createElement.innerHTMLHelper,o&&nt(r,b[s]),r},H.cloneNode=function(e){var t=I.call(this,!!e),n=ot(t);return-1<n&&nt(t,b[n]),e&&it(t.querySelectorAll(w)),t}),-2<S.call(y,v+c)+S.call(y,d+c)&&dt(n);if(!m.test(c)||-1<S.call(g,c))throw new Error("The type "+n+" is invalid");var i=function(){return f?t.createElement(l,c):t.createElement(l)},a=r||x,f=T.call(a,u),l=f?r[u].toUpperCase():c,c,p;return f&&-1<S.call(y,d+l)&&dt(l),p=y.push((f?v:d)+c)-1,w=w.concat(w.length?",":"",f?l+'[is="'+n.toLowerCase()+'"]':l),i.prototype=b[p]=T.call(a,"prototype")?a.prototype:_(H),rt(t.querySelectorAll(w),s),i}})(window,document,Object,"registerElement");
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var $ = __webpack_require__(5);
+	
+	module.exports = {
+	    init: function init() {
+	
+	        var navigation = $('#site-navigation');
+	
+	        var menuToggle = $('.menu-toggle').on('click', function () {
+	            menuToggle.toggleClass('active');
+	            navigation.toggleClass('open');
+	        });
+	
+	        navigation.on('click', 'a', function () {
+	            menuToggle.removeClass('active');
+	            navigation.removeClass('open');
+	        });
+	    }
+	};
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	module.exports = jQuery;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _createStore = __webpack_require__(7);
+	
+	var _createStore2 = _interopRequireDefault(_createStore);
+	
+	var _combineReducers = __webpack_require__(9);
+	
+	var _combineReducers2 = _interopRequireDefault(_combineReducers);
+	
+	var _bindActionCreators = __webpack_require__(12);
+	
+	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
+	
+	var _applyMiddleware = __webpack_require__(13);
+	
+	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
+	
+	var _compose = __webpack_require__(14);
+	
+	var _compose2 = _interopRequireDefault(_compose);
+	
+	/*
+	* This is a dummy function to check if the function name has been altered by minification.
+	* If the function has been minified and NODE_ENV !== 'production', warn the user.
+	*/
+	function isCrushed() {}
+	
+	if (isCrushed.name !== 'isCrushed' && ("production") !== 'production') {
+	  /*eslint-disable no-console */
+	  console.error('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
+	  /*eslint-enable */
+	}
+	
+	exports.createStore = _createStore2['default'];
+	exports.combineReducers = _combineReducers2['default'];
+	exports.bindActionCreators = _bindActionCreators2['default'];
+	exports.applyMiddleware = _applyMiddleware2['default'];
+	exports.compose = _compose2['default'];
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	exports['default'] = createStore;
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _utilsIsPlainObject = __webpack_require__(8);
+	
+	var _utilsIsPlainObject2 = _interopRequireDefault(_utilsIsPlainObject);
+	
+	/**
+	 * These are private action types reserved by Redux.
+	 * For any unknown actions, you must return the current state.
+	 * If the current state is undefined, you must return the initial state.
+	 * Do not reference these action types directly in your code.
+	 */
+	var ActionTypes = {
+	  INIT: '@@redux/INIT'
+	};
+	
+	exports.ActionTypes = ActionTypes;
+	/**
+	 * Creates a Redux store that holds the state tree.
+	 * The only way to change the data in the store is to call `dispatch()` on it.
+	 *
+	 * There should only be a single store in your app. To specify how different
+	 * parts of the state tree respond to actions, you may combine several reducers
+	 * into a single reducer function by using `combineReducers`.
+	 *
+	 * @param {Function} reducer A function that returns the next state tree, given
+	 * the current state tree and the action to handle.
+	 *
+	 * @param {any} [initialState] The initial state. You may optionally specify it
+	 * to hydrate the state from the server in universal apps, or to restore a
+	 * previously serialized user session.
+	 * If you use `combineReducers` to produce the root reducer function, this must be
+	 * an object with the same shape as `combineReducers` keys.
+	 *
+	 * @returns {Store} A Redux store that lets you read the state, dispatch actions
+	 * and subscribe to changes.
+	 */
+	
+	function createStore(reducer, initialState) {
+	  if (typeof reducer !== 'function') {
+	    throw new Error('Expected the reducer to be a function.');
+	  }
+	
+	  var currentReducer = reducer;
+	  var currentState = initialState;
+	  var listeners = [];
+	  var isDispatching = false;
+	
+	  /**
+	   * Reads the state tree managed by the store.
+	   *
+	   * @returns {any} The current state tree of your application.
+	   */
+	  function getState() {
+	    return currentState;
+	  }
+	
+	  /**
+	   * Adds a change listener. It will be called any time an action is dispatched,
+	   * and some part of the state tree may potentially have changed. You may then
+	   * call `getState()` to read the current state tree inside the callback.
+	   *
+	   * @param {Function} listener A callback to be invoked on every dispatch.
+	   * @returns {Function} A function to remove this change listener.
+	   */
+	  function subscribe(listener) {
+	    listeners.push(listener);
+	    var isSubscribed = true;
+	
+	    return function unsubscribe() {
+	      if (!isSubscribed) {
+	        return;
+	      }
+	
+	      isSubscribed = false;
+	      var index = listeners.indexOf(listener);
+	      listeners.splice(index, 1);
+	    };
+	  }
+	
+	  /**
+	   * Dispatches an action. It is the only way to trigger a state change.
+	   *
+	   * The `reducer` function, used to create the store, will be called with the
+	   * current state tree and the given `action`. Its return value will
+	   * be considered the **next** state of the tree, and the change listeners
+	   * will be notified.
+	   *
+	   * The base implementation only supports plain object actions. If you want to
+	   * dispatch a Promise, an Observable, a thunk, or something else, you need to
+	   * wrap your store creating function into the corresponding middleware. For
+	   * example, see the documentation for the `redux-thunk` package. Even the
+	   * middleware will eventually dispatch plain object actions using this method.
+	   *
+	   * @param {Object} action A plain object representing “what changed”. It is
+	   * a good idea to keep actions serializable so you can record and replay user
+	   * sessions, or use the time travelling `redux-devtools`. An action must have
+	   * a `type` property which may not be `undefined`. It is a good idea to use
+	   * string constants for action types.
+	   *
+	   * @returns {Object} For convenience, the same action object you dispatched.
+	   *
+	   * Note that, if you use a custom middleware, it may wrap `dispatch()` to
+	   * return something else (for example, a Promise you can await).
+	   */
+	  function dispatch(action) {
+	    if (!_utilsIsPlainObject2['default'](action)) {
+	      throw new Error('Actions must be plain objects. ' + 'Use custom middleware for async actions.');
+	    }
+	
+	    if (typeof action.type === 'undefined') {
+	      throw new Error('Actions may not have an undefined "type" property. ' + 'Have you misspelled a constant?');
+	    }
+	
+	    if (isDispatching) {
+	      throw new Error('Reducers may not dispatch actions.');
+	    }
+	
+	    try {
+	      isDispatching = true;
+	      currentState = currentReducer(currentState, action);
+	    } finally {
+	      isDispatching = false;
+	    }
+	
+	    listeners.slice().forEach(function (listener) {
+	      return listener();
+	    });
+	    return action;
+	  }
+	
+	  /**
+	   * Replaces the reducer currently used by the store to calculate the state.
+	   *
+	   * You might need this if your app implements code splitting and you want to
+	   * load some of the reducers dynamically. You might also need this if you
+	   * implement a hot reloading mechanism for Redux.
+	   *
+	   * @param {Function} nextReducer The reducer for the store to use instead.
+	   * @returns {void}
+	   */
+	  function replaceReducer(nextReducer) {
+	    currentReducer = nextReducer;
+	    dispatch({ type: ActionTypes.INIT });
+	  }
+	
+	  // When a store is created, an "INIT" action is dispatched so that every
+	  // reducer returns their initial state. This effectively populates
+	  // the initial state tree.
+	  dispatch({ type: ActionTypes.INIT });
+	
+	  return {
+	    dispatch: dispatch,
+	    subscribe: subscribe,
+	    getState: getState,
+	    replaceReducer: replaceReducer
+	  };
+	}
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	exports['default'] = isPlainObject;
+	var fnToString = function fnToString(fn) {
+	  return Function.prototype.toString.call(fn);
+	};
+	var objStringValue = fnToString(Object);
+	
+	/**
+	 * @param {any} obj The object to inspect.
+	 * @returns {boolean} True if the argument appears to be a plain object.
+	 */
+	
+	function isPlainObject(obj) {
+	  if (!obj || typeof obj !== 'object') {
+	    return false;
+	  }
+	
+	  var proto = typeof obj.constructor === 'function' ? Object.getPrototypeOf(obj) : Object.prototype;
+	
+	  if (proto === null) {
+	    return true;
+	  }
+	
+	  var constructor = proto.constructor;
+	
+	  return typeof constructor === 'function' && constructor instanceof constructor && fnToString(constructor) === objStringValue;
+	}
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	exports['default'] = combineReducers;
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _createStore = __webpack_require__(7);
+	
+	var _utilsIsPlainObject = __webpack_require__(8);
+	
+	var _utilsIsPlainObject2 = _interopRequireDefault(_utilsIsPlainObject);
+	
+	var _utilsMapValues = __webpack_require__(10);
+	
+	var _utilsMapValues2 = _interopRequireDefault(_utilsMapValues);
+	
+	var _utilsPick = __webpack_require__(11);
+	
+	var _utilsPick2 = _interopRequireDefault(_utilsPick);
+	
+	/* eslint-disable no-console */
+	
+	function getUndefinedStateErrorMessage(key, action) {
+	  var actionType = action && action.type;
+	  var actionName = actionType && '"' + actionType.toString() + '"' || 'an action';
+	
+	  return 'Reducer "' + key + '" returned undefined handling ' + actionName + '. ' + 'To ignore an action, you must explicitly return the previous state.';
+	}
+	
+	function getUnexpectedStateShapeWarningMessage(inputState, reducers, action) {
+	  var reducerKeys = Object.keys(reducers);
+	  var argumentName = action && action.type === _createStore.ActionTypes.INIT ? 'initialState argument passed to createStore' : 'previous state received by the reducer';
+	
+	  if (reducerKeys.length === 0) {
+	    return 'Store does not have a valid reducer. Make sure the argument passed ' + 'to combineReducers is an object whose values are reducers.';
+	  }
+	
+	  if (!_utilsIsPlainObject2['default'](inputState)) {
+	    return 'The ' + argumentName + ' has unexpected type of "' + ({}).toString.call(inputState).match(/\s([a-z|A-Z]+)/)[1] + '". Expected argument to be an object with the following ' + ('keys: "' + reducerKeys.join('", "') + '"');
+	  }
+	
+	  var unexpectedKeys = Object.keys(inputState).filter(function (key) {
+	    return !reducers.hasOwnProperty(key);
+	  });
+	
+	  if (unexpectedKeys.length > 0) {
+	    return 'Unexpected ' + (unexpectedKeys.length > 1 ? 'keys' : 'key') + ' ' + ('"' + unexpectedKeys.join('", "') + '" found in ' + argumentName + '. ') + 'Expected to find one of the known reducer keys instead: ' + ('"' + reducerKeys.join('", "') + '". Unexpected keys will be ignored.');
+	  }
+	}
+	
+	function assertReducerSanity(reducers) {
+	  Object.keys(reducers).forEach(function (key) {
+	    var reducer = reducers[key];
+	    var initialState = reducer(undefined, { type: _createStore.ActionTypes.INIT });
+	
+	    if (typeof initialState === 'undefined') {
+	      throw new Error('Reducer "' + key + '" returned undefined during initialization. ' + 'If the state passed to the reducer is undefined, you must ' + 'explicitly return the initial state. The initial state may ' + 'not be undefined.');
+	    }
+	
+	    var type = '@@redux/PROBE_UNKNOWN_ACTION_' + Math.random().toString(36).substring(7).split('').join('.');
+	    if (typeof reducer(undefined, { type: type }) === 'undefined') {
+	      throw new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + ('Don\'t try to handle ' + _createStore.ActionTypes.INIT + ' or other actions in "redux/*" ') + 'namespace. They are considered private. Instead, you must return the ' + 'current state for any unknown actions, unless it is undefined, ' + 'in which case you must return the initial state, regardless of the ' + 'action type. The initial state may not be undefined.');
+	    }
+	  });
+	}
+	
+	/**
+	 * Turns an object whose values are different reducer functions, into a single
+	 * reducer function. It will call every child reducer, and gather their results
+	 * into a single state object, whose keys correspond to the keys of the passed
+	 * reducer functions.
+	 *
+	 * @param {Object} reducers An object whose values correspond to different
+	 * reducer functions that need to be combined into one. One handy way to obtain
+	 * it is to use ES6 `import * as reducers` syntax. The reducers may never return
+	 * undefined for any action. Instead, they should return their initial state
+	 * if the state passed to them was undefined, and the current state for any
+	 * unrecognized action.
+	 *
+	 * @returns {Function} A reducer function that invokes every reducer inside the
+	 * passed object, and builds a state object with the same shape.
+	 */
+	
+	function combineReducers(reducers) {
+	  var finalReducers = _utilsPick2['default'](reducers, function (val) {
+	    return typeof val === 'function';
+	  });
+	  var sanityError;
+	
+	  try {
+	    assertReducerSanity(finalReducers);
+	  } catch (e) {
+	    sanityError = e;
+	  }
+	
+	  return function combination(state, action) {
+	    if (state === undefined) state = {};
+	
+	    if (sanityError) {
+	      throw sanityError;
+	    }
+	
+	    if (false) {
+	      var warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action);
+	      if (warningMessage) {
+	        console.error(warningMessage);
+	      }
+	    }
+	
+	    var hasChanged = false;
+	    var finalState = _utilsMapValues2['default'](finalReducers, function (reducer, key) {
+	      var previousStateForKey = state[key];
+	      var nextStateForKey = reducer(previousStateForKey, action);
+	      if (typeof nextStateForKey === 'undefined') {
+	        var errorMessage = getUndefinedStateErrorMessage(key, action);
+	        throw new Error(errorMessage);
+	      }
+	      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+	      return nextStateForKey;
+	    });
+	
+	    return hasChanged ? finalState : state;
+	  };
+	}
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	/**
+	 * Applies a function to every key-value pair inside an object.
+	 *
+	 * @param {Object} obj The source object.
+	 * @param {Function} fn The mapper function that receives the value and the key.
+	 * @returns {Object} A new object that contains the mapped values for the keys.
+	 */
+	"use strict";
+	
+	exports.__esModule = true;
+	exports["default"] = mapValues;
+	
+	function mapValues(obj, fn) {
+	  return Object.keys(obj).reduce(function (result, key) {
+	    result[key] = fn(obj[key], key);
+	    return result;
+	  }, {});
+	}
+	
+	module.exports = exports["default"];
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	/**
+	 * Picks key-value pairs from an object where values satisfy a predicate.
+	 *
+	 * @param {Object} obj The object to pick from.
+	 * @param {Function} fn The predicate the values must satisfy to be copied.
+	 * @returns {Object} The object with the values that satisfied the predicate.
+	 */
+	"use strict";
+	
+	exports.__esModule = true;
+	exports["default"] = pick;
+	
+	function pick(obj, fn) {
+	  return Object.keys(obj).reduce(function (result, key) {
+	    if (fn(obj[key])) {
+	      result[key] = obj[key];
+	    }
+	    return result;
+	  }, {});
+	}
+	
+	module.exports = exports["default"];
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	exports['default'] = bindActionCreators;
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _utilsMapValues = __webpack_require__(10);
+	
+	var _utilsMapValues2 = _interopRequireDefault(_utilsMapValues);
+	
+	function bindActionCreator(actionCreator, dispatch) {
+	  return function () {
+	    return dispatch(actionCreator.apply(undefined, arguments));
+	  };
+	}
+	
+	/**
+	 * Turns an object whose values are action creators, into an object with the
+	 * same keys, but with every function wrapped into a `dispatch` call so they
+	 * may be invoked directly. This is just a convenience method, as you can call
+	 * `store.dispatch(MyActionCreators.doSomething())` yourself just fine.
+	 *
+	 * For convenience, you can also pass a single function as the first argument,
+	 * and get a function in return.
+	 *
+	 * @param {Function|Object} actionCreators An object whose values are action
+	 * creator functions. One handy way to obtain it is to use ES6 `import * as`
+	 * syntax. You may also pass a single function.
+	 *
+	 * @param {Function} dispatch The `dispatch` function available on your Redux
+	 * store.
+	 *
+	 * @returns {Function|Object} The object mimicking the original object, but with
+	 * every action creator wrapped into the `dispatch` call. If you passed a
+	 * function as `actionCreators`, the return value will also be a single
+	 * function.
+	 */
+	
+	function bindActionCreators(actionCreators, dispatch) {
+	  if (typeof actionCreators === 'function') {
+	    return bindActionCreator(actionCreators, dispatch);
+	  }
+	
+	  if (typeof actionCreators !== 'object' || actionCreators === null || actionCreators === undefined) {
+	    throw new Error('bindActionCreators expected an object or a function, instead received ' + (actionCreators === null ? 'null' : typeof actionCreators) + '. ' + 'Did you write "import ActionCreators from" instead of "import * as ActionCreators from"?');
+	  }
+	
+	  return _utilsMapValues2['default'](actionCreators, function (actionCreator) {
+	    return bindActionCreator(actionCreator, dispatch);
+	  });
+	}
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	exports['default'] = applyMiddleware;
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _compose = __webpack_require__(14);
+	
+	var _compose2 = _interopRequireDefault(_compose);
+	
+	/**
+	 * Creates a store enhancer that applies middleware to the dispatch method
+	 * of the Redux store. This is handy for a variety of tasks, such as expressing
+	 * asynchronous actions in a concise manner, or logging every action payload.
+	 *
+	 * See `redux-thunk` package as an example of the Redux middleware.
+	 *
+	 * Because middleware is potentially asynchronous, this should be the first
+	 * store enhancer in the composition chain.
+	 *
+	 * Note that each middleware will be given the `dispatch` and `getState` functions
+	 * as named arguments.
+	 *
+	 * @param {...Function} middlewares The middleware chain to be applied.
+	 * @returns {Function} A store enhancer applying the middleware.
+	 */
+	
+	function applyMiddleware() {
+	  for (var _len = arguments.length, middlewares = Array(_len), _key = 0; _key < _len; _key++) {
+	    middlewares[_key] = arguments[_key];
+	  }
+	
+	  return function (next) {
+	    return function (reducer, initialState) {
+	      var store = next(reducer, initialState);
+	      var _dispatch = store.dispatch;
+	      var chain = [];
+	
+	      var middlewareAPI = {
+	        getState: store.getState,
+	        dispatch: function dispatch(action) {
+	          return _dispatch(action);
+	        }
+	      };
+	      chain = middlewares.map(function (middleware) {
+	        return middleware(middlewareAPI);
+	      });
+	      _dispatch = _compose2['default'].apply(undefined, chain)(store.dispatch);
+	
+	      return _extends({}, store, {
+	        dispatch: _dispatch
+	      });
+	    };
+	  };
+	}
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	/**
+	 * Composes single-argument functions from right to left.
+	 *
+	 * @param {...Function} funcs The functions to compose.
+	 * @returns {Function} A function obtained by composing functions from right to
+	 * left. For example, compose(f, g, h) is identical to arg => f(g(h(arg))).
+	 */
+	"use strict";
+	
+	exports.__esModule = true;
+	exports["default"] = compose;
+	
+	function compose() {
+	  for (var _len = arguments.length, funcs = Array(_len), _key = 0; _key < _len; _key++) {
+	    funcs[_key] = arguments[_key];
+	  }
+	
+	  return function () {
+	    if (funcs.length === 0) {
+	      return arguments[0];
+	    }
+	
+	    var last = funcs[funcs.length - 1];
+	    var rest = funcs.slice(0, -1);
+	
+	    return rest.reduceRight(function (composed, f) {
+	      return f(composed);
+	    }, last.apply(undefined, arguments));
+	  };
+	}
+	
+	module.exports = exports["default"];
+
+/***/ },
+/* 15 */,
+/* 16 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	module.exports = {
+	    "Gyöngyös": {
+	        "min": 1000
+	    },
+	    "Karácsondi úti gyártelep": {
+	        "min": 2000
+	    },
+	    "KRF Kollégium": {
+	        "min": 2000
+	    },
+	    "Abasár": {
+	        "fix": 800
+	    },
+	    "Detk": {
+	        "fix": 800
+	    },
+	    "Gyöngyöshalász": {
+	        "fix": 800
+	    },
+	    "Gyöngyössolymos": {
+	        "fix": 800
+	    },
+	    "Gyöngyöstarján": {
+	        "fix": 800
+	    },
+	    "Mátrafüred": {
+	        "fix": 800
+	    },
+	    "Nagyréde": {
+	        "fix": 800
+	    },
+	    "Pálosvörösmart": {
+	        "fix": 800
+	    },
+	    "Visonta": {
+	        "fix": 1000
+	    }
+	};
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var arrayMap = __webpack_require__(18),
+	    baseFlatten = __webpack_require__(19),
+	    baseIteratee = __webpack_require__(31);
+	
+	/**
+	 * Creates an array of flattened values by running each element in `array`
+	 * through `iteratee` and concating its result to the other mapped values.
+	 * The iteratee is invoked with three arguments: (value, index|key, array).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Array
+	 * @param {Array} array The array to iterate over.
+	 * @param {Function|Object|string} [iteratee=_.identity] The function invoked per iteration.
+	 * @returns {Array} Returns the new array.
+	 * @example
+	 *
+	 * function duplicate(n) {
+	 *   return [n, n];
+	 * }
+	 *
+	 * _.flatMap([1, 2], duplicate);
+	 * // => [1, 1, 2, 2]
+	 */
+	function flatMap(array, iteratee) {
+	  var length = array ? array.length : 0;
+	  return length ? baseFlatten(arrayMap(array, baseIteratee(iteratee, 3))) : [];
+	}
+	
+	module.exports = flatMap;
+
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	/**
+	 * A specialized version of `_.map` for arrays without support for iteratee
+	 * shorthands.
+	 *
+	 * @private
+	 * @param {Array} array The array to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the new mapped array.
+	 */
+	function arrayMap(array, iteratee) {
+	  var index = -1,
+	      length = array.length,
+	      result = Array(length);
+	
+	  while (++index < length) {
+	    result[index] = iteratee(array[index], index, array);
+	  }
+	  return result;
+	}
+	
+	module.exports = arrayMap;
+
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var arrayPush = __webpack_require__(20),
+	    isArguments = __webpack_require__(21),
+	    isArray = __webpack_require__(30),
+	    isArrayLikeObject = __webpack_require__(22);
+	
+	/**
+	 * The base implementation of `_.flatten` with support for restricting flattening.
+	 *
+	 * @private
+	 * @param {Array} array The array to flatten.
+	 * @param {boolean} [isDeep] Specify a deep flatten.
+	 * @param {boolean} [isStrict] Restrict flattening to arrays-like objects.
+	 * @param {Array} [result=[]] The initial result value.
+	 * @returns {Array} Returns the new flattened array.
+	 */
+	function baseFlatten(array, isDeep, isStrict, result) {
+	  result || (result = []);
+	
+	  var index = -1,
+	      length = array.length;
+	
+	  while (++index < length) {
+	    var value = array[index];
+	    if (isArrayLikeObject(value) &&
+	        (isStrict || isArray(value) || isArguments(value))) {
+	      if (isDeep) {
+	        // Recursively flatten arrays (susceptible to call stack limits).
+	        baseFlatten(value, isDeep, isStrict, result);
+	      } else {
+	        arrayPush(result, value);
+	      }
+	    } else if (!isStrict) {
+	      result[result.length] = value;
+	    }
+	  }
+	  return result;
+	}
+	
+	module.exports = baseFlatten;
+
+
+/***/ },
+/* 20 */
+/***/ function(module, exports) {
+
+	/**
+	 * Appends the elements of `values` to `array`.
+	 *
+	 * @private
+	 * @param {Array} array The array to modify.
+	 * @param {Array} values The values to append.
+	 * @returns {Array} Returns `array`.
+	 */
+	function arrayPush(array, values) {
+	  var index = -1,
+	      length = values.length,
+	      offset = array.length;
+	
+	  while (++index < length) {
+	    array[offset + index] = values[index];
+	  }
+	  return array;
+	}
+	
+	module.exports = arrayPush;
+
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var isArrayLikeObject = __webpack_require__(22);
+	
+	/** `Object#toString` result references. */
+	var argsTag = '[object Arguments]';
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/** Built-in value references. */
+	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+	
+	/**
+	 * Checks if `value` is likely an `arguments` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isArguments(function() { return arguments; }());
+	 * // => true
+	 *
+	 * _.isArguments([1, 2, 3]);
+	 * // => false
+	 */
+	function isArguments(value) {
+	  // Safari 8.1 incorrectly makes `arguments.callee` enumerable in strict mode.
+	  return isArrayLikeObject(value) && hasOwnProperty.call(value, 'callee') &&
+	    (!propertyIsEnumerable.call(value, 'callee') || objectToString.call(value) == argsTag);
+	}
+	
+	module.exports = isArguments;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isArrayLike = __webpack_require__(23),
+	    isObjectLike = __webpack_require__(29);
+	
+	/**
+	 * This method is like `_.isArrayLike` except that it also checks if `value`
+	 * is an object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @type Function
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an array-like object, else `false`.
+	 * @example
+	 *
+	 * _.isArrayLikeObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArrayLikeObject(document.body.children);
+	 * // => true
+	 *
+	 * _.isArrayLikeObject('abc');
+	 * // => false
+	 *
+	 * _.isArrayLikeObject(_.noop);
+	 * // => false
+	 */
+	function isArrayLikeObject(value) {
+	  return isObjectLike(value) && isArrayLike(value);
+	}
+	
+	module.exports = isArrayLikeObject;
+
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var getLength = __webpack_require__(24),
+	    isFunction = __webpack_require__(26),
+	    isLength = __webpack_require__(28);
+	
+	/**
+	 * Checks if `value` is array-like. A value is considered array-like if it's
+	 * not a function and has a `value.length` that's an integer greater than or
+	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @type Function
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+	 * @example
+	 *
+	 * _.isArrayLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArrayLike(document.body.children);
+	 * // => true
+	 *
+	 * _.isArrayLike('abc');
+	 * // => true
+	 *
+	 * _.isArrayLike(_.noop);
+	 * // => false
+	 */
+	function isArrayLike(value) {
+	  return value != null &&
+	    !(typeof value == 'function' && isFunction(value)) && isLength(getLength(value));
+	}
+	
+	module.exports = isArrayLike;
+
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseProperty = __webpack_require__(25);
+	
+	/**
+	 * Gets the "length" property value of `object`.
+	 *
+	 * **Note:** This function is used to avoid a [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792)
+	 * that affects Safari on at least iOS 8.1-8.3 ARM64.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {*} Returns the "length" value.
+	 */
+	var getLength = baseProperty('length');
+	
+	module.exports = getLength;
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	/**
+	 * The base implementation of `_.property` without support for deep paths.
+	 *
+	 * @private
+	 * @param {string} key The key of the property to get.
+	 * @returns {Function} Returns the new function.
+	 */
+	function baseProperty(key) {
+	  return function(object) {
+	    return object == null ? undefined : object[key];
+	  };
+	}
+	
+	module.exports = baseProperty;
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var isObject = __webpack_require__(27);
+	
+	/** `Object#toString` result references. */
+	var funcTag = '[object Function]',
+	    genTag = '[object GeneratorFunction]';
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/**
+	 * Checks if `value` is classified as a `Function` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isFunction(_);
+	 * // => true
+	 *
+	 * _.isFunction(/abc/);
+	 * // => false
+	 */
+	function isFunction(value) {
+	  // The use of `Object#toString` avoids issues with the `typeof` operator
+	  // in Safari 8 which returns 'object' for typed array constructors, and
+	  // PhantomJS 1.9 which returns 'function' for `NodeList` instances.
+	  var tag = isObject(value) ? objectToString.call(value) : '';
+	  return tag == funcTag || tag == genTag;
+	}
+	
+	module.exports = isFunction;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	/**
+	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(_.noop);
+	 * // => true
+	 *
+	 * _.isObject(null);
+	 * // => false
+	 */
+	function isObject(value) {
+	  // Avoid a V8 JIT bug in Chrome 19-20.
+	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+	  var type = typeof value;
+	  return !!value && (type == 'object' || type == 'function');
+	}
+	
+	module.exports = isObject;
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports) {
+
+	/** Used as references for various `Number` constants. */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+	
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * **Note:** This function is loosely based on [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 * @example
+	 *
+	 * _.isLength(3);
+	 * // => true
+	 *
+	 * _.isLength(Number.MIN_VALUE);
+	 * // => false
+	 *
+	 * _.isLength(Infinity);
+	 * // => false
+	 *
+	 * _.isLength('3');
+	 * // => false
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+	}
+	
+	module.exports = isLength;
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports) {
+
+	/**
+	 * Checks if `value` is object-like. A value is object-like if it's not `null`
+	 * and has a `typeof` result of "object".
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 * @example
+	 *
+	 * _.isObjectLike({});
+	 * // => true
+	 *
+	 * _.isObjectLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObjectLike(_.noop);
+	 * // => false
+	 *
+	 * _.isObjectLike(null);
+	 * // => false
+	 */
+	function isObjectLike(value) {
+	  return !!value && typeof value == 'object';
+	}
+	
+	module.exports = isObjectLike;
+
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	/**
+	 * Checks if `value` is classified as an `Array` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @type Function
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isArray([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArray(document.body.children);
+	 * // => false
+	 *
+	 * _.isArray('abc');
+	 * // => false
+	 *
+	 * _.isArray(_.noop);
+	 * // => false
+	 */
+	var isArray = Array.isArray;
+	
+	module.exports = isArray;
+
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseMatches = __webpack_require__(32),
+	    baseMatchesProperty = __webpack_require__(88),
+	    identity = __webpack_require__(102),
+	    isArray = __webpack_require__(30),
+	    property = __webpack_require__(103);
+	
+	/**
+	 * The base implementation of `_.iteratee`.
+	 *
+	 * @private
+	 * @param {*} [value=_.identity] The value to convert to an iteratee.
+	 * @returns {Function} Returns the iteratee.
+	 */
+	function baseIteratee(value) {
+	  var type = typeof value;
+	  if (type == 'function') {
+	    return value;
+	  }
+	  if (value == null) {
+	    return identity;
+	  }
+	  if (type == 'object') {
+	    return isArray(value)
+	      ? baseMatchesProperty(value[0], value[1])
+	      : baseMatches(value);
+	  }
+	  return property(value);
+	}
+	
+	module.exports = baseIteratee;
+
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseIsMatch = __webpack_require__(33),
+	    getMatchData = __webpack_require__(84);
+	
+	/**
+	 * The base implementation of `_.matches` which doesn't clone `source`.
+	 *
+	 * @private
+	 * @param {Object} source The object of property values to match.
+	 * @returns {Function} Returns the new function.
+	 */
+	function baseMatches(source) {
+	  var matchData = getMatchData(source);
+	  if (matchData.length == 1 && matchData[0][2]) {
+	    var key = matchData[0][0],
+	        value = matchData[0][1];
+	
+	    return function(object) {
+	      if (object == null) {
+	        return false;
+	      }
+	      return object[key] === value &&
+	        (value !== undefined || (key in Object(object)));
+	    };
+	  }
+	  return function(object) {
+	    return object === source || baseIsMatch(object, source, matchData);
+	  };
+	}
+	
+	module.exports = baseMatches;
+
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Stack = __webpack_require__(34),
+	    baseIsEqual = __webpack_require__(63);
+	
+	/** Used to compose bitmasks for comparison styles. */
+	var UNORDERED_COMPARE_FLAG = 1,
+	    PARTIAL_COMPARE_FLAG = 2;
+	
+	/**
+	 * The base implementation of `_.isMatch` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Object} object The object to inspect.
+	 * @param {Object} source The object of property values to match.
+	 * @param {Array} matchData The property names, values, and compare flags to match.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @returns {boolean} Returns `true` if `object` is a match, else `false`.
+	 */
+	function baseIsMatch(object, source, matchData, customizer) {
+	  var index = matchData.length,
+	      length = index,
+	      noCustomizer = !customizer;
+	
+	  if (object == null) {
+	    return !length;
+	  }
+	  object = Object(object);
+	  while (index--) {
+	    var data = matchData[index];
+	    if ((noCustomizer && data[2])
+	          ? data[1] !== object[data[0]]
+	          : !(data[0] in object)
+	        ) {
+	      return false;
+	    }
+	  }
+	  while (++index < length) {
+	    data = matchData[index];
+	    var key = data[0],
+	        objValue = object[key],
+	        srcValue = data[1];
+	
+	    if (noCustomizer && data[2]) {
+	      if (objValue === undefined && !(key in object)) {
+	        return false;
+	      }
+	    } else {
+	      var stack = new Stack,
+	          result = customizer ? customizer(objValue, srcValue, key, object, source, stack) : undefined;
+	
+	      if (!(result === undefined
+	            ? baseIsEqual(srcValue, objValue, customizer, UNORDERED_COMPARE_FLAG | PARTIAL_COMPARE_FLAG, stack)
+	            : result
+	          )) {
+	        return false;
+	      }
+	    }
+	  }
+	  return true;
+	}
+	
+	module.exports = baseIsMatch;
+
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var stackClear = __webpack_require__(35),
+	    stackDelete = __webpack_require__(36),
+	    stackGet = __webpack_require__(40),
+	    stackHas = __webpack_require__(42),
+	    stackSet = __webpack_require__(44);
+	
+	/**
+	 * Creates a stack cache object to store key-value pairs.
+	 *
+	 * @private
+	 * @param {Array} [values] The values to cache.
+	 */
+	function Stack(values) {
+	  var index = -1,
+	      length = values ? values.length : 0;
+	
+	  this.clear();
+	  while (++index < length) {
+	    var entry = values[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+	
+	// Add functions to the `Stack` cache.
+	Stack.prototype.clear = stackClear;
+	Stack.prototype['delete'] = stackDelete;
+	Stack.prototype.get = stackGet;
+	Stack.prototype.has = stackHas;
+	Stack.prototype.set = stackSet;
+	
+	module.exports = Stack;
+
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	/**
+	 * Removes all key-value entries from the stack.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf Stack
+	 */
+	function stackClear() {
+	  this.__data__ = { 'array': [], 'map': null };
+	}
+	
+	module.exports = stackClear;
+
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var assocDelete = __webpack_require__(37);
+	
+	/**
+	 * Removes `key` and its value from the stack.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function stackDelete(key) {
+	  var data = this.__data__,
+	      array = data.array;
+	
+	  return array ? assocDelete(array, key) : data.map['delete'](key);
+	}
+	
+	module.exports = stackDelete;
+
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var assocIndexOf = __webpack_require__(38);
+	
+	/** Used for built-in method references. */
+	var arrayProto = global.Array.prototype;
+	
+	/** Built-in value references. */
+	var splice = arrayProto.splice;
+	
+	/**
+	 * Removes `key` and its value from the associative array.
+	 *
+	 * @private
+	 * @param {Array} array The array to query.
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function assocDelete(array, key) {
+	  var index = assocIndexOf(array, key);
+	  if (index < 0) {
+	    return false;
+	  }
+	  var lastIndex = array.length - 1;
+	  if (index == lastIndex) {
+	    array.pop();
+	  } else {
+	    splice.call(array, index, 1);
+	  }
+	  return true;
+	}
+	
+	module.exports = assocDelete;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var eq = __webpack_require__(39);
+	
+	/**
+	 * Gets the index at which the first occurrence of `key` is found in `array`
+	 * of key-value pairs.
+	 *
+	 * @private
+	 * @param {Array} array The array to search.
+	 * @param {*} key The key to search for.
+	 * @returns {number} Returns the index of the matched value, else `-1`.
+	 */
+	function assocIndexOf(array, key) {
+	  var length = array.length;
+	  while (length--) {
+	    if (eq(array[length][0], key)) {
+	      return length;
+	    }
+	  }
+	  return -1;
+	}
+	
+	module.exports = assocIndexOf;
+
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
+	/**
+	 * Performs a [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
+	 * comparison between two values to determine if they are equivalent.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 * @example
+	 *
+	 * var object = { 'user': 'fred' };
+	 * var other = { 'user': 'fred' };
+	 *
+	 * _.eq(object, object);
+	 * // => true
+	 *
+	 * _.eq(object, other);
+	 * // => false
+	 *
+	 * _.eq('a', 'a');
+	 * // => true
+	 *
+	 * _.eq('a', Object('a'));
+	 * // => false
+	 *
+	 * _.eq(NaN, NaN);
+	 * // => true
+	 */
+	function eq(value, other) {
+	  return value === other || (value !== value && other !== other);
+	}
+	
+	module.exports = eq;
+
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var assocGet = __webpack_require__(41);
+	
+	/**
+	 * Gets the stack value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function stackGet(key) {
+	  var data = this.__data__,
+	      array = data.array;
+	
+	  return array ? assocGet(array, key) : data.map.get(key);
+	}
+	
+	module.exports = stackGet;
+
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var assocIndexOf = __webpack_require__(38);
+	
+	/**
+	 * Gets the associative array value for `key`.
+	 *
+	 * @private
+	 * @param {Array} array The array to query.
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function assocGet(array, key) {
+	  var index = assocIndexOf(array, key);
+	  return index < 0 ? undefined : array[index][1];
+	}
+	
+	module.exports = assocGet;
+
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var assocHas = __webpack_require__(43);
+	
+	/**
+	 * Checks if a stack value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf Stack
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function stackHas(key) {
+	  var data = this.__data__,
+	      array = data.array;
+	
+	  return array ? assocHas(array, key) : data.map.has(key);
+	}
+	
+	module.exports = stackHas;
+
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var assocIndexOf = __webpack_require__(38);
+	
+	/**
+	 * Checks if an associative array value for `key` exists.
+	 *
+	 * @private
+	 * @param {Array} array The array to query.
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function assocHas(array, key) {
+	  return assocIndexOf(array, key) > -1;
+	}
+	
+	module.exports = assocHas;
+
+
+/***/ },
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var MapCache = __webpack_require__(45),
+	    assocSet = __webpack_require__(61);
+	
+	/** Used as the size to enable large array optimizations. */
+	var LARGE_ARRAY_SIZE = 200;
+	
+	/**
+	 * Sets the stack `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the stack cache object.
+	 */
+	function stackSet(key, value) {
+	  var data = this.__data__,
+	      array = data.array;
+	
+	  if (array) {
+	    if (array.length < (LARGE_ARRAY_SIZE - 1)) {
+	      assocSet(array, key, value);
+	    } else {
+	      data.array = null;
+	      data.map = new MapCache(array);
+	    }
+	  }
+	  var map = data.map;
+	  if (map) {
+	    map.set(key, value);
+	  }
+	  return this;
+	}
+	
+	module.exports = stackSet;
+
+
+/***/ },
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var mapClear = __webpack_require__(46),
+	    mapDelete = __webpack_require__(53),
+	    mapGet = __webpack_require__(57),
+	    mapHas = __webpack_require__(59),
+	    mapSet = __webpack_require__(60);
+	
+	/**
+	 * Creates a map cache object to store key-value pairs.
+	 *
+	 * @private
+	 * @param {Array} [values] The values to cache.
+	 */
+	function MapCache(values) {
+	  var index = -1,
+	      length = values ? values.length : 0;
+	
+	  this.clear();
+	  while (++index < length) {
+	    var entry = values[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+	
+	// Add functions to the `MapCache`.
+	MapCache.prototype.clear = mapClear;
+	MapCache.prototype['delete'] = mapDelete;
+	MapCache.prototype.get = mapGet;
+	MapCache.prototype.has = mapHas;
+	MapCache.prototype.set = mapSet;
+	
+	module.exports = MapCache;
+
+
+/***/ },
+/* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Hash = __webpack_require__(47),
+	    Map = __webpack_require__(52);
+	
+	/**
+	 * Removes all key-value entries from the map.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf MapCache
+	 */
+	function mapClear() {
+	  this.__data__ = { 'hash': new Hash, 'map': Map ? new Map : [], 'string': new Hash };
+	}
+	
+	module.exports = mapClear;
+
+
+/***/ },
+/* 47 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var nativeCreate = __webpack_require__(48);
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/**
+	 * Creates an hash object.
+	 *
+	 * @private
+	 * @returns {Object} Returns the new hash object.
+	 */
+	function Hash() {}
+	
+	// Avoid inheriting from `Object.prototype` when possible.
+	Hash.prototype = nativeCreate ? nativeCreate(null) : objectProto;
+	
+	module.exports = Hash;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 48 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var getNative = __webpack_require__(49);
+	
+	/* Built-in method references that are verified to be native. */
+	var nativeCreate = getNative(Object, 'create');
+	
+	module.exports = nativeCreate;
+
+
+/***/ },
+/* 49 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isNative = __webpack_require__(50);
+	
+	/**
+	 * Gets the native function at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {string} key The key of the method to get.
+	 * @returns {*} Returns the function if it's native, else `undefined`.
+	 */
+	function getNative(object, key) {
+	  var value = object == null ? undefined : object[key];
+	  return isNative(value) ? value : undefined;
+	}
+	
+	module.exports = getNative;
+
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var isFunction = __webpack_require__(26),
+	    isHostObject = __webpack_require__(51),
+	    isObjectLike = __webpack_require__(29);
+	
+	/** Used to match `RegExp` [syntax characters](http://ecma-international.org/ecma-262/6.0/#sec-patterns). */
+	var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+	
+	/** Used to detect host constructors (Safari > 5). */
+	var reIsHostCtor = /^\[object .+?Constructor\]$/;
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/** Used to resolve the decompiled source of functions. */
+	var funcToString = global.Function.prototype.toString;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/** Used to detect if a method is native. */
+	var reIsNative = RegExp('^' +
+	  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+	);
+	
+	/**
+	 * Checks if `value` is a native function.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a native function, else `false`.
+	 * @example
+	 *
+	 * _.isNative(Array.prototype.push);
+	 * // => true
+	 *
+	 * _.isNative(_);
+	 * // => false
+	 */
+	function isNative(value) {
+	  if (value == null) {
+	    return false;
+	  }
+	  if (isFunction(value)) {
+	    return reIsNative.test(funcToString.call(value));
+	  }
+	  return isObjectLike(value) &&
+	    (isHostObject(value) ? reIsNative : reIsHostCtor).test(value);
+	}
+	
+	module.exports = isNative;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 51 */
+/***/ function(module, exports) {
+
+	/**
+	 * Checks if `value` is a host object in IE < 9.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
+	 */
+	function isHostObject(value) {
+	  // Many host objects are `Object` objects that can coerce to strings
+	  // despite having improperly defined `toString` methods.
+	  var result = false;
+	  if (value != null && typeof value.toString != 'function') {
+	    try {
+	      result = !!(value + '');
+	    } catch (e) {}
+	  }
+	  return result;
+	}
+	
+	module.exports = isHostObject;
+
+
+/***/ },
+/* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var getNative = __webpack_require__(49);
+	
+	/* Built-in method references that are verified to be native. */
+	var Map = getNative(global, 'Map');
+	
+	module.exports = Map;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Map = __webpack_require__(52),
+	    assocDelete = __webpack_require__(37),
+	    hashDelete = __webpack_require__(54),
+	    isKeyable = __webpack_require__(56);
+	
+	/**
+	 * Removes `key` and its value from the map.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function mapDelete(key) {
+	  var data = this.__data__;
+	  if (isKeyable(key)) {
+	    return hashDelete(typeof key == 'string' ? data.string : data.hash, key);
+	  }
+	  return Map ? data.map['delete'](key) : assocDelete(data.map, key);
+	}
+	
+	module.exports = mapDelete;
+
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var hashHas = __webpack_require__(55);
+	
+	/**
+	 * Removes `key` and its value from the hash.
+	 *
+	 * @private
+	 * @param {Object} hash The hash to modify.
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function hashDelete(hash, key) {
+	  return hashHas(hash, key) && delete hash[key];
+	}
+	
+	module.exports = hashDelete;
+
+
+/***/ },
+/* 55 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var nativeCreate = __webpack_require__(48);
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * Checks if a hash value for `key` exists.
+	 *
+	 * @private
+	 * @param {Object} hash The hash to query.
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function hashHas(hash, key) {
+	  return nativeCreate ? hash[key] !== undefined : hasOwnProperty.call(hash, key);
+	}
+	
+	module.exports = hashHas;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 56 */
+/***/ function(module, exports) {
+
+	/**
+	 * Checks if `value` is suitable for use as unique object key.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+	 */
+	function isKeyable(value) {
+	  var type = typeof value;
+	  return type == 'number' || type == 'boolean' ||
+	    (type == 'string' && value !== '__proto__') || value == null;
+	}
+	
+	module.exports = isKeyable;
+
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Map = __webpack_require__(52),
+	    assocGet = __webpack_require__(41),
+	    hashGet = __webpack_require__(58),
+	    isKeyable = __webpack_require__(56);
+	
+	/**
+	 * Gets the map value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function mapGet(key) {
+	  var data = this.__data__;
+	  if (isKeyable(key)) {
+	    return hashGet(typeof key == 'string' ? data.string : data.hash, key);
+	  }
+	  return Map ? data.map.get(key) : assocGet(data.map, key);
+	}
+	
+	module.exports = mapGet;
+
+
+/***/ },
+/* 58 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var nativeCreate = __webpack_require__(48);
+	
+	/** Used to stand-in for `undefined` hash values. */
+	var HASH_UNDEFINED = '__lodash_hash_undefined__';
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * Gets the hash value for `key`.
+	 *
+	 * @private
+	 * @param {Object} hash The hash to query.
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function hashGet(hash, key) {
+	  if (nativeCreate) {
+	    var result = hash[key];
+	    return result === HASH_UNDEFINED ? undefined : result;
+	  }
+	  return hasOwnProperty.call(hash, key) ? hash[key] : undefined;
+	}
+	
+	module.exports = hashGet;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 59 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Map = __webpack_require__(52),
+	    assocHas = __webpack_require__(43),
+	    hashHas = __webpack_require__(55),
+	    isKeyable = __webpack_require__(56);
+	
+	/**
+	 * Checks if a map value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf MapCache
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function mapHas(key) {
+	  var data = this.__data__;
+	  if (isKeyable(key)) {
+	    return hashHas(typeof key == 'string' ? data.string : data.hash, key);
+	  }
+	  return Map ? data.map.has(key) : assocHas(data.map, key);
+	}
+	
+	module.exports = mapHas;
+
+
+/***/ },
+/* 60 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Map = __webpack_require__(52),
+	    assocSet = __webpack_require__(61),
+	    hashSet = __webpack_require__(62),
+	    isKeyable = __webpack_require__(56);
+	
+	/**
+	 * Sets the map `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the map cache object.
+	 */
+	function mapSet(key, value) {
+	  var data = this.__data__;
+	  if (isKeyable(key)) {
+	    hashSet(typeof key == 'string' ? data.string : data.hash, key, value);
+	  } else if (Map) {
+	    data.map.set(key, value);
+	  } else {
+	    assocSet(data.map, key, value);
+	  }
+	  return this;
+	}
+	
+	module.exports = mapSet;
+
+
+/***/ },
+/* 61 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var assocIndexOf = __webpack_require__(38);
+	
+	/**
+	 * Sets the associative array `key` to `value`.
+	 *
+	 * @private
+	 * @param {Array} array The array to modify.
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 */
+	function assocSet(array, key, value) {
+	  var index = assocIndexOf(array, key);
+	  if (index < 0) {
+	    array.push([key, value]);
+	  } else {
+	    array[index][1] = value;
+	  }
+	}
+	
+	module.exports = assocSet;
+
+
+/***/ },
+/* 62 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var nativeCreate = __webpack_require__(48);
+	
+	/** Used to stand-in for `undefined` hash values. */
+	var HASH_UNDEFINED = '__lodash_hash_undefined__';
+	
+	/**
+	 * Sets the hash `key` to `value`.
+	 *
+	 * @private
+	 * @param {Object} hash The hash to modify.
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 */
+	function hashSet(hash, key, value) {
+	  hash[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+	}
+	
+	module.exports = hashSet;
+
+
+/***/ },
+/* 63 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseIsEqualDeep = __webpack_require__(64),
+	    isObject = __webpack_require__(27),
+	    isObjectLike = __webpack_require__(29);
+	
+	/**
+	 * The base implementation of `_.isEqual` which supports partial comparisons
+	 * and tracks traversed objects.
+	 *
+	 * @private
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {boolean} [bitmask] The bitmask of comparison flags.
+	 *  The bitmask may be composed of the following flags:
+	 *     1 - Unordered comparison
+	 *     2 - Partial comparison
+	 * @param {Object} [stack] Tracks traversed `value` and `other` objects.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 */
+	function baseIsEqual(value, other, customizer, bitmask, stack) {
+	  if (value === other) {
+	    return true;
+	  }
+	  if (value == null || other == null || (!isObject(value) && !isObjectLike(other))) {
+	    return value !== value && other !== other;
+	  }
+	  return baseIsEqualDeep(value, other, baseIsEqual, customizer, bitmask, stack);
+	}
+	
+	module.exports = baseIsEqual;
+
+
+/***/ },
+/* 64 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var Stack = __webpack_require__(34),
+	    equalArrays = __webpack_require__(65),
+	    equalByTag = __webpack_require__(67),
+	    equalObjects = __webpack_require__(72),
+	    getTag = __webpack_require__(81),
+	    isArray = __webpack_require__(30),
+	    isHostObject = __webpack_require__(51),
+	    isTypedArray = __webpack_require__(83);
+	
+	/** Used to compose bitmasks for comparison styles. */
+	var PARTIAL_COMPARE_FLAG = 2;
+	
+	/** `Object#toString` result references. */
+	var argsTag = '[object Arguments]',
+	    arrayTag = '[object Array]',
+	    objectTag = '[object Object]';
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * A specialized version of `baseIsEqual` for arrays and objects which performs
+	 * deep comparisons and tracks traversed objects enabling objects with circular
+	 * references to be compared.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
+	 * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function baseIsEqualDeep(object, other, equalFunc, customizer, bitmask, stack) {
+	  var objIsArr = isArray(object),
+	      othIsArr = isArray(other),
+	      objTag = arrayTag,
+	      othTag = arrayTag;
+	
+	  if (!objIsArr) {
+	    objTag = getTag(object);
+	    if (objTag == argsTag) {
+	      objTag = objectTag;
+	    } else if (objTag != objectTag) {
+	      objIsArr = isTypedArray(object);
+	    }
+	  }
+	  if (!othIsArr) {
+	    othTag = getTag(other);
+	    if (othTag == argsTag) {
+	      othTag = objectTag;
+	    } else if (othTag != objectTag) {
+	      othIsArr = isTypedArray(other);
+	    }
+	  }
+	  var objIsObj = objTag == objectTag && !isHostObject(object),
+	      othIsObj = othTag == objectTag && !isHostObject(other),
+	      isSameTag = objTag == othTag;
+	
+	  if (isSameTag && !(objIsArr || objIsObj)) {
+	    return equalByTag(object, other, objTag, equalFunc, customizer, bitmask);
+	  }
+	  var isPartial = bitmask & PARTIAL_COMPARE_FLAG;
+	  if (!isPartial) {
+	    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
+	        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
+	
+	    if (objIsWrapped || othIsWrapped) {
+	      return equalFunc(objIsWrapped ? object.value() : object, othIsWrapped ? other.value() : other, customizer, bitmask, stack);
+	    }
+	  }
+	  if (!isSameTag) {
+	    return false;
+	  }
+	  stack || (stack = new Stack);
+	  return (objIsArr ? equalArrays : equalObjects)(object, other, equalFunc, customizer, bitmask, stack);
+	}
+	
+	module.exports = baseIsEqualDeep;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 65 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var arraySome = __webpack_require__(66);
+	
+	/** Used to compose bitmasks for comparison styles. */
+	var UNORDERED_COMPARE_FLAG = 1,
+	    PARTIAL_COMPARE_FLAG = 2;
+	
+	/**
+	 * A specialized version of `baseIsEqualDeep` for arrays with support for
+	 * partial deep comparisons.
+	 *
+	 * @private
+	 * @param {Array} array The array to compare.
+	 * @param {Array} other The other array to compare.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
+	 * @param {Object} [stack] Tracks traversed `array` and `other` objects.
+	 * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
+	 */
+	function equalArrays(array, other, equalFunc, customizer, bitmask, stack) {
+	  var index = -1,
+	      isPartial = bitmask & PARTIAL_COMPARE_FLAG,
+	      isUnordered = bitmask & UNORDERED_COMPARE_FLAG,
+	      arrLength = array.length,
+	      othLength = other.length;
+	
+	  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+	    return false;
+	  }
+	  // Assume cyclic values are equal.
+	  var stacked = stack.get(array);
+	  if (stacked) {
+	    return stacked == other;
+	  }
+	  var result = true;
+	  stack.set(array, other);
+	
+	  // Ignore non-index properties.
+	  while (++index < arrLength) {
+	    var arrValue = array[index],
+	        othValue = other[index];
+	
+	    if (customizer) {
+	      var compared = isPartial
+	        ? customizer(othValue, arrValue, index, other, array, stack)
+	        : customizer(arrValue, othValue, index, array, other, stack);
+	    }
+	    if (compared !== undefined) {
+	      if (compared) {
+	        continue;
+	      }
+	      result = false;
+	      break;
+	    }
+	    // Recursively compare arrays (susceptible to call stack limits).
+	    if (isUnordered) {
+	      if (!arraySome(other, function(othValue) {
+	            return arrValue === othValue || equalFunc(arrValue, othValue, customizer, bitmask, stack);
+	          })) {
+	        result = false;
+	        break;
+	      }
+	    } else if (!(arrValue === othValue || equalFunc(arrValue, othValue, customizer, bitmask, stack))) {
+	      result = false;
+	      break;
+	    }
+	  }
+	  stack['delete'](array);
+	  return result;
+	}
+	
+	module.exports = equalArrays;
+
+
+/***/ },
+/* 66 */
+/***/ function(module, exports) {
+
+	/**
+	 * A specialized version of `_.some` for arrays without support for iteratee
+	 * shorthands.
+	 *
+	 * @private
+	 * @param {Array} array The array to iterate over.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @returns {boolean} Returns `true` if any element passes the predicate check, else `false`.
+	 */
+	function arraySome(array, predicate) {
+	  var index = -1,
+	      length = array.length;
+	
+	  while (++index < length) {
+	    if (predicate(array[index], index, array)) {
+	      return true;
+	    }
+	  }
+	  return false;
+	}
+	
+	module.exports = arraySome;
+
+
+/***/ },
+/* 67 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Symbol = __webpack_require__(68),
+	    Uint8Array = __webpack_require__(69),
+	    mapToArray = __webpack_require__(70),
+	    setToArray = __webpack_require__(71);
+	
+	/** Used to compose bitmasks for comparison styles. */
+	var UNORDERED_COMPARE_FLAG = 1,
+	    PARTIAL_COMPARE_FLAG = 2;
+	
+	/** `Object#toString` result references. */
+	var boolTag = '[object Boolean]',
+	    dateTag = '[object Date]',
+	    errorTag = '[object Error]',
+	    mapTag = '[object Map]',
+	    numberTag = '[object Number]',
+	    regexpTag = '[object RegExp]',
+	    setTag = '[object Set]',
+	    stringTag = '[object String]',
+	    symbolTag = '[object Symbol]';
+	
+	var arrayBufferTag = '[object ArrayBuffer]';
+	
+	/** Used to convert symbols to primitives and strings. */
+	var symbolProto = Symbol ? Symbol.prototype : undefined,
+	    symbolValueOf = Symbol ? symbolProto.valueOf : undefined;
+	
+	/**
+	 * A specialized version of `baseIsEqualDeep` for comparing objects of
+	 * the same `toStringTag`.
+	 *
+	 * **Note:** This function only supports comparing values with tags of
+	 * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {string} tag The `toStringTag` of the objects to compare.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function equalByTag(object, other, tag, equalFunc, customizer, bitmask) {
+	  switch (tag) {
+	    case arrayBufferTag:
+	      if ((object.byteLength != other.byteLength) ||
+	          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
+	        return false;
+	      }
+	      return true;
+	
+	    case boolTag:
+	    case dateTag:
+	      // Coerce dates and booleans to numbers, dates to milliseconds and booleans
+	      // to `1` or `0` treating invalid dates coerced to `NaN` as not equal.
+	      return +object == +other;
+	
+	    case errorTag:
+	      return object.name == other.name && object.message == other.message;
+	
+	    case numberTag:
+	      // Treat `NaN` vs. `NaN` as equal.
+	      return (object != +object) ? other != +other : object == +other;
+	
+	    case regexpTag:
+	    case stringTag:
+	      // Coerce regexes to strings and treat strings primitives and string
+	      // objects as equal. See https://es5.github.io/#x15.10.6.4 for more details.
+	      return object == (other + '');
+	
+	    case mapTag:
+	      var convert = mapToArray;
+	
+	    case setTag:
+	      var isPartial = bitmask & PARTIAL_COMPARE_FLAG;
+	      convert || (convert = setToArray);
+	
+	      // Recursively compare objects (susceptible to call stack limits).
+	      return (isPartial || object.size == other.size) &&
+	        equalFunc(convert(object), convert(other), customizer, bitmask | UNORDERED_COMPARE_FLAG);
+	
+	    case symbolTag:
+	      return !!Symbol && (symbolValueOf.call(object) == symbolValueOf.call(other));
+	  }
+	  return false;
+	}
+	
+	module.exports = equalByTag;
+
+
+/***/ },
+/* 68 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/** Built-in value references. */
+	var Symbol = global.Symbol;
+	
+	module.exports = Symbol;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 69 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/** Built-in value references. */
+	var Uint8Array = global.Uint8Array;
+	
+	module.exports = Uint8Array;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 70 */
+/***/ function(module, exports) {
+
+	/**
+	 * Converts `map` to an array.
+	 *
+	 * @private
+	 * @param {Object} map The map to convert.
+	 * @returns {Array} Returns the converted array.
+	 */
+	function mapToArray(map) {
+	  var index = -1,
+	      result = Array(map.size);
+	
+	  map.forEach(function(value, key) {
+	    result[++index] = [key, value];
+	  });
+	  return result;
+	}
+	
+	module.exports = mapToArray;
+
+
+/***/ },
+/* 71 */
+/***/ function(module, exports) {
+
+	/**
+	 * Converts `set` to an array.
+	 *
+	 * @private
+	 * @param {Object} set The set to convert.
+	 * @returns {Array} Returns the converted array.
+	 */
+	function setToArray(set) {
+	  var index = -1,
+	      result = Array(set.size);
+	
+	  set.forEach(function(value) {
+	    result[++index] = value;
+	  });
+	  return result;
+	}
+	
+	module.exports = setToArray;
+
+
+/***/ },
+/* 72 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseHas = __webpack_require__(73),
+	    keys = __webpack_require__(74);
+	
+	/** Used to compose bitmasks for comparison styles. */
+	var PARTIAL_COMPARE_FLAG = 2;
+	
+	/**
+	 * A specialized version of `baseIsEqualDeep` for objects with support for
+	 * partial deep comparisons.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
+	 * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function equalObjects(object, other, equalFunc, customizer, bitmask, stack) {
+	  var isPartial = bitmask & PARTIAL_COMPARE_FLAG,
+	      objProps = keys(object),
+	      objLength = objProps.length,
+	      othProps = keys(other),
+	      othLength = othProps.length;
+	
+	  if (objLength != othLength && !isPartial) {
+	    return false;
+	  }
+	  var index = objLength;
+	  while (index--) {
+	    var key = objProps[index];
+	    if (!(isPartial ? key in other : baseHas(other, key))) {
+	      return false;
+	    }
+	  }
+	  // Assume cyclic values are equal.
+	  var stacked = stack.get(object);
+	  if (stacked) {
+	    return stacked == other;
+	  }
+	  var result = true;
+	  stack.set(object, other);
+	
+	  var skipCtor = isPartial;
+	  while (++index < objLength) {
+	    key = objProps[index];
+	    var objValue = object[key],
+	        othValue = other[key];
+	
+	    if (customizer) {
+	      var compared = isPartial
+	        ? customizer(othValue, objValue, key, other, object, stack)
+	        : customizer(objValue, othValue, key, object, other, stack);
+	    }
+	    // Recursively compare objects (susceptible to call stack limits).
+	    if (!(compared === undefined
+	          ? (objValue === othValue || equalFunc(objValue, othValue, customizer, bitmask, stack))
+	          : compared
+	        )) {
+	      result = false;
+	      break;
+	    }
+	    skipCtor || (skipCtor = key == 'constructor');
+	  }
+	  if (result && !skipCtor) {
+	    var objCtor = object.constructor,
+	        othCtor = other.constructor;
+	
+	    // Non `Object` object instances with different constructors are not equal.
+	    if (objCtor != othCtor &&
+	        ('constructor' in object && 'constructor' in other) &&
+	        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
+	          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+	      result = false;
+	    }
+	  }
+	  stack['delete'](object);
+	  return result;
+	}
+	
+	module.exports = equalObjects;
+
+
+/***/ },
+/* 73 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/** Built-in value references. */
+	var getPrototypeOf = Object.getPrototypeOf;
+	
+	/**
+	 * The base implementation of `_.has` without support for deep paths.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} key The key to check.
+	 * @returns {boolean} Returns `true` if `key` exists, else `false`.
+	 */
+	function baseHas(object, key) {
+	  // Avoid a bug in IE 10-11 where objects with a [[Prototype]] of `null`,
+	  // that are composed entirely of index properties, return `false` for
+	  // `hasOwnProperty` checks of them.
+	  return hasOwnProperty.call(object, key) ||
+	    (typeof object == 'object' && key in object && getPrototypeOf(object) === null);
+	}
+	
+	module.exports = baseHas;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 74 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseHas = __webpack_require__(73),
+	    baseKeys = __webpack_require__(75),
+	    indexKeys = __webpack_require__(76),
+	    isArrayLike = __webpack_require__(23),
+	    isIndex = __webpack_require__(79),
+	    isPrototype = __webpack_require__(80);
+	
+	/**
+	 * Creates an array of the own enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects. See the
+	 * [ES spec](http://ecma-international.org/ecma-262/6.0/#sec-object.keys)
+	 * for more details.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keys(new Foo);
+	 * // => ['a', 'b'] (iteration order is not guaranteed)
+	 *
+	 * _.keys('hi');
+	 * // => ['0', '1']
+	 */
+	function keys(object) {
+	  var isProto = isPrototype(object);
+	  if (!(isProto || isArrayLike(object))) {
+	    return baseKeys(object);
+	  }
+	  var indexes = indexKeys(object),
+	      skipIndexes = !!indexes,
+	      result = indexes || [],
+	      length = result.length;
+	
+	  for (var key in object) {
+	    if (baseHas(object, key) &&
+	        !(skipIndexes && (key == 'length' || isIndex(key, length))) &&
+	        !(isProto && key == 'constructor')) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+	
+	module.exports = keys;
+
+
+/***/ },
+/* 75 */
+/***/ function(module, exports) {
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeKeys = Object.keys;
+	
+	/**
+	 * The base implementation of `_.keys` which doesn't skip the constructor
+	 * property of prototypes or treat sparse arrays as dense.
+	 *
+	 * @private
+	 * @type Function
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function baseKeys(object) {
+	  return nativeKeys(Object(object));
+	}
+	
+	module.exports = baseKeys;
+
+
+/***/ },
+/* 76 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseTimes = __webpack_require__(77),
+	    isArguments = __webpack_require__(21),
+	    isArray = __webpack_require__(30),
+	    isLength = __webpack_require__(28),
+	    isString = __webpack_require__(78);
+	
+	/**
+	 * Creates an array of index keys for `object` values of arrays,
+	 * `arguments` objects, and strings, otherwise `null` is returned.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array|null} Returns index keys, else `null`.
+	 */
+	function indexKeys(object) {
+	  var length = object ? object.length : undefined;
+	  return (isLength(length) && (isArray(object) || isString(object) || isArguments(object)))
+	    ? baseTimes(length, String)
+	    : null;
+	}
+	
+	module.exports = indexKeys;
+
+
+/***/ },
+/* 77 */
+/***/ function(module, exports) {
+
+	/**
+	 * The base implementation of `_.times` without support for iteratee shorthands
+	 * or max array length checks.
+	 *
+	 * @private
+	 * @param {number} n The number of times to invoke `iteratee`.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the array of results.
+	 */
+	function baseTimes(n, iteratee) {
+	  var index = -1,
+	      result = Array(n);
+	
+	  while (++index < n) {
+	    result[index] = iteratee(index);
+	  }
+	  return result;
+	}
+	
+	module.exports = baseTimes;
+
+
+/***/ },
+/* 78 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var isArray = __webpack_require__(30),
+	    isObjectLike = __webpack_require__(29);
+	
+	/** `Object#toString` result references. */
+	var stringTag = '[object String]';
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/**
+	 * Checks if `value` is classified as a `String` primitive or object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isString('abc');
+	 * // => true
+	 *
+	 * _.isString(1);
+	 * // => false
+	 */
+	function isString(value) {
+	  return typeof value == 'string' ||
+	    (!isArray(value) && isObjectLike(value) && objectToString.call(value) == stringTag);
+	}
+	
+	module.exports = isString;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 79 */
+/***/ function(module, exports) {
+
+	/** Used as references for various `Number` constants. */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+	
+	/** Used to detect unsigned integer values. */
+	var reIsUint = /^(?:0|[1-9]\d*)$/;
+	
+	/**
+	 * Checks if `value` is a valid array-like index.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+	 */
+	function isIndex(value, length) {
+	  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
+	  length = length == null ? MAX_SAFE_INTEGER : length;
+	  return value > -1 && value % 1 == 0 && value < length;
+	}
+	
+	module.exports = isIndex;
+
+
+/***/ },
+/* 80 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/**
+	 * Checks if `value` is likely a prototype object.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+	 */
+	function isPrototype(value) {
+	  var Ctor = value && value.constructor,
+	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
+	
+	  return value === proto;
+	}
+	
+	module.exports = isPrototype;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 81 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var Map = __webpack_require__(52),
+	    Set = __webpack_require__(82);
+	
+	/** `Object#toString` result references. */
+	var mapTag = '[object Map]',
+	    objectTag = '[object Object]',
+	    setTag = '[object Set]';
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/** Used to resolve the decompiled source of functions. */
+	var funcToString = global.Function.prototype.toString;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/** Used to detect maps and sets. */
+	var mapCtorString = Map ? funcToString.call(Map) : '',
+	    setCtorString = Set ? funcToString.call(Set) : '';
+	
+	/**
+	 * Gets the `toStringTag` of `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	function getTag(value) {
+	  return objectToString.call(value);
+	}
+	
+	// Fallback for IE 11 providing `toStringTag` values for maps and sets.
+	if ((Map && getTag(new Map) != mapTag) || (Set && getTag(new Set) != setTag)) {
+	  getTag = function(value) {
+	    var result = objectToString.call(value),
+	        Ctor = result == objectTag ? value.constructor : null,
+	        ctorString = typeof Ctor == 'function' ? funcToString.call(Ctor) : '';
+	
+	    if (ctorString) {
+	      if (ctorString == mapCtorString) {
+	        return mapTag;
+	      }
+	      if (ctorString == setCtorString) {
+	        return setTag;
+	      }
+	    }
+	    return result;
+	  };
+	}
+	
+	module.exports = getTag;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 82 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var getNative = __webpack_require__(49);
+	
+	/* Built-in method references that are verified to be native. */
+	var Set = getNative(global, 'Set');
+	
+	module.exports = Set;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 83 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var isLength = __webpack_require__(28),
+	    isObjectLike = __webpack_require__(29);
+	
+	/** `Object#toString` result references. */
+	var argsTag = '[object Arguments]',
+	    arrayTag = '[object Array]',
+	    boolTag = '[object Boolean]',
+	    dateTag = '[object Date]',
+	    errorTag = '[object Error]',
+	    funcTag = '[object Function]',
+	    mapTag = '[object Map]',
+	    numberTag = '[object Number]',
+	    objectTag = '[object Object]',
+	    regexpTag = '[object RegExp]',
+	    setTag = '[object Set]',
+	    stringTag = '[object String]',
+	    weakMapTag = '[object WeakMap]';
+	
+	var arrayBufferTag = '[object ArrayBuffer]',
+	    float32Tag = '[object Float32Array]',
+	    float64Tag = '[object Float64Array]',
+	    int8Tag = '[object Int8Array]',
+	    int16Tag = '[object Int16Array]',
+	    int32Tag = '[object Int32Array]',
+	    uint8Tag = '[object Uint8Array]',
+	    uint8ClampedTag = '[object Uint8ClampedArray]',
+	    uint16Tag = '[object Uint16Array]',
+	    uint32Tag = '[object Uint32Array]';
+	
+	/** Used to identify `toStringTag` values of typed arrays. */
+	var typedArrayTags = {};
+	typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+	typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+	typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+	typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+	typedArrayTags[uint32Tag] = true;
+	typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
+	typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
+	typedArrayTags[dateTag] = typedArrayTags[errorTag] =
+	typedArrayTags[funcTag] = typedArrayTags[mapTag] =
+	typedArrayTags[numberTag] = typedArrayTags[objectTag] =
+	typedArrayTags[regexpTag] = typedArrayTags[setTag] =
+	typedArrayTags[stringTag] = typedArrayTags[weakMapTag] = false;
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/**
+	 * Checks if `value` is classified as a typed array.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isTypedArray(new Uint8Array);
+	 * // => true
+	 *
+	 * _.isTypedArray([]);
+	 * // => false
+	 */
+	function isTypedArray(value) {
+	  return isObjectLike(value) && isLength(value.length) && !!typedArrayTags[objectToString.call(value)];
+	}
+	
+	module.exports = isTypedArray;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 84 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isStrictComparable = __webpack_require__(85),
+	    toPairs = __webpack_require__(86);
+	
+	/**
+	 * Gets the property names, values, and compare flags of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the match data of `object`.
+	 */
+	function getMatchData(object) {
+	  var result = toPairs(object),
+	      length = result.length;
+	
+	  while (length--) {
+	    result[length][2] = isStrictComparable(result[length][1]);
+	  }
+	  return result;
+	}
+	
+	module.exports = getMatchData;
+
+
+/***/ },
+/* 85 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isObject = __webpack_require__(27);
+	
+	/**
+	 * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` if suitable for strict
+	 *  equality comparisons, else `false`.
+	 */
+	function isStrictComparable(value) {
+	  return value === value && !isObject(value);
+	}
+	
+	module.exports = isStrictComparable;
+
+
+/***/ },
+/* 86 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseToPairs = __webpack_require__(87),
+	    keys = __webpack_require__(74);
+	
+	/**
+	 * Creates an array of own enumerable key-value pairs for `object`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the new array of key-value pairs.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.toPairs(new Foo);
+	 * // => [['a', 1], ['b', 2]] (iteration order is not guaranteed)
+	 */
+	function toPairs(object) {
+	  return baseToPairs(object, keys(object));
+	}
+	
+	module.exports = toPairs;
+
+
+/***/ },
+/* 87 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var arrayMap = __webpack_require__(18);
+	
+	/**
+	 * The base implementation of `_.toPairs` and `_.toPairsIn` which creates an array
+	 * of key-value pairs for `object` corresponding to the property names of `props`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array} props The property names to get values for.
+	 * @returns {Object} Returns the new array of key-value pairs.
+	 */
+	function baseToPairs(object, props) {
+	  return arrayMap(props, function(key) {
+	    return [key, object[key]];
+	  });
+	}
+	
+	module.exports = baseToPairs;
+
+
+/***/ },
+/* 88 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseIsEqual = __webpack_require__(63),
+	    get = __webpack_require__(89),
+	    hasIn = __webpack_require__(96);
+	
+	/** Used to compose bitmasks for comparison styles. */
+	var UNORDERED_COMPARE_FLAG = 1,
+	    PARTIAL_COMPARE_FLAG = 2;
+	
+	/**
+	 * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
+	 *
+	 * @private
+	 * @param {string} path The path of the property to get.
+	 * @param {*} srcValue The value to match.
+	 * @returns {Function} Returns the new function.
+	 */
+	function baseMatchesProperty(path, srcValue) {
+	  return function(object) {
+	    var objValue = get(object, path);
+	    return (objValue === undefined && objValue === srcValue)
+	      ? hasIn(object, path)
+	      : baseIsEqual(srcValue, objValue, undefined, UNORDERED_COMPARE_FLAG | PARTIAL_COMPARE_FLAG);
+	  };
+	}
+	
+	module.exports = baseMatchesProperty;
+
+
+/***/ },
+/* 89 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseGet = __webpack_require__(90);
+	
+	/**
+	 * Gets the value at `path` of `object`. If the resolved value is
+	 * `undefined` the `defaultValue` is used in its place.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path of the property to get.
+	 * @param {*} [defaultValue] The value returned if the resolved value is `undefined`.
+	 * @returns {*} Returns the resolved value.
+	 * @example
+	 *
+	 * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+	 *
+	 * _.get(object, 'a[0].b.c');
+	 * // => 3
+	 *
+	 * _.get(object, ['a', '0', 'b', 'c']);
+	 * // => 3
+	 *
+	 * _.get(object, 'a.b.c', 'default');
+	 * // => 'default'
+	 */
+	function get(object, path, defaultValue) {
+	  var result = object == null ? undefined : baseGet(object, path);
+	  return result === undefined ? defaultValue : result;
+	}
+	
+	module.exports = get;
+
+
+/***/ },
+/* 90 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseToPath = __webpack_require__(91),
+	    isKey = __webpack_require__(95);
+	
+	/**
+	 * The base implementation of `_.get` without support for default values.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path of the property to get.
+	 * @returns {*} Returns the resolved value.
+	 */
+	function baseGet(object, path) {
+	  path = isKey(path, object) ? [path + ''] : baseToPath(path);
+	
+	  var index = 0,
+	      length = path.length;
+	
+	  while (object != null && index < length) {
+	    object = object[path[index++]];
+	  }
+	  return (index && index == length) ? object : undefined;
+	}
+	
+	module.exports = baseGet;
+
+
+/***/ },
+/* 91 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isArray = __webpack_require__(30),
+	    stringToPath = __webpack_require__(92);
+	
+	/**
+	 * The base implementation of `_.toPath` which only converts `value` to a
+	 * path if it's not one.
+	 *
+	 * @private
+	 * @param {*} value The value to process.
+	 * @returns {Array} Returns the property path array.
+	 */
+	function baseToPath(value) {
+	  return isArray(value) ? value : stringToPath(value);
+	}
+	
+	module.exports = baseToPath;
+
+
+/***/ },
+/* 92 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var toString = __webpack_require__(93);
+	
+	/** Used to match property names within property paths. */
+	var rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]/g;
+	
+	/** Used to match backslashes in property paths. */
+	var reEscapeChar = /\\(\\)?/g;
+	
+	/**
+	 * Converts `string` to a property path array.
+	 *
+	 * @private
+	 * @param {string} string The string to convert.
+	 * @returns {Array} Returns the property path array.
+	 */
+	function stringToPath(string) {
+	  var result = [];
+	  toString(string).replace(rePropName, function(match, number, quote, string) {
+	    result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
+	  });
+	  return result;
+	}
+	
+	module.exports = stringToPath;
+
+
+/***/ },
+/* 93 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Symbol = __webpack_require__(68),
+	    isSymbol = __webpack_require__(94);
+	
+	/** Used as references for various `Number` constants. */
+	var INFINITY = 1 / 0;
+	
+	/** Used to convert symbols to primitives and strings. */
+	var symbolProto = Symbol ? Symbol.prototype : undefined,
+	    symbolToString = Symbol ? symbolProto.toString : undefined;
+	
+	/**
+	 * Converts `value` to a string if it's not one. An empty string is returned
+	 * for `null` and `undefined` values. The sign of `-0` is preserved.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to process.
+	 * @returns {string} Returns the string.
+	 * @example
+	 *
+	 * _.toString(null);
+	 * // => ''
+	 *
+	 * _.toString(-0);
+	 * // => '-0'
+	 *
+	 * _.toString([1, 2, 3]);
+	 * // => '1,2,3'
+	 */
+	function toString(value) {
+	  // Exit early for strings to avoid a performance hit in some environments.
+	  if (typeof value == 'string') {
+	    return value;
+	  }
+	  if (value == null) {
+	    return '';
+	  }
+	  if (isSymbol(value)) {
+	    return Symbol ? symbolToString.call(value) : '';
+	  }
+	  var result = (value + '');
+	  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+	}
+	
+	module.exports = toString;
+
+
+/***/ },
+/* 94 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var isObjectLike = __webpack_require__(29);
+	
+	/** `Object#toString` result references. */
+	var symbolTag = '[object Symbol]';
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/**
+	 * Checks if `value` is classified as a `Symbol` primitive or object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isSymbol(Symbol.iterator);
+	 * // => true
+	 *
+	 * _.isSymbol('abc');
+	 * // => false
+	 */
+	function isSymbol(value) {
+	  return typeof value == 'symbol' ||
+	    (isObjectLike(value) && objectToString.call(value) == symbolTag);
+	}
+	
+	module.exports = isSymbol;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 95 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isArray = __webpack_require__(30);
+	
+	/** Used to match property names within property paths. */
+	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+	    reIsPlainProp = /^\w*$/;
+	
+	/**
+	 * Checks if `value` is a property name and not a property path.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {Object} [object] The object to query keys on.
+	 * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+	 */
+	function isKey(value, object) {
+	  if (typeof value == 'number') {
+	    return true;
+	  }
+	  return !isArray(value) &&
+	    (reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+	      (object != null && value in Object(object)));
+	}
+	
+	module.exports = isKey;
+
+
+/***/ },
+/* 96 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseHasIn = __webpack_require__(97),
+	    hasPath = __webpack_require__(98);
+	
+	/**
+	 * Checks if `path` is a direct or inherited property of `object`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path to check.
+	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
+	 * @example
+	 *
+	 * var object = _.create({ 'a': _.create({ 'b': _.create({ 'c': 3 }) }) });
+	 *
+	 * _.hasIn(object, 'a');
+	 * // => true
+	 *
+	 * _.hasIn(object, 'a.b.c');
+	 * // => true
+	 *
+	 * _.hasIn(object, ['a', 'b', 'c']);
+	 * // => true
+	 *
+	 * _.hasIn(object, 'b');
+	 * // => false
+	 */
+	function hasIn(object, path) {
+	  return hasPath(object, path, baseHasIn);
+	}
+	
+	module.exports = hasIn;
+
+
+/***/ },
+/* 97 */
+/***/ function(module, exports) {
+
+	/**
+	 * The base implementation of `_.hasIn` without support for deep paths.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} key The key to check.
+	 * @returns {boolean} Returns `true` if `key` exists, else `false`.
+	 */
+	function baseHasIn(object, key) {
+	  return key in Object(object);
+	}
+	
+	module.exports = baseHasIn;
+
+
+/***/ },
+/* 98 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseToPath = __webpack_require__(91),
+	    isArguments = __webpack_require__(21),
+	    isArray = __webpack_require__(30),
+	    isIndex = __webpack_require__(79),
+	    isKey = __webpack_require__(95),
+	    isLength = __webpack_require__(28),
+	    isString = __webpack_require__(78),
+	    last = __webpack_require__(99),
+	    parent = __webpack_require__(100);
+	
+	/**
+	 * Checks if `path` exists on `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path to check.
+	 * @param {Function} hasFunc The function to check properties.
+	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
+	 */
+	function hasPath(object, path, hasFunc) {
+	  if (object == null) {
+	    return false;
+	  }
+	  var result = hasFunc(object, path);
+	  if (!result && !isKey(path)) {
+	    path = baseToPath(path);
+	    object = parent(object, path);
+	    if (object != null) {
+	      path = last(path);
+	      result = hasFunc(object, path);
+	    }
+	  }
+	  return result || (isLength(object && object.length) && isIndex(path, object.length) &&
+	    (isArray(object) || isString(object) || isArguments(object)));
+	}
+	
+	module.exports = hasPath;
+
+
+/***/ },
+/* 99 */
+/***/ function(module, exports) {
+
+	/**
+	 * Gets the last element of `array`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Array
+	 * @param {Array} array The array to query.
+	 * @returns {*} Returns the last element of `array`.
+	 * @example
+	 *
+	 * _.last([1, 2, 3]);
+	 * // => 3
+	 */
+	function last(array) {
+	  var length = array ? array.length : 0;
+	  return length ? array[length - 1] : undefined;
+	}
+	
+	module.exports = last;
+
+
+/***/ },
+/* 100 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseSlice = __webpack_require__(101),
+	    get = __webpack_require__(89);
+	
+	/**
+	 * Gets the parent value at `path` of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array} path The path to get the parent value of.
+	 * @returns {*} Returns the parent value.
+	 */
+	function parent(object, path) {
+	  return path.length == 1 ? object : get(object, baseSlice(path, 0, -1));
+	}
+	
+	module.exports = parent;
+
+
+/***/ },
+/* 101 */
+/***/ function(module, exports) {
+
+	/**
+	 * The base implementation of `_.slice` without an iteratee call guard.
+	 *
+	 * @private
+	 * @param {Array} array The array to slice.
+	 * @param {number} [start=0] The start position.
+	 * @param {number} [end=array.length] The end position.
+	 * @returns {Array} Returns the slice of `array`.
+	 */
+	function baseSlice(array, start, end) {
+	  var index = -1,
+	      length = array.length;
+	
+	  if (start < 0) {
+	    start = -start > length ? 0 : (length + start);
+	  }
+	  end = end > length ? length : end;
+	  if (end < 0) {
+	    end += length;
+	  }
+	  length = start > end ? 0 : ((end - start) >>> 0);
+	  start >>>= 0;
+	
+	  var result = Array(length);
+	  while (++index < length) {
+	    result[index] = array[index + start];
+	  }
+	  return result;
+	}
+	
+	module.exports = baseSlice;
+
+
+/***/ },
+/* 102 */
+/***/ function(module, exports) {
+
+	/**
+	 * This method returns the first argument provided to it.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Util
+	 * @param {*} value Any value.
+	 * @returns {*} Returns `value`.
+	 * @example
+	 *
+	 * var object = { 'user': 'fred' };
+	 *
+	 * _.identity(object) === object;
+	 * // => true
+	 */
+	function identity(value) {
+	  return value;
+	}
+	
+	module.exports = identity;
+
+
+/***/ },
+/* 103 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseProperty = __webpack_require__(25),
+	    basePropertyDeep = __webpack_require__(104),
+	    isKey = __webpack_require__(95);
+	
+	/**
+	 * Creates a function that returns the value at `path` of a given object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Util
+	 * @param {Array|string} path The path of the property to get.
+	 * @returns {Function} Returns the new function.
+	 * @example
+	 *
+	 * var objects = [
+	 *   { 'a': { 'b': { 'c': 2 } } },
+	 *   { 'a': { 'b': { 'c': 1 } } }
+	 * ];
+	 *
+	 * _.map(objects, _.property('a.b.c'));
+	 * // => [2, 1]
+	 *
+	 * _.map(_.sortBy(objects, _.property(['a', 'b', 'c'])), 'a.b.c');
+	 * // => [1, 2]
+	 */
+	function property(path) {
+	  return isKey(path) ? baseProperty(path) : basePropertyDeep(path);
+	}
+	
+	module.exports = property;
+
+
+/***/ },
+/* 104 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseGet = __webpack_require__(90);
+	
+	/**
+	 * A specialized version of `baseProperty` which supports deep paths.
+	 *
+	 * @private
+	 * @param {Array|string} path The path of the property to get.
+	 * @returns {Function} Returns the new function.
+	 */
+	function basePropertyDeep(path) {
+	  return function(object) {
+	    return baseGet(object, path);
+	  };
+	}
+	
+	module.exports = basePropertyDeep;
+
+
+/***/ },
+/* 105 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var require;var require;var nanoModal;!function a(b,c,d){function e(g,h){if(!c[g]){if(!b[g]){var i="function"==typeof require&&require;if(!h&&i)return require(g,!0);if(f)return f(g,!0);throw new Error("Cannot find module '"+g+"'")}var j=c[g]={exports:{}};b[g][0].call(j.exports,function(a){var c=b[g][1][a];return e(c?c:a)},j,j.exports,a,b,c,d)}return c[g].exports}for(var f="function"==typeof require&&require,g=0;g<d.length;g++)e(d[g]);return e}({1:[function(a,b,c){function d(a,b){var c=document,d=a.nodeType||a===window?a:c.createElement(a),f=[];b&&(d.className=b);var g=e(),h=e(),i=function(a,b){d.addEventListener?d.addEventListener(a,b,!1):d.attachEvent("on"+a,b),f.push({event:a,handler:b})},j=function(a,b){d.removeEventListener?d.removeEventListener(a,b):d.detachEvent("on"+a,b);for(var c,e=f.length;e-->0;)if(c=f[e],c.event===a&&c.handler===b){f.splice(e,1);break}},k=function(a){var b=!1,c=function(c){b||(b=!0,setTimeout(function(){b=!1},100),a(c))};i("touchstart",c),i("mousedown",c)},l=function(a){d&&(d.style.display="block",g.fire(a))},m=function(a){d&&(d.style.display="none",h.fire(a))},n=function(){return d.style&&"block"===d.style.display},o=function(a){d&&(d.innerHTML=a)},p=function(a){d&&(o(""),d.appendChild(c.createTextNode(a)))},q=function(){if(d.parentNode){for(var a,b=f.length;b-->0;)a=f[b],j(a.event,a.handler);d.parentNode.removeChild(d),g.removeAllListeners(),h.removeAllListeners()}},r=function(a){var b=a.el||a;d.appendChild(b)};return{el:d,addListener:i,addClickListener:k,onShowEvent:g,onHideEvent:h,show:l,hide:m,isShowing:n,html:o,text:p,remove:q,add:r}}var e=a("./ModalEvent");b.exports=d},{"./ModalEvent":3}],2:[function(a,b,c){function d(a,b,c,f,g){if(void 0!==a){b=b||{};var h,i=e("div","nanoModal nanoModalOverride "+(b.classes||"")),j=e("div","nanoModalContent"),k=e("div","nanoModalButtons");i.add(j),i.add(k),i.el.style.display="none";var l,m=[];b.buttons=b.buttons||[{text:"Close",handler:"hide",primary:!0}];var n=function(){for(var a=m.length;a-->0;){var b=m[a];b.remove()}m=[]},o=function(){i.el.style.marginLeft=-i.el.clientWidth/2+"px"},p=function(){for(var a=document.querySelectorAll(".nanoModal"),b=a.length;b-->0;)if("none"!==a[b].style.display)return!0;return!1},q=function(){i.isShowing()||(d.resizeOverlay(),c.show(c),i.show(l),o())},r=function(){i.isShowing()&&(i.hide(l),p()||c.hide(c),b.autoRemove&&l.remove())},s=function(a){var b={};for(var c in a)a.hasOwnProperty(c)&&(b[c]=a[c]);return b};return l={modal:i,overlay:c,show:function(){return f?f(q,l):q(),l},hide:function(){return g?g(r,l):r(),l},onShow:function(a){return i.onShowEvent.addListener(function(){a(l)}),l},onHide:function(a){return i.onHideEvent.addListener(function(){a(l)}),l},remove:function(){c.onRequestHide.removeListener(h),h=null,n(),i.remove()},setButtons:function(a){var b,c,d,f=a.length,g=function(a,b){var c=s(l);a.addClickListener(function(a){c.event=a||window.event,b.handler(c)})};if(n(),0===f)k.hide();else for(k.show();f-->0;)b=a[f],d="nanoModalBtn",b.primary&&(d+=" nanoModalBtnPrimary"),d+=b.classes?" "+b.classes:"",c=e("button",d),"hide"===b.handler?c.addClickListener(l.hide):b.handler&&g(c,b),c.text(b.text),k.add(c),m.push(c);return o(),l},setContent:function(b){return b.nodeType?(j.html(""),j.add(b)):j.html(b),o(),a=b,l},getContent:function(){return a}},h=c.onRequestHide.addListener(function(){b.overlayClose!==!1&&i.isShowing()&&l.hide()}),l.setContent(a).setButtons(b.buttons),document.body.appendChild(i.el),l}}var e=a("./El"),f=document,g=function(a){var b=f.documentElement,c="scroll"+a,d="offset"+a;return Math.max(f.body[c],b[c],f.body[d],b[d],b["client"+a])};d.resizeOverlay=function(){var a=f.getElementById("nanoModalOverlay");a.style.width=g("Width")+"px",a.style.height=g("Height")+"px"},b.exports=d},{"./El":1}],3:[function(a,b,c){function d(){var a={},b=0,c=function(c){return a[b]=c,b++},d=function(b){b&&delete a[b]},e=function(){a={}},f=function(){for(var c=0,d=b;d>c;++c)a[c]&&a[c].apply(null,arguments)};return{addListener:c,removeListener:d,removeAllListeners:e,fire:f}}b.exports=d},{}],4:[function(a,b,c){var d=a("./ModalEvent"),e=function(){function b(){if(!g.querySelector("#nanoModalOverlay")){var a=e("style"),b=a.el,h=g.querySelectorAll("head")[0].childNodes[0];h.parentNode.insertBefore(b,h);var i=".nanoModal{position:absolute;top:100px;left:50%;display:none;z-index:9999;min-width:300px;padding:15px 20px 10px;-webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;background:#fff;background:-moz-linear-gradient(top,#fff 0,#ddd 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#fff),color-stop(100%,#ddd));background:-webkit-linear-gradient(top,#fff 0,#ddd 100%);background:-o-linear-gradient(top,#fff 0,#ddd 100%);background:-ms-linear-gradient(top,#fff 0,#ddd 100%);background:linear-gradient(to bottom,#fff 0,#ddd 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dddddd', GradientType=0)}.nanoModalOverlay{position:absolute;top:0;left:0;width:100%;height:100%;z-index:9998;background:#000;display:none;-ms-filter:\"alpha(Opacity=50)\";-moz-opacity:.5;-khtml-opacity:.5;opacity:.5}.nanoModalButtons{border-top:1px solid #ddd;margin-top:15px;text-align:right}.nanoModalBtn{color:#333;background-color:#fff;display:inline-block;padding:6px 12px;margin:8px 4px 0;font-size:14px;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:1px solid transparent;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px}.nanoModalBtn:active,.nanoModalBtn:focus,.nanoModalBtn:hover{color:#333;background-color:#e6e6e6;border-color:#adadad}.nanoModalBtn.nanoModalBtnPrimary{color:#fff;background-color:#428bca;border-color:#357ebd}.nanoModalBtn.nanoModalBtnPrimary:active,.nanoModalBtn.nanoModalBtnPrimary:focus,.nanoModalBtn.nanoModalBtnPrimary:hover{color:#fff;background-color:#3071a9;border-color:#285e8e}";b.styleSheet?b.styleSheet.cssText=i:a.text(i),c=e("div","nanoModalOverlay nanoModalOverride"),c.el.id="nanoModalOverlay",g.body.appendChild(c.el),c.onRequestHide=d();var j=function(){c.onRequestHide.fire()};c.addClickListener(j),e(g).addListener("keydown",function(a){var b=a.which||a.keyCode;27===b&&j()});var k,l=e(window);l.addListener("resize",function(){k&&clearTimeout(k),k=setTimeout(f.resizeOverlay,100)}),l.addListener("orientationchange",function(){for(var a=0;3>a;++a)setTimeout(f.resizeOverlay,1e3*a+200)})}}var c,e=a("./El"),f=a("./Modal"),g=document;document.body&&b();var h=function(a,d){return b(),f(a,d,c,h.customShow,h.customHide)};return h.resizeOverlay=f.resizeOverlay,h}();nanoModal=e},{"./El":1,"./Modal":2,"./ModalEvent":3}]},{},[1,2,3,4]),"undefined"!=typeof window&&("function"==typeof window.define&&window.define.amd&&window.define(function(){return nanoModal}),window.nanoModal=nanoModal),"undefined"!=typeof module&&(module.exports=nanoModal);
+
+/***/ },
+/* 106 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	module.exports = {
+	    "categories": [{
+	        "name": "Pizzakenyerek",
+	        "id": "pizzakenyerek"
+	    }, {
+	        "name": "Klasszikus pizzák",
+	        "id": "klasszikus-pizzak"
+	    }, {
+	        "name": "Extra pizzák",
+	        "id": "extra-pizzak"
+	    }, {
+	        "name": "Full a fullban pizzák",
+	        "id": "full-a-fullban-pizzak"
+	    }, {
+	        "name": "Meex specialitás",
+	        "id": "meex-specialitas"
+	    }, {
+	        "name": "Tészták",
+	        "id": "tesztak"
+	    }, {
+	        "name": "Rántott sajtok",
+	        "id": "rantott-sajtok"
+	    }, {
+	        "name": "Frissensültek",
+	        "id": "frissensultek"
+	    }, {
+	        "name": "Hamburgerek",
+	        "id": "hamburgerek"
+	    }, {
+	        "name": "Hamburger menük",
+	        "id": "hamburger-menuk"
+	    }, {
+	        "name": "Fitnesz szendvicsek",
+	        "id": "fitnesz-szendvicsek"
+	    }, {
+	        "name": "Saláták",
+	        "id": "salatak"
+	    }, {
+	        "name": "Édességek",
+	        "id": "edessegek"
+	    }, {
+	        "name": "Üdítők",
+	        "id": "uditok"
+	    }],
+	    "dishes": [{
+	        "categoryId": "pizzakenyerek",
+	        "id": "pizzakenyer",
+	        "category": "Pizzakenyerek",
+	        "name": "Pizzakenyér",
+	        "description": "TODO",
+	        "imageName": "pizzakenyer",
+	        "type": "none",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 500
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "pizzakenyerek",
+	        "id": "sajtos-fokhagymas-pizzakenyer",
+	        "category": "Pizzakenyerek",
+	        "name": "Sajtos-fokhagymás pizzakenyér",
+	        "description": "sajt, fokhagyma, fűszerkeverék",
+	        "imageName": "pizzakenyer",
+	        "type": "none",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 600
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "margarita-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Margarita pizza",
+	        "description": "fűszeres paradicsomszósz, sajt",
+	        "imageName": "margarita-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 850
+	        }, {
+	            "name": "40cm",
+	            "price": 1850
+	        }, {
+	            "name": "50cm",
+	            "price": 2700
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "sonkas-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Sonkás pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, sonka",
+	        "imageName": "sonkas-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "szalamis-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Szalámis pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, paprikás szalámi",
+	        "imageName": "szalamis-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "sonka-ku-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Sonka-ku pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, sonka, kukorica",
+	        "imageName": "sonka-ku-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "bacon-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Bacon pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, pirított bacon",
+	        "imageName": "bacon-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "4-sajtos-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "4 Sajtos pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, parmezán, gorgonzola, füstölt sajt",
+	        "imageName": "4-sajtos-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "hawaii-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Hawaii pizza",
+	        "description": "fűszeres paradicsomszósz vagy fűszeres tejfölös szósz, sajt, sonka, ananász, füstölt sajt",
+	        "imageName": "hawaii-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "zoldseges-pizza",
+	        "category": "Extra pizzák",
+	        "name": "Zöldséges pizza",
+	        "description": "fokhagymás tejfölös alap, sajt, padlizsán karikák, cukkini, répa szeletek, párolt fűszeres csirkemell",
+	        "imageName": "zoldseges-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "tonhalas-pizza",
+	        "category": "Extra pizzák",
+	        "name": "Tonhalas pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek",
+	        "imageName": "tonhalas-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "piedone-pizza",
+	        "category": "Extra pizzák",
+	        "name": "Piedone pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika",
+	        "imageName": "piedone-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "joasszony-pizza",
+	        "category": "Extra pizzák",
+	        "name": "Jóasszony pizza",
+	        "description": "fűszeres paradicsomszósz alap, sajt, paprikás szalámi, csípős cseresznyepaprika, csiperke gomba, hagyma",
+	        "imageName": "joasszony-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "3-kivansag-pizza",
+	        "category": "Extra pizzák",
+	        "name": "3 Kívánság pizza",
+	        "description": "szabadon választott szósz alap, sajt, és pluszban három feltét",
+	        "imageName": "3-kivansag-pizza",
+	        "type": "pizza-3-free-options",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "victorio-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Victorio pizza",
+	        "description": "fokhagymás tejfölös alap, sajt, póréhagyma, mozzarella golyó, pirított bacon, juhturó",
+	        "imageName": "victorio-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "hus-zabalo-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Hús-zabáló pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, csirkemell, sült tarja, sonka, bacon",
+	        "imageName": "hus-zabalo-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "master-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Master pizza",
+	        "description": "tejfölös mustáros tárkonyos ízvilág, sajt, sonka, kukorica, pirított bacon, csiperke gomba",
+	        "imageName": "master-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "barbeque-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Barbeque pizza",
+	        "description": "bbq alap szósz, sajt, bacon vagy csirkemell, vöröshagyma, pritamin paprika szeletek",
+	        "imageName": "barbeque-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "jalapeno-barbeque-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Jalapeno Barbeque pizza",
+	        "description": "fokhagymás bbq szósz, sajt, csirkemell, pirított póréhagyma, paradicsomkarika , jalapeno",
+	        "imageName": "jalapeno-barbeque-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "tenger-kincsei-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Tenger kincsei pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, pácban érlelt tenger gyümölcsei, vegyes magozott olíva bogyó",
+	        "imageName": "tenger-kincsei-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "dani-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Dani pizza",
+	        "description": "tejfölös fokhagymás alap, sajt, főtt tarja, lila hagyma, bacon, szeletekre vágott jalapeno paprika",
+	        "imageName": "dani-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "meex-toltott-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Meex töltött pizza",
+	        "description": "tejfölös alap, paprikás szalámi, ruccola, ízletes cheddar sajt, jalapeno paprika",
+	        "imageName": "meex-toltott-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "bossy-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Bossy pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, pármai sonka, frissen vágott ruccola, koktél paradicsom",
+	        "imageName": "bossy-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "meex-specialitas",
+	        "id": "akay-torok-pizza",
+	        "category": "Meex specialitás",
+	        "name": "Akay - török pizza",
+	        "description": "fűszeres paradicsomos alap, sajt, sonka",
+	        "imageName": "akay-torok-pizza",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 490
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "meex-specialitas",
+	        "id": "banu-torok-pizza",
+	        "category": "Meex specialitás",
+	        "name": "Banu - török pizza",
+	        "description": "tejfölös alap, sajt, tarja, pirított fokhagyma",
+	        "imageName": "banu-torok-pizza",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 490
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "meex-specialitas",
+	        "id": "cahil-torok-pizza",
+	        "category": "Meex specialitás",
+	        "name": "Cahil - török pizza",
+	        "description": "bbq alap, sajt, ropogós bacon",
+	        "imageName": "cahil-torok-pizza",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 490
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "tesztak",
+	        "id": "carbonara",
+	        "category": "Tészták",
+	        "name": "Carbonara",
+	        "description": "bacon, sonka, tojás, tejszín, parmezán sajt, spagetti",
+	        "imageName": "carbonara",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "tesztak",
+	        "id": "milanoi",
+	        "category": "Tészták",
+	        "name": "Milánói",
+	        "description": "paradicsomszósz, sonka, gomba, trappista sajt, spagetti",
+	        "imageName": "milanoi",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "tesztak",
+	        "id": "peperoncino",
+	        "category": "Tészták",
+	        "name": "Peperoncino",
+	        "description": "pirított fokhagymás olívaolaj, chili, petrezselyem, csípős, spagetti",
+	        "imageName": "peperoncino",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "tesztak",
+	        "id": "meex",
+	        "category": "Tészták",
+	        "name": "Meex",
+	        "description": "csirke, gomba, fokhagyma, fűszeres tejszínes szósz, parmezán, spagetti",
+	        "imageName": "meex",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "rantott-sajtok",
+	        "id": "izletes-cheddar-sajtfalatkak",
+	        "category": "Rántott sajtok",
+	        "name": "Ízletes cheddar sajtfalatkák",
+	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+	        "imageName": "rantottsajt-cheddar",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1390
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "rantott-sajtok",
+	        "id": "camembert-sajt",
+	        "category": "Rántott sajtok",
+	        "name": "Camembert sajt",
+	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+	        "imageName": "rantottsajt-camambert",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1290
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "rantott-sajtok",
+	        "id": "trappista-sajt",
+	        "category": "Rántott sajtok",
+	        "name": "Trappista sajt",
+	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+	        "imageName": "rantottsajt-trappista",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1190
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "frissensultek",
+	        "id": "buffalo-csirkeszarnyak",
+	        "category": "Frissensültek",
+	        "name": "Buffalo csirkeszárnyak",
+	        "description": "TODO",
+	        "imageName": "buffalo-csirkeszarnyak",
+	        "type": "none",
+	        "variants": [{
+	            "name": "6 darabos",
+	            "price": 780
+	        }, {
+	            "name": "12 darabos",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "frissensultek",
+	        "id": "buffalo-csirkeszarnyak-menu",
+	        "category": "Frissensültek",
+	        "name": "Buffalo csirkeszárnyak menü",
+	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+	        "imageName": "buffalo-csirkeszarnyak",
+	        "type": "none",
+	        "variants": [{
+	            "name": "6 darabos",
+	            "price": 1190
+	        }, {
+	            "name": "12 darabos",
+	            "price": 1350
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "meex-burger",
+	        "category": "Hamburgerek",
+	        "name": "Meex burger",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 750
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "meex-sajtburger",
+	        "category": "Hamburgerek",
+	        "name": "Meex sajtburger",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 850
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "dupla-meex-burger",
+	        "category": "Hamburgerek",
+	        "name": "Dupla Meex burger",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 1250
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "dupla-meex-sajtburger",
+	        "category": "Hamburgerek",
+	        "name": "Dupla Meex sajtburger",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "hamburger-menuk",
+	        "id": "meex-burger-menu",
+	        "category": "Hamburger menük",
+	        "name": "Meex Burger Menü",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
+	        "imageName": "meex-burger-menu",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 990
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "hamburger-menuk",
+	        "id": "meex-sajtburger-menu",
+	        "category": "Hamburger menük",
+	        "name": "Meex Sajtburger Menü",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
+	        "imageName": "meex-burger-menu",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "hamburger-menuk",
+	        "id": "dupla-meex-burger-menu",
+	        "category": "Hamburger menük",
+	        "name": "Dupla Meex Burger Menü",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
+	        "imageName": "meex-burger-menu",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 1490
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "hamburger-menuk",
+	        "id": "dupla-meex-sajtburger-menu",
+	        "category": "Hamburger menük",
+	        "name": "Dupla Meex Sajtburger Menü",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
+	        "imageName": "meex-burger-menu",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "",
+	            "price": 1490
+	        }],
+	        "options": [{
+	            "name": "Köretek",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szószok",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "fitnesz-szendvicsek",
+	        "id": "purpur",
+	        "category": "Fitnesz szendvicsek",
+	        "name": "Purpur",
+	        "description": "szénhidrátcsökkentett magvas baguette, friss jégsaláta, paradicsom, uborka, fűszeres grillezett csirkemell (16dkg)",
+	        "imageName": "purpur",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 590
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "salatak",
+	        "id": "primor-salata",
+	        "category": "Saláták",
+	        "name": "Primőr saláta",
+	        "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola nyakon öntve vinegrettével, pizzakenyér szeletekkel tálalva",
+	        "imageName": "primor-salata",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 650
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "salatak",
+	        "id": "mozarella-salata",
+	        "category": "Saláták",
+	        "name": "Mozarella saláta",
+	        "description": "mozarella golyók, paradicsomkarikák, olívaolajos bazsalikommal és oregánóval, pizzakenyér szeletekkel tálalva",
+	        "imageName": "mozarella-salata",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 800
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "salatak",
+	        "id": "tonhal-salata",
+	        "category": "Saláták",
+	        "name": "Tonhal saláta",
+	        "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, tonhaltörzs, sajtkocka, pizzakenyér szeletekkel tálalva",
+	        "imageName": "tonhal-salata",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1080
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "salatak",
+	        "id": "cezar-salata",
+	        "category": "Saláták",
+	        "name": "Cézár saláta",
+	        "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, grillezett fűszeres csirkemell, parmezán, pizzakenyér szeletekkel tálalva",
+	        "imageName": "cezar-salata",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1080
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "edessegek",
+	        "id": "profiterol",
+	        "category": "Édességek",
+	        "name": "Profiterol",
+	        "description": "Profiterol golyók fehér- és tejcsokoládé bevonattal, tejszínhab koronával",
+	        "imageName": "profiterol",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 600
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "pepsi",
+	        "category": "Üdítők",
+	        "name": "Pepsi",
+	        "description": "",
+	        "imageName": "pepsi",
+	        "type": "none",
+	        "variants": [{
+	            "name": "1,75 literes",
+	            "price": 480
+	        }, {
+	            "name": "1 literes",
+	            "price": 350
+	        }, {
+	            "name": "0,33 literes",
+	            "price": 190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "pepsi-max",
+	        "category": "Üdítők",
+	        "name": "Pepsi Max",
+	        "description": "",
+	        "imageName": "pepsi-max",
+	        "type": "none",
+	        "variants": [{
+	            "name": "1,75 literes",
+	            "price": 480
+	        }, {
+	            "name": "1 literes",
+	            "price": 350
+	        }, {
+	            "name": "0,33 literes",
+	            "price": 190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "mirinda",
+	        "category": "Üdítők",
+	        "name": "Mirinda",
+	        "description": "",
+	        "imageName": "mirinda",
+	        "type": "none",
+	        "variants": [{
+	            "name": "1,75 literes",
+	            "price": 480
+	        }, {
+	            "name": "1 literes",
+	            "price": 350
+	        }, {
+	            "name": "0,33 literes",
+	            "price": 190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "canada-dry",
+	        "category": "Üdítők",
+	        "name": "Canada Dry",
+	        "description": "",
+	        "imageName": "canada-dry",
+	        "type": "none",
+	        "variants": [{
+	            "name": "1,75 literes",
+	            "price": 480
+	        }, {
+	            "name": "1 literes",
+	            "price": 350
+	        }, {
+	            "name": "0,33 literes",
+	            "price": 190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "lipton-ice-tea",
+	        "category": "Üdítők",
+	        "name": "Lipton Ice Tea",
+	        "description": "",
+	        "imageName": "lipton-ice-tea",
+	        "type": "none",
+	        "variants": [{
+	            "name": "0,33 literes",
+	            "price": 190
+	        }],
+	        "options": []
+	    }],
+	    "pizzaExtras": [{
+	        "name": "Húsok",
+	        "price": 250,
+	        "list": ["sonka", "tarja", "bacon", "szalámi", "csirkemell"]
+	    }, {
+	        "name": "Halféleségek",
+	        "price": 300,
+	        "list": ["tengergyümölcsei", "tonhal"]
+	    }, {
+	        "name": "Prémium sonkák",
+	        "price": 450,
+	        "list": ["pármai", "serrano", "mangalica"]
+	    }, {
+	        "name": "Tejes készítmények, sajtok",
+	        "price": 250,
+	        "list": ["tejföl", "juhtúró", "sajt", "füstölt sajt"]
+	    }, {
+	        "name": "Prémium sajtok",
+	        "price": 300,
+	        "list": ["gorgonzola sajt", "parmezán sajt", "mozzarella golyó", "feta sajt"]
+	    }, {
+	        "name": "Zöldségek",
+	        "price": 150,
+	        "list": ["kukorica", "gomba", "fokhagyma", "hagyma", "póréhagyma", "capribogyó", "fehér és vörös óriásbab", "édes pepperóni", "erős cseresznyepaprika", "jalapeno paprika", "padlizsán", "cukkini", "répa", "pritamin paprika", "magozott zöld és fekete olívabogyó", "ruccola", "paradicsom", "brokkoli"]
+	    }, {
+	        "name": "Gyümölcsök",
+	        "price": 150,
+	        "list": ["ananász", "citrom"]
+	    }],
+	    "hamburgerExtras": [{
+	        "name": "Zöldségek",
+	        "price": 100,
+	        "list": ["jégsaláta", "paradicsom", "uborka"]
+	    }, {
+	        "name": "Húsok",
+	        "price": 300,
+	        "list": ["Húspogácsa"]
+	    }, {
+	        "name": "Sajtok",
+	        "price": 150,
+	        "list": ["parmezán", "gorgonzola", "cheddar"]
+	    }],
+	    "version": "0c23a4c8fa1a92bfac5e83e030452f01"
+	};
+
+/***/ }
+/******/ ]);
 //# sourceMappingURL=main.js.map
