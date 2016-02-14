@@ -1,16 +1,16 @@
 # version: 2016-01-31
 
-Pizzakenyerek:
-    Választék:
-        Pizzakenyér:
-            Leírás: TODO
-            Árak:
-                30cm: 500
-        Sajtos-fokhagymás pizzakenyér:
-            image: pizzakenyer
-            Leírás: sajt, fokhagyma, fűszerkeverék
-            Árak:
-                30cm: 600
+# Pizzakenyerek:
+#     Választék:
+#         Pizzakenyér:
+#             Leírás: TODO
+#             Árak:
+#                 30cm: 500
+#         Sajtos-fokhagymás pizzakenyér:
+#             image: pizzakenyer
+#             Leírás: sajt, fokhagyma, fűszerkeverék
+#             Árak:
+#                 30cm: 600
 
 Klasszikus pizzák:
     Választék:
@@ -18,9 +18,9 @@ Klasszikus pizzák:
             type: pizza
             Leírás: fűszeres paradicsomszósz, sajt
             Árak:
-                30cm: 850
-                40cm: 1850
-                50cm: 2700
+                30cm: 1070
+                40cm: 2070
+                50cm: 2920
         Sonkás pizza:
             type: pizza
             Leírás: fűszeres paradicsomszósz, sajt, sonka
@@ -59,6 +59,10 @@ Klasszikus pizzák:
         Hawaii pizza:
             type: pizza
             Leírás: fűszeres paradicsomszósz vagy fűszeres tejfölös szósz, sajt, sonka, ananász, füstölt sajt
+            Opciók:
+                Alap:
+                    - fűszeres paradicsomszósz
+                    - fűszeres tejfölös szósz
             Árak:
                 30cm: 1070
                 40cm: 2070
@@ -66,70 +70,111 @@ Klasszikus pizzák:
 
 Extra pizzák:
     Választék:
-        Zöldséges pizza:
-            type: pizza
-            Leírás: fokhagymás tejfölös alap, sajt, padlizsán karikák, cukkini, répa szeletek, párolt fűszeres csirkemell
-            Árak:
-                30cm: 1190
         Tonhalas pizza:
             type: pizza
             Leírás: fűszeres paradicsomszósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek
             Árak:
                 30cm: 1190
+                40cm: 2450
+                50cm: 3540
         Piedone pizza:
             type: pizza
             Leírás: fűszeres paradicsomszósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika
             Árak:
                 30cm: 1190
+                40cm: 2450
+                50cm: 3540
         Jóasszony pizza:
             type: pizza
             Leírás: fűszeres paradicsomszósz alap, sajt, paprikás szalámi, csípős cseresznyepaprika, csiperke gomba, hagyma
             Árak:
                 30cm: 1190
+                40cm: 2450
+                50cm: 3540
         3 Kívánság pizza:
             type: pizza-3-free-options
             Leírás: szabadon választott szósz alap, sajt, és pluszban három feltét
+            Opciók:
+                Alap:
+                    - fűszeres paradicsomszósz alap
+                    - fűszeres tejfölös szósz
+                    - TODO
             Árak:
                 30cm: 1190
+                40cm: 2450
+                50cm: 3540
+        Chuck Norris pizza:
+            type: pizza
+            Leírás: extra erős chilipaszta, sajt, grillezett csirkemell, paradicsomkarika, szeletekre vágott lilahagyma
+            Árak:
+                30cm: 1190
+                40cm: 2450
+                50cm: 3540
 
 
 Full a fullban pizzák:
     Választék:
+        Szex & New York pizza:
+            type: pizza
+            Leírás: választható alap, bacon, kukorica, brokkoli, camambert, tükörtojás
+            Opciók:
+                Alap:
+                    - fűszeres paradicsomszósz alap
+                    - fűszeres tejfölös szósz
+                    - TODO
+            Árak:
+                30cm: 1450
+                40cm: 3100
+                50cm: 3950
         Victorio pizza:
             type: pizza
             Leírás: fokhagymás tejfölös alap, sajt, póréhagyma, mozzarella golyó, pirított bacon, juhturó
             Árak:
                 30cm: 1450
+                40cm: 3100
+                50cm: 3950
         Hús-zabáló pizza:
             type: pizza
             Leírás: fűszeres paradicsomszósz, sajt, csirkemell, sült tarja, sonka, bacon
             Árak:
                 30cm: 1450
+                40cm: 3100
+                50cm: 3950
         Master pizza:
             type: pizza
             Leírás: tejfölös mustáros tárkonyos ízvilág, sajt, sonka, kukorica, pirított bacon, csiperke gomba
             Árak:
                 30cm: 1450
+                40cm: 3100
+                50cm: 3950
         Barbeque pizza:
             type: pizza
             Leírás: bbq alap szósz, sajt, bacon vagy csirkemell, vöröshagyma, pritamin paprika szeletek
             Árak:
                 30cm: 1450
+                40cm: 3100
+                50cm: 3950
         Jalapeno Barbeque pizza:
             type: pizza
             Leírás: fokhagymás bbq szósz, sajt, csirkemell, pirított póréhagyma, paradicsomkarika , jalapeno
             Árak:
                 30cm: 1450
+                40cm: 3100
+                50cm: 3950
         Tenger kincsei pizza:
             type: pizza
             Leírás: fűszeres paradicsomszósz, sajt, pácban érlelt tenger gyümölcsei, vegyes magozott olíva bogyó
             Árak:
                 30cm: 1450
+                40cm: 3100
+                50cm: 3950
         Dani pizza:
             type: pizza
             Leírás: tejfölös fokhagymás alap, sajt, főtt tarja, lila hagyma, bacon, szeletekre vágott jalapeno paprika
             Árak:
                 30cm: 1450
+                40cm: 3100
+                50cm: 3950
         Meex töltött pizza:
             type: pizza
             Leírás: tejfölös alap, paprikás szalámi, ruccola, ízletes cheddar sajt, jalapeno paprika
@@ -139,9 +184,36 @@ Full a fullban pizzák:
             type: pizza
             Leírás: fűszeres paradicsomszósz, sajt, pármai sonka, frissen vágott ruccola, koktél paradicsom
             Árak:
-                30cm: 1450
+                30cm: 1550
 
-Meex specialitás:
+Tészták:
+    Választék:
+        Carbonara:
+            Leírás: bacon, sonka, tojás, tejszín, parmezán sajt, spagetti
+            Árak:
+                '': 1090
+        Peperoncino:
+            Leírás: pirított fokhagymás olívaolaj, chili, petrezselyem, csípős, spagetti
+            Árak:
+                '': 1090
+        Milánói:
+            Leírás: paradicsomszósz, sonka, gomba, trappista sajt, spagetti
+            Árak:
+                '': 1090
+        Meex I:
+            Leírás: csirke, gomba, fokhagyma, fűszeres tejszínes szósz, parmezán, spagetti
+            Árak:
+                '': 1190
+        Meex II:
+            Leírás: csirke, gomba, fokhagyma, fűszeres tejszínes szósz, kukorica, parmezán, pennetészta
+            Árak:
+                '': 1190
+        Bolognai:
+            Leírás: paradicsomos alap, hagyma, darált sertés, fűszerek, spagetti
+            Árak:
+                '': 1190
+
+Fúziós ételek:
     Választék:
         Akay - török pizza:
             Leírás: fűszeres paradicsomos alap, sajt, sonka
@@ -155,27 +227,20 @@ Meex specialitás:
             Leírás: bbq alap, sajt, ropogós bacon
             Árak:
                 '': 490
+        Török pizza menü (Akay):
+            Leírás: fűszeres paradicsomos alap, sajt, sonka
+            Árak:
+                '': 990
+        Török pizza menü (Banu):
+            Leírás: tejfölös alap, sajt, tarja, pirított fokhagyma
+            Árak:
+                '': 990
+        Török pizza menü (Cahil):
+            Leírás: bbq alap, sajt, ropogós bacon
+            Árak:
+                '': 990
 
-Tészták:
-    Választék:
-        Carbonara:
-            Leírás: bacon, sonka, tojás, tejszín, parmezán sajt, spagetti
-            Árak:
-                '': 1090
-        Milánói:
-            Leírás: paradicsomszósz, sonka, gomba, trappista sajt, spagetti
-            Árak:
-                '': 1090
-        Peperoncino:
-            Leírás: pirított fokhagymás olívaolaj, chili, petrezselyem, csípős, spagetti
-            Árak:
-                '': 1090
-        Meex:
-            Leírás: csirke, gomba, fokhagyma, fűszeres tejszínes szósz, parmezán, spagetti
-            Árak:
-                '': 1190
-
-Rántott sajtok:
+Rántott sajtok és frissensültek:
     Választék:
         Ízletes cheddar sajtfalatkák:
             image: rantottsajt-cheddar
@@ -189,7 +254,7 @@ Rántott sajtok:
                     - gyümölcsszósz
                     - chilis szósz
             Árak:
-                '': 1390
+                '': 1290
         Camembert sajt:
             image: rantottsajt-camambert
             Leírás: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
@@ -215,10 +280,8 @@ Rántott sajtok:
                     - gyümölcsszósz
                     - chilis szósz
             Árak:
-                '': 1190
+                '': 1290
 
-Frissensültek:
-    Választék:
         Buffalo csirkeszárnyak:
             image: buffalo-csirkeszarnyak
             Leírás: TODO
@@ -239,6 +302,15 @@ Frissensültek:
             Árak:
                 6 darabos: 1190
                 12 darabos: 1350
+        Fitneszcsirke:
+            Leírás: roston sült csirkemellszelet, friss saláta vagy párold zöldköret vagy párolt gyümölcs
+            Opciók:
+                Köret:
+                    - friss saláta
+                    - párolt zöldköret
+                    - párolt gyümölcs
+            Árak:
+                '': 990
 
 Hamburgerek:
     Választék:
@@ -266,6 +338,40 @@ Hamburgerek:
             Leírás: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt
             Árak:
                 '': 1450
+
+        Cheese Lovers Burger:
+            type: hamburger
+            image: meex-burger
+            Leírás: alap + választható sajt
+            Opciók:
+                Sajt:
+                    - rostonsült mozzarella
+                    - rántott trappista
+                    - rántott camabert
+            Árak:
+                '': 890
+        Texasi Tüzes Burger:
+            type: hamburger
+            image: meex-burger
+            Leírás: alap + 100% marhahús, jalapeno, cheddar sajt
+            Árak:
+                '': 990
+        New York Burger:
+            type: hamburger
+            image: meex-burger
+            Leírás: alap + rostonsült csirke, füstölt sajt, tükörtojás
+            Árak:
+                '': 990
+        Hungarian Burger:
+            type: hamburger
+            image: meex-burger
+            Leírás: alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt
+            Opciók:
+                Hús:
+                    - panko morzsás sertés
+                    - csirke
+            Árak:
+                '': 990
 
 Hamburger menük:
     Választék:
@@ -324,7 +430,7 @@ Hamburger menük:
                     - gyümölcsszósz
                     - chilis szósz
             Árak:
-                '': 1490
+                '': 1590
 
 Fitnesz szendvicsek:
     Választék:

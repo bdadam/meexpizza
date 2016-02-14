@@ -1,29 +1,13 @@
 module.exports = {
     "dishes": [
         {
-            "categoryId": "pizzakenyerek",
-            "name": "Pizzakenyér",
-            "id": "pizzakenyerek-pizzakenyer",
-            "variants": {
-                "30cm": 500
-            }
-        },
-        {
-            "categoryId": "pizzakenyerek",
-            "name": "Sajtos-fokhagymás pizzakenyér",
-            "id": "pizzakenyerek-sajtos-fokhagymas-pizzakenyer",
-            "variants": {
-                "30cm": 600
-            }
-        },
-        {
             "categoryId": "klasszikus-pizzak",
             "name": "Margarita pizza",
             "id": "klasszikus-pizzak-margarita-pizza",
             "variants": {
-                "30cm": 850,
-                "40cm": 1850,
-                "50cm": 2700
+                "30cm": 1070,
+                "40cm": 2070,
+                "50cm": 2920
             }
         },
         {
@@ -88,18 +72,12 @@ module.exports = {
         },
         {
             "categoryId": "extra-pizzak",
-            "name": "Zöldséges pizza",
-            "id": "extra-pizzak-zoldseges-pizza",
-            "variants": {
-                "30cm": 1190
-            }
-        },
-        {
-            "categoryId": "extra-pizzak",
             "name": "Tonhalas pizza",
             "id": "extra-pizzak-tonhalas-pizza",
             "variants": {
-                "30cm": 1190
+                "30cm": 1190,
+                "40cm": 2450,
+                "50cm": 3540
             }
         },
         {
@@ -107,7 +85,9 @@ module.exports = {
             "name": "Piedone pizza",
             "id": "extra-pizzak-piedone-pizza",
             "variants": {
-                "30cm": 1190
+                "30cm": 1190,
+                "40cm": 2450,
+                "50cm": 3540
             }
         },
         {
@@ -115,7 +95,9 @@ module.exports = {
             "name": "Jóasszony pizza",
             "id": "extra-pizzak-joasszony-pizza",
             "variants": {
-                "30cm": 1190
+                "30cm": 1190,
+                "40cm": 2450,
+                "50cm": 3540
             }
         },
         {
@@ -123,7 +105,29 @@ module.exports = {
             "name": "3 Kívánság pizza",
             "id": "extra-pizzak-3-kivansag-pizza",
             "variants": {
-                "30cm": 1190
+                "30cm": 1190,
+                "40cm": 2450,
+                "50cm": 3540
+            }
+        },
+        {
+            "categoryId": "extra-pizzak",
+            "name": "Chuck Norris pizza",
+            "id": "extra-pizzak-chuck-norris-pizza",
+            "variants": {
+                "30cm": 1190,
+                "40cm": 2450,
+                "50cm": 3540
+            }
+        },
+        {
+            "categoryId": "full-a-fullban-pizzak",
+            "name": "Szex & New York pizza",
+            "id": "full-a-fullban-pizzak-szex-es-new-york-pizza",
+            "variants": {
+                "30cm": 1450,
+                "40cm": 3100,
+                "50cm": 3950
             }
         },
         {
@@ -131,7 +135,9 @@ module.exports = {
             "name": "Victorio pizza",
             "id": "full-a-fullban-pizzak-victorio-pizza",
             "variants": {
-                "30cm": 1450
+                "30cm": 1450,
+                "40cm": 3100,
+                "50cm": 3950
             }
         },
         {
@@ -139,7 +145,9 @@ module.exports = {
             "name": "Hús-zabáló pizza",
             "id": "full-a-fullban-pizzak-hus-zabalo-pizza",
             "variants": {
-                "30cm": 1450
+                "30cm": 1450,
+                "40cm": 3100,
+                "50cm": 3950
             }
         },
         {
@@ -147,7 +155,9 @@ module.exports = {
             "name": "Master pizza",
             "id": "full-a-fullban-pizzak-master-pizza",
             "variants": {
-                "30cm": 1450
+                "30cm": 1450,
+                "40cm": 3100,
+                "50cm": 3950
             }
         },
         {
@@ -155,7 +165,9 @@ module.exports = {
             "name": "Barbeque pizza",
             "id": "full-a-fullban-pizzak-barbeque-pizza",
             "variants": {
-                "30cm": 1450
+                "30cm": 1450,
+                "40cm": 3100,
+                "50cm": 3950
             }
         },
         {
@@ -163,7 +175,9 @@ module.exports = {
             "name": "Jalapeno Barbeque pizza",
             "id": "full-a-fullban-pizzak-jalapeno-barbeque-pizza",
             "variants": {
-                "30cm": 1450
+                "30cm": 1450,
+                "40cm": 3100,
+                "50cm": 3950
             }
         },
         {
@@ -171,7 +185,9 @@ module.exports = {
             "name": "Tenger kincsei pizza",
             "id": "full-a-fullban-pizzak-tenger-kincsei-pizza",
             "variants": {
-                "30cm": 1450
+                "30cm": 1450,
+                "40cm": 3100,
+                "50cm": 3950
             }
         },
         {
@@ -179,7 +195,9 @@ module.exports = {
             "name": "Dani pizza",
             "id": "full-a-fullban-pizzak-dani-pizza",
             "variants": {
-                "30cm": 1450
+                "30cm": 1450,
+                "40cm": 3100,
+                "50cm": 3950
             }
         },
         {
@@ -195,45 +213,13 @@ module.exports = {
             "name": "Bossy pizza",
             "id": "full-a-fullban-pizzak-bossy-pizza",
             "variants": {
-                "30cm": 1450
-            }
-        },
-        {
-            "categoryId": "meex-specialitas",
-            "name": "Akay - török pizza",
-            "id": "meex-specialitas-akay-torok-pizza",
-            "variants": {
-                "": 490
-            }
-        },
-        {
-            "categoryId": "meex-specialitas",
-            "name": "Banu - török pizza",
-            "id": "meex-specialitas-banu-torok-pizza",
-            "variants": {
-                "": 490
-            }
-        },
-        {
-            "categoryId": "meex-specialitas",
-            "name": "Cahil - török pizza",
-            "id": "meex-specialitas-cahil-torok-pizza",
-            "variants": {
-                "": 490
+                "30cm": 1550
             }
         },
         {
             "categoryId": "tesztak",
             "name": "Carbonara",
             "id": "tesztak-carbonara",
-            "variants": {
-                "": 1090
-            }
-        },
-        {
-            "categoryId": "tesztak",
-            "name": "Milánói",
-            "id": "tesztak-milanoi",
             "variants": {
                 "": 1090
             }
@@ -248,52 +234,132 @@ module.exports = {
         },
         {
             "categoryId": "tesztak",
-            "name": "Meex",
-            "id": "tesztak-meex",
+            "name": "Milánói",
+            "id": "tesztak-milanoi",
+            "variants": {
+                "": 1090
+            }
+        },
+        {
+            "categoryId": "tesztak",
+            "name": "Meex I",
+            "id": "tesztak-meex-i",
             "variants": {
                 "": 1190
             }
         },
         {
-            "categoryId": "rantott-sajtok",
-            "name": "Ízletes cheddar sajtfalatkák",
-            "id": "rantott-sajtok-izletes-cheddar-sajtfalatkak",
+            "categoryId": "tesztak",
+            "name": "Meex II",
+            "id": "tesztak-meex-ii",
             "variants": {
-                "": 1390
+                "": 1190
             }
         },
         {
-            "categoryId": "rantott-sajtok",
-            "name": "Camembert sajt",
-            "id": "rantott-sajtok-camembert-sajt",
+            "categoryId": "tesztak",
+            "name": "Bolognai",
+            "id": "tesztak-bolognai",
+            "variants": {
+                "": 1190
+            }
+        },
+        {
+            "categoryId": "fuzios-etelek",
+            "name": "Akay - török pizza",
+            "id": "fuzios-etelek-akay-torok-pizza",
+            "variants": {
+                "": 490
+            }
+        },
+        {
+            "categoryId": "fuzios-etelek",
+            "name": "Banu - török pizza",
+            "id": "fuzios-etelek-banu-torok-pizza",
+            "variants": {
+                "": 490
+            }
+        },
+        {
+            "categoryId": "fuzios-etelek",
+            "name": "Cahil - török pizza",
+            "id": "fuzios-etelek-cahil-torok-pizza",
+            "variants": {
+                "": 490
+            }
+        },
+        {
+            "categoryId": "fuzios-etelek",
+            "name": "Török pizza menü (Akay)",
+            "id": "fuzios-etelek-torok-pizza-menu-akay",
+            "variants": {
+                "": 990
+            }
+        },
+        {
+            "categoryId": "fuzios-etelek",
+            "name": "Török pizza menü (Banu)",
+            "id": "fuzios-etelek-torok-pizza-menu-banu",
+            "variants": {
+                "": 990
+            }
+        },
+        {
+            "categoryId": "fuzios-etelek",
+            "name": "Török pizza menü (Cahil)",
+            "id": "fuzios-etelek-torok-pizza-menu-cahil",
+            "variants": {
+                "": 990
+            }
+        },
+        {
+            "categoryId": "rantott-sajtok-es-frissensultek",
+            "name": "Ízletes cheddar sajtfalatkák",
+            "id": "rantott-sajtok-es-frissensultek-izletes-cheddar-sajtfalatkak",
             "variants": {
                 "": 1290
             }
         },
         {
-            "categoryId": "rantott-sajtok",
-            "name": "Trappista sajt",
-            "id": "rantott-sajtok-trappista-sajt",
+            "categoryId": "rantott-sajtok-es-frissensultek",
+            "name": "Camembert sajt",
+            "id": "rantott-sajtok-es-frissensultek-camembert-sajt",
             "variants": {
-                "": 1190
+                "": 1290
             }
         },
         {
-            "categoryId": "frissensultek",
+            "categoryId": "rantott-sajtok-es-frissensultek",
+            "name": "Trappista sajt",
+            "id": "rantott-sajtok-es-frissensultek-trappista-sajt",
+            "variants": {
+                "": 1290
+            }
+        },
+        {
+            "categoryId": "rantott-sajtok-es-frissensultek",
             "name": "Buffalo csirkeszárnyak",
-            "id": "frissensultek-buffalo-csirkeszarnyak",
+            "id": "rantott-sajtok-es-frissensultek-buffalo-csirkeszarnyak",
             "variants": {
                 "6 darabos": 780,
                 "12 darabos": 1090
             }
         },
         {
-            "categoryId": "frissensultek",
+            "categoryId": "rantott-sajtok-es-frissensultek",
             "name": "Buffalo csirkeszárnyak menü",
-            "id": "frissensultek-buffalo-csirkeszarnyak-menu",
+            "id": "rantott-sajtok-es-frissensultek-buffalo-csirkeszarnyak-menu",
             "variants": {
                 "6 darabos": 1190,
                 "12 darabos": 1350
+            }
+        },
+        {
+            "categoryId": "rantott-sajtok-es-frissensultek",
+            "name": "Fitneszcsirke",
+            "id": "rantott-sajtok-es-frissensultek-fitneszcsirke",
+            "variants": {
+                "": 990
             }
         },
         {
@@ -329,6 +395,38 @@ module.exports = {
             }
         },
         {
+            "categoryId": "hamburgerek",
+            "name": "Cheese Lovers Burger",
+            "id": "hamburgerek-cheese-lovers-burger",
+            "variants": {
+                "": 890
+            }
+        },
+        {
+            "categoryId": "hamburgerek",
+            "name": "Texasi Tüzes Burger",
+            "id": "hamburgerek-texasi-tuzes-burger",
+            "variants": {
+                "": 990
+            }
+        },
+        {
+            "categoryId": "hamburgerek",
+            "name": "New York Burger",
+            "id": "hamburgerek-new-york-burger",
+            "variants": {
+                "": 990
+            }
+        },
+        {
+            "categoryId": "hamburgerek",
+            "name": "Hungarian Burger",
+            "id": "hamburgerek-hungarian-burger",
+            "variants": {
+                "": 990
+            }
+        },
+        {
             "categoryId": "hamburger-menuk",
             "name": "Meex Burger Menü",
             "id": "hamburger-menuk-meex-burger-menu",
@@ -357,7 +455,7 @@ module.exports = {
             "name": "Dupla Meex Sajtburger Menü",
             "id": "hamburger-menuk-dupla-meex-sajtburger-menu",
             "variants": {
-                "": 1490
+                "": 1590
             }
         },
         {

@@ -39,6 +39,8 @@
     "nanomodal": "^5.1.1",
     "nedb": "^1.7.2",
     "normalize.css": "^3.0.3",
+    "nunjucks": "^2.3.0",
+    "page": "^1.6.4",
     "redux": "^3.0.6",
     "speakingurl": "^8.0.2",
     "suspend": "^0.7.0",
@@ -46,8 +48,5 @@
     "webpack-stream": "^3.1.0",
     "yargs": "^3.32.0",
     "zepto": "^1.0.1"
-  },
-  "dependencies": {
-    "nunjucks": "^2.3.0"
   }
 }

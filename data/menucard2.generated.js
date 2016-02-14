@@ -1,10 +1,6 @@
 module.exports = {
     "categories": [
         {
-            "name": "Pizzakenyerek",
-            "id": "pizzakenyerek"
-        },
-        {
             "name": "Klasszikus pizzák",
             "id": "klasszikus-pizzak"
         },
@@ -17,20 +13,16 @@ module.exports = {
             "id": "full-a-fullban-pizzak"
         },
         {
-            "name": "Meex specialitás",
-            "id": "meex-specialitas"
-        },
-        {
             "name": "Tészták",
             "id": "tesztak"
         },
         {
-            "name": "Rántott sajtok",
-            "id": "rantott-sajtok"
+            "name": "Fúziós ételek",
+            "id": "fuzios-etelek"
         },
         {
-            "name": "Frissensültek",
-            "id": "frissensultek"
+            "name": "Rántott sajtok és frissensültek",
+            "id": "rantott-sajtok-es-frissensultek"
         },
         {
             "name": "Hamburgerek",
@@ -59,38 +51,6 @@ module.exports = {
     ],
     "dishes": [
         {
-            "categoryId": "pizzakenyerek",
-            "id": "pizzakenyer",
-            "category": "Pizzakenyerek",
-            "name": "Pizzakenyér",
-            "description": "TODO",
-            "imageName": "pizzakenyer",
-            "type": "none",
-            "variants": [
-                {
-                    "name": "30cm",
-                    "price": 500
-                }
-            ],
-            "options": []
-        },
-        {
-            "categoryId": "pizzakenyerek",
-            "id": "sajtos-fokhagymas-pizzakenyer",
-            "category": "Pizzakenyerek",
-            "name": "Sajtos-fokhagymás pizzakenyér",
-            "description": "sajt, fokhagyma, fűszerkeverék",
-            "imageName": "pizzakenyer",
-            "type": "none",
-            "variants": [
-                {
-                    "name": "30cm",
-                    "price": 600
-                }
-            ],
-            "options": []
-        },
-        {
             "categoryId": "klasszikus-pizzak",
             "id": "margarita-pizza",
             "category": "Klasszikus pizzák",
@@ -101,15 +61,15 @@ module.exports = {
             "variants": [
                 {
                     "name": "30cm",
-                    "price": 850
+                    "price": 1070
                 },
                 {
                     "name": "40cm",
-                    "price": 1850
+                    "price": 2070
                 },
                 {
                     "name": "50cm",
-                    "price": 2700
+                    "price": 2920
                 }
             ],
             "options": []
@@ -256,23 +216,15 @@ module.exports = {
                     "price": 2920
                 }
             ],
-            "options": []
-        },
-        {
-            "categoryId": "extra-pizzak",
-            "id": "zoldseges-pizza",
-            "category": "Extra pizzák",
-            "name": "Zöldséges pizza",
-            "description": "fokhagymás tejfölös alap, sajt, padlizsán karikák, cukkini, répa szeletek, párolt fűszeres csirkemell",
-            "imageName": "zoldseges-pizza",
-            "type": "pizza",
-            "variants": [
+            "options": [
                 {
-                    "name": "30cm",
-                    "price": 1190
+                    "name": "Alap",
+                    "list": [
+                        "fűszeres paradicsomszósz",
+                        "fűszeres tejfölös szósz"
+                    ]
                 }
-            ],
-            "options": []
+            ]
         },
         {
             "categoryId": "extra-pizzak",
@@ -286,6 +238,14 @@ module.exports = {
                 {
                     "name": "30cm",
                     "price": 1190
+                },
+                {
+                    "name": "40cm",
+                    "price": 2450
+                },
+                {
+                    "name": "50cm",
+                    "price": 3540
                 }
             ],
             "options": []
@@ -302,6 +262,14 @@ module.exports = {
                 {
                     "name": "30cm",
                     "price": 1190
+                },
+                {
+                    "name": "40cm",
+                    "price": 2450
+                },
+                {
+                    "name": "50cm",
+                    "price": 3540
                 }
             ],
             "options": []
@@ -318,6 +286,14 @@ module.exports = {
                 {
                     "name": "30cm",
                     "price": 1190
+                },
+                {
+                    "name": "40cm",
+                    "price": 2450
+                },
+                {
+                    "name": "50cm",
+                    "price": 3540
                 }
             ],
             "options": []
@@ -334,9 +310,83 @@ module.exports = {
                 {
                     "name": "30cm",
                     "price": 1190
+                },
+                {
+                    "name": "40cm",
+                    "price": 2450
+                },
+                {
+                    "name": "50cm",
+                    "price": 3540
+                }
+            ],
+            "options": [
+                {
+                    "name": "Alap",
+                    "list": [
+                        "fűszeres paradicsomszósz alap",
+                        "fűszeres tejfölös szósz",
+                        "TODO"
+                    ]
+                }
+            ]
+        },
+        {
+            "categoryId": "extra-pizzak",
+            "id": "chuck-norris-pizza",
+            "category": "Extra pizzák",
+            "name": "Chuck Norris pizza",
+            "description": "extra erős chilipaszta, sajt, grillezett csirkemell, paradicsomkarika, szeletekre vágott lilahagyma",
+            "imageName": "chuck-norris-pizza",
+            "type": "pizza",
+            "variants": [
+                {
+                    "name": "30cm",
+                    "price": 1190
+                },
+                {
+                    "name": "40cm",
+                    "price": 2450
+                },
+                {
+                    "name": "50cm",
+                    "price": 3540
                 }
             ],
             "options": []
+        },
+        {
+            "categoryId": "full-a-fullban-pizzak",
+            "id": "szex-es-new-york-pizza",
+            "category": "Full a fullban pizzák",
+            "name": "Szex & New York pizza",
+            "description": "választható alap, bacon, kukorica, brokkoli, camambert, tükörtojás",
+            "imageName": "szex-es-new-york-pizza",
+            "type": "pizza",
+            "variants": [
+                {
+                    "name": "30cm",
+                    "price": 1450
+                },
+                {
+                    "name": "40cm",
+                    "price": 3100
+                },
+                {
+                    "name": "50cm",
+                    "price": 3950
+                }
+            ],
+            "options": [
+                {
+                    "name": "Alap",
+                    "list": [
+                        "fűszeres paradicsomszósz alap",
+                        "fűszeres tejfölös szósz",
+                        "TODO"
+                    ]
+                }
+            ]
         },
         {
             "categoryId": "full-a-fullban-pizzak",
@@ -350,6 +400,14 @@ module.exports = {
                 {
                     "name": "30cm",
                     "price": 1450
+                },
+                {
+                    "name": "40cm",
+                    "price": 3100
+                },
+                {
+                    "name": "50cm",
+                    "price": 3950
                 }
             ],
             "options": []
@@ -366,6 +424,14 @@ module.exports = {
                 {
                     "name": "30cm",
                     "price": 1450
+                },
+                {
+                    "name": "40cm",
+                    "price": 3100
+                },
+                {
+                    "name": "50cm",
+                    "price": 3950
                 }
             ],
             "options": []
@@ -382,6 +448,14 @@ module.exports = {
                 {
                     "name": "30cm",
                     "price": 1450
+                },
+                {
+                    "name": "40cm",
+                    "price": 3100
+                },
+                {
+                    "name": "50cm",
+                    "price": 3950
                 }
             ],
             "options": []
@@ -398,6 +472,14 @@ module.exports = {
                 {
                     "name": "30cm",
                     "price": 1450
+                },
+                {
+                    "name": "40cm",
+                    "price": 3100
+                },
+                {
+                    "name": "50cm",
+                    "price": 3950
                 }
             ],
             "options": []
@@ -414,6 +496,14 @@ module.exports = {
                 {
                     "name": "30cm",
                     "price": 1450
+                },
+                {
+                    "name": "40cm",
+                    "price": 3100
+                },
+                {
+                    "name": "50cm",
+                    "price": 3950
                 }
             ],
             "options": []
@@ -430,6 +520,14 @@ module.exports = {
                 {
                     "name": "30cm",
                     "price": 1450
+                },
+                {
+                    "name": "40cm",
+                    "price": 3100
+                },
+                {
+                    "name": "50cm",
+                    "price": 3950
                 }
             ],
             "options": []
@@ -446,6 +544,14 @@ module.exports = {
                 {
                     "name": "30cm",
                     "price": 1450
+                },
+                {
+                    "name": "40cm",
+                    "price": 3100
+                },
+                {
+                    "name": "50cm",
+                    "price": 3950
                 }
             ],
             "options": []
@@ -477,55 +583,7 @@ module.exports = {
             "variants": [
                 {
                     "name": "30cm",
-                    "price": 1450
-                }
-            ],
-            "options": []
-        },
-        {
-            "categoryId": "meex-specialitas",
-            "id": "akay-torok-pizza",
-            "category": "Meex specialitás",
-            "name": "Akay - török pizza",
-            "description": "fűszeres paradicsomos alap, sajt, sonka",
-            "imageName": "akay-torok-pizza",
-            "type": "none",
-            "variants": [
-                {
-                    "name": "",
-                    "price": 490
-                }
-            ],
-            "options": []
-        },
-        {
-            "categoryId": "meex-specialitas",
-            "id": "banu-torok-pizza",
-            "category": "Meex specialitás",
-            "name": "Banu - török pizza",
-            "description": "tejfölös alap, sajt, tarja, pirított fokhagyma",
-            "imageName": "banu-torok-pizza",
-            "type": "none",
-            "variants": [
-                {
-                    "name": "",
-                    "price": 490
-                }
-            ],
-            "options": []
-        },
-        {
-            "categoryId": "meex-specialitas",
-            "id": "cahil-torok-pizza",
-            "category": "Meex specialitás",
-            "name": "Cahil - török pizza",
-            "description": "bbq alap, sajt, ropogós bacon",
-            "imageName": "cahil-torok-pizza",
-            "type": "none",
-            "variants": [
-                {
-                    "name": "",
-                    "price": 490
+                    "price": 1550
                 }
             ],
             "options": []
@@ -537,22 +595,6 @@ module.exports = {
             "name": "Carbonara",
             "description": "bacon, sonka, tojás, tejszín, parmezán sajt, spagetti",
             "imageName": "carbonara",
-            "type": "none",
-            "variants": [
-                {
-                    "name": "",
-                    "price": 1090
-                }
-            ],
-            "options": []
-        },
-        {
-            "categoryId": "tesztak",
-            "id": "milanoi",
-            "category": "Tészták",
-            "name": "Milánói",
-            "description": "paradicsomszósz, sonka, gomba, trappista sajt, spagetti",
-            "imageName": "milanoi",
             "type": "none",
             "variants": [
                 {
@@ -580,11 +622,27 @@ module.exports = {
         },
         {
             "categoryId": "tesztak",
-            "id": "meex",
+            "id": "milanoi",
             "category": "Tészták",
-            "name": "Meex",
+            "name": "Milánói",
+            "description": "paradicsomszósz, sonka, gomba, trappista sajt, spagetti",
+            "imageName": "milanoi",
+            "type": "none",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 1090
+                }
+            ],
+            "options": []
+        },
+        {
+            "categoryId": "tesztak",
+            "id": "meex-i",
+            "category": "Tészták",
+            "name": "Meex I",
             "description": "csirke, gomba, fokhagyma, fűszeres tejszínes szósz, parmezán, spagetti",
-            "imageName": "meex",
+            "imageName": "meex-i",
             "type": "none",
             "variants": [
                 {
@@ -595,9 +653,137 @@ module.exports = {
             "options": []
         },
         {
-            "categoryId": "rantott-sajtok",
+            "categoryId": "tesztak",
+            "id": "meex-ii",
+            "category": "Tészták",
+            "name": "Meex II",
+            "description": "csirke, gomba, fokhagyma, fűszeres tejszínes szósz, kukorica, parmezán, pennetészta",
+            "imageName": "meex-ii",
+            "type": "none",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 1190
+                }
+            ],
+            "options": []
+        },
+        {
+            "categoryId": "tesztak",
+            "id": "bolognai",
+            "category": "Tészták",
+            "name": "Bolognai",
+            "description": "paradicsomos alap, hagyma, darált sertés, fűszerek, spagetti",
+            "imageName": "bolognai",
+            "type": "none",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 1190
+                }
+            ],
+            "options": []
+        },
+        {
+            "categoryId": "fuzios-etelek",
+            "id": "akay-torok-pizza",
+            "category": "Fúziós ételek",
+            "name": "Akay - török pizza",
+            "description": "fűszeres paradicsomos alap, sajt, sonka",
+            "imageName": "akay-torok-pizza",
+            "type": "none",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 490
+                }
+            ],
+            "options": []
+        },
+        {
+            "categoryId": "fuzios-etelek",
+            "id": "banu-torok-pizza",
+            "category": "Fúziós ételek",
+            "name": "Banu - török pizza",
+            "description": "tejfölös alap, sajt, tarja, pirított fokhagyma",
+            "imageName": "banu-torok-pizza",
+            "type": "none",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 490
+                }
+            ],
+            "options": []
+        },
+        {
+            "categoryId": "fuzios-etelek",
+            "id": "cahil-torok-pizza",
+            "category": "Fúziós ételek",
+            "name": "Cahil - török pizza",
+            "description": "bbq alap, sajt, ropogós bacon",
+            "imageName": "cahil-torok-pizza",
+            "type": "none",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 490
+                }
+            ],
+            "options": []
+        },
+        {
+            "categoryId": "fuzios-etelek",
+            "id": "torok-pizza-menu-akay",
+            "category": "Fúziós ételek",
+            "name": "Török pizza menü (Akay)",
+            "description": "fűszeres paradicsomos alap, sajt, sonka",
+            "imageName": "torok-pizza-menu-akay",
+            "type": "none",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 990
+                }
+            ],
+            "options": []
+        },
+        {
+            "categoryId": "fuzios-etelek",
+            "id": "torok-pizza-menu-banu",
+            "category": "Fúziós ételek",
+            "name": "Török pizza menü (Banu)",
+            "description": "tejfölös alap, sajt, tarja, pirított fokhagyma",
+            "imageName": "torok-pizza-menu-banu",
+            "type": "none",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 990
+                }
+            ],
+            "options": []
+        },
+        {
+            "categoryId": "fuzios-etelek",
+            "id": "torok-pizza-menu-cahil",
+            "category": "Fúziós ételek",
+            "name": "Török pizza menü (Cahil)",
+            "description": "bbq alap, sajt, ropogós bacon",
+            "imageName": "torok-pizza-menu-cahil",
+            "type": "none",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 990
+                }
+            ],
+            "options": []
+        },
+        {
+            "categoryId": "rantott-sajtok-es-frissensultek",
             "id": "izletes-cheddar-sajtfalatkak",
-            "category": "Rántott sajtok",
+            "category": "Rántott sajtok és frissensültek",
             "name": "Ízletes cheddar sajtfalatkák",
             "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
             "imageName": "rantottsajt-cheddar",
@@ -605,7 +791,7 @@ module.exports = {
             "variants": [
                 {
                     "name": "",
-                    "price": 1390
+                    "price": 1290
                 }
             ],
             "options": [
@@ -627,9 +813,9 @@ module.exports = {
             ]
         },
         {
-            "categoryId": "rantott-sajtok",
+            "categoryId": "rantott-sajtok-es-frissensultek",
             "id": "camembert-sajt",
-            "category": "Rántott sajtok",
+            "category": "Rántott sajtok és frissensültek",
             "name": "Camembert sajt",
             "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
             "imageName": "rantottsajt-camambert",
@@ -659,9 +845,9 @@ module.exports = {
             ]
         },
         {
-            "categoryId": "rantott-sajtok",
+            "categoryId": "rantott-sajtok-es-frissensultek",
             "id": "trappista-sajt",
-            "category": "Rántott sajtok",
+            "category": "Rántott sajtok és frissensültek",
             "name": "Trappista sajt",
             "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
             "imageName": "rantottsajt-trappista",
@@ -669,7 +855,7 @@ module.exports = {
             "variants": [
                 {
                     "name": "",
-                    "price": 1190
+                    "price": 1290
                 }
             ],
             "options": [
@@ -691,9 +877,9 @@ module.exports = {
             ]
         },
         {
-            "categoryId": "frissensultek",
+            "categoryId": "rantott-sajtok-es-frissensultek",
             "id": "buffalo-csirkeszarnyak",
-            "category": "Frissensültek",
+            "category": "Rántott sajtok és frissensültek",
             "name": "Buffalo csirkeszárnyak",
             "description": "TODO",
             "imageName": "buffalo-csirkeszarnyak",
@@ -711,9 +897,9 @@ module.exports = {
             "options": []
         },
         {
-            "categoryId": "frissensultek",
+            "categoryId": "rantott-sajtok-es-frissensultek",
             "id": "buffalo-csirkeszarnyak-menu",
-            "category": "Frissensültek",
+            "category": "Rántott sajtok és frissensültek",
             "name": "Buffalo csirkeszárnyak menü",
             "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
             "imageName": "buffalo-csirkeszarnyak",
@@ -742,6 +928,31 @@ module.exports = {
                         "házi tartármártás",
                         "gyümölcsszósz",
                         "chilis szósz"
+                    ]
+                }
+            ]
+        },
+        {
+            "categoryId": "rantott-sajtok-es-frissensultek",
+            "id": "fitneszcsirke",
+            "category": "Rántott sajtok és frissensültek",
+            "name": "Fitneszcsirke",
+            "description": "roston sült csirkemellszelet, friss saláta vagy párold zöldköret vagy párolt gyümölcs",
+            "imageName": "fitneszcsirke",
+            "type": "none",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 990
+                }
+            ],
+            "options": [
+                {
+                    "name": "Köret",
+                    "list": [
+                        "friss saláta",
+                        "párolt zöldköret",
+                        "párolt gyümölcs"
                     ]
                 }
             ]
@@ -809,6 +1020,87 @@ module.exports = {
                 }
             ],
             "options": []
+        },
+        {
+            "categoryId": "hamburgerek",
+            "id": "cheese-lovers-burger",
+            "category": "Hamburgerek",
+            "name": "Cheese Lovers Burger",
+            "description": "alap + választható sajt",
+            "imageName": "meex-burger",
+            "type": "hamburger",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 890
+                }
+            ],
+            "options": [
+                {
+                    "name": "Sajt",
+                    "list": [
+                        "rostonsült mozzarella",
+                        "rántott trappista",
+                        "rántott camabert"
+                    ]
+                }
+            ]
+        },
+        {
+            "categoryId": "hamburgerek",
+            "id": "texasi-tuzes-burger",
+            "category": "Hamburgerek",
+            "name": "Texasi Tüzes Burger",
+            "description": "alap + 100% marhahús, jalapeno, cheddar sajt",
+            "imageName": "meex-burger",
+            "type": "hamburger",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 990
+                }
+            ],
+            "options": []
+        },
+        {
+            "categoryId": "hamburgerek",
+            "id": "new-york-burger",
+            "category": "Hamburgerek",
+            "name": "New York Burger",
+            "description": "alap + rostonsült csirke, füstölt sajt, tükörtojás",
+            "imageName": "meex-burger",
+            "type": "hamburger",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 990
+                }
+            ],
+            "options": []
+        },
+        {
+            "categoryId": "hamburgerek",
+            "id": "hungarian-burger",
+            "category": "Hamburgerek",
+            "name": "Hungarian Burger",
+            "description": "alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt",
+            "imageName": "meex-burger",
+            "type": "hamburger",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 990
+                }
+            ],
+            "options": [
+                {
+                    "name": "Hús",
+                    "list": [
+                        "panko morzsás sertés",
+                        "csirke"
+                    ]
+                }
+            ]
         },
         {
             "categoryId": "hamburger-menuk",
@@ -917,7 +1209,7 @@ module.exports = {
             "variants": [
                 {
                     "name": "",
-                    "price": 1490
+                    "price": 1590
                 }
             ],
             "options": [
@@ -1294,5 +1586,5 @@ module.exports = {
             "fix": 1000
         }
     },
-    "version": "95084fb00b4b748ebf3782f89d62d9e8"
+    "version": "eacab51626bd69a61a2301d4ec67bf83"
 };

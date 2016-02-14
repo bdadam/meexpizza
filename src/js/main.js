@@ -398,3 +398,49 @@ Rántott sajt:
 - Milyen szósz?
 
 */
+
+const tracking = require('./tracking');
+const page = require('page');
+
+page((context, next) => {
+    // console.log(context);
+    tracking.pageview();
+    next();
+});
+
+page();
+
+//
+// $.ajax({
+//     url: 'https://meexpizza.firebaseio.com/orders.json',
+//     type: 'POST',
+//     accept: 'application/json',
+//     contentType: 'application/json',
+//     dataType: 'json',
+//     data: JSON.stringify({
+//         title: 'TEST',
+//         city: 'Gyöngyös',
+//         timestamp: { '.sv': 'timestamp' },
+//         d: ''+new Date()
+//     }),
+//     success: (d) => {
+//         console.log('SUCC', d);
+//     },
+//     error: x => {
+//         console.log('ERR', x);
+//     }
+// });
+
+
+// $.ajax({
+//     url: 'https://meexpizza.firebaseio.com/orders.json',
+//     data: { auth: 'v1pkhOcxNAyjQZlgj94v79wunDSLwPiFvIuwLfQX', orderBy: '"timestamp"' },
+//     type: 'GET',
+//     accept: 'application/json',
+//     success: (data) => {
+//         console.log('succ', data);
+//     },
+//     error: (e) => {
+//         console.log('Error', e);
+//     }
+// })
