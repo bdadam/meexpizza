@@ -5,10 +5,10 @@ module.exports = {
     watch: true,
     devtool: 'source-map',
 	entry: {
-        main: './src/js/main.js',
+		admin: './src/admin-js/admin.js'
 	},
 	output: {
-		path: path.join(__dirname, "dist"),
+		path: path.join(__dirname, "dist/admin"),
 		filename: "[name].js",
 	},
 	module: {
@@ -19,7 +19,7 @@ module.exports = {
 		]
 	},
 	externals: {
-        "jquery": "jQuery"
+        // "jquery": "jQuery"
     },
 	resolve: {
 		alias: {

@@ -28,6 +28,20 @@ body {
     }
 }
 
+.container {
+    @include cf();
+    position: relative;
+
+    @media screen and (min-width: 1024px) {
+        margin: 0 20px;
+    }
+
+    @media screen and (min-width: 1320px) {
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+}
+
 a {
     color: #337ab7;
     text-decoration: none;
@@ -44,6 +58,10 @@ p {
 
 img {
     max-width: 100%;
+}
+
+ul {
+    list-style-type: none;
 }
 
 select, button, input, textarea {

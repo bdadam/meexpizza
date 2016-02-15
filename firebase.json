@@ -1,0 +1,9 @@
+{
+  "firebase": "meexpizza",
+  "public": "dist/admin",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}

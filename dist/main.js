@@ -472,15 +472,15 @@
 	
 	page();
 	
-	//
 	// $.ajax({
 	//     url: 'https://meexpizza.firebaseio.com/orders.json',
-	//     type: 'POST',
+	//     type: 'PUT',
 	//     accept: 'application/json',
 	//     contentType: 'application/json',
 	//     dataType: 'json',
 	//     data: JSON.stringify({
-	//         title: 'TEST',
+	//         name: '-KAVQ_7P8Z1TldJR_eXz',
+	//         title: 'TEST2',
 	//         city: 'Gyöngyös',
 	//         timestamp: { '.sv': 'timestamp' },
 	//         d: ''+new Date()
@@ -492,7 +492,28 @@
 	//         console.log('ERR', x);
 	//     }
 	// });
-
+	//
+	
+	$.ajax({
+	    url: 'https://meexpizza.firebaseio.com/orders.json',
+	    type: 'POST',
+	    accept: 'application/json',
+	    contentType: 'application/json',
+	    dataType: 'json',
+	    data: JSON.stringify({
+	        title: 'TEST',
+	        city: 'Gyöngyös',
+	        timestamp: { '.sv': 'timestamp' },
+	        d: '' + new Date()
+	    }),
+	    success: function success(d) {
+	        console.log('SUCC', d);
+	    },
+	    error: function error(x) {
+	        console.log('ERR', x);
+	    }
+	});
+	
 	// $.ajax({
 	//     url: 'https://meexpizza.firebaseio.com/orders.json',
 	//     data: { auth: 'v1pkhOcxNAyjQZlgj94v79wunDSLwPiFvIuwLfQX', orderBy: '"timestamp"' },
