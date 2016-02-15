@@ -22,6 +22,7 @@ var defaultState = {
     address: { city: 'Gyöngyös' }
 };
 
+
 const flatMap = require('lodash/flatMap');
 const find = require('lodash/find');
 
@@ -433,26 +434,32 @@ page();
 // });
 //
 
-$.ajax({
-    url: 'https://meexpizza.firebaseio.com/orders.json',
-    type: 'POST',
-    accept: 'application/json',
-    contentType: 'application/json',
-    dataType: 'json',
-    data: JSON.stringify({
-        title: 'TEST',
-        city: 'Gyöngyös',
-        timestamp: { '.sv': 'timestamp' },
-        d: ''+new Date()
-    }),
-    success: (d) => {
-        console.log('SUCC', d);
-    },
-    error: x => {
-        console.log('ERR', x);
-    }
-});
 
+//
+// $.ajax({
+//     url: 'https://meexpizza.firebaseio.com/orders.json',
+//     type: 'POST',
+//     accept: 'application/json',
+//     contentType: 'application/json',
+//     dataType: 'json',
+//     data: JSON.stringify({
+//         title: 'TEST',
+//         city: 'Gyöngyös',
+//         timestamp: { '.sv': 'timestamp' },
+//         d: ''+new Date()
+//     }),
+//     success: (d) => {
+//         console.log('SUCC', d);
+//     },
+//     error: x => {
+//         console.log('ERR', x);
+//     }
+// });
+
+
+
+
+// const ko = require('knockout');
 
 // $.ajax({
 //     url: 'https://meexpizza.firebaseio.com/orders.json',
@@ -466,3 +473,66 @@ $.ajax({
 //         console.log('Error', e);
 //     }
 // })
+
+
+//
+// window.x = () => {
+//     const top = window.scrollY;
+//
+//     const main =$('.main').css({
+//         overflow: 'hidden',
+//         position: 'absolute',
+//         top: 0,
+//         left: 0,
+//         right: 0,
+//         height: '100%'
+//     });
+//
+//     const pg = $('.page').css({
+//         position: 'absolute',
+//         top: 0,
+//         left: 0,
+//         right: 0,
+//         minHeight: '100%',
+//         backgroundColor: 'rgba(255, 64, 64, .5)',
+//         zIndex: 3
+//     })
+//     .append('<div style="height: 1200px; background-color: #fff; width: 300px; margin: 0 auto;"></div>')
+//     .on('click', () => {
+//         main.css({
+//             overflow: 'auto',
+//             position: 'relative',
+//             height: 'auto'
+//         });
+//
+//         pg.hide();
+//
+//         window.scrollTo(0, top);
+//     })
+//     .show();
+//
+//     window.scrollTo(0,0);
+// };
+//
+// $('.sticky-button-container button').click((e) => {
+//     window.x();
+//     return false;
+// })
+
+// const showModal = window.showModal = () => {
+//     const scrollTop = window.scrollY;
+//
+//     $(`<div class="modal-backdrop">
+//         <div class="modal-content" style="position: relative; top: ${scrollTop}px;">
+//             <h1>Title</h1>
+//             <div style="height: 350px;">Content</div>
+//         </div>
+//     </div>`).height($('body').height()).appendTo('body');
+//
+//     // window.scrollTo(0, 0);
+// };
+
+// window.show = () => {
+//     $('.main').hide();
+//     $('.page').show();
+// };

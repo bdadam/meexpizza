@@ -13,7 +13,26 @@
     <script src="main.js" defer></script>
 </head>
 <body>
-<header id="site-header">
+
+<div style="display: none;">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="icon-cart" viewBox="0 0 1024 1024">
+            <path class="path1" d="M384 928c0 53.019-42.981 96-96 96s-96-42.981-96-96c0-53.019 42.981-96 96-96s96 42.981 96 96z"></path>
+            <path class="path2" d="M1024 928c0 53.019-42.981 96-96 96s-96-42.981-96-96c0-53.019 42.981-96 96-96s96 42.981 96 96z"></path>
+            <path class="path3" d="M1024 512v-384h-768c0-35.346-28.654-64-64-64h-192v64h128l48.074 412.054c-29.294 23.458-48.074 59.5-48.074 99.946 0 70.696 57.308 128 128 128h768v-64h-768c-35.346 0-64-28.654-64-64 0-0.218 0.014-0.436 0.016-0.656l831.984-127.344z"></path>
+        </symbol>
+        <symbol id="icon-plus" viewBox="0 0 16 16">
+            <path d="M15.5 6h-5.5v-5.5c0-0.276-0.224-0.5-0.5-0.5h-3c-0.276 0-0.5 0.224-0.5 0.5v5.5h-5.5c-0.276 0-0.5 0.224-0.5 0.5v3c0 0.276 0.224 0.5 0.5 0.5h5.5v5.5c0 0.276 0.224 0.5 0.5 0.5h3c0.276 0 0.5-0.224 0.5-0.5v-5.5h5.5c0.276 0 0.5-0.224 0.5-0.5v-3c0-0.276-0.224-0.5-0.5-0.5z"></path>
+        </symbol>
+        <symbol id="icon-minus" viewBox="0 0 16 16">
+            <path d="M0 6.5v3c0 0.276 0.224 0.5 0.5 0.5h15c0.276 0 0.5-0.224 0.5-0.5v-3c0-0.276-0.224-0.5-0.5-0.5h-15c-0.276 0-0.5 0.224-0.5 0.5z"></path>
+        </symbol>
+    </svg>
+</div>
+
+
+<div class="main">
+    <header id="site-header">
     <div class="container">
         <div class="brand"><a href="/" title="Meexpizza - Gyöngyös">Meexpizza</a></div>
         <button href="" class="menu-toggle"><span></span></button>
@@ -31,7 +50,7 @@
     </div>
 </header>
 
-
+    
 <main class="container">
     <div id="menucard">
         
@@ -1059,7 +1078,7 @@
             <h2 class="card-title">Kapcsolat</h2>
             <div class="card-content">
                 <address class="meex-address">
-                    <p class="phone">+36 30 2111 212</p>
+                    <p class="phone">+36 30 211 12 12</p>
                     <img class="logo" src="images/logo_opt.jpg">
                     <p>
                         <b>Meex Pizza & Food</b><br>
@@ -1100,30 +1119,27 @@
     <button>Megrendelés</button>
 </div>
 
+<div id="pizza-extras-page" class="next-page">
+    <div class="container">
+        <h1>Next Page</h1>
+    </div>
+</div>
 
 
 
-<footer id="site-footer">
+
+    <footer id="site-footer">
     <span>Meex Pizza & Food</span>
     <span>3200 Gyöngyös, Orczy út 1.</span>
     <span>Minden jog fenntartva! &copy; 2016</span>
     <span><a href="https://bdadam.com/" target="_blank">made by bdadam.com</a></span>
 </footer>
 
-<div style="display: none;">
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
-        <symbol id="icon-cart" viewBox="0 0 1024 1024">
-            <path class="path1" d="M384 928c0 53.019-42.981 96-96 96s-96-42.981-96-96c0-53.019 42.981-96 96-96s96 42.981 96 96z"></path>
-            <path class="path2" d="M1024 928c0 53.019-42.981 96-96 96s-96-42.981-96-96c0-53.019 42.981-96 96-96s96 42.981 96 96z"></path>
-            <path class="path3" d="M1024 512v-384h-768c0-35.346-28.654-64-64-64h-192v64h128l48.074 412.054c-29.294 23.458-48.074 59.5-48.074 99.946 0 70.696 57.308 128 128 128h768v-64h-768c-35.346 0-64-28.654-64-64 0-0.218 0.014-0.436 0.016-0.656l831.984-127.344z"></path>
-        </symbol>
-        <symbol id="icon-plus" viewBox="0 0 16 16">
-            <path d="M15.5 6h-5.5v-5.5c0-0.276-0.224-0.5-0.5-0.5h-3c-0.276 0-0.5 0.224-0.5 0.5v5.5h-5.5c-0.276 0-0.5 0.224-0.5 0.5v3c0 0.276 0.224 0.5 0.5 0.5h5.5v5.5c0 0.276 0.224 0.5 0.5 0.5h3c0.276 0 0.5-0.224 0.5-0.5v-5.5h5.5c0.276 0 0.5-0.224 0.5-0.5v-3c0-0.276-0.224-0.5-0.5-0.5z"></path>
-        </symbol>
-        <symbol id="icon-minus" viewBox="0 0 16 16">
-            <path d="M0 6.5v3c0 0.276 0.224 0.5 0.5 0.5h15c0.276 0 0.5-0.224 0.5-0.5v-3c0-0.276-0.224-0.5-0.5-0.5h-15c-0.276 0-0.5 0.224-0.5 0.5z"></path>
-        </symbol>
-    </svg>
+</div>
+<div class="page">
+    <div class="container">
+        <h1>Second page</h1>
+    </div>
 </div>
 
 </body>
