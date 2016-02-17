@@ -5,21 +5,28 @@
     <title>Meexpizza Gyöngyös</title>
     <meta name="description" content="Pizza házhozszállítás a hét minden napján - Gyöngyösön és környékén. Harapj bele Amerikába!">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="main.css?v1">
     <link rel="canonical" href="http://www.meexpizza.hu/">
     {% block meta %}{% endblock %}
-    {#
-    <!--[if lte IE 9]><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script><![endif]-->
-    <!--[if !IE]>--><script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js" defer></script><!--<![endif]-->
-    #}
-    <script src="main.js" defer></script>
+    <script src="main.js?v1" async></script>
     {% include "meta-favicon.html" %}
 </head>
 <body>
-{% include "icons.html" %}
-{% include "navigation.html" %}
-{% block body %}{% endblock %}
-{% include "footer.html" %}
-<div id="fb-root"></div>
+    {% include "icons.html" %}
+    {% include "navigation.html" %}
+
+    <div class="container">
+        <main>{% block body %}{% endblock %}</main>
+        <aside id="side-cart-container">
+            {% include "partials/side-cart.html" %}
+            {% include "partials/side-contact.html" %}
+            {% include "partials/side-opening-hours.html" %}
+            {% include "partials/side-facebook.html" %}
+        </aside>
+    </div>
+
+    {% include "footer.html" %}
+
+    {# <div id="fb-root"></div> #}
 </body>
 </html>
