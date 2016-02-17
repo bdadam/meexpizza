@@ -2692,7 +2692,7 @@
 	        "imageName": "meex-burger",
 	        "type": "hamburger",
 	        "variants": [{
-	            "name": "Csak szendvics",
+	            "name": "Szendvics",
 	            "price": 750
 	        }, {
 	            "name": "Menüben",
@@ -2708,7 +2708,7 @@
 	        "imageName": "meex-burger",
 	        "type": "hamburger",
 	        "variants": [{
-	            "name": "Csak szendvics",
+	            "name": "Szendvics",
 	            "price": 850
 	        }, {
 	            "name": "Menüben",
@@ -2724,7 +2724,7 @@
 	        "imageName": "meex-burger",
 	        "type": "hamburger",
 	        "variants": [{
-	            "name": "Csak szendvics",
+	            "name": "Szendvics",
 	            "price": 1250
 	        }, {
 	            "name": "Menüben",
@@ -2740,7 +2740,7 @@
 	        "imageName": "meex-burger",
 	        "type": "hamburger",
 	        "variants": [{
-	            "name": "Csak szendvics",
+	            "name": "Szendvics",
 	            "price": 1450
 	        }, {
 	            "name": "Menüben",
@@ -2756,7 +2756,7 @@
 	        "imageName": "meex-burger",
 	        "type": "hamburger",
 	        "variants": [{
-	            "name": "Csak szendvics",
+	            "name": "Szendvics",
 	            "price": 890
 	        }, {
 	            "name": "Menüben",
@@ -2775,7 +2775,7 @@
 	        "imageName": "meex-burger",
 	        "type": "hamburger",
 	        "variants": [{
-	            "name": "Csak szendvics",
+	            "name": "Szendvics",
 	            "price": 990
 	        }, {
 	            "name": "Menüben",
@@ -2791,7 +2791,7 @@
 	        "imageName": "meex-burger",
 	        "type": "hamburger",
 	        "variants": [{
-	            "name": "Csak szendvics",
+	            "name": "Szendvics",
 	            "price": 990
 	        }, {
 	            "name": "Menüben",
@@ -2807,7 +2807,7 @@
 	        "imageName": "meex-burger",
 	        "type": "hamburger",
 	        "variants": [{
-	            "name": "Csak szendvics",
+	            "name": "Szendvics",
 	            "price": 990
 	        }, {
 	            "name": "Menüben",
@@ -3091,7 +3091,7 @@
 	            "fix": 1000
 	        }
 	    },
-	    "version": "a6622af175b888efb5ec853d337751e4"
+	    "version": "20473bfe76526cb262ec701f0f194a8a"
 	};
 
 /***/ },

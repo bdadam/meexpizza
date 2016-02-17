@@ -353,7 +353,7 @@
             "name": "Meex burger",
             "id": "hamburgerek-meex-burger",
             "variants": {
-                "Csak szendvics": 750,
+                "Szendvics": 750,
                 "Menüben": 990
             }
         },
@@ -362,7 +362,7 @@
             "name": "Meex sajtburger",
             "id": "hamburgerek-meex-sajtburger",
             "variants": {
-                "Csak szendvics": 850,
+                "Szendvics": 850,
                 "Menüben": 1090
             }
         },
@@ -371,7 +371,7 @@
             "name": "Dupla Meex burger",
             "id": "hamburgerek-dupla-meex-burger",
             "variants": {
-                "Csak szendvics": 1250,
+                "Szendvics": 1250,
                 "Menüben": 1490
             }
         },
@@ -380,7 +380,7 @@
             "name": "Dupla Meex sajtburger",
             "id": "hamburgerek-dupla-meex-sajtburger",
             "variants": {
-                "Csak szendvics": 1450,
+                "Szendvics": 1450,
                 "Menüben": 1590
             }
         },
@@ -389,7 +389,7 @@
             "name": "Cheese Lovers Burger",
             "id": "hamburgerek-cheese-lovers-burger",
             "variants": {
-                "Csak szendvics": 890,
+                "Szendvics": 890,
                 "Menüben": 1190
             }
         },
@@ -398,7 +398,7 @@
             "name": "Texasi Tüzes Burger",
             "id": "hamburgerek-texasi-tuzes-burger",
             "variants": {
-                "Csak szendvics": 990,
+                "Szendvics": 990,
                 "Menüben": 1390
             }
         },
@@ -407,7 +407,7 @@
             "name": "New York Burger",
             "id": "hamburgerek-new-york-burger",
             "variants": {
-                "Csak szendvics": 990,
+                "Szendvics": 990,
                 "Menüben": 1390
             }
         },
@@ -416,7 +416,7 @@
             "name": "Hungarian Burger",
             "id": "hamburgerek-hungarian-burger",
             "variants": {
-                "Csak szendvics": 990,
+                "Szendvics": 990,
                 "Menüben": 1390
             }
         },
