@@ -6,7 +6,7 @@ body {
 
 @media screen and (min-width: 1024px) {
     body {
-        padding-top: 96px;
+        padding-top: $menu-height + 36px;
     }
 }
 
@@ -92,32 +92,8 @@ body {
             font-family: Russo One;
             text-decoration: none;
             font-size: 1.25rem;
-            color: #091F44;
+            color: #282F49;
             line-height: $menu-height;
-        }
-    }
-
-    .header-cart {
-        display: block;
-        position: absolute;
-        text-decoration: none;
-        top: 0;
-        right: 0;
-        padding-right: 12px;
-        line-height: $menu-height;
-
-        span {
-            color: red;
-            font-size: 1.25rem;
-            font-family: Russo One;
-            display: inline-block;
-            margin-right: 8px;
-        }
-
-        svg {
-            width: 16px;
-            height: 16px;
-            display: inline-block;
         }
     }
 
@@ -132,16 +108,11 @@ body {
         max-height: 250px; // TODO: calc with JS
     }
 
-    .logo {
-        font-size: 0;
-        color: transparent;
-    }
-
     nav {
         a {
             display: block;
             font-size: 1.25rem;
-            color: #ff4200;
+            color: #D7213A;
             text-decoration: none;
             font-family: Russo One;
             padding: 0 20px;
@@ -154,11 +125,8 @@ body {
     @media screen and (min-width: 1024px) {
         .menu-toggle { display: none; }
         .brand {
-            // position: relative;
             display: inline-block;
             width: auto;
-            // border-left: 1px solid #ddd;
-            // border-right: 1px solid #ddd;
             margin-right: 10px;
             background-color: #f5f5f5;
 
