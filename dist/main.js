@@ -53,8 +53,21 @@
 	__webpack_require__(3);
 	
 	__webpack_require__(4).init();
+	__webpack_require__(125);
+	__webpack_require__(126);
 	
+	var page = __webpack_require__(118);
 	var redux = __webpack_require__(6);
+	var flatMap = __webpack_require__(17);
+	var find = __webpack_require__(105);
+	var $ = __webpack_require__(5);
+	
+	var tracking = __webpack_require__(117);
+	
+	page(function (context, next) {
+	    tracking.pageview();
+	    next();
+	});
 	
 	var menucard = __webpack_require__(15);
 	var deliveryFees = __webpack_require__(16);
@@ -65,9 +78,6 @@
 	    isEmpty: true,
 	    address: { city: 'Gyöngyös' }
 	};
-	
-	var flatMap = __webpack_require__(17);
-	var find = __webpack_require__(105);
 	
 	var shoppingCart = redux.createStore(function () {
 	    var state = arguments.length <= 0 || arguments[0] === undefined ? defaultState : arguments[0];
@@ -106,7 +116,6 @@
 	            return state;
 	    }
 	
-	    // newState.total = newState.inCart.reduce(item => item.)
 	    newState.isEmpty = newState.inCart.length === 0;
 	    newState.deliveryFee = deliveryFees[newState.address.city].fix || 0;
 	    newState.deliveryFreeFrom = deliveryFees[newState.address.city].min || 0;
@@ -126,9 +135,6 @@
 	        shoppingCart.dispatch({ type: 'RESTORE', state: state });
 	    } catch (ex) {}
 	});
-	
-	var $ = __webpack_require__(5);
-	// const nanoModal = require('nanomodal');
 	
 	shoppingCart.subscribe(function () {
 	    var state = shoppingCart.getState();
@@ -179,32 +185,6 @@
 	
 	    var tpl = __webpack_require__(113);
 	    $('.cart-calculation').html(tpl(viewModel));
-	
-	    /*
-	    const itemsContainer = $('#side-cart .items');
-	    itemsContainer.empty();
-	      state.inCart.forEach(item => {
-	        const x = menucard.dishes.filter(dish => dish.id === item.dish.id)[0];
-	        const variant = x.variants.filter(v => v.name === item.dish.variant)[0];
-	        const price = variant.price;
-	          itemsContainer.append(`<tr><td>${x.name} (${item.dish.variant})<br><a href="" style="font-size:0.875rem;"><svg style="width: 16px;height:16px;"><use xlink:href="#icon-plus"></use></svg> Még</a>&nbsp;&nbsp;<a href=""><svg style="width: 16px;height:16px;"><use xlink:href="#icon-minus"></use></svg> Nem kérem</a> <a href="">Extrák</a></td><td><button data-duplicate-order-item="${item.timestamp}"><svg><use xlink:href="#icon-plus"></use></svg></button><button data-remove-order-item="${item.timestamp}"><svg><use xlink:href="#icon-minus"></use></svg></button></div></td><td>${price}&nbsp;Ft</td></tr>`);
-	    });
-	      if (!state.isEmpty) {
-	        let sum = state.inCart.reduce((prev, item) => {
-	            var dish = menucard.dishes.filter(dish => dish.id === item.dish.id)[0];
-	            const variant = dish.variants.filter(v => v.name === item.dish.variant)[0];
-	            return prev + variant.price;
-	        }, 0);
-	          const deliveryRule = menucard.deliveryFees[state.address.city];
-	          if (deliveryRule.fix) {
-	            sum += deliveryRule.fix;
-	            itemsContainer.append(`<tfoot><tr><td>Kiszállítási díj</td><td colspan="2">${deliveryRule.fix}&nbsp;Ft</td></tr></tfoot>`);
-	        } else if (deliveryRule.min && sum < deliveryRule.min) {
-	            itemsContainer.append(`<tfoot><tr><td colspan="3">A minimális ${deliveryRule.min} Ft rendelési értéket még nem érted el.</td></tr></tfoot>`);
-	        }
-	          itemsContainer.append(`<tfoot><tr><td>Végösszeg</td><td colspan="2">${sum}&nbsp;Ft</td></tr></tfoot>`);
-	    }
-	    */
 	});
 	
 	shoppingCart.subscribe(function () {
@@ -288,76 +268,6 @@
 	    } else {
 	        shoppingCart.dispatch({ type: 'ADD', dish: { id: id, variant: variant }, timestamp: +new Date() });
 	    }
-	
-	    // const template = require('./templates/pizza-options.html');
-	    // const html = template();
-	    // const modal = nanoModal(html, {
-	    //     overlayClose: false,
-	    //     buttons: [{
-	    //         text: 'Hozzáadás a rendeléshez',
-	    //         handler: m => m.hide(),
-	    //         primary: true
-	    //     }, {
-	    //         text: 'Mégsem',
-	    //         handler: 'hide'
-	    //     }]
-	    // });
-	    // modal.show();
-	
-	    // $('#modal').scroll(e => {
-	    //     console.log(e);
-	    //     // e.preventDefault();
-	    //     // e.stopPropagation();
-	    // });
-	    //
-	    // var modalWithNoButtons = nanoModal($('#modal')[0], {
-	    //     overlayClose: false,
-	    //     buttons: [{
-	    //         text: "I'm sure!",
-	    //         handler: function(modal) {
-	    //             alert("doing something...");
-	    //             modal.hide();
-	    //         },
-	    //         primary: true
-	    //     }, {
-	    //         text: "Maybe not...",
-	    //         handler: "hide"
-	    //     }]
-	    // });
-	    //
-	    // modalWithNoButtons.show();
-	});
-	
-	// var orderItemTemplate = require('./templates/order-item.html');
-	// console.log(orderItemTemplate({ id: 'jfsjkfsdf', qwe: 'jshdfjkhsdfkjhs' }));
-	
-	window.sc = shoppingCart;
-	
-	document.registerElement('google-map', {
-	    extends: 'a',
-	    prototype: Object.create(HTMLElement.prototype, {
-	        attachedCallback: {
-	            value: function value() {
-	                var el = this;
-	                setTimeout(function () {
-	                    // 47.785625, 19.932675
-	                    var width = el.clientWidth | 0;
-	
-	                    if (width === 0) {
-	                        return;
-	                    }
-	
-	                    var height = width * 0.75 | 0;
-	                    var scale = window.devicePixelRatio > 1 ? 2 : 1;
-	                    var staticMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?zoom=15&size=' + width + 'x' + height + '&scale=' + scale + '&maptype=roadmap&markers=color:blue%7Clabel:M%7C3200+Gyöngyös,+Orczy+út+1.&format=png&key=AIzaSyCv-L_Za8GWc4L_s4hcVX3frfJm5toJc6k';
-	                    var img = document.createElement('img');
-	                    img.alt = el.getAttribute('title');
-	                    img.src = staticMapUrl;
-	                    el.insertBefore(img, el.firstChild);
-	                });
-	            }
-	        }
-	    })
 	});
 	
 	document.registerElement('add-to-cart', {
@@ -395,25 +305,6 @@
 	
 	var dayOfWeek = new Date().getDay() || 7;
 	$('.opening-hours dd:nth-of-type(' + dayOfWeek + '), .opening-hours dt:nth-of-type(' + dayOfWeek + ')').css({ fontWeight: 700 });
-	
-	//
-	// const openModal = () => {
-	//     const tpl = require('./templates/pizza-options.html');
-	//     const html = tpl({ id: 'pizza-modal' });
-	//
-	//     const currentScroll = window.scrollY;
-	//
-	//     $(document.body).append(html);
-	//
-	//     $(document).on('click', '[data-close]', () => {
-	//         $('#pizza-modal').remove();
-	//         window.scrollY = currentScroll;
-	//     });
-	// };
-	//
-	// openModal();
-	
-	// require('vue')
 	
 	/*
 	Events:
@@ -453,14 +344,6 @@
 	- Milyen szósz?
 	
 	*/
-	
-	var tracking = __webpack_require__(117);
-	var page = __webpack_require__(118);
-	
-	page(function (context, next) {
-	    tracking.pageview();
-	    next();
-	});
 	
 	// $.ajax({
 	//     url: 'https://meexpizza.firebaseio.com/orders.json',
@@ -590,15 +473,6 @@
 	        }
 	    });
 	};
-	
-	(function (d, s, id) {
-	    var js,
-	        fjs = d.getElementsByTagName(s)[0];
-	    if (d.getElementById(id)) return;
-	    js = d.createElement(s);js.id = id;
-	    js.src = "//connect.facebook.net/hu_HU/sdk.js#xfbml=1&version=v2.5";
-	    fjs.parentNode.insertBefore(js, fjs);
-	})(document, 'script', 'facebook-jssdk');
 
 /***/ },
 /* 1 */
@@ -27843,6 +27717,54 @@
 	        }
 	    }
 	};
+
+/***/ },
+/* 125 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	(function (d, s, id) {
+	      var js,
+	          fjs = d.getElementsByTagName(s)[0];
+	      if (d.getElementById(id)) return;
+	      js = d.createElement(s);js.id = id;
+	      js.src = "//connect.facebook.net/hu_HU/sdk.js#xfbml=1&version=v2.5";
+	      fjs.parentNode.insertBefore(js, fjs);
+	})(document, 'script', 'facebook-jssdk');
+
+/***/ },
+/* 126 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	document.registerElement('google-map', {
+	    extends: 'a',
+	    prototype: Object.create(HTMLElement.prototype, {
+	        attachedCallback: {
+	            value: function value() {
+	                var el = this;
+	                setTimeout(function () {
+	                    // 47.785625, 19.932675
+	                    var width = el.clientWidth | 0;
+	
+	                    if (width === 0) {
+	                        return;
+	                    }
+	
+	                    var height = width * 0.75 | 0;
+	                    var scale = window.devicePixelRatio > 1 ? 2 : 1;
+	                    var staticMapUrl = 'https://maps.googleapis.com/maps/api/staticmap?zoom=15&size=' + width + 'x' + height + '&scale=' + scale + '&maptype=roadmap&markers=color:blue%7Clabel:M%7C3200+Gyöngyös,+Orczy+út+1.&format=png&key=AIzaSyCv-L_Za8GWc4L_s4hcVX3frfJm5toJc6k';
+	                    var img = document.createElement('img');
+	                    img.alt = el.getAttribute('title');
+	                    img.src = staticMapUrl;
+	                    el.insertBefore(img, el.firstChild);
+	                });
+	            }
+	        }
+	    })
+	});
 
 /***/ }
 /******/ ]);

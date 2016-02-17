@@ -301,17 +301,12 @@
     }
 }
 
-.nanoModal.nanoModalOverride {
-    position: fixed;
-    backface-visibility:hidden;
-}
-
 @media screen and (min-width: 1024px) {
-    #menucard {
+    main {
         @include col (2/3);
     }
 
-    #side-cart-container {
+    aside {
         @include col(1/3);
     }
 }
