@@ -96,11 +96,6 @@ shoppingCart.subscribe(() => {
 
 shoppingCart.subscribe(() => {
     const state = shoppingCart.getState();
-    $('[data-shopping-cart-count]').text(state.inCart.length + ' × ');
-});
-
-shoppingCart.subscribe(() => {
-    const state = shoppingCart.getState();
 
     if (state.isEmpty) {
         // $('#side-cart .default-content').show();
