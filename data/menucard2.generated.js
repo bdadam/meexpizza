@@ -29,14 +29,6 @@ module.exports = {
             "id": "hamburgerek"
         },
         {
-            "name": "Hamburger menük",
-            "id": "hamburger-menuk"
-        },
-        {
-            "name": "Fitnesz szendvicsek",
-            "id": "fitnesz-szendvicsek"
-        },
-        {
             "name": "Saláták",
             "id": "salatak"
         },
@@ -734,51 +726,36 @@ module.exports = {
         },
         {
             "categoryId": "fuzios-etelek",
-            "id": "torok-pizza-menu-akay",
+            "id": "torok-pizza-menu",
             "category": "Fúziós ételek",
-            "name": "Török pizza menü (Akay)",
-            "description": "fűszeres paradicsomos alap, sajt, sonka",
-            "imageName": "torok-pizza-menu-akay",
+            "name": "Török pizza menü",
+            "description": "választható török pizzával, hasábburgonyával és egy 0,33l-es üdítővel",
+            "imageName": "torok-pizza-menu",
             "type": "none",
             "variants": [
                 {
-                    "name": "",
+                    "name": "Akay",
                     "price": 990
-                }
-            ],
-            "options": []
-        },
-        {
-            "categoryId": "fuzios-etelek",
-            "id": "torok-pizza-menu-banu",
-            "category": "Fúziós ételek",
-            "name": "Török pizza menü (Banu)",
-            "description": "tejfölös alap, sajt, tarja, pirított fokhagyma",
-            "imageName": "torok-pizza-menu-banu",
-            "type": "none",
-            "variants": [
+                },
                 {
-                    "name": "",
+                    "name": "Banu",
                     "price": 990
-                }
-            ],
-            "options": []
-        },
-        {
-            "categoryId": "fuzios-etelek",
-            "id": "torok-pizza-menu-cahil",
-            "category": "Fúziós ételek",
-            "name": "Török pizza menü (Cahil)",
-            "description": "bbq alap, sajt, ropogós bacon",
-            "imageName": "torok-pizza-menu-cahil",
-            "type": "none",
-            "variants": [
+                },
                 {
-                    "name": "",
+                    "name": "Cahil",
                     "price": 990
                 }
             ],
-            "options": []
+            "options": [
+                {
+                    "name": "Üdítő",
+                    "list": [
+                        "Pepsi",
+                        "Lipton Ice Tea (zöldtea)",
+                        "Lipton Ice Tea (őszibarack)"
+                    ]
+                }
+            ]
         },
         {
             "categoryId": "rantott-sajtok-es-frissensultek",
@@ -967,8 +944,12 @@ module.exports = {
             "type": "hamburger",
             "variants": [
                 {
-                    "name": "",
+                    "name": "Csak szendvics",
                     "price": 750
+                },
+                {
+                    "name": "Menüben",
+                    "price": 990
                 }
             ],
             "options": []
@@ -983,8 +964,12 @@ module.exports = {
             "type": "hamburger",
             "variants": [
                 {
-                    "name": "",
+                    "name": "Csak szendvics",
                     "price": 850
+                },
+                {
+                    "name": "Menüben",
+                    "price": 1090
                 }
             ],
             "options": []
@@ -999,8 +984,12 @@ module.exports = {
             "type": "hamburger",
             "variants": [
                 {
-                    "name": "",
+                    "name": "Csak szendvics",
                     "price": 1250
+                },
+                {
+                    "name": "Menüben",
+                    "price": 1490
                 }
             ],
             "options": []
@@ -1015,8 +1004,12 @@ module.exports = {
             "type": "hamburger",
             "variants": [
                 {
-                    "name": "",
+                    "name": "Csak szendvics",
                     "price": 1450
+                },
+                {
+                    "name": "Menüben",
+                    "price": 1590
                 }
             ],
             "options": []
@@ -1031,8 +1024,12 @@ module.exports = {
             "type": "hamburger",
             "variants": [
                 {
-                    "name": "",
+                    "name": "Csak szendvics",
                     "price": 890
+                },
+                {
+                    "name": "Menüben",
+                    "price": 1190
                 }
             ],
             "options": [
@@ -1056,8 +1053,12 @@ module.exports = {
             "type": "hamburger",
             "variants": [
                 {
-                    "name": "",
+                    "name": "Csak szendvics",
                     "price": 990
+                },
+                {
+                    "name": "Menüben",
+                    "price": 1390
                 }
             ],
             "options": []
@@ -1072,8 +1073,12 @@ module.exports = {
             "type": "hamburger",
             "variants": [
                 {
-                    "name": "",
+                    "name": "Csak szendvics",
                     "price": 990
+                },
+                {
+                    "name": "Menüben",
+                    "price": 1390
                 }
             ],
             "options": []
@@ -1088,8 +1093,12 @@ module.exports = {
             "type": "hamburger",
             "variants": [
                 {
-                    "name": "",
+                    "name": "Csak szendvics",
                     "price": 990
+                },
+                {
+                    "name": "Menüben",
+                    "price": 1390
                 }
             ],
             "options": [
@@ -1103,161 +1112,49 @@ module.exports = {
             ]
         },
         {
-            "categoryId": "hamburger-menuk",
-            "id": "meex-burger-menu",
-            "category": "Hamburger menük",
-            "name": "Meex Burger Menü",
-            "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
-            "imageName": "meex-burger-menu",
-            "type": "hamburger",
-            "variants": [
-                {
-                    "name": "",
-                    "price": 990
-                }
-            ],
-            "options": [
-                {
-                    "name": "Köretek",
-                    "list": [
-                        "hasábburgonya",
-                        "steakburgonya"
-                    ]
-                },
-                {
-                    "name": "Szószok",
-                    "list": [
-                        "házi tartármártás",
-                        "gyümölcsszósz",
-                        "chilis szósz"
-                    ]
-                }
-            ]
-        },
-        {
-            "categoryId": "hamburger-menuk",
-            "id": "meex-sajtburger-menu",
-            "category": "Hamburger menük",
-            "name": "Meex Sajtburger Menü",
-            "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
-            "imageName": "meex-burger-menu",
-            "type": "hamburger",
+            "categoryId": "salatak",
+            "id": "hawaii-jerce-salata",
+            "category": "Saláták",
+            "name": "Hawaii Jérce saláta",
+            "description": "roston sült csirkemell, ananász, friss zsenge jégsaláta, joghurtos tartár, pizzakenyér-szeletekkel tálalva",
+            "imageName": "hawaii-jerce-salata",
+            "type": "none",
             "variants": [
                 {
                     "name": "",
                     "price": 1090
                 }
             ],
-            "options": [
-                {
-                    "name": "Köretek",
-                    "list": [
-                        "hasábburgonya",
-                        "steakburgonya"
-                    ]
-                },
-                {
-                    "name": "Szószok",
-                    "list": [
-                        "házi tartármártás",
-                        "gyümölcsszósz",
-                        "chilis szósz"
-                    ]
-                }
-            ]
+            "options": []
         },
         {
-            "categoryId": "hamburger-menuk",
-            "id": "dupla-meex-burger-menu",
-            "category": "Hamburger menük",
-            "name": "Dupla Meex Burger Menü",
-            "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
-            "imageName": "meex-burger-menu",
-            "type": "hamburger",
-            "variants": [
-                {
-                    "name": "",
-                    "price": 1490
-                }
-            ],
-            "options": [
-                {
-                    "name": "Köretek",
-                    "list": [
-                        "hasábburgonya",
-                        "steakburgonya"
-                    ]
-                },
-                {
-                    "name": "Szószok",
-                    "list": [
-                        "házi tartármártás",
-                        "gyümölcsszósz",
-                        "chilis szósz"
-                    ]
-                }
-            ]
-        },
-        {
-            "categoryId": "hamburger-menuk",
-            "id": "dupla-meex-sajtburger-menu",
-            "category": "Hamburger menük",
-            "name": "Dupla Meex Sajtburger Menü",
-            "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt + választható szósz: finom házi tartár, csípős szósz, házi hamburgerszósz",
-            "imageName": "meex-burger-menu",
-            "type": "hamburger",
-            "variants": [
-                {
-                    "name": "",
-                    "price": 1590
-                }
-            ],
-            "options": [
-                {
-                    "name": "Köretek",
-                    "list": [
-                        "hasábburgonya",
-                        "steakburgonya"
-                    ]
-                },
-                {
-                    "name": "Szószok",
-                    "list": [
-                        "házi tartármártás",
-                        "gyümölcsszósz",
-                        "chilis szósz"
-                    ]
-                }
-            ]
-        },
-        {
-            "categoryId": "fitnesz-szendvicsek",
-            "id": "purpur",
-            "category": "Fitnesz szendvicsek",
-            "name": "Purpur",
-            "description": "szénhidrátcsökkentett magvas baguette, friss jégsaláta, paradicsom, uborka, fűszeres grillezett csirkemell (16dkg)",
-            "imageName": "purpur",
+            "categoryId": "salatak",
+            "id": "miami-salata",
+            "category": "Saláták",
+            "name": "Miami saláta",
+            "description": "grillezett tejszínes csirkemellcsíkok, parmezán, friss zsenge jégsaláta, paradicsom, uborka, pizzakenyér-szeletekkel tálalva",
+            "imageName": "miami-salata",
             "type": "none",
             "variants": [
                 {
                     "name": "",
-                    "price": 590
+                    "price": 1090
                 }
             ],
             "options": []
         },
         {
             "categoryId": "salatak",
-            "id": "primor-salata",
+            "id": "miami-2-salata",
             "category": "Saláták",
-            "name": "Primőr saláta",
-            "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola nyakon öntve vinegrettével, pizzakenyér szeletekkel tálalva",
-            "imageName": "primor-salata",
+            "name": "Miami 2 saláta",
+            "description": "mézes-mustáros tejszínes csirkemell, friss zsenge jégsaláta, paradicsom, uborka, pizzakenyér-szeletekkel tálalva",
+            "imageName": "miami-2-salata",
             "type": "none",
             "variants": [
                 {
                     "name": "",
-                    "price": 650
+                    "price": 1090
                 }
             ],
             "options": []
@@ -1273,7 +1170,7 @@ module.exports = {
             "variants": [
                 {
                     "name": "",
-                    "price": 800
+                    "price": 1090
                 }
             ],
             "options": []
@@ -1289,7 +1186,7 @@ module.exports = {
             "variants": [
                 {
                     "name": "",
-                    "price": 1080
+                    "price": 1090
                 }
             ],
             "options": []
@@ -1305,7 +1202,7 @@ module.exports = {
             "variants": [
                 {
                     "name": "",
-                    "price": 1080
+                    "price": 1090
                 }
             ],
             "options": []
@@ -1317,6 +1214,22 @@ module.exports = {
             "name": "Profiterol",
             "description": "Profiterol golyók fehér- és tejcsokoládé bevonattal, tejszínhab koronával",
             "imageName": "profiterol",
+            "type": "none",
+            "variants": [
+                {
+                    "name": "",
+                    "price": 600
+                }
+            ],
+            "options": []
+        },
+        {
+            "categoryId": "edessegek",
+            "id": "panna-cotta",
+            "category": "Édességek",
+            "name": "Panna Cotta",
+            "description": "tejszínes desszert, gyümölcsszósszal",
+            "imageName": "panna-cotta",
             "type": "none",
             "variants": [
                 {
@@ -1586,5 +1499,5 @@ module.exports = {
             "fix": 1000
         }
     },
-    "version": "eacab51626bd69a61a2301d4ec67bf83"
+    "version": "a6622af175b888efb5ec853d337751e4"
 };

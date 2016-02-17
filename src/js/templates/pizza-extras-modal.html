@@ -1,0 +1,43 @@
+<div class="pizza-modal">
+    <header class="modal-header">
+        <h3>Válassz feltétet a pizzádra</h3>
+    </header>
+    <div class="modal-content">
+        <div class="pizza-modal-group">
+            <h3>{{ name }}</h3>
+            <p>{{ description }}</p>
+            <div class="icon-{{ imageName }}"></div>
+        </div>
+        <div class="pizza-modal-group">
+            <h4>Méret</h4>
+            <select v-model="selectedVariant">
+                <option v-for="variant in variants" value="{{ variant.name }}">{{ variant.name }} - {{ variant.price }} Ft</option>
+            </select>
+        </div>
+
+        <div class="pizza-modal-group">
+            <h4>Kiválasztott feltétek</h4>
+            <p v-if="selectedExtras.length === 0">Még nem választottál feltétet. Az alábbi listából választhatsz.</p>
+            <p v-for="extra in selectedExtras">
+                {{ extra.name }} ({{ extra.price }} Ft)
+                <a href="#" @click.prevent="removeExtra(extra)"><svg class="icon-minus"><use xlink:href="#icon-minus"></use></svg> Eltávolítás</a>
+            </p>
+        </div>
+
+        <div class="pizza-modal-group">
+            <span class="total-price">{{ totalPrice }} Ft</span>
+            <button @click="cancel">Mégsem</button>
+            <button class="btn-primary" @click="addToCart"><svg class="icon-cart"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>
+        </div>
+
+        <div class="pizza-modal-group" v-for="extra in availableExtras">
+            <h4>{{ extra.name }} ({{ extra.price }} Ft)</h4>
+            <a class="available-extra" v-for="item in extra.list" @click.prevent="addExtra(extra.name, item, extra.price)" href="#">{{ item }}</a>
+        </div>
+    </div>
+    <footer class="modal-footer">
+        <span class="total-price">{{ totalPrice }} Ft</span>
+        <button @click="cancel">Mégsem</button>
+        <button class="btn-primary" @click="addToCart"><svg class="icon-cart"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>
+    </footer>
+</div>

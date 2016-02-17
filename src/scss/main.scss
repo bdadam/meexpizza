@@ -357,13 +357,13 @@ form {
         font-weight: 600;
     }
 
-    input, label, textarea, select {
+    input[type=text], label, textarea, select {
         display: block;
         width: 100%;
         margin-bottom: 4px;
     }
 
-    input, textarea, select {
+    input[type=text], textarea, select {
         padding: 4px;
     }
 }
@@ -468,32 +468,67 @@ form {
 //     transform: translateX(-100%);
 // }
 
-.modal-backdrop {
-    background-color: rgba(0, 0, 0, .8);
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    min-height: 100%;
-    z-index: 10;
+// .modal-backdrop {
+//     background-color: rgba(0, 0, 0, .85);
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     min-height: 100%;
+//     z-index: 10;
+// }
+//
+.modal {
+    margin: 40px auto;
+    background-color: #fff;
+    border-radius: 12px;
+
+    width: 90%;
+
+    @media screen and (min-width: 1024px) {
+        max-width: 960px;
+        width: 60%;
+        margin-top: 80px;
+    }
+}
+
+.modal-header {
+    border-bottom: 1px solid #ddd;
+    padding: 12px 20px;
 }
 
 .modal-content {
-    margin: 80px auto;
-    background-color: #fff;
-    max-width: 800px;
-    border-radius: 12px;
-    padding: 20px;
+    padding: 12px 20px;
+}
+
+.modal-footer {
+    border-top: 1px solid #ddd;
+    padding: 12px 20px;
+    text-align: right;
+}
+
+.pizza-modal {
+    font-size: 0.875rem;
+    .available-extra {
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        display: inline-block;
+        margin: 4px 4px 0 0;
+        border-radius: 3px;
+    }
+}
+
+.pizza-modal-group {
+    margin-bottom: 12px;
 }
 
 
-// .main { display: none; }
-.page {
-    background-color: #fff;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    min-height: 100%;
-    display: none;
-}
+// .page {
+//     background-color: #fff;
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     min-height: 100%;
+//     display: none;
+// }

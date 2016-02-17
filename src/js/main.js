@@ -1,9 +1,3 @@
-// require('babel-polyfill');
-
-// require('zepto/zepto.min');
-// import zepto from 'zepto/zepto.min.js';
-// window.jQuery = window.$;
-
 require('es6-object-assign').polyfill();
 require('lazysizes/lazysizes');
 require('document-register-element');
@@ -83,7 +77,7 @@ setTimeout(() => {
 
 
 const $ = require("jquery");
-const nanoModal = require('nanomodal');
+// const nanoModal = require('nanomodal');
 
 shoppingCart.subscribe(() => {
     const state = shoppingCart.getState();
@@ -131,7 +125,7 @@ shoppingCart.subscribe(() => {
     viewModel.minTotalNotReached = viewModel.total < viewModel.minForFreeDelivery;
     viewModel.showMinForFreeDeliveryMessage = state.inCart.length > 0 && viewModel.minTotalNotReached;
 
-    var tpl = require('./templates/shopping-cart.html');
+    var tpl = require('mustache!./templates/shopping-cart.html');
     $('.cart-calculation').html(tpl(viewModel));
 
 
@@ -241,7 +235,11 @@ $(document).on('click', 'button[data-add-to-cart]', function (e) {
     //     shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
     // }
 
-    shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
+    if (type === 'pizza') {
+        showPizzaModal(id, variant);
+    } else {
+        shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
+    }
 
     // const template = require('./templates/pizza-options.html');
     // const html = template();
@@ -404,12 +402,9 @@ const tracking = require('./tracking');
 const page = require('page');
 
 page((context, next) => {
-    // console.log(context);
     tracking.pageview();
     next();
 });
-
-page();
 
 
 // $.ajax({
@@ -457,10 +452,6 @@ page();
 // });
 
 
-
-
-// const ko = require('knockout');
-
 // $.ajax({
 //     url: 'https://meexpizza.firebaseio.com/orders.json',
 //     data: { auth: 'v1pkhOcxNAyjQZlgj94v79wunDSLwPiFvIuwLfQX', orderBy: '"timestamp"' },
@@ -474,65 +465,59 @@ page();
 //     }
 // })
 
+const showPizzaModal = (id, variant) => {
+    const Vue = require('vue');
+    const html = require('html!./templates/pizza-extras-modal.html');
+    const modal = require('./modal');
 
-//
-// window.x = () => {
-//     const top = window.scrollY;
-//
-//     const main =$('.main').css({
-//         overflow: 'hidden',
-//         position: 'absolute',
-//         top: 0,
-//         left: 0,
-//         right: 0,
-//         height: '100%'
-//     });
-//
-//     const pg = $('.page').css({
-//         position: 'absolute',
-//         top: 0,
-//         left: 0,
-//         right: 0,
-//         minHeight: '100%',
-//         backgroundColor: 'rgba(255, 64, 64, .5)',
-//         zIndex: 3
-//     })
-//     .append('<div style="height: 1200px; background-color: #fff; width: 300px; margin: 0 auto;"></div>')
-//     .on('click', () => {
-//         main.css({
-//             overflow: 'auto',
-//             position: 'relative',
-//             height: 'auto'
-//         });
-//
-//         pg.hide();
-//
-//         window.scrollTo(0, top);
-//     })
-//     .show();
-//
-//     window.scrollTo(0,0);
-// };
-//
-// $('.sticky-button-container button').click((e) => {
-//     window.x();
-//     return false;
-// })
+    const dish = menucard.dishes.filter(d => d.id === id)[0];
 
-// const showModal = window.showModal = () => {
-//     const scrollTop = window.scrollY;
-//
-//     $(`<div class="modal-backdrop">
-//         <div class="modal-content" style="position: relative; top: ${scrollTop}px;">
-//             <h1>Title</h1>
-//             <div style="height: 350px;">Content</div>
-//         </div>
-//     </div>`).height($('body').height()).appendTo('body');
-//
-//     // window.scrollTo(0, 0);
-// };
+    const m = modal.show(html);
+    const model = window.model = new Vue({
+        el: m.el,
+        data: {
+            selectedExtras: [],
+            sizes: [],
+            selectedSize: '',
+            variants: dish.variants,
+            selectedVariant: variant,
+            imageName: dish.imageName,
 
-// window.show = () => {
-//     $('.main').hide();
-//     $('.page').show();
-// };
+            name: dish.name,
+            description: dish.description
+        },
+
+        computed: {
+            availableExtras: () => {
+                return menucard.pizzaExtras;
+            },
+            totalPrice: function () {
+                const selectedVariant = this.selectedVariant;
+                const basePrice = this.variants.filter(v => v.name === selectedVariant)[0].price;
+                const extraPrice = this.selectedExtras.reduce((prev, curr) => curr.price + prev, 0);
+                return basePrice + extraPrice;
+            }
+        },
+
+        methods: {
+            addExtra: (category, name, price) => {
+                const alreadyAdded = model.selectedExtras.filter(x => x.category === category && x.name === name).length > 0;
+                if (!alreadyAdded) {
+                    model.selectedExtras.push({ category, name, price });
+                }
+            },
+            removeExtra: (extra) => {
+                model.selectedExtras = model.selectedExtras.filter(ex => ex.name !== extra.name || ex.category !== extra.category);
+            },
+            cancel: () => {
+                modal.hide();
+                model.$destroy();
+            },
+            addToCart: () => {
+                shoppingCart.dispatch({ type: 'ADD', dish: { id, variant: model.selectedVariant, extras: model.selectedExtras.map(ex => ({ name: ex.name, category: ex.category })) }, timestamp: +new Date() });
+                modal.hide();
+                model.$destroy();
+            }
+        }
+    });
+};

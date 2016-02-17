@@ -290,26 +290,12 @@
         },
         {
             "categoryId": "fuzios-etelek",
-            "name": "Török pizza menü (Akay)",
-            "id": "fuzios-etelek-torok-pizza-menu-akay",
+            "name": "Török pizza menü",
+            "id": "fuzios-etelek-torok-pizza-menu",
             "variants": {
-                "": 990
-            }
-        },
-        {
-            "categoryId": "fuzios-etelek",
-            "name": "Török pizza menü (Banu)",
-            "id": "fuzios-etelek-torok-pizza-menu-banu",
-            "variants": {
-                "": 990
-            }
-        },
-        {
-            "categoryId": "fuzios-etelek",
-            "name": "Török pizza menü (Cahil)",
-            "id": "fuzios-etelek-torok-pizza-menu-cahil",
-            "variants": {
-                "": 990
+                "Akay": 990,
+                "Banu": 990,
+                "Cahil": 990
             }
         },
         {
@@ -367,7 +353,8 @@
             "name": "Meex burger",
             "id": "hamburgerek-meex-burger",
             "variants": {
-                "": 750
+                "Csak szendvics": 750,
+                "Menüben": 990
             }
         },
         {
@@ -375,7 +362,8 @@
             "name": "Meex sajtburger",
             "id": "hamburgerek-meex-sajtburger",
             "variants": {
-                "": 850
+                "Csak szendvics": 850,
+                "Menüben": 1090
             }
         },
         {
@@ -383,7 +371,8 @@
             "name": "Dupla Meex burger",
             "id": "hamburgerek-dupla-meex-burger",
             "variants": {
-                "": 1250
+                "Csak szendvics": 1250,
+                "Menüben": 1490
             }
         },
         {
@@ -391,7 +380,8 @@
             "name": "Dupla Meex sajtburger",
             "id": "hamburgerek-dupla-meex-sajtburger",
             "variants": {
-                "": 1450
+                "Csak szendvics": 1450,
+                "Menüben": 1590
             }
         },
         {
@@ -399,7 +389,8 @@
             "name": "Cheese Lovers Burger",
             "id": "hamburgerek-cheese-lovers-burger",
             "variants": {
-                "": 890
+                "Csak szendvics": 890,
+                "Menüben": 1190
             }
         },
         {
@@ -407,7 +398,8 @@
             "name": "Texasi Tüzes Burger",
             "id": "hamburgerek-texasi-tuzes-burger",
             "variants": {
-                "": 990
+                "Csak szendvics": 990,
+                "Menüben": 1390
             }
         },
         {
@@ -415,7 +407,8 @@
             "name": "New York Burger",
             "id": "hamburgerek-new-york-burger",
             "variants": {
-                "": 990
+                "Csak szendvics": 990,
+                "Menüben": 1390
             }
         },
         {
@@ -423,55 +416,32 @@
             "name": "Hungarian Burger",
             "id": "hamburgerek-hungarian-burger",
             "variants": {
-                "": 990
+                "Csak szendvics": 990,
+                "Menüben": 1390
             }
         },
         {
-            "categoryId": "hamburger-menuk",
-            "name": "Meex Burger Menü",
-            "id": "hamburger-menuk-meex-burger-menu",
-            "variants": {
-                "": 990
-            }
-        },
-        {
-            "categoryId": "hamburger-menuk",
-            "name": "Meex Sajtburger Menü",
-            "id": "hamburger-menuk-meex-sajtburger-menu",
+            "categoryId": "salatak",
+            "name": "Hawaii Jérce saláta",
+            "id": "salatak-hawaii-jerce-salata",
             "variants": {
                 "": 1090
             }
         },
         {
-            "categoryId": "hamburger-menuk",
-            "name": "Dupla Meex Burger Menü",
-            "id": "hamburger-menuk-dupla-meex-burger-menu",
+            "categoryId": "salatak",
+            "name": "Miami saláta",
+            "id": "salatak-miami-salata",
             "variants": {
-                "": 1490
-            }
-        },
-        {
-            "categoryId": "hamburger-menuk",
-            "name": "Dupla Meex Sajtburger Menü",
-            "id": "hamburger-menuk-dupla-meex-sajtburger-menu",
-            "variants": {
-                "": 1590
-            }
-        },
-        {
-            "categoryId": "fitnesz-szendvicsek",
-            "name": "Purpur",
-            "id": "fitnesz-szendvicsek-purpur",
-            "variants": {
-                "": 590
+                "": 1090
             }
         },
         {
             "categoryId": "salatak",
-            "name": "Primőr saláta",
-            "id": "salatak-primor-salata",
+            "name": "Miami 2 saláta",
+            "id": "salatak-miami-2-salata",
             "variants": {
-                "": 650
+                "": 1090
             }
         },
         {
@@ -479,7 +449,7 @@
             "name": "Mozarella saláta",
             "id": "salatak-mozarella-salata",
             "variants": {
-                "": 800
+                "": 1090
             }
         },
         {
@@ -487,7 +457,7 @@
             "name": "Tonhal saláta",
             "id": "salatak-tonhal-salata",
             "variants": {
-                "": 1080
+                "": 1090
             }
         },
         {
@@ -495,13 +465,21 @@
             "name": "Cézár saláta",
             "id": "salatak-cezar-salata",
             "variants": {
-                "": 1080
+                "": 1090
             }
         },
         {
             "categoryId": "edessegek",
             "name": "Profiterol",
             "id": "edessegek-profiterol",
+            "variants": {
+                "": 600
+            }
+        },
+        {
+            "categoryId": "edessegek",
+            "name": "Panna Cotta",
+            "id": "edessegek-panna-cotta",
             "variants": {
                 "": 600
             }
