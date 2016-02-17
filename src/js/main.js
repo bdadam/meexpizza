@@ -109,7 +109,7 @@ shoppingCart.subscribe(() => {
         showEmptyMessage: state.inCart.length === 0,
         isEmpty: state.inCart.length === 0,
         lines: state.inCart.map(item => {
-            const dishFromCard = find(menucard.dishes, dish => dish.id === item.dish.id); //menucard.dishes.filter()
+            const dishFromCard = find(menucard.dishes, dish => dish.id === item.dish.id);
             return { id: item.timestamp, name: `${dishFromCard.name} (${item.dish.variant})`, price: find(dishFromCard.variants, v => v.name === item.dish.variant).price }
         }),
         deliveryFee: menucard.deliveryFees[state.address.city].fix || 0,
@@ -294,7 +294,7 @@ document.registerElement('google-map', {
 
                     const height = width * 0.75 | 0;
                     const scale = (window.devicePixelRatio > 1) ? 2 : 1;
-                    const staticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?zoom=15&size=${width}x${height}&scale=${scale}&maptype=roadmap&markers=color:blue%7Clabel:M%7C3200+Gyöngyös,+Orczy+út+1.&format=png`;
+                    const staticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?zoom=15&size=${width}x${height}&scale=${scale}&maptype=roadmap&markers=color:blue%7Clabel:M%7C3200+Gyöngyös,+Orczy+út+1.&format=png&key=AIzaSyCv-L_Za8GWc4L_s4hcVX3frfJm5toJc6k`;
                     const img = document.createElement('img');
                     img.alt = el.getAttribute('title');
                     img.src = staticMapUrl;
@@ -332,7 +332,7 @@ document.registerElement('add-to-cart', {
 });
 
 const dayOfWeek = new Date().getDay() || 7;
-$(`#opening-hours dd:nth-of-type(${dayOfWeek}), #opening-hours dt:nth-of-type(${dayOfWeek})`).css({ fontWeight: 700 });
+$(`.opening-hours dd:nth-of-type(${dayOfWeek}), .opening-hours dt:nth-of-type(${dayOfWeek})`).css({ fontWeight: 700 });
 
 //
 // const openModal = () => {
