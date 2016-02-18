@@ -14,7 +14,7 @@
             </select>
         </div>
 
-        <div class="pizza-modal-group">
+        <div class="pizza-modal-group" v-if="availableExtras && availableExtras.length">
             <h4>Kiválasztott extrák: </h4>
             <span v-if="order.extras.length === 0">Még nem választottál extrát. Az alábbi listából választhatsz.</span>
             <a class="selected-extra" href="#" v-for="extra in order.extras" @click.prevent="removeExtra(extra)">{{ extra.name }}&nbsp;({{ extra.price }} Ft)</a>
@@ -26,13 +26,15 @@
             <button class="btn-primary" @click="addToCart"><svg class="icon-cart"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>
         </section>
 
-        <h3 style="margin-top: 12px;">Extrák</h3>
-        <div class="pizza-modal-group" v-for="extra in availableExtras">
-            <h4>{{ extra.name }} ({{ extra.price }} Ft):</h4>
-            <a class="available-extra" v-for="item in extra.list" @click.prevent="addExtra(extra.name, item, extra.price)" href="#">{{ item }}</a>
-        </div>
-
+        <section v-if="availableExtras && availableExtras.length">
+            <h3 style="margin-top: 12px;">Extrák</h3>
+            <div class="pizza-modal-group" v-for="extra in availableExtras">
+                <h4>{{ extra.name }} ({{ extra.price }} Ft):</h4>
+                <a class="available-extra" v-for="item in extra.list" @click.prevent="addExtra(extra.name, item, extra.price)" href="#">{{ item }}</a>
+            </div>
+        </section>
+        
         <h3>Megjegyzések</h3>
-        <textarea v-model="notes" rows="3" style="display: block; margin-top: 4px; width: 100%;"></textarea>
+        <textarea class="notes" v-model="order.notes" rows="3"></textarea>
     </div>
 </div>

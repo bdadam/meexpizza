@@ -166,10 +166,10 @@
 	        isEmpty: state.inCart.length === 0,
 	        lines: state.inCart.map(function (item) {
 	            var dishFromCard = find(menucard.dishes, function (dish) {
-	                return dish.id === item.dish.id;
+	                return dish.id === item.dishId;
 	            });
-	            return { id: item.timestamp, name: dishFromCard.name + ' (' + item.dish.variant + ')', price: find(dishFromCard.variants, function (v) {
-	                    return v.name === item.dish.variant;
+	            return { id: item.timestamp, name: dishFromCard.name + ' (' + item.variant + ')', price: find(dishFromCard.variants, function (v) {
+	                    return v.name === item.variant;
 	                }).price };
 	        }),
 	        deliveryFee: menucard.deliveryFees[state.address.city].fix || 0,
@@ -277,8 +277,6 @@
 	            order: order
 	        },
 	
-	        // selectedExtras: [],
-	        // selectedVariant: order.variant
 	        computed: {
 	            availableExtras: function availableExtras() {
 	                if (dish.type === 'pizza') {
@@ -312,7 +310,7 @@
 	                }
 	            },
 	            removeExtra: function removeExtra(extra) {
-	                order.extras = modelorder.extras.filter(function (ex) {
+	                order.extras = order.extras.filter(function (ex) {
 	                    return ex.name !== extra.name || ex.category !== extra.category;
 	                });
 	            },
@@ -321,7 +319,6 @@
 	                model.$destroy();
 	            },
 	            addToCart: function addToCart() {
-	                // shoppingCart.dispatch({ type: 'ADD', dish: { id, variant: model.selectedVariant, extras: modelorder.extras.map(ex => ({ name: ex.name, category: ex.category })) }, timestamp: +new Date() });
 	                shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', order: order });
 	                modal.hide();
 	                model.$destroy();
@@ -27683,7 +27680,7 @@
 /* 124 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"pizza-modal\">\r\n    <header class=\"modal-header\">\r\n        <button class=\"close-modal\" @click=\"cancel\">&times;</button>\r\n        <h3>Mondd el, hogyan szeretnéd...</h3>\r\n    </header>\r\n    <div class=\"modal-content\">\r\n        <div class=\"pizza-modal-group\">\r\n            <h3>{{ dish.name }}</h3>\r\n        </div>\r\n        <div class=\"pizza-modal-group\">\r\n            <h4>Méret</h4>\r\n            <select v-model=\"order.variant\">\r\n                <option v-for=\"variant in dish.variants\" value=\"{{ variant.name }}\">{{ variant.name }} - {{ variant.price }} Ft</option>\r\n            </select>\r\n        </div>\r\n\r\n        <div class=\"pizza-modal-group\">\r\n            <h4>Kiválasztott extrák: </h4>\r\n            <span v-if=\"order.extras.length === 0\">Még nem választottál extrát. Az alábbi listából választhatsz.</span>\r\n            <a class=\"selected-extra\" href=\"#\" v-for=\"extra in order.extras\" @click.prevent=\"removeExtra(extra)\">{{ extra.name }}&nbsp;({{ extra.price }} Ft)</a>\r\n        </div>\r\n\r\n        <section class=\"actions\">\r\n            <span class=\"total-price\">{{ totalPrice }} Ft</span>\r\n            <button @click=\"cancel\">Mégsem</button>\r\n            <button class=\"btn-primary\" @click=\"addToCart\"><svg class=\"icon-cart\"><use xlink:href=\"#icon-cart\"></use></svg> Kosárba</button>\r\n        </section>\r\n\r\n        <h3 style=\"margin-top: 12px;\">Extrák</h3>\r\n        <div class=\"pizza-modal-group\" v-for=\"extra in availableExtras\">\r\n            <h4>{{ extra.name }} ({{ extra.price }} Ft):</h4>\r\n            <a class=\"available-extra\" v-for=\"item in extra.list\" @click.prevent=\"addExtra(extra.name, item, extra.price)\" href=\"#\">{{ item }}</a>\r\n        </div>\r\n\r\n        <h3>Megjegyzések</h3>\r\n        <textarea v-model=\"notes\" rows=\"3\" style=\"display: block; margin-top: 4px; width: 100%;\"></textarea>\r\n    </div>\r\n</div>\r\n";
+	module.exports = "<div class=\"pizza-modal\">\r\n    <header class=\"modal-header\">\r\n        <button class=\"close-modal\" @click=\"cancel\">&times;</button>\r\n        <h3>Mondd el, hogyan szeretnéd...</h3>\r\n    </header>\r\n    <div class=\"modal-content\">\r\n        <div class=\"pizza-modal-group\">\r\n            <h3>{{ dish.name }}</h3>\r\n        </div>\r\n        <div class=\"pizza-modal-group\">\r\n            <h4>Méret</h4>\r\n            <select v-model=\"order.variant\">\r\n                <option v-for=\"variant in dish.variants\" value=\"{{ variant.name }}\">{{ variant.name }} - {{ variant.price }} Ft</option>\r\n            </select>\r\n        </div>\r\n\r\n        <div class=\"pizza-modal-group\" v-if=\"availableExtras && availableExtras.length\">\r\n            <h4>Kiválasztott extrák: </h4>\r\n            <span v-if=\"order.extras.length === 0\">Még nem választottál extrát. Az alábbi listából választhatsz.</span>\r\n            <a class=\"selected-extra\" href=\"#\" v-for=\"extra in order.extras\" @click.prevent=\"removeExtra(extra)\">{{ extra.name }}&nbsp;({{ extra.price }} Ft)</a>\r\n        </div>\r\n\r\n        <section class=\"actions\">\r\n            <span class=\"total-price\">{{ totalPrice }} Ft</span>\r\n            <button @click=\"cancel\">Mégsem</button>\r\n            <button class=\"btn-primary\" @click=\"addToCart\"><svg class=\"icon-cart\"><use xlink:href=\"#icon-cart\"></use></svg> Kosárba</button>\r\n        </section>\r\n\r\n        <section v-if=\"availableExtras && availableExtras.length\">\r\n            <h3 style=\"margin-top: 12px;\">Extrák</h3>\r\n            <div class=\"pizza-modal-group\" v-for=\"extra in availableExtras\">\r\n                <h4>{{ extra.name }} ({{ extra.price }} Ft):</h4>\r\n                <a class=\"available-extra\" v-for=\"item in extra.list\" @click.prevent=\"addExtra(extra.name, item, extra.price)\" href=\"#\">{{ item }}</a>\r\n            </div>\r\n        </section>\r\n        \r\n        <h3>Megjegyzések</h3>\r\n        <textarea class=\"notes\" v-model=\"order.notes\" rows=\"3\"></textarea>\r\n    </div>\r\n</div>\r\n";
 
 /***/ },
 /* 125 */

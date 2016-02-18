@@ -112,8 +112,8 @@ shoppingCart.subscribe(() => {
         showEmptyMessage: state.inCart.length === 0,
         isEmpty: state.inCart.length === 0,
         lines: state.inCart.map(item => {
-            const dishFromCard = find(menucard.dishes, dish => dish.id === item.dish.id);
-            return { id: item.timestamp, name: `${dishFromCard.name} (${item.dish.variant})`, price: find(dishFromCard.variants, v => v.name === item.dish.variant).price }
+            const dishFromCard = find(menucard.dishes, dish => dish.id === item.dishId);
+            return { id: item.timestamp, name: `${dishFromCard.name} (${item.variant})`, price: find(dishFromCard.variants, v => v.name === item.variant).price }
         }),
         deliveryFee: menucard.deliveryFees[state.address.city].fix || 0,
         minForFreeDelivery: menucard.deliveryFees[state.address.city].min || 0
@@ -215,8 +215,6 @@ const showDishOptionsModal = order => {
         data: {
             dish: dish,
             order: order,
-            // selectedExtras: [],
-            // selectedVariant: order.variant
         },
 
         computed: {
@@ -246,14 +244,13 @@ const showDishOptionsModal = order => {
                 }
             },
             removeExtra: (extra) => {
-                order.extras = modelorder.extras.filter(ex => ex.name !== extra.name || ex.category !== extra.category);
+                order.extras = order.extras.filter(ex => ex.name !== extra.name || ex.category !== extra.category);
             },
             cancel: () => {
                 modal.hide();
                 model.$destroy();
             },
             addToCart: () => {
-                // shoppingCart.dispatch({ type: 'ADD', dish: { id, variant: model.selectedVariant, extras: modelorder.extras.map(ex => ({ name: ex.name, category: ex.category })) }, timestamp: +new Date() });
                 shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', order: order });
                 modal.hide();
                 model.$destroy();
