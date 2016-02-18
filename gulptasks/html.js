@@ -46,12 +46,9 @@ module.exports = (gulp) => {
         };
 
         const html = nunjucks.render('index.html', {
-            // menucard,
-            // menucardJson: JSON.stringify(menucard),
             viewModel,
             menucard,
             menu,
-            // menuJson: JSON.stringify(menu)
         });
 
         const minhtml = htmlmin.minify(html, {
@@ -59,7 +56,7 @@ module.exports = (gulp) => {
             preserveLineBreaks: true
         });
 
-        fs.writeFile('./dist/index.html', html, done);
+        fs.writeFile('./dist/index.html', minhtml, done);
     });
 
     gulp.task('html:watch', () => {

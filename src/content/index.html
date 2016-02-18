@@ -18,7 +18,19 @@
                         </div>
                     </div>
                     <div class="prices">
-                        <add-to-cart dishid="{{ dish.id }}"></add-to-cart>
+                        {% for variant in dish.variants %}
+                            <button data-add-to-cart data-id="{{ dish.id }}" data-variant="{{ variant.name }}" data-type="{{ dish.type }}">
+                                <svg class="icon-cart" style="fill: white;"><use xlink:href="#icon-cart"></use></svg>
+                                <span class="variant">
+                                    {% if variant.name %}
+                                        {{ variant.name}}
+                                    {% else %}
+                                        Kosárba
+                                    {% endif %}
+                                </span>
+                                <span class="price">{{ variant.price }} Ft</span>
+                            </button>
+                        {% endfor %}
                     </div>
                 </li>
                 {% endfor %}
@@ -26,8 +38,7 @@
         </section>
     {% endfor %}
 </div>
-
-<div class="sticky-button-container">
+{# <div class="sticky-button-container">
     <button>Megrendelés</button>
-</div>
+</div> #}
 {% endblock %}

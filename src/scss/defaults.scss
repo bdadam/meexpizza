@@ -146,8 +146,10 @@ address {
 }
 
 [class^="icon-"] {
-    width: 0.85em;
-    height: 0.85em;
+    // width: 0.85em;
+    // height: 0.85em;
+    width: 14px;
+    height: 14px;
     margin-right: 4px;
     display: inline-block;
     position: relative;

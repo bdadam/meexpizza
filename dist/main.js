@@ -220,12 +220,9 @@
 	
 	$(document).on('click', 'button[data-add-to-cart]', function (e) {
 	    var el = $(this);
-	    var id = el.data('add-to-cart');
+	    var id = el.data('id');
 	    var variant = el.data('variant');
-	
-	    var type = find(menucard.dishes, function (d) {
-	        return d.id === id;
-	    }).type;
+	    var type = el.data('type');
 	    var options = find(menucard.dishes, function (d) {
 	        return d.id === id;
 	    }).options;
@@ -270,38 +267,30 @@
 	    }
 	});
 	
-	document.registerElement('add-to-cart', {
-	    prototype: Object.create(HTMLElement.prototype, {
-	        attachedCallback: { value: function value() {
-	                var el = $(this);
-	                var itemid = el.attr('dishid');
-	                var dish = menucard.dishes.filter(function (dish) {
-	                    return dish.id === itemid;
-	                })[0];
-	                var variants = dish.variants;
-	                var button = $('<button data-add-to-cart="' + dish.id + '" data-variant="' + variants[0].name + '"><svg class="icon-cart white"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>');
-	
-	                if (variants.length > 1) {
-	                    (function () {
-	                        var select = $('<select>' + variants.map(function (v) {
-	                            return '<option value="' + v.name + '">' + v.name + ' - ' + v.price + ' Ft</option>';
-	                        }) + '</select>').on('change', function (e) {
-	                            return button.data('variant', select.val());
-	                        });
-	                        el.append(select);
-	                    })();
-	                } else {
-	                    if (variants[0].name) {
-	                        el.append(variants[0].name + ' - ');
-	                    }
-	
-	                    el.append('<b>' + variants[0].price + ' Ft</b>');
-	                }
-	
-	                el.append(button);
-	            } }
-	    })
-	});
+	// document.registerElement('add-to-cart', {
+	//     prototype: Object.create(HTMLElement.prototype, {
+	//         attachedCallback: { value: function() {
+	//             const el = $(this);
+	//             const itemid = el.attr('dishid');
+	//             const dish = menucard.dishes.filter(dish => dish.id === itemid)[0];
+	//             const variants = dish.variants;
+	//             const button = $(`<button data-add-to-cart="${dish.id}" data-variant="${variants[0].name}"><svg class="icon-cart white"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>`);
+	//
+	//             if (variants.length > 1) {
+	//                 const select = $('<select>' + variants.map(v => `<option value="${v.name}">${v.name} - ${v.price} Ft</option>`) + '</select>').on('change', e => button.data('variant', select.val()));
+	//                 el.append(select);
+	//             } else {
+	//                 if (variants[0].name) {
+	//                     el.append(`${variants[0].name} - `);
+	//                 }
+	//
+	//                 el.append(`<b>${variants[0].price} Ft</b>`)
+	//             }
+	//
+	//             el.append(button);
+	//         }}
+	//     })
+	// });
 	
 	var dayOfWeek = new Date().getDay() || 7;
 	$('.opening-hours dd:nth-of-type(' + dayOfWeek + '), .opening-hours dt:nth-of-type(' + dayOfWeek + ')').css({ fontWeight: 700 });
@@ -16790,10 +16779,10 @@
 	        "imageName": "buffalo-csirkeszarnyak",
 	        "type": "none",
 	        "variants": [{
-	            "name": "6 darabos",
+	            "name": "6 darab",
 	            "price": 780
 	        }, {
-	            "name": "12 darabos",
+	            "name": "12 darab",
 	            "price": 1090
 	        }],
 	        "options": []
@@ -16806,10 +16795,10 @@
 	        "imageName": "buffalo-csirkeszarnyak",
 	        "type": "none",
 	        "variants": [{
-	            "name": "6 darabos",
+	            "name": "6 darab",
 	            "price": 1190
 	        }, {
-	            "name": "12 darabos",
+	            "name": "12 darab",
 	            "price": 1350
 	        }],
 	        "options": [{
@@ -16847,7 +16836,7 @@
 	            "name": "Szendvics",
 	            "price": 750
 	        }, {
-	            "name": "Menüben",
+	            "name": "Menü",
 	            "price": 990
 	        }],
 	        "options": []
@@ -16863,7 +16852,7 @@
 	            "name": "Szendvics",
 	            "price": 850
 	        }, {
-	            "name": "Menüben",
+	            "name": "Menü",
 	            "price": 1090
 	        }],
 	        "options": []
@@ -16879,7 +16868,7 @@
 	            "name": "Szendvics",
 	            "price": 1250
 	        }, {
-	            "name": "Menüben",
+	            "name": "Menü",
 	            "price": 1490
 	        }],
 	        "options": []
@@ -16895,7 +16884,7 @@
 	            "name": "Szendvics",
 	            "price": 1450
 	        }, {
-	            "name": "Menüben",
+	            "name": "Menü",
 	            "price": 1590
 	        }],
 	        "options": []
@@ -16911,7 +16900,7 @@
 	            "name": "Szendvics",
 	            "price": 890
 	        }, {
-	            "name": "Menüben",
+	            "name": "Menü",
 	            "price": 1190
 	        }],
 	        "options": [{
@@ -16930,7 +16919,7 @@
 	            "name": "Szendvics",
 	            "price": 990
 	        }, {
-	            "name": "Menüben",
+	            "name": "Menü",
 	            "price": 1390
 	        }],
 	        "options": []
@@ -16946,7 +16935,7 @@
 	            "name": "Szendvics",
 	            "price": 990
 	        }, {
-	            "name": "Menüben",
+	            "name": "Menü",
 	            "price": 1390
 	        }],
 	        "options": []
@@ -16962,7 +16951,7 @@
 	            "name": "Szendvics",
 	            "price": 990
 	        }, {
-	            "name": "Menüben",
+	            "name": "Menü",
 	            "price": 1390
 	        }],
 	        "options": [{
@@ -17082,13 +17071,13 @@
 	        "imageName": "pepsi",
 	        "type": "none",
 	        "variants": [{
-	            "name": "1,75 literes",
+	            "name": "1,75 liter",
 	            "price": 480
 	        }, {
-	            "name": "1 literes",
+	            "name": "1 liter",
 	            "price": 350
 	        }, {
-	            "name": "0,33 literes",
+	            "name": "0,33 liter",
 	            "price": 190
 	        }],
 	        "options": []
@@ -17101,13 +17090,13 @@
 	        "imageName": "pepsi-max",
 	        "type": "none",
 	        "variants": [{
-	            "name": "1,75 literes",
+	            "name": "1,75 liter",
 	            "price": 480
 	        }, {
-	            "name": "1 literes",
+	            "name": "1 liter",
 	            "price": 350
 	        }, {
-	            "name": "0,33 literes",
+	            "name": "0,33 liter",
 	            "price": 190
 	        }],
 	        "options": []
@@ -17120,13 +17109,13 @@
 	        "imageName": "mirinda",
 	        "type": "none",
 	        "variants": [{
-	            "name": "1,75 literes",
+	            "name": "1,75 liter",
 	            "price": 480
 	        }, {
-	            "name": "1 literes",
+	            "name": "1 liter",
 	            "price": 350
 	        }, {
-	            "name": "0,33 literes",
+	            "name": "0,33 liter",
 	            "price": 190
 	        }],
 	        "options": []
@@ -17139,13 +17128,13 @@
 	        "imageName": "canada-dry",
 	        "type": "none",
 	        "variants": [{
-	            "name": "1,75 literes",
+	            "name": "1,75 liter",
 	            "price": 480
 	        }, {
-	            "name": "1 literes",
+	            "name": "1 liter",
 	            "price": 350
 	        }, {
-	            "name": "0,33 literes",
+	            "name": "0,33 liter",
 	            "price": 190
 	        }],
 	        "options": []
@@ -17158,7 +17147,7 @@
 	        "imageName": "lipton-ice-tea",
 	        "type": "none",
 	        "variants": [{
-	            "name": "0,33 literes",
+	            "name": "0,33 liter",
 	            "price": 190
 	        }],
 	        "options": []
@@ -17243,7 +17232,7 @@
 	            "fix": 1000
 	        }
 	    },
-	    "version": "20473bfe76526cb262ec701f0f194a8a"
+	    "version": "7eb4b68ddecddd2ef149ceaba9997a2a"
 	};
 
 /***/ },

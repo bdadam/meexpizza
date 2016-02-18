@@ -863,11 +863,11 @@ module.exports = {
             "type": "none",
             "variants": [
                 {
-                    "name": "6 darabos",
+                    "name": "6 darab",
                     "price": 780
                 },
                 {
-                    "name": "12 darabos",
+                    "name": "12 darab",
                     "price": 1090
                 }
             ],
@@ -883,11 +883,11 @@ module.exports = {
             "type": "none",
             "variants": [
                 {
-                    "name": "6 darabos",
+                    "name": "6 darab",
                     "price": 1190
                 },
                 {
-                    "name": "12 darabos",
+                    "name": "12 darab",
                     "price": 1350
                 }
             ],
@@ -948,7 +948,7 @@ module.exports = {
                     "price": 750
                 },
                 {
-                    "name": "Menüben",
+                    "name": "Menü",
                     "price": 990
                 }
             ],
@@ -968,7 +968,7 @@ module.exports = {
                     "price": 850
                 },
                 {
-                    "name": "Menüben",
+                    "name": "Menü",
                     "price": 1090
                 }
             ],
@@ -988,7 +988,7 @@ module.exports = {
                     "price": 1250
                 },
                 {
-                    "name": "Menüben",
+                    "name": "Menü",
                     "price": 1490
                 }
             ],
@@ -1008,7 +1008,7 @@ module.exports = {
                     "price": 1450
                 },
                 {
-                    "name": "Menüben",
+                    "name": "Menü",
                     "price": 1590
                 }
             ],
@@ -1028,7 +1028,7 @@ module.exports = {
                     "price": 890
                 },
                 {
-                    "name": "Menüben",
+                    "name": "Menü",
                     "price": 1190
                 }
             ],
@@ -1057,7 +1057,7 @@ module.exports = {
                     "price": 990
                 },
                 {
-                    "name": "Menüben",
+                    "name": "Menü",
                     "price": 1390
                 }
             ],
@@ -1077,7 +1077,7 @@ module.exports = {
                     "price": 990
                 },
                 {
-                    "name": "Menüben",
+                    "name": "Menü",
                     "price": 1390
                 }
             ],
@@ -1097,7 +1097,7 @@ module.exports = {
                     "price": 990
                 },
                 {
-                    "name": "Menüben",
+                    "name": "Menü",
                     "price": 1390
                 }
             ],
@@ -1249,15 +1249,15 @@ module.exports = {
             "type": "none",
             "variants": [
                 {
-                    "name": "1,75 literes",
+                    "name": "1,75 liter",
                     "price": 480
                 },
                 {
-                    "name": "1 literes",
+                    "name": "1 liter",
                     "price": 350
                 },
                 {
-                    "name": "0,33 literes",
+                    "name": "0,33 liter",
                     "price": 190
                 }
             ],
@@ -1273,15 +1273,15 @@ module.exports = {
             "type": "none",
             "variants": [
                 {
-                    "name": "1,75 literes",
+                    "name": "1,75 liter",
                     "price": 480
                 },
                 {
-                    "name": "1 literes",
+                    "name": "1 liter",
                     "price": 350
                 },
                 {
-                    "name": "0,33 literes",
+                    "name": "0,33 liter",
                     "price": 190
                 }
             ],
@@ -1297,15 +1297,15 @@ module.exports = {
             "type": "none",
             "variants": [
                 {
-                    "name": "1,75 literes",
+                    "name": "1,75 liter",
                     "price": 480
                 },
                 {
-                    "name": "1 literes",
+                    "name": "1 liter",
                     "price": 350
                 },
                 {
-                    "name": "0,33 literes",
+                    "name": "0,33 liter",
                     "price": 190
                 }
             ],
@@ -1321,15 +1321,15 @@ module.exports = {
             "type": "none",
             "variants": [
                 {
-                    "name": "1,75 literes",
+                    "name": "1,75 liter",
                     "price": 480
                 },
                 {
-                    "name": "1 literes",
+                    "name": "1 liter",
                     "price": 350
                 },
                 {
-                    "name": "0,33 literes",
+                    "name": "0,33 liter",
                     "price": 190
                 }
             ],
@@ -1345,7 +1345,7 @@ module.exports = {
             "type": "none",
             "variants": [
                 {
-                    "name": "0,33 literes",
+                    "name": "0,33 liter",
                     "price": 190
                 }
             ],
@@ -1499,5 +1499,5 @@ module.exports = {
             "fix": 1000
         }
     },
-    "version": "20473bfe76526cb262ec701f0f194a8a"
+    "version": "7eb4b68ddecddd2ef149ceaba9997a2a"
 };

@@ -162,10 +162,9 @@ $(document).on('click', 'button[data-duplicate-order-item]', function(e) {
 
 $(document).on('click', 'button[data-add-to-cart]', function (e) {
     const el = $(this);
-    const id = el.data('add-to-cart');
+    const id = el.data('id');
     const variant = el.data('variant');
-
-    const type = find(menucard.dishes, d => d.id === id).type;
+    const type = el.data('type');
     const options = find(menucard.dishes, d => d.id === id).options;
 
     const order = {
@@ -210,30 +209,30 @@ $(document).on('click', 'button[data-add-to-cart]', function (e) {
 
 
 
-document.registerElement('add-to-cart', {
-    prototype: Object.create(HTMLElement.prototype, {
-        attachedCallback: { value: function() {
-            const el = $(this);
-            const itemid = el.attr('dishid');
-            const dish = menucard.dishes.filter(dish => dish.id === itemid)[0];
-            const variants = dish.variants;
-            const button = $(`<button data-add-to-cart="${dish.id}" data-variant="${variants[0].name}"><svg class="icon-cart white"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>`);
-
-            if (variants.length > 1) {
-                const select = $('<select>' + variants.map(v => `<option value="${v.name}">${v.name} - ${v.price} Ft</option>`) + '</select>').on('change', e => button.data('variant', select.val()));
-                el.append(select);
-            } else {
-                if (variants[0].name) {
-                    el.append(`${variants[0].name} - `);
-                }
-
-                el.append(`<b>${variants[0].price} Ft</b>`)
-            }
-
-            el.append(button);
-        }}
-    })
-});
+// document.registerElement('add-to-cart', {
+//     prototype: Object.create(HTMLElement.prototype, {
+//         attachedCallback: { value: function() {
+//             const el = $(this);
+//             const itemid = el.attr('dishid');
+//             const dish = menucard.dishes.filter(dish => dish.id === itemid)[0];
+//             const variants = dish.variants;
+//             const button = $(`<button data-add-to-cart="${dish.id}" data-variant="${variants[0].name}"><svg class="icon-cart white"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>`);
+//
+//             if (variants.length > 1) {
+//                 const select = $('<select>' + variants.map(v => `<option value="${v.name}">${v.name} - ${v.price} Ft</option>`) + '</select>').on('change', e => button.data('variant', select.val()));
+//                 el.append(select);
+//             } else {
+//                 if (variants[0].name) {
+//                     el.append(`${variants[0].name} - `);
+//                 }
+//
+//                 el.append(`<b>${variants[0].price} Ft</b>`)
+//             }
+//
+//             el.append(button);
+//         }}
+//     })
+// });
 
 const dayOfWeek = new Date().getDay() || 7;
 $(`.opening-hours dd:nth-of-type(${dayOfWeek}), .opening-hours dt:nth-of-type(${dayOfWeek})`).css({ fontWeight: 700 });

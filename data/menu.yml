@@ -285,8 +285,8 @@ Rántott sajtok és frissensültek:
             image: buffalo-csirkeszarnyak
             Leírás: TODO
             Árak:
-                6 darabos: 780
-                12 darabos: 1090
+                6 darab: 780
+                12 darab: 1090
         Buffalo csirkeszárnyak menü:
             image: buffalo-csirkeszarnyak
             Leírás: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
@@ -299,8 +299,8 @@ Rántott sajtok és frissensültek:
                     - gyümölcsszósz
                     - chilis szósz
             Árak:
-                6 darabos: 1190
-                12 darabos: 1350
+                6 darab: 1190
+                12 darab: 1350
         Fitneszcsirke:
             Leírás: roston sült csirkemellszelet, friss saláta vagy párold zöldköret vagy párolt gyümölcs
             Opciók:
@@ -319,28 +319,28 @@ Hamburgerek:
             Leírás: friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa
             Árak:
                 Szendvics: 750
-                Menüben: 990
+                Menü: 990
         Meex sajtburger:
             type: hamburger
             image: meex-burger
             Leírás: friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt
             Árak:
                 Szendvics: 850
-                Menüben: 1090
+                Menü: 1090
         Dupla Meex burger:
             type: hamburger
             image: meex-burger
             Leírás: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa
             Árak:
                 Szendvics: 1250
-                Menüben: 1490
+                Menü: 1490
         Dupla Meex sajtburger:
             type: hamburger
             image: meex-burger
             Leírás: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt
             Árak:
                 Szendvics: 1450
-                Menüben: 1590
+                Menü: 1590
         Cheese Lovers Burger:
             type: hamburger
             image: meex-burger
@@ -352,21 +352,21 @@ Hamburgerek:
                     - rántott camabert
             Árak:
                 Szendvics: 890
-                Menüben: 1190
+                Menü: 1190
         Texasi Tüzes Burger:
             type: hamburger
             image: meex-burger
             Leírás: alap + 100% marhahús, jalapeno, cheddar sajt
             Árak:
                 Szendvics: 990
-                Menüben: 1390
+                Menü: 1390
         New York Burger:
             type: hamburger
             image: meex-burger
             Leírás: alap + rostonsült csirke, füstölt sajt, tükörtojás
             Árak:
                 Szendvics: 990
-                Menüben: 1390
+                Menü: 1390
         Hungarian Burger:
             type: hamburger
             image: meex-burger
@@ -377,7 +377,7 @@ Hamburgerek:
                     - csirke
             Árak:
                 Szendvics: 990
-                Menüben: 1390
+                Menü: 1390
 
 # Fitnesz szendvicsek:
 #     Választék:
@@ -428,25 +428,25 @@ Saláták:
     Választék:
         Pepsi:
             Árak:
-                1,75 literes: 480
-                1 literes: 350
-                0,33 literes: 190
+                1,75 liter: 480
+                1 liter: 350
+                0,33 liter: 190
         Pepsi Max:
             Árak:
-                1,75 literes: 480
-                1 literes: 350
-                0,33 literes: 190
+                1,75 liter: 480
+                1 liter: 350
+                0,33 liter: 190
         Mirinda:
             Árak:
-                1,75 literes: 480
-                1 literes: 350
-                0,33 literes: 190
+                1,75 liter: 480
+                1 liter: 350
+                0,33 liter: 190
         Canada Dry:
             Árak:
-                1,75 literes: 480
-                1 literes: 350
-                0,33 literes: 190
+                1,75 liter: 480
+                1 liter: 350
+                0,33 liter: 190
 
         Lipton Ice Tea:
             Árak:
-                0,33 literes: 190
+                0,33 liter: 190

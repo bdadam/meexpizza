@@ -327,8 +327,8 @@ module.exports = {
             "name": "Buffalo csirkeszárnyak",
             "id": "rantott-sajtok-es-frissensultek-buffalo-csirkeszarnyak",
             "variants": {
-                "6 darabos": 780,
-                "12 darabos": 1090
+                "6 darab": 780,
+                "12 darab": 1090
             }
         },
         {
@@ -336,8 +336,8 @@ module.exports = {
             "name": "Buffalo csirkeszárnyak menü",
             "id": "rantott-sajtok-es-frissensultek-buffalo-csirkeszarnyak-menu",
             "variants": {
-                "6 darabos": 1190,
-                "12 darabos": 1350
+                "6 darab": 1190,
+                "12 darab": 1350
             }
         },
         {
@@ -354,7 +354,7 @@ module.exports = {
             "id": "hamburgerek-meex-burger",
             "variants": {
                 "Szendvics": 750,
-                "Menüben": 990
+                "Menü": 990
             }
         },
         {
@@ -363,7 +363,7 @@ module.exports = {
             "id": "hamburgerek-meex-sajtburger",
             "variants": {
                 "Szendvics": 850,
-                "Menüben": 1090
+                "Menü": 1090
             }
         },
         {
@@ -372,7 +372,7 @@ module.exports = {
             "id": "hamburgerek-dupla-meex-burger",
             "variants": {
                 "Szendvics": 1250,
-                "Menüben": 1490
+                "Menü": 1490
             }
         },
         {
@@ -381,7 +381,7 @@ module.exports = {
             "id": "hamburgerek-dupla-meex-sajtburger",
             "variants": {
                 "Szendvics": 1450,
-                "Menüben": 1590
+                "Menü": 1590
             }
         },
         {
@@ -390,7 +390,7 @@ module.exports = {
             "id": "hamburgerek-cheese-lovers-burger",
             "variants": {
                 "Szendvics": 890,
-                "Menüben": 1190
+                "Menü": 1190
             }
         },
         {
@@ -399,7 +399,7 @@ module.exports = {
             "id": "hamburgerek-texasi-tuzes-burger",
             "variants": {
                 "Szendvics": 990,
-                "Menüben": 1390
+                "Menü": 1390
             }
         },
         {
@@ -408,7 +408,7 @@ module.exports = {
             "id": "hamburgerek-new-york-burger",
             "variants": {
                 "Szendvics": 990,
-                "Menüben": 1390
+                "Menü": 1390
             }
         },
         {
@@ -417,7 +417,7 @@ module.exports = {
             "id": "hamburgerek-hungarian-burger",
             "variants": {
                 "Szendvics": 990,
-                "Menüben": 1390
+                "Menü": 1390
             }
         },
         {
@@ -489,9 +489,9 @@ module.exports = {
             "name": "Pepsi",
             "id": "uditok-pepsi",
             "variants": {
-                "1,75 literes": 480,
-                "1 literes": 350,
-                "0,33 literes": 190
+                "1,75 liter": 480,
+                "1 liter": 350,
+                "0,33 liter": 190
             }
         },
         {
@@ -499,9 +499,9 @@ module.exports = {
             "name": "Pepsi Max",
             "id": "uditok-pepsi-max",
             "variants": {
-                "1,75 literes": 480,
-                "1 literes": 350,
-                "0,33 literes": 190
+                "1,75 liter": 480,
+                "1 liter": 350,
+                "0,33 liter": 190
             }
         },
         {
@@ -509,9 +509,9 @@ module.exports = {
             "name": "Mirinda",
             "id": "uditok-mirinda",
             "variants": {
-                "1,75 literes": 480,
-                "1 literes": 350,
-                "0,33 literes": 190
+                "1,75 liter": 480,
+                "1 liter": 350,
+                "0,33 liter": 190
             }
         },
         {
@@ -519,9 +519,9 @@ module.exports = {
             "name": "Canada Dry",
             "id": "uditok-canada-dry",
             "variants": {
-                "1,75 literes": 480,
-                "1 literes": 350,
-                "0,33 literes": 190
+                "1,75 liter": 480,
+                "1 liter": 350,
+                "0,33 liter": 190
             }
         },
         {
@@ -529,7 +529,7 @@ module.exports = {
             "name": "Lipton Ice Tea",
             "id": "uditok-lipton-ice-tea",
             "variants": {
-                "0,33 literes": 190
+                "0,33 liter": 190
             }
         }
     ]
