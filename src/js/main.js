@@ -177,62 +177,19 @@ $(document).on('click', 'button[data-add-to-cart]', function (e) {
     // showHamburgerModalIfNeeded(type, order)
     // showOptionsModalIfNeeded(options, order)
     // placeOrderIfEverythingIsFine(order);
-
-    // switch(type) {
-    //     case 'pizza':
-    //         break;
-    //     case '3kiv':
-    //         break;
-    //     case 'hamburger':
-    //         break;
-    //
-    //     default:
-    //         if (options && options.length) {}
-    // }
-
-    // if (type === 'pizza') {
-    //     // show pizza modal
-    // } else if () {} else if (type === 'hamburger') {
-    //     // show hamburger modal
-    // } else if (options && options.length) {
-    //     // // show options modal
-    // } else {
-    //     shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
-    // }
-
-    if (type === 'pizza') {
-        showPizzaModal(id, variant);
-    } else {
-        shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
+    switch(type) {
+        case 'pizza':
+            showPizzaModal(id, variant);
+            break;
+        case 'pizza-3-free-options':
+            break;
+        case 'hamburger':
+            break;
+        default:
+            shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
     }
 });
 
-
-
-// document.registerElement('add-to-cart', {
-//     prototype: Object.create(HTMLElement.prototype, {
-//         attachedCallback: { value: function() {
-//             const el = $(this);
-//             const itemid = el.attr('dishid');
-//             const dish = menucard.dishes.filter(dish => dish.id === itemid)[0];
-//             const variants = dish.variants;
-//             const button = $(`<button data-add-to-cart="${dish.id}" data-variant="${variants[0].name}"><svg class="icon-cart white"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>`);
-//
-//             if (variants.length > 1) {
-//                 const select = $('<select>' + variants.map(v => `<option value="${v.name}">${v.name} - ${v.price} Ft</option>`) + '</select>').on('change', e => button.data('variant', select.val()));
-//                 el.append(select);
-//             } else {
-//                 if (variants[0].name) {
-//                     el.append(`${variants[0].name} - `);
-//                 }
-//
-//                 el.append(`<b>${variants[0].price} Ft</b>`)
-//             }
-//
-//             el.append(button);
-//         }}
-//     })
-// });
 
 const dayOfWeek = new Date().getDay() || 7;
 $(`.opening-hours dd:nth-of-type(${dayOfWeek}), .opening-hours dt:nth-of-type(${dayOfWeek})`).css({ fontWeight: 700 });
@@ -335,10 +292,6 @@ Rántott sajt:
 //         console.log('Error', e);
 //     }
 // })
-
-const createOrder = (options) => {
-    let id = options.id || +new Date();
-};
 
 const showPizzaModal = (id, variant) => {
     const Vue = require('vue');
