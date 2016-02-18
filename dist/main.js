@@ -345,30 +345,30 @@
 	- note added to order item
 	- variant changed in order item
 	- city changed
-	
+
 	Pizza kérdések:
 	(- Milyen méret?)
 	- Milyen extra feltétek?
-	
+
 	3-kívánság pizza:
 	- Milyen alap?
 	- Milyen 3 ingyenes feltét?
-	
-	
+
+
 	Üdítő:
 	- Milyen méret?
-	
+
 	Hamburger:
 	- Menü vagy sem?
 	- Milyen burgonya?
 	- Milyen szósz?
-	
+
 	Rántott sajt:
 	- Milyen burgonya?
 	- Milyen szósz?
-	
+
 	*/
-	
+
 	// $.ajax({
 	//     url: 'https://meexpizza.firebaseio.com/orders.json',
 	//     type: 'PUT',
@@ -390,7 +390,7 @@
 	//     }
 	// });
 	//
-	
+
 	//
 	// $.ajax({
 	//     url: 'https://meexpizza.firebaseio.com/orders.json',
@@ -411,7 +411,7 @@
 	//         console.log('ERR', x);
 	//     }
 	// });
-	
+
 	// $.ajax({
 	//     url: 'https://meexpizza.firebaseio.com/orders.json',
 	//     data: { auth: 'v1pkhOcxNAyjQZlgj94v79wunDSLwPiFvIuwLfQX', orderBy: '"timestamp"' },
@@ -424,77 +424,67 @@
 	//         console.log('Error', e);
 	//     }
 	// })
-	
-	var showPizzaModal = function showPizzaModal(id, variant) {
-	    var Vue = __webpack_require__(123);
-	    var html = __webpack_require__(126);
-	    var modal = __webpack_require__(125);
-	
-	    var dish = menucard.dishes.filter(function (d) {
-	        return d.id === id;
-	    })[0];
-	
-	    var m = modal.show(html);
-	    var model = window.model = new Vue({
-	        el: m.el,
-	        data: {
-	            selectedExtras: [],
-	            sizes: [],
-	            selectedSize: '',
-	            variants: dish.variants,
-	            selectedVariant: variant,
-	            imageName: dish.imageName,
-	
-	            name: dish.name,
-	            description: dish.description
-	        },
-	
-	        computed: {
-	            availableExtras: function availableExtras() {
-	                return menucard.pizzaExtras;
-	            },
-	            totalPrice: function totalPrice() {
-	                var selectedVariant = this.selectedVariant;
-	                var basePrice = this.variants.filter(function (v) {
-	                    return v.name === selectedVariant;
-	                })[0].price;
-	                var extraPrice = this.selectedExtras.reduce(function (prev, curr) {
-	                    return curr.price + prev;
-	                }, 0);
-	                return basePrice + extraPrice;
-	            }
-	        },
-	
-	        methods: {
-	            addExtra: function addExtra(category, name, price) {
-	                var alreadyAdded = model.selectedExtras.filter(function (x) {
-	                    return x.category === category && x.name === name;
-	                }).length > 0;
-	                if (!alreadyAdded) {
-	                    model.selectedExtras.push({ category: category, name: name, price: price });
-	                }
-	            },
-	            removeExtra: function removeExtra(extra) {
-	                model.selectedExtras = model.selectedExtras.filter(function (ex) {
-	                    return ex.name !== extra.name || ex.category !== extra.category;
-	                });
-	            },
-	            cancel: function cancel() {
-	                modal.hide();
-	                model.$destroy();
-	            },
-	            addToCart: function addToCart() {
-	                shoppingCart.dispatch({ type: 'ADD', dish: { id: id, variant: model.selectedVariant, extras: model.selectedExtras.map(function (ex) {
-	                            return { name: ex.name, category: ex.category };
-	                        }) }, timestamp: +new Date() });
-	                modal.hide();
-	                model.$destroy();
-	            }
-	        }
-	    });
-	};
-	
-	var showHamburgerModal = function showHamburgerModal(id, variant) {};
+
+	// const showPizzaModal = (id, variant) => {
+	//     const Vue = require('vue');
+	//     const html = require('html!./templates/pizza-extras-modal.html');
+	//     const modal = require('./modal');
+	//
+	//     const dish = menucard.dishes.filter(d => d.id === id)[0];
+	//
+	//     const m = modal.show(html);
+	//     const model = window.model = new Vue({
+	//         el: m.el,
+	//         data: {
+	//             selectedExtras: [],
+	//             sizes: [],
+	//             selectedSize: '',
+	//             variants: dish.variants,
+	//             selectedVariant: variant,
+	//             imageName: dish.imageName,
+	//
+	//             name: dish.name,
+	//             description: dish.description
+	//         },
+	//
+	//         computed: {
+	//             availableExtras: () => {
+	//                 return menucard.pizzaExtras;
+	//             },
+	//             totalPrice: function () {
+	//                 const selectedVariant = this.selectedVariant;
+	//                 const basePrice = this.variants.filter(v => v.name === selectedVariant)[0].price;
+	//                 const extraPrice = this.selectedExtras.reduce((prev, curr) => curr.price + prev, 0);
+	//                 return basePrice + extraPrice;
+	//             }
+	//         },
+	//
+	//         methods: {
+	//             addExtra: (category, name, price) => {
+	//                 const alreadyAdded = model.selectedExtras.filter(x => x.category === category && x.name === name).length > 0;
+	//                 if (!alreadyAdded) {
+	//                     model.selectedExtras.push({ category, name, price });
+	//                 }
+	//             },
+	//             removeExtra: (extra) => {
+	//                 model.selectedExtras = model.selectedExtras.filter(ex => ex.name !== extra.name || ex.category !== extra.category);
+	//             },
+	//             cancel: () => {
+	//                 modal.hide();
+	//                 model.$destroy();
+	//             },
+	//             addToCart: () => {
+	//                 shoppingCart.dispatch({ type: 'ADD', dish: { id, variant: model.selectedVariant, extras: model.selectedExtras.map(ex => ({ name: ex.name, category: ex.category })) }, timestamp: +new Date() });
+	//                 modal.hide();
+	//                 model.$destroy();
+	//             }
+	//         }
+	//     });
+	// };
+	//
+	// const showHamburgerModal = (id, variant) => {
+	//
+	// };
 
 /***/ },
 /* 1 */
@@ -27680,7 +27670,7 @@
 /* 124 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"pizza-modal\">\r\n    <header class=\"modal-header\">\r\n        <button class=\"close-modal\" @click=\"cancel\">&times;</button>\r\n        <h3>Mondd el, hogyan szeretnéd...</h3>\r\n    </header>\r\n    <div class=\"modal-content\">\r\n        <div class=\"pizza-modal-group\">\r\n            <h3>{{ dish.name }}</h3>\r\n        </div>\r\n        <div class=\"pizza-modal-group\">\r\n            <h4>Méret</h4>\r\n            <select v-model=\"order.variant\">\r\n                <option v-for=\"variant in dish.variants\" value=\"{{ variant.name }}\">{{ variant.name }} - {{ variant.price }} Ft</option>\r\n            </select>\r\n        </div>\r\n\r\n        <div class=\"pizza-modal-group\" v-if=\"availableExtras && availableExtras.length\">\r\n            <h4>Kiválasztott extrák: </h4>\r\n            <span v-if=\"order.extras.length === 0\">Még nem választottál extrát. Az alábbi listából választhatsz.</span>\r\n            <a class=\"selected-extra\" href=\"#\" v-for=\"extra in order.extras\" @click.prevent=\"removeExtra(extra)\">{{ extra.name }}&nbsp;({{ extra.price }} Ft)</a>\r\n        </div>\r\n\r\n        <section class=\"actions\">\r\n            <span class=\"total-price\">{{ totalPrice }} Ft</span>\r\n            <button @click=\"cancel\">Mégsem</button>\r\n            <button class=\"btn-primary\" @click=\"addToCart\"><svg class=\"icon-cart\"><use xlink:href=\"#icon-cart\"></use></svg> Kosárba</button>\r\n        </section>\r\n\r\n        <section v-if=\"availableExtras && availableExtras.length\">\r\n            <h3 style=\"margin-top: 12px;\">Extrák</h3>\r\n            <div class=\"pizza-modal-group\" v-for=\"extra in availableExtras\">\r\n                <h4>{{ extra.name }} ({{ extra.price }} Ft):</h4>\r\n                <a class=\"available-extra\" v-for=\"item in extra.list\" @click.prevent=\"addExtra(extra.name, item, extra.price)\" href=\"#\">{{ item }}</a>\r\n            </div>\r\n        </section>\r\n        \r\n        <h3>Megjegyzések</h3>\r\n        <textarea class=\"notes\" v-model=\"order.notes\" rows=\"3\"></textarea>\r\n    </div>\r\n</div>\r\n";
+	module.exports = "<div class=\"pizza-modal\">\r\n    <button class=\"close-modal\" @click=\"cancel\">&times;</button>\r\n    <!-- <header class=\"modal-header\">\r\n        <h1 class=\"modal-title\">Mondd el, hogyan szeretnéd...</h1>\r\n    </header> -->\r\n\r\n    <div class=\"modal-content\" style=\"background-color: #f1f1f1;\">\r\n        <section class=\"pizza-modal-group\">\r\n            <h1 class=\"modal-title\">\r\n                {{ dish.name }}\r\n                <span v-if=\"dish.variants.length === 1 && order.variant\">({{ order.variant }})</span>\r\n                <span v-if=\"order.variant\">({{ order.variant }})</span>\r\n            </h1>\r\n            <p>{{ dish.description }}</p>\r\n            <p class=\"radio-toggle\" v-if=\"dish.variants.length > 1\" style=\"margin-bottom: 12px;\">\r\n                <template v-for=\"(index, variant) in dish.variants\">\r\n                    <input id=\"modal-extra-variant-{{ index }}\" type=\"radio\" name=\"variants\" v-model=\"order.variant\" value=\"{{ variant.name }}\">\r\n                    <label for=\"modal-extra-variant-{{ index }}\">{{ variant.name }} - {{ variant.price }} Ft</label>\r\n                </template>\r\n            </p>\r\n\r\n            <p class=\"radio-toggle\" v-if=\"dish.options\" v-for=\"(idx, option) in dish.options\" style=\"margin-bottom: 12px;\">\r\n                <template v-for=\"(index, name) in option.list\">\r\n                    <input id=\"modal-extra-variant-{{ idx }}-{{ index }}\" type=\"radio\" name=\"option-{{ idx }}\" v-model=\"order.selectedOptions\" value=\"{{ name }}\">\r\n                    <label for=\"modal-extra-variant-{{ idx }}-{{ index }}\">{{ name }}</label>\r\n                </template>\r\n            </p>\r\n        </section>\r\n\r\n        <div class=\"pizza-modal-group\" v-if=\"availableExtras && availableExtras.length\">\r\n            <h4>Extrák: </h4>\r\n            <span v-if=\"order.extras.length === 0\">Még nem választottál extrát.</span>\r\n            <a class=\"selected-extra\" href=\"#\" v-for=\"extra in order.extras\" @click.prevent=\"removeExtra(extra)\">{{ extra.name }}&nbsp;({{ extra.price }} Ft)</a>\r\n        </div>\r\n\r\n        <section class=\"actions\">\r\n            <span class=\"total-price\">{{ totalPrice }} Ft</span>\r\n            <!-- <button @click=\"cancel\">Mégsem</button> -->\r\n            <button class=\"btn-primary\" @click=\"addToCart\"><svg class=\"icon-cart\"><use xlink:href=\"#icon-cart\"></use></svg> Kosárba</button>\r\n        </section>\r\n    </div>\r\n\r\n    <div class=\"modal-content\" style=\"\">\r\n        <section v-if=\"availableExtras && availableExtras.length\">\r\n            <h3 style=\"margin-top: 12px;\">Extrák</h3>\r\n            <div class=\"pizza-modal-group\" v-for=\"extra in availableExtras\">\r\n                <h4>{{ extra.name }} ({{ extra.price }} Ft):</h4>\r\n                <a class=\"available-extra\" v-for=\"item in extra.list\" @click.prevent=\"addExtra(extra.name, item, extra.price)\" href=\"#\">{{ item }}</a>\r\n            </div>\r\n        </section>\r\n    </div>\r\n</div>\r\n";
 
 /***/ },
 /* 125 */
@@ -27747,12 +27737,6 @@
 	        }
 	    }
 	};
-
-/***/ },
-/* 126 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"pizza-modal\">\r\n    <header class=\"modal-header\">\r\n        <h3>Válassz feltétet a pizzádra</h3>\r\n    </header>\r\n    <div class=\"modal-content\">\r\n        <div class=\"pizza-modal-group\">\r\n            <h3>{{ name }}</h3>\r\n            <p>{{ description }}</p>\r\n            <div class=\"icon-{{ imageName }}\"></div>\r\n        </div>\r\n        <div class=\"pizza-modal-group\">\r\n            <h4>Méret</h4>\r\n            <select v-model=\"selectedVariant\">\r\n                <option v-for=\"variant in variants\" value=\"{{ variant.name }}\">{{ variant.name }} - {{ variant.price }} Ft</option>\r\n            </select>\r\n        </div>\r\n\r\n        <div class=\"pizza-modal-group\">\r\n            <h4>Kiválasztott feltétek</h4>\r\n            <p v-if=\"selectedExtras.length === 0\">Még nem választottál feltétet. Az alábbi listából választhatsz.</p>\r\n            <p v-for=\"extra in selectedExtras\">\r\n                {{ extra.name }} ({{ extra.price }} Ft)\r\n                <a href=\"#\" @click.prevent=\"removeExtra(extra)\"><svg class=\"icon-minus\"><use xlink:href=\"#icon-minus\"></use></svg> Eltávolítás</a>\r\n            </p>\r\n        </div>\r\n\r\n        <div class=\"pizza-modal-group\">\r\n            <span class=\"total-price\">{{ totalPrice }} Ft</span>\r\n            <button @click=\"cancel\">Mégsem</button>\r\n            <button class=\"btn-primary\" @click=\"addToCart\"><svg class=\"icon-cart\"><use xlink:href=\"#icon-cart\"></use></svg> Kosárba</button>\r\n        </div>\r\n\r\n        <div class=\"pizza-modal-group\" v-for=\"extra in availableExtras\">\r\n            <h4>{{ extra.name }} ({{ extra.price }} Ft)</h4>\r\n            <a class=\"available-extra\" v-for=\"item in extra.list\" @click.prevent=\"addExtra(extra.name, item, extra.price)\" href=\"#\">{{ item }}</a>\r\n        </div>\r\n    </div>\r\n    <footer class=\"modal-footer\">\r\n        <span class=\"total-price\">{{ totalPrice }} Ft</span>\r\n        <button @click=\"cancel\">Mégsem</button>\r\n        <button class=\"btn-primary\" @click=\"addToCart\"><svg class=\"icon-cart\"><use xlink:href=\"#icon-cart\"></use></svg> Kosárba</button>\r\n    </footer>\r\n</div>\r\n";
 
 /***/ }
 /******/ ]);

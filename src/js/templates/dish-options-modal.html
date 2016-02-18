@@ -1,31 +1,46 @@
 <div class="pizza-modal">
-    <header class="modal-header">
-        <button class="close-modal" @click="cancel">&times;</button>
-        <h3>Mondd el, hogyan szeretnéd...</h3>
-    </header>
-    <div class="modal-content">
-        <div class="pizza-modal-group">
-            <h3>{{ dish.name }}</h3>
-        </div>
-        <div class="pizza-modal-group">
-            <h4>Méret</h4>
-            <select v-model="order.variant">
-                <option v-for="variant in dish.variants" value="{{ variant.name }}">{{ variant.name }} - {{ variant.price }} Ft</option>
-            </select>
-        </div>
+    <button class="close-modal" @click="cancel">&times;</button>
+    <!-- <header class="modal-header">
+        <h1 class="modal-title">Mondd el, hogyan szeretnéd...</h1>
+    </header> -->
+
+    <div class="modal-content" style="background-color: #f1f1f1;">
+        <section class="pizza-modal-group">
+            <h1 class="modal-title">
+                {{ dish.name }}
+                <span v-if="dish.variants.length === 1 && order.variant">({{ order.variant }})</span>
+                <span v-if="order.variant">({{ order.variant }})</span>
+            </h1>
+            <p>{{ dish.description }}</p>
+            <p class="radio-toggle" v-if="dish.variants.length > 1" style="margin-bottom: 12px;">
+                <template v-for="(index, variant) in dish.variants">
+                    <input id="modal-extra-variant-{{ index }}" type="radio" name="variants" v-model="order.variant" value="{{ variant.name }}">
+                    <label for="modal-extra-variant-{{ index }}">{{ variant.name }} - {{ variant.price }} Ft</label>
+                </template>
+            </p>
+
+            <p class="radio-toggle" v-if="dish.options" v-for="(idx, option) in dish.options" style="margin-bottom: 12px;">
+                <template v-for="(index, name) in option.list">
+                    <input id="modal-extra-variant-{{ idx }}-{{ index }}" type="radio" name="option-{{ idx }}" v-model="order.selectedOptions" value="{{ name }}">
+                    <label for="modal-extra-variant-{{ idx }}-{{ index }}">{{ name }}</label>
+                </template>
+            </p>
+        </section>
 
         <div class="pizza-modal-group" v-if="availableExtras && availableExtras.length">
-            <h4>Kiválasztott extrák: </h4>
-            <span v-if="order.extras.length === 0">Még nem választottál extrát. Az alábbi listából választhatsz.</span>
+            <h4>Extrák: </h4>
+            <span v-if="order.extras.length === 0">Még nem választottál extrát.</span>
             <a class="selected-extra" href="#" v-for="extra in order.extras" @click.prevent="removeExtra(extra)">{{ extra.name }}&nbsp;({{ extra.price }} Ft)</a>
         </div>
 
         <section class="actions">
             <span class="total-price">{{ totalPrice }} Ft</span>
-            <button @click="cancel">Mégsem</button>
+            <!-- <button @click="cancel">Mégsem</button> -->
             <button class="btn-primary" @click="addToCart"><svg class="icon-cart"><use xlink:href="#icon-cart"></use></svg> Kosárba</button>
         </section>
+    </div>
 
+    <div class="modal-content" style="">
         <section v-if="availableExtras && availableExtras.length">
             <h3 style="margin-top: 12px;">Extrák</h3>
             <div class="pizza-modal-group" v-for="extra in availableExtras">
@@ -33,8 +48,5 @@
                 <a class="available-extra" v-for="item in extra.list" @click.prevent="addExtra(extra.name, item, extra.price)" href="#">{{ item }}</a>
             </div>
         </section>
-        
-        <h3>Megjegyzések</h3>
-        <textarea class="notes" v-model="order.notes" rows="3"></textarea>
     </div>
 </div>

@@ -363,63 +363,64 @@ Rántott sajt:
 //     }
 // })
 
-const showPizzaModal = (id, variant) => {
-    const Vue = require('vue');
-    const html = require('html!./templates/pizza-extras-modal.html');
-    const modal = require('./modal');
 
-    const dish = menucard.dishes.filter(d => d.id === id)[0];
-
-    const m = modal.show(html);
-    const model = window.model = new Vue({
-        el: m.el,
-        data: {
-            selectedExtras: [],
-            sizes: [],
-            selectedSize: '',
-            variants: dish.variants,
-            selectedVariant: variant,
-            imageName: dish.imageName,
-
-            name: dish.name,
-            description: dish.description
-        },
-
-        computed: {
-            availableExtras: () => {
-                return menucard.pizzaExtras;
-            },
-            totalPrice: function () {
-                const selectedVariant = this.selectedVariant;
-                const basePrice = this.variants.filter(v => v.name === selectedVariant)[0].price;
-                const extraPrice = this.selectedExtras.reduce((prev, curr) => curr.price + prev, 0);
-                return basePrice + extraPrice;
-            }
-        },
-
-        methods: {
-            addExtra: (category, name, price) => {
-                const alreadyAdded = model.selectedExtras.filter(x => x.category === category && x.name === name).length > 0;
-                if (!alreadyAdded) {
-                    model.selectedExtras.push({ category, name, price });
-                }
-            },
-            removeExtra: (extra) => {
-                model.selectedExtras = model.selectedExtras.filter(ex => ex.name !== extra.name || ex.category !== extra.category);
-            },
-            cancel: () => {
-                modal.hide();
-                model.$destroy();
-            },
-            addToCart: () => {
-                shoppingCart.dispatch({ type: 'ADD', dish: { id, variant: model.selectedVariant, extras: model.selectedExtras.map(ex => ({ name: ex.name, category: ex.category })) }, timestamp: +new Date() });
-                modal.hide();
-                model.$destroy();
-            }
-        }
-    });
-};
-
-const showHamburgerModal = (id, variant) => {
-
-};
+// const showPizzaModal = (id, variant) => {
+//     const Vue = require('vue');
+//     const html = require('html!./templates/pizza-extras-modal.html');
+//     const modal = require('./modal');
+//
+//     const dish = menucard.dishes.filter(d => d.id === id)[0];
+//
+//     const m = modal.show(html);
+//     const model = window.model = new Vue({
+//         el: m.el,
+//         data: {
+//             selectedExtras: [],
+//             sizes: [],
+//             selectedSize: '',
+//             variants: dish.variants,
+//             selectedVariant: variant,
+//             imageName: dish.imageName,
+//
+//             name: dish.name,
+//             description: dish.description
+//         },
+//
+//         computed: {
+//             availableExtras: () => {
+//                 return menucard.pizzaExtras;
+//             },
+//             totalPrice: function () {
+//                 const selectedVariant = this.selectedVariant;
+//                 const basePrice = this.variants.filter(v => v.name === selectedVariant)[0].price;
+//                 const extraPrice = this.selectedExtras.reduce((prev, curr) => curr.price + prev, 0);
+//                 return basePrice + extraPrice;
+//             }
+//         },
+//
+//         methods: {
+//             addExtra: (category, name, price) => {
+//                 const alreadyAdded = model.selectedExtras.filter(x => x.category === category && x.name === name).length > 0;
+//                 if (!alreadyAdded) {
+//                     model.selectedExtras.push({ category, name, price });
+//                 }
+//             },
+//             removeExtra: (extra) => {
+//                 model.selectedExtras = model.selectedExtras.filter(ex => ex.name !== extra.name || ex.category !== extra.category);
+//             },
+//             cancel: () => {
+//                 modal.hide();
+//                 model.$destroy();
+//             },
+//             addToCart: () => {
+//                 shoppingCart.dispatch({ type: 'ADD', dish: { id, variant: model.selectedVariant, extras: model.selectedExtras.map(ex => ({ name: ex.name, category: ex.category })) }, timestamp: +new Date() });
+//                 modal.hide();
+//                 model.$destroy();
+//             }
+//         }
+//     });
+// };
+//
+// const showHamburgerModal = (id, variant) => {
+//
+// };

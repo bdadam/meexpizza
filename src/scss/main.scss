@@ -320,7 +320,7 @@ form {
 
     label {
         margin-top: 8px;
-        font-size: 0.8125;
+        // font-size: 0.8125rem;
         font-weight: 600;
     }
 
@@ -375,7 +375,8 @@ dt {
 .modal {
     margin: 40px auto;
     background-color: #fff;
-    border-radius: 12px;
+    // border-radius: 12px;
+    border-radius: 3px;
 
     width: 90%;
 
@@ -386,10 +387,10 @@ dt {
     }
 }
 
-.modal-header {
-    border-bottom: 1px solid #ddd;
-    padding: 12px 20px;
-    position: relative;
+.modal-title {
+    font-size: 1.125rem;
+    margin: 0 0 4px 0;
+    line-height: 1;
 }
 
 .close-modal {
@@ -403,12 +404,6 @@ dt {
 
 .modal-content {
     padding: 12px 20px;
-}
-
-.modal-footer {
-    border-top: 1px solid #ddd;
-    padding: 12px 20px;
-    text-align: right;
 }
 
 .pizza-modal {
@@ -443,8 +438,8 @@ dt {
     }
 
     .actions {
-        border-top: 1px solid #cdcdcd;
-        border-bottom: 1px solid #cdcdcd;
+        // border-top: 1px solid #cdcdcd;
+        // border-bottom: 1px solid #cdcdcd;
         padding: 12px;
         text-align: right;
         font-size: 1.125rem;
