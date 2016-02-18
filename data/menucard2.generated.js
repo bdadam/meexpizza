@@ -318,6 +318,7 @@ module.exports = {
                     "list": [
                         "fűszeres paradicsomszósz alap",
                         "fűszeres tejfölös szósz",
+                        "fokhagymás bbq szósz",
                         "TODO"
                     ]
                 }
@@ -375,6 +376,7 @@ module.exports = {
                     "list": [
                         "fűszeres paradicsomszósz alap",
                         "fűszeres tejfölös szósz",
+                        "fokhagymás bbq szósz",
                         "TODO"
                     ]
                 }
@@ -1499,5 +1501,5 @@ module.exports = {
             "fix": 1000
         }
     },
-    "version": "7eb4b68ddecddd2ef149ceaba9997a2a"
+    "version": "3cc5d1f10ddeb7c7ff6c8b63c4578541"
 };

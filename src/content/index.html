@@ -19,7 +19,7 @@
                     </div>
                     <div class="prices">
                         {% for variant in dish.variants %}
-                            <button data-add-to-cart data-id="{{ dish.id }}" data-variant="{{ variant.name }}" data-type="{{ dish.type }}">
+                            <button data-add-to-cart data-id="{{ dish.id }}" data-variant="{{ variant.name }}">
                                 <svg class="icon-cart" style="fill: white;"><use xlink:href="#icon-cart"></use></svg>
                                 <span class="variant">
                                     {% if variant.name %}

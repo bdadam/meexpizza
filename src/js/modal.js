@@ -4,6 +4,7 @@ var scrollY;
 var backdrop;
 var modal;
 var showing = false;
+// var isMobile = $(window).width() < 1024;
 
 module.exports = {
     show: html => {
@@ -12,17 +13,21 @@ module.exports = {
         showing = true;
         scrollY = window.scrollY;
 
+        // if (isMobile) {
+        //     $('#mainpage').hide();
+        // }
+
         backdrop = $('<div class="modal-backdrop"></div>')
                             .css({
-                                'background-color': 'rgba(0, 0, 0, .85)',
                                 position: 'fixed',
                                 top: 0,
                                 left: 0,
                                 right: 0,
-                                'min-height': '100%',
+                                height: '100%',
                                 'z-index': 1000
                             })
                             .appendTo('body');
+        // if (isMobile) { backdrop.css({ position: fixed }); }
 
         modal = $('<div class="modal"></div>')
                             .css({

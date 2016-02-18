@@ -389,6 +389,16 @@ dt {
 .modal-header {
     border-bottom: 1px solid #ddd;
     padding: 12px 20px;
+    position: relative;
+}
+
+.close-modal {
+    border: 0;
+    position: absolute;
+    top: -4px;
+    right: 12px;
+    font-size: 2.5rem;
+    font-weight: bold;
 }
 
 .modal-content {
@@ -402,16 +412,67 @@ dt {
 }
 
 .pizza-modal {
-    font-size: 0.875rem;
-    .available-extra {
-        padding: 8px 12px;
-        border: 1px solid #ccc;
+    .modal-content {
+        font-size: 0.875rem;
+    }
+
+    h4 {
         display: inline-block;
-        margin: 4px 4px 0 0;
-        border-radius: 3px;
+        margin: 0 12px 0 0;
+    }
+
+    span {
+        display: inline-block;
+        line-height: 2;
+    }
+
+    .available-extra {
+        display: inline-block;
+        // padding: 8px 0;
+        margin-right: 12px;
+        line-height: 2;
+    }
+
+    .selected-extra {
+        display: inline-block;
+        margin-right: 12px;
+        line-height: 2;
+        &:hover {
+            text-decoration: line-through;
+        }
+    }
+
+    .actions {
+        border-top: 1px solid #cdcdcd;
+        border-bottom: 1px solid #cdcdcd;
+        padding: 12px;
+        text-align: right;
+        font-size: 1.125rem;
     }
 }
 
 .pizza-modal-group {
-    margin-bottom: 12px;
+    margin-bottom: 4px;
+}
+
+.btn-primary {
+    border: 0;
+    background: none;
+    text-align: center;
+    padding: 4px 8px;
+    margin-left: 4px;
+    color: #fff;
+    // font-weight: 600;
+    border-radius: 2px;
+    background-color: #38c;
+    // line-height: 1.5;
+    font-weight: 400;
+
+    &:hover, &:active, &:focus {
+        background-color: darken(#38c, 10%);
+    }
+
+    svg {
+        fill: #fff;
+    }
 }

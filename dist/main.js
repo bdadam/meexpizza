@@ -70,7 +70,6 @@
 	});
 	
 	var menucard = __webpack_require__(118);
-	var deliveryFees = __webpack_require__(119);
 	
 	var defaultState = {
 	    inCart: [],
@@ -117,8 +116,8 @@
 	    }
 	
 	    newState.isEmpty = newState.inCart.length === 0;
-	    newState.deliveryFee = deliveryFees[newState.address.city].fix || 0;
-	    newState.deliveryFreeFrom = deliveryFees[newState.address.city].min || 0;
+	    newState.deliveryFee = menucard.deliveryFees[newState.address.city].fix || 0;
+	    newState.deliveryFreeFrom = menucard.deliveryFees[newState.address.city].min || 0;
 	
 	    return newState;
 	});
@@ -183,7 +182,7 @@
 	    viewModel.minTotalNotReached = viewModel.total < viewModel.minForFreeDelivery;
 	    viewModel.showMinForFreeDeliveryMessage = state.inCart.length > 0 && viewModel.minTotalNotReached;
 	
-	    var tpl = __webpack_require__(120);
+	    var tpl = __webpack_require__(119);
 	    $('.cart-calculation').html(tpl(viewModel));
 	});
 	
@@ -222,33 +221,114 @@
 	    var el = $(this);
 	    var id = el.data('id');
 	    var variant = el.data('variant');
-	    var type = el.data('type');
-	    var options = find(menucard.dishes, function (d) {
+	    var dish = find(menucard.dishes, function (d) {
 	        return d.id === id;
-	    }).options;
+	    });
 	
 	    var order = {
-	        dish: { id: id, variant: variant },
+	        dishId: id,
+	        variant: variant,
+	        extras: [],
+	        notes: '',
 	        timestamp: +new Date()
 	    };
 	
-	    // showPizzaModalIfNeeded(type, order)
-	    // show3KivPizzaModalIfNeeded(type, order)
-	    // showHamburgerModalIfNeeded(type, order)
-	    // showOptionsModalIfNeeded(options, order)
-	    // placeOrderIfEverythingIsFine(order);
-	    switch (type) {
+	    if (dish.type !== 'none' || dish.options && dish.options.length) {
+	        showDishOptionsModal(order);
+	    } else {
+	        shoppingCart.dispatch({ type: 'ADD', dish: { id: id, variant: variant }, timestamp: +new Date() });
+	    }
+	
+	    /*
+	    switch(dish.type) {
 	        case 'pizza':
 	            showPizzaModal(id, variant);
 	            break;
 	        case 'pizza-3-free-options':
+	            showPizzaModal(id, variant, { freeOptions: 3 });
 	            break;
 	        case 'hamburger':
+	            showHamburgerModal(id, variant);
 	            break;
 	        default:
-	            shoppingCart.dispatch({ type: 'ADD', dish: { id: id, variant: variant }, timestamp: +new Date() });
+	            if (dish.options && dish.options.length) {
+	              } else {
+	                shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
+	            }
 	    }
+	    */
 	});
+	
+	var showDishOptionsModal = function showDishOptionsModal(order) {
+	    var Vue = __webpack_require__(123);
+	    var html = __webpack_require__(124);
+	    var modal = __webpack_require__(125);
+	
+	    var dish = find(menucard.dishes, function (d) {
+	        return d.id === order.dishId;
+	    });
+	
+	    var m = modal.show(html);
+	
+	    var model = new Vue({
+	        el: m.el,
+	        data: {
+	            dish: dish,
+	            order: order
+	        },
+	
+	        // selectedExtras: [],
+	        // selectedVariant: order.variant
+	        computed: {
+	            availableExtras: function availableExtras() {
+	                if (dish.type === 'pizza') {
+	                    return menucard.pizzaExtras;
+	                }
+	
+	                if (dish.type === 'hamburger') {
+	                    return menucard.hamburgerExtras;
+	                }
+	
+	                return [];
+	            },
+	            totalPrice: function totalPrice() {
+	                var base = find(dish.variants, function (v) {
+	                    return v.name === order.variant;
+	                }).price;
+	                var extras = order.extras.reduce(function (prev, curr) {
+	                    return curr.price + prev;
+	                }, 0);
+	                return base + extras;
+	            }
+	        },
+	
+	        methods: {
+	            addExtra: function addExtra(category, name, price) {
+	                var alreadyAdded = order.extras.filter(function (x) {
+	                    return x.category === category && x.name === name;
+	                }).length > 0;
+	                if (!alreadyAdded) {
+	                    order.extras.push({ category: category, name: name, price: price });
+	                }
+	            },
+	            removeExtra: function removeExtra(extra) {
+	                order.extras = modelorder.extras.filter(function (ex) {
+	                    return ex.name !== extra.name || ex.category !== extra.category;
+	                });
+	            },
+	            cancel: function cancel() {
+	                modal.hide();
+	                model.$destroy();
+	            },
+	            addToCart: function addToCart() {
+	                // shoppingCart.dispatch({ type: 'ADD', dish: { id, variant: model.selectedVariant, extras: modelorder.extras.map(ex => ({ name: ex.name, category: ex.category })) }, timestamp: +new Date() });
+	                shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', order: order });
+	                modal.hide();
+	                model.$destroy();
+	            }
+	        }
+	    });
+	};
 	
 	var dayOfWeek = new Date().getDay() || 7;
 	$('.opening-hours dd:nth-of-type(' + dayOfWeek + '), .opening-hours dt:nth-of-type(' + dayOfWeek + ')').css({ fontWeight: 700 });
@@ -349,9 +429,9 @@
 	// })
 	
 	var showPizzaModal = function showPizzaModal(id, variant) {
-	    var Vue = __webpack_require__(124);
-	    var html = __webpack_require__(125);
-	    var modal = __webpack_require__(126);
+	    var Vue = __webpack_require__(123);
+	    var html = __webpack_require__(126);
+	    var modal = __webpack_require__(125);
 	
 	    var dish = menucard.dishes.filter(function (d) {
 	        return d.id === id;
@@ -416,6 +496,8 @@
 	        }
 	    });
 	};
+	
+	var showHamburgerModal = function showHamburgerModal(id, variant) {};
 
 /***/ },
 /* 1 */
@@ -16326,7 +16408,7 @@
 	        }],
 	        "options": [{
 	            "name": "Alap",
-	            "list": ["fűszeres paradicsomszósz alap", "fűszeres tejfölös szósz", "TODO"]
+	            "list": ["fűszeres paradicsomszósz alap", "fűszeres tejfölös szósz", "fokhagymás bbq szósz", "TODO"]
 	        }]
 	    }, {
 	        "categoryId": "extra-pizzak",
@@ -16367,7 +16449,7 @@
 	        }],
 	        "options": [{
 	            "name": "Alap",
-	            "list": ["fűszeres paradicsomszósz alap", "fűszeres tejfölös szósz", "TODO"]
+	            "list": ["fűszeres paradicsomszósz alap", "fűszeres tejfölös szósz", "fokhagymás bbq szósz", "TODO"]
 	        }]
 	    }, {
 	        "categoryId": "full-a-fullban-pizzak",
@@ -17186,63 +17268,18 @@
 	            "fix": 1000
 	        }
 	    },
-	    "version": "7eb4b68ddecddd2ef149ceaba9997a2a"
+	    "version": "3cc5d1f10ddeb7c7ff6c8b63c4578541"
 	};
 
 /***/ },
 /* 119 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	module.exports = {
-	    "Gyöngyös": {
-	        "min": 1000
-	    },
-	    "Karácsondi úti gyártelep": {
-	        "min": 2000
-	    },
-	    "KRF Kollégium": {
-	        "min": 2000
-	    },
-	    "Abasár": {
-	        "fix": 800
-	    },
-	    "Detk": {
-	        "fix": 800
-	    },
-	    "Gyöngyöshalász": {
-	        "fix": 800
-	    },
-	    "Gyöngyössolymos": {
-	        "fix": 800
-	    },
-	    "Gyöngyöstarján": {
-	        "fix": 800
-	    },
-	    "Mátrafüred": {
-	        "fix": 800
-	    },
-	    "Nagyréde": {
-	        "fix": 800
-	    },
-	    "Pálosvörösmart": {
-	        "fix": 800
-	    },
-	    "Visonta": {
-	        "fix": 1000
-	    }
-	};
-
-/***/ },
-/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var H = __webpack_require__(121);
+	var H = __webpack_require__(120);
 	module.exports = function() { var T = new H.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");if(t.s(t.f("isEmpty",c,p,1),c,p,0,12,149,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<p class=\"default-content\">\r");t.b("\n" + i);t.b("    A kosár még üres.\r");t.b("\n" + i);t.b("    Az ételeket a \"Kosárba\" gomb megnyomásával adhatod hozzá a rendeléshez.\r");t.b("\n" + i);t.b("</p>\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(t.s(t.f("lines",c,p,1),c,p,0,175,597,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("    <div class=\"line\">\r");t.b("\n" + i);t.b("        <div class=\"name\">");t.b(t.v(t.f("name",c,p,0)));t.b("</div>\r");t.b("\n" + i);t.b("        <div class=\"price\">");t.b(t.v(t.f("price",c,p,0)));t.b(" Ft</div>\r");t.b("\n" + i);t.b("        <div class=\"actions\">\r");t.b("\n" + i);t.b("            <button data-duplicate-order-item=\"");t.b(t.v(t.f("id",c,p,0)));t.b("\"><svg><use xlink:href=\"#icon-plus\"></use></svg> Még</button>\r");t.b("\n" + i);t.b("            <button data-remove-order-item=\"");t.b(t.v(t.f("id",c,p,0)));t.b("\"><svg><use xlink:href=\"#icon-minus\"></use></svg> Ki a kosárból</button>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("    </div>\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(t.s(t.f("deliveryFee",c,p,1),c,p,0,627,735,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<div class=\"delivery-fee\">\r");t.b("\n" + i);t.b("    <div>Kiszállítási díj</div>\r");t.b("\n" + i);t.b("    <div>");t.b(t.v(t.f("deliveryFee",c,p,0)));t.b(" Ft</div>\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(t.s(t.f("total",c,p,1),c,p,0,765,816,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<div>Végösszeg</div>\r");t.b("\n" + i);t.b("<div>");t.b(t.v(t.f("total",c,p,0)));t.b(" Ft</div>\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(t.s(t.f("showMinForFreeDeliveryMessage",c,p,1),c,p,0,864,950,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<p>A minimális ");t.b(t.v(t.f("minForFreeDelivery",c,p,0)));t.b(" Ft rendelési értéket még nem érted el.</p>\r");t.b("\n" + i);});c.pop();}return t.fl(); },partials: {}, subs: {  }}, "{{#isEmpty}}\r\n<p class=\"default-content\">\r\n    A kosár még üres.\r\n    Az ételeket a \"Kosárba\" gomb megnyomásával adhatod hozzá a rendeléshez.\r\n</p>\r\n{{/isEmpty}}\r\n\r\n{{#lines}}\r\n    <div class=\"line\">\r\n        <div class=\"name\">{{ name }}</div>\r\n        <div class=\"price\">{{ price }} Ft</div>\r\n        <div class=\"actions\">\r\n            <button data-duplicate-order-item=\"{{ id }}\"><svg><use xlink:href=\"#icon-plus\"></use></svg> Még</button>\r\n            <button data-remove-order-item=\"{{ id }}\"><svg><use xlink:href=\"#icon-minus\"></use></svg> Ki a kosárból</button>\r\n        </div>\r\n    </div>\r\n{{/lines}}\r\n\r\n{{#deliveryFee}}\r\n<div class=\"delivery-fee\">\r\n    <div>Kiszállítási díj</div>\r\n    <div>{{ deliveryFee }} Ft</div>\r\n</div>\r\n{{/deliveryFee}}\r\n\r\n{{#total}}\r\n<div>Végösszeg</div>\r\n<div>{{ total }} Ft</div>\r\n{{/total}}\r\n\r\n{{#showMinForFreeDeliveryMessage}}\r\n<p>A minimális {{ minForFreeDelivery }} Ft rendelési értéket még nem érted el.</p>\r\n{{/showMinForFreeDeliveryMessage}}\r\n", H);return T.render.apply(T, arguments); };
 
 /***/ },
-/* 121 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -17262,14 +17299,14 @@
 	
 	// This file is for use with Node.js. See dist/ for browser files.
 	
-	var Hogan = __webpack_require__(122);
-	Hogan.Template = __webpack_require__(123).Template;
+	var Hogan = __webpack_require__(121);
+	Hogan.Template = __webpack_require__(122).Template;
 	Hogan.template = Hogan.Template;
 	module.exports = Hogan;
 
 
 /***/ },
-/* 122 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -17698,7 +17735,7 @@
 
 
 /***/ },
-/* 123 */
+/* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -18045,7 +18082,7 @@
 
 
 /***/ },
-/* 124 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -27643,13 +27680,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 125 */
+/* 124 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"pizza-modal\">\r\n    <header class=\"modal-header\">\r\n        <h3>Válassz feltétet a pizzádra</h3>\r\n    </header>\r\n    <div class=\"modal-content\">\r\n        <div class=\"pizza-modal-group\">\r\n            <h3>{{ name }}</h3>\r\n            <p>{{ description }}</p>\r\n            <div class=\"icon-{{ imageName }}\"></div>\r\n        </div>\r\n        <div class=\"pizza-modal-group\">\r\n            <h4>Méret</h4>\r\n            <select v-model=\"selectedVariant\">\r\n                <option v-for=\"variant in variants\" value=\"{{ variant.name }}\">{{ variant.name }} - {{ variant.price }} Ft</option>\r\n            </select>\r\n        </div>\r\n\r\n        <div class=\"pizza-modal-group\">\r\n            <h4>Kiválasztott feltétek</h4>\r\n            <p v-if=\"selectedExtras.length === 0\">Még nem választottál feltétet. Az alábbi listából választhatsz.</p>\r\n            <p v-for=\"extra in selectedExtras\">\r\n                {{ extra.name }} ({{ extra.price }} Ft)\r\n                <a href=\"#\" @click.prevent=\"removeExtra(extra)\"><svg class=\"icon-minus\"><use xlink:href=\"#icon-minus\"></use></svg> Eltávolítás</a>\r\n            </p>\r\n        </div>\r\n\r\n        <div class=\"pizza-modal-group\">\r\n            <span class=\"total-price\">{{ totalPrice }} Ft</span>\r\n            <button @click=\"cancel\">Mégsem</button>\r\n            <button class=\"btn-primary\" @click=\"addToCart\"><svg class=\"icon-cart\"><use xlink:href=\"#icon-cart\"></use></svg> Kosárba</button>\r\n        </div>\r\n\r\n        <div class=\"pizza-modal-group\" v-for=\"extra in availableExtras\">\r\n            <h4>{{ extra.name }} ({{ extra.price }} Ft)</h4>\r\n            <a class=\"available-extra\" v-for=\"item in extra.list\" @click.prevent=\"addExtra(extra.name, item, extra.price)\" href=\"#\">{{ item }}</a>\r\n        </div>\r\n    </div>\r\n    <footer class=\"modal-footer\">\r\n        <span class=\"total-price\">{{ totalPrice }} Ft</span>\r\n        <button @click=\"cancel\">Mégsem</button>\r\n        <button class=\"btn-primary\" @click=\"addToCart\"><svg class=\"icon-cart\"><use xlink:href=\"#icon-cart\"></use></svg> Kosárba</button>\r\n    </footer>\r\n</div>\r\n";
+	module.exports = "<div class=\"pizza-modal\">\r\n    <header class=\"modal-header\">\r\n        <button class=\"close-modal\" @click=\"cancel\">&times;</button>\r\n        <h3>Mondd el, hogyan szeretnéd...</h3>\r\n    </header>\r\n    <div class=\"modal-content\">\r\n        <div class=\"pizza-modal-group\">\r\n            <h3>{{ dish.name }}</h3>\r\n        </div>\r\n        <div class=\"pizza-modal-group\">\r\n            <h4>Méret</h4>\r\n            <select v-model=\"order.variant\">\r\n                <option v-for=\"variant in dish.variants\" value=\"{{ variant.name }}\">{{ variant.name }} - {{ variant.price }} Ft</option>\r\n            </select>\r\n        </div>\r\n\r\n        <div class=\"pizza-modal-group\">\r\n            <h4>Kiválasztott extrák: </h4>\r\n            <span v-if=\"order.extras.length === 0\">Még nem választottál extrát. Az alábbi listából választhatsz.</span>\r\n            <a class=\"selected-extra\" href=\"#\" v-for=\"extra in order.extras\" @click.prevent=\"removeExtra(extra)\">{{ extra.name }}&nbsp;({{ extra.price }} Ft)</a>\r\n        </div>\r\n\r\n        <section class=\"actions\">\r\n            <span class=\"total-price\">{{ totalPrice }} Ft</span>\r\n            <button @click=\"cancel\">Mégsem</button>\r\n            <button class=\"btn-primary\" @click=\"addToCart\"><svg class=\"icon-cart\"><use xlink:href=\"#icon-cart\"></use></svg> Kosárba</button>\r\n        </section>\r\n\r\n        <h3 style=\"margin-top: 12px;\">Extrák</h3>\r\n        <div class=\"pizza-modal-group\" v-for=\"extra in availableExtras\">\r\n            <h4>{{ extra.name }} ({{ extra.price }} Ft):</h4>\r\n            <a class=\"available-extra\" v-for=\"item in extra.list\" @click.prevent=\"addExtra(extra.name, item, extra.price)\" href=\"#\">{{ item }}</a>\r\n        </div>\r\n\r\n        <h3>Megjegyzések</h3>\r\n        <textarea v-model=\"notes\" rows=\"3\" style=\"display: block; margin-top: 4px; width: 100%;\"></textarea>\r\n    </div>\r\n</div>\r\n";
 
 /***/ },
-/* 126 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27660,6 +27697,7 @@
 	var backdrop;
 	var modal;
 	var showing = false;
+	// var isMobile = $(window).width() < 1024;
 	
 	module.exports = {
 	    show: function show(html) {
@@ -27670,15 +27708,19 @@
 	        showing = true;
 	        scrollY = window.scrollY;
 	
+	        // if (isMobile) {
+	        //     $('#mainpage').hide();
+	        // }
+	
 	        backdrop = $('<div class="modal-backdrop"></div>').css({
-	            'background-color': 'rgba(0, 0, 0, .85)',
 	            position: 'fixed',
 	            top: 0,
 	            left: 0,
 	            right: 0,
-	            'min-height': '100%',
+	            height: '100%',
 	            'z-index': 1000
 	        }).appendTo('body');
+	        // if (isMobile) { backdrop.css({ position: fixed }); }
 	
 	        modal = $('<div class="modal"></div>').css({
 	            position: 'absolute',
@@ -27708,6 +27750,12 @@
 	        }
 	    }
 	};
+
+/***/ },
+/* 126 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"pizza-modal\">\r\n    <header class=\"modal-header\">\r\n        <h3>Válassz feltétet a pizzádra</h3>\r\n    </header>\r\n    <div class=\"modal-content\">\r\n        <div class=\"pizza-modal-group\">\r\n            <h3>{{ name }}</h3>\r\n            <p>{{ description }}</p>\r\n            <div class=\"icon-{{ imageName }}\"></div>\r\n        </div>\r\n        <div class=\"pizza-modal-group\">\r\n            <h4>Méret</h4>\r\n            <select v-model=\"selectedVariant\">\r\n                <option v-for=\"variant in variants\" value=\"{{ variant.name }}\">{{ variant.name }} - {{ variant.price }} Ft</option>\r\n            </select>\r\n        </div>\r\n\r\n        <div class=\"pizza-modal-group\">\r\n            <h4>Kiválasztott feltétek</h4>\r\n            <p v-if=\"selectedExtras.length === 0\">Még nem választottál feltétet. Az alábbi listából választhatsz.</p>\r\n            <p v-for=\"extra in selectedExtras\">\r\n                {{ extra.name }} ({{ extra.price }} Ft)\r\n                <a href=\"#\" @click.prevent=\"removeExtra(extra)\"><svg class=\"icon-minus\"><use xlink:href=\"#icon-minus\"></use></svg> Eltávolítás</a>\r\n            </p>\r\n        </div>\r\n\r\n        <div class=\"pizza-modal-group\">\r\n            <span class=\"total-price\">{{ totalPrice }} Ft</span>\r\n            <button @click=\"cancel\">Mégsem</button>\r\n            <button class=\"btn-primary\" @click=\"addToCart\"><svg class=\"icon-cart\"><use xlink:href=\"#icon-cart\"></use></svg> Kosárba</button>\r\n        </div>\r\n\r\n        <div class=\"pizza-modal-group\" v-for=\"extra in availableExtras\">\r\n            <h4>{{ extra.name }} ({{ extra.price }} Ft)</h4>\r\n            <a class=\"available-extra\" v-for=\"item in extra.list\" @click.prevent=\"addExtra(extra.name, item, extra.price)\" href=\"#\">{{ item }}</a>\r\n        </div>\r\n    </div>\r\n    <footer class=\"modal-footer\">\r\n        <span class=\"total-price\">{{ totalPrice }} Ft</span>\r\n        <button @click=\"cancel\">Mégsem</button>\r\n        <button class=\"btn-primary\" @click=\"addToCart\"><svg class=\"icon-cart\"><use xlink:href=\"#icon-cart\"></use></svg> Kosárba</button>\r\n    </footer>\r\n</div>\r\n";
 
 /***/ }
 /******/ ]);

@@ -20,7 +20,6 @@ page((context, next) => {
 });
 
 const menucard = require('../../data/menucard2.generated');
-const deliveryFees = require('../../data/delivery-fees.generated');
 
 var defaultState = {
     inCart: [],
@@ -64,8 +63,8 @@ const shoppingCart = redux.createStore((state = defaultState, action) => {
     }
 
     newState.isEmpty = newState.inCart.length === 0;
-    newState.deliveryFee = deliveryFees[newState.address.city].fix || 0;
-    newState.deliveryFreeFrom = deliveryFees[newState.address.city].min || 0;
+    newState.deliveryFee = menucard.deliveryFees[newState.address.city].fix || 0;
+    newState.deliveryFreeFrom = menucard.deliveryFees[newState.address.city].min || 0;
 
     return newState;
 });
@@ -164,31 +163,105 @@ $(document).on('click', 'button[data-add-to-cart]', function (e) {
     const el = $(this);
     const id = el.data('id');
     const variant = el.data('variant');
-    const type = el.data('type');
-    const options = find(menucard.dishes, d => d.id === id).options;
+    const dish = find(menucard.dishes, d => d.id === id);
 
     const order = {
-        dish: { id, variant },
+        dishId: id,
+        variant,
+        extras: [],
+        notes: '',
         timestamp: +new Date()
     };
 
-    // showPizzaModalIfNeeded(type, order)
-    // show3KivPizzaModalIfNeeded(type, order)
-    // showHamburgerModalIfNeeded(type, order)
-    // showOptionsModalIfNeeded(options, order)
-    // placeOrderIfEverythingIsFine(order);
-    switch(type) {
+    if (dish.type !== 'none' || (dish.options && dish.options.length)) {
+        showDishOptionsModal(order);
+    } else {
+        shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
+    }
+
+
+    /*
+    switch(dish.type) {
         case 'pizza':
             showPizzaModal(id, variant);
             break;
         case 'pizza-3-free-options':
+            showPizzaModal(id, variant, { freeOptions: 3 });
             break;
         case 'hamburger':
+            showHamburgerModal(id, variant);
             break;
         default:
-            shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
+            if (dish.options && dish.options.length) {
+
+            } else {
+                shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
+            }
     }
+    */
 });
+
+const showDishOptionsModal = order => {
+    const Vue = require('vue');
+    const html = require('html!./templates/dish-options-modal.html');
+    const modal = require('./modal');
+
+    const dish = find(menucard.dishes, d => d.id === order.dishId);
+
+    const m = modal.show(html);
+
+    const model = new Vue({
+        el: m.el,
+        data: {
+            dish: dish,
+            order: order,
+            // selectedExtras: [],
+            // selectedVariant: order.variant
+        },
+
+        computed: {
+            availableExtras: () => {
+                if (dish.type === 'pizza') {
+                    return menucard.pizzaExtras;
+                }
+
+                if (dish.type === 'hamburger') {
+                    return menucard.hamburgerExtras;
+                }
+
+                return [];
+            },
+            totalPrice: function () {
+                const base = find(dish.variants, v => v.name === order.variant).price;
+                const extras = order.extras.reduce((prev, curr) => curr.price + prev, 0);
+                return base + extras;
+            }
+        },
+
+        methods: {
+            addExtra: (category, name, price) => {
+                const alreadyAdded = order.extras.filter(x => x.category === category && x.name === name).length > 0;
+                if (!alreadyAdded) {
+                    order.extras.push({ category, name, price });
+                }
+            },
+            removeExtra: (extra) => {
+                order.extras = modelorder.extras.filter(ex => ex.name !== extra.name || ex.category !== extra.category);
+            },
+            cancel: () => {
+                modal.hide();
+                model.$destroy();
+            },
+            addToCart: () => {
+                // shoppingCart.dispatch({ type: 'ADD', dish: { id, variant: model.selectedVariant, extras: modelorder.extras.map(ex => ({ name: ex.name, category: ex.category })) }, timestamp: +new Date() });
+                shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', order: order });
+                modal.hide();
+                model.$destroy();
+            }
+        }
+    });
+
+};
 
 
 const dayOfWeek = new Date().getDay() || 7;
@@ -348,4 +421,8 @@ const showPizzaModal = (id, variant) => {
             }
         }
     });
+};
+
+const showHamburgerModal = (id, variant) => {
+
 };

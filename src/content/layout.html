@@ -14,19 +14,21 @@
     {% include "meta-favicon.html" %}
 </head>
 <body>
-    {% include "icons.html" %}
-    {% include "navigation.html" %}
+    <div id="mainpage">
+        {% include "icons.html" %}
+        {% include "navigation.html" %}
 
-    <div class="container">
-        <main>{% block body %}{% endblock %}</main>
-        <aside id="side-cart-container">
-            {% include "partials/side-cart.html" %}
-            {% include "partials/side-contact.html" %}
-            {% include "partials/side-opening-hours.html" %}
-            {% include "partials/side-facebook.html" %}
-        </aside>
+        <div class="container">
+            <main>{% block body %}{% endblock %}</main>
+            <aside id="side-cart-container">
+                {% include "partials/side-cart.html" %}
+                {% include "partials/side-contact.html" %}
+                {% include "partials/side-opening-hours.html" %}
+                {% include "partials/side-facebook.html" %}
+            </aside>
+        </div>
+
+        {% include "footer.html" %}
     </div>
-
-    {% include "footer.html" %}
 </body>
 </html>
