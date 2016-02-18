@@ -247,10 +247,10 @@ Rántott sajtok és frissensültek:
             image: rantottsajt-cheddar
             Leírás: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
             Opciók:
-                Köretek:
+                Köret:
                     - hasábburgonya
                     - steakburgonya
-                Szószok:
+                Szósz:
                     - házi tartármártás
                     - gyümölcsszósz
                     - chilis szósz
@@ -260,10 +260,10 @@ Rántott sajtok és frissensültek:
             image: rantottsajt-camambert
             Leírás: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
             Opciók:
-                Köretek:
+                Köret:
                     - hasábburgonya
                     - steakburgonya
-                Szószok:
+                Szósz:
                     - házi tartármártás
                     - gyümölcsszósz
                     - chilis szósz
@@ -273,10 +273,10 @@ Rántott sajtok és frissensültek:
             image: rantottsajt-trappista
             Leírás: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
             Opciók:
-                Köretek:
+                Köret:
                     - hasábburgonya
                     - steakburgonya
-                Szószok:
+                Szósz:
                     - házi tartármártás
                     - gyümölcsszósz
                     - chilis szósz
@@ -293,10 +293,10 @@ Rántott sajtok és frissensültek:
             image: buffalo-csirkeszarnyak
             Leírás: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
             Opciók:
-                Köretek:
+                Köret:
                     - hasábburgonya
                     - steakburgonya
-                Szószok:
+                Szósz:
                     - házi tartármártás
                     - gyümölcsszósz
                     - chilis szósz

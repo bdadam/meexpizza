@@ -775,14 +775,14 @@ module.exports = {
             ],
             "options": [
                 {
-                    "name": "Köretek",
+                    "name": "Köret",
                     "list": [
                         "hasábburgonya",
                         "steakburgonya"
                     ]
                 },
                 {
-                    "name": "Szószok",
+                    "name": "Szósz",
                     "list": [
                         "házi tartármártás",
                         "gyümölcsszósz",
@@ -807,14 +807,14 @@ module.exports = {
             ],
             "options": [
                 {
-                    "name": "Köretek",
+                    "name": "Köret",
                     "list": [
                         "hasábburgonya",
                         "steakburgonya"
                     ]
                 },
                 {
-                    "name": "Szószok",
+                    "name": "Szósz",
                     "list": [
                         "házi tartármártás",
                         "gyümölcsszósz",
@@ -839,14 +839,14 @@ module.exports = {
             ],
             "options": [
                 {
-                    "name": "Köretek",
+                    "name": "Köret",
                     "list": [
                         "hasábburgonya",
                         "steakburgonya"
                     ]
                 },
                 {
-                    "name": "Szószok",
+                    "name": "Szósz",
                     "list": [
                         "házi tartármártás",
                         "gyümölcsszósz",
@@ -895,14 +895,14 @@ module.exports = {
             ],
             "options": [
                 {
-                    "name": "Köretek",
+                    "name": "Köret",
                     "list": [
                         "hasábburgonya",
                         "steakburgonya"
                     ]
                 },
                 {
-                    "name": "Szószok",
+                    "name": "Szósz",
                     "list": [
                         "házi tartármártás",
                         "gyümölcsszósz",
@@ -1501,5 +1501,5 @@ module.exports = {
             "fix": 1000
         }
     },
-    "version": "3cc5d1f10ddeb7c7ff6c8b63c4578541"
+    "version": "3e0011e9b0956f009d7b2931719ca65d"
 };

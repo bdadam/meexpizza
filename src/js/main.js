@@ -165,6 +165,8 @@ $(document).on('click', 'button[data-add-to-cart]', function (e) {
     const variant = el.data('variant');
     const dish = find(menucard.dishes, d => d.id === id);
 
+    // Object.keys(dish.options).map(opt => ({ name: key,   }))
+
     const order = {
         dishId: id,
         variant,
@@ -214,7 +216,7 @@ const showDishOptionsModal = order => {
         el: m.el,
         data: {
             dish: dish,
-            order: order,
+            order: order
         },
 
         computed: {
@@ -251,6 +253,7 @@ const showDishOptionsModal = order => {
                 model.$destroy();
             },
             addToCart: () => {
+                console.log(model.selecedOptions);
                 shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', order: order });
                 modal.hide();
                 model.$destroy();
