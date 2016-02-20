@@ -95,6 +95,7 @@
         background-image: linear-gradient(to bottom, #fff 0%, #f1f1f1 50%, #f7f7f7 100%);
         background-image: linear-gradient(to bottom, #fff 0%, #e3e3e3 50%, #f1f1f1 100%);
         border-bottom: 1px solid #ddd;
+        border-bottom: 5px solid #dedede;
     }
 
     .img {
@@ -197,6 +198,17 @@
 
             background-color: #4A7D9F;
 
+
+            background-color: #dedede;
+            border: 1px solid #ccc;
+            color: #333;
+
+            svg {
+                fill: #333 !important;
+            }
+
+
+
             font-size: 0.8rem;
 
             line-height: 1.5;
@@ -206,8 +218,13 @@
             width: 100%;
 
             &:hover, &:active, &:focus {
-                background-color: #449d44;
-                background-color: darken(#38c, 10%);
+                // background-color: #449d44;
+                // background-color: darken(#38c, 10%);
+
+                background-color: #c7c7c7;
+                border-color: #aaa;
+
+                // box-shadow: 0 0 4px rgba(0, 0, 0, .15);
             }
 
             .price {
