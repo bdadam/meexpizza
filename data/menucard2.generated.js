@@ -941,7 +941,7 @@ module.exports = {
             "id": "meex-burger",
             "category": "Hamburgerek",
             "name": "Meex burger",
-            "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa",
+            "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, opcionálisan hasáb- vagy steakburgonyával",
             "imageName": "meex-burger",
             "type": "hamburger",
             "variants": [
@@ -950,7 +950,11 @@ module.exports = {
                     "price": 750
                 },
                 {
-                    "name": "Menü",
+                    "name": "Hasább.",
+                    "price": 990
+                },
+                {
+                    "name": "Steakbur.",
                     "price": 990
                 }
             ],
@@ -961,7 +965,7 @@ module.exports = {
             "id": "meex-sajtburger",
             "category": "Hamburgerek",
             "name": "Meex sajtburger",
-            "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt",
+            "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával",
             "imageName": "meex-burger",
             "type": "hamburger",
             "variants": [
@@ -970,7 +974,11 @@ module.exports = {
                     "price": 850
                 },
                 {
-                    "name": "Menü",
+                    "name": "Hasább.",
+                    "price": 1090
+                },
+                {
+                    "name": "Steakbur.",
                     "price": 1090
                 }
             ],
@@ -981,7 +989,7 @@ module.exports = {
             "id": "dupla-meex-burger",
             "category": "Hamburgerek",
             "name": "Dupla Meex burger",
-            "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa",
+            "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, opcionálisan hasáb- vagy steakburgonyával",
             "imageName": "meex-burger",
             "type": "hamburger",
             "variants": [
@@ -990,7 +998,11 @@ module.exports = {
                     "price": 1250
                 },
                 {
-                    "name": "Menü",
+                    "name": "Hasább.",
+                    "price": 1490
+                },
+                {
+                    "name": "Steakbur.",
                     "price": 1490
                 }
             ],
@@ -1001,7 +1013,7 @@ module.exports = {
             "id": "dupla-meex-sajtburger",
             "category": "Hamburgerek",
             "name": "Dupla Meex sajtburger",
-            "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt",
+            "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával",
             "imageName": "meex-burger",
             "type": "hamburger",
             "variants": [
@@ -1010,7 +1022,11 @@ module.exports = {
                     "price": 1450
                 },
                 {
-                    "name": "Menü",
+                    "name": "Hasább.",
+                    "price": 1590
+                },
+                {
+                    "name": "Steakbur.",
                     "price": 1590
                 }
             ],
@@ -1021,7 +1037,7 @@ module.exports = {
             "id": "cheese-lovers-burger",
             "category": "Hamburgerek",
             "name": "Cheese Lovers Burger",
-            "description": "alap + választható sajt",
+            "description": "alap + választható sajt, opcionálisan hasáb- vagy steakburgonyával",
             "imageName": "meex-burger",
             "type": "hamburger",
             "variants": [
@@ -1030,7 +1046,11 @@ module.exports = {
                     "price": 890
                 },
                 {
-                    "name": "Menü",
+                    "name": "Hasább.",
+                    "price": 1190
+                },
+                {
+                    "name": "Steakbur.",
                     "price": 1190
                 }
             ],
@@ -1050,7 +1070,7 @@ module.exports = {
             "id": "texasi-tuzes-burger",
             "category": "Hamburgerek",
             "name": "Texasi Tüzes Burger",
-            "description": "alap + 100% marhahús, jalapeno, cheddar sajt",
+            "description": "alap + 100% marhahús, jalapeno, cheddar sajt, opcionálisan hasáb- vagy steakburgonyával",
             "imageName": "meex-burger",
             "type": "hamburger",
             "variants": [
@@ -1059,7 +1079,11 @@ module.exports = {
                     "price": 990
                 },
                 {
-                    "name": "Menü",
+                    "name": "Hasább.",
+                    "price": 1390
+                },
+                {
+                    "name": "Steakbur.",
                     "price": 1390
                 }
             ],
@@ -1070,7 +1094,7 @@ module.exports = {
             "id": "new-york-burger",
             "category": "Hamburgerek",
             "name": "New York Burger",
-            "description": "alap + rostonsült csirke, füstölt sajt, tükörtojás",
+            "description": "alap + rostonsült csirke, füstölt sajt, tükörtojás, opcionálisan hasáb- vagy steakburgonyával",
             "imageName": "meex-burger",
             "type": "hamburger",
             "variants": [
@@ -1079,7 +1103,11 @@ module.exports = {
                     "price": 990
                 },
                 {
-                    "name": "Menü",
+                    "name": "Hasább.",
+                    "price": 1390
+                },
+                {
+                    "name": "Steakbur.",
                     "price": 1390
                 }
             ],
@@ -1090,7 +1118,7 @@ module.exports = {
             "id": "hungarian-burger",
             "category": "Hamburgerek",
             "name": "Hungarian Burger",
-            "description": "alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt",
+            "description": "alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt, opcionálisan hasáb- vagy steakburgonyával",
             "imageName": "meex-burger",
             "type": "hamburger",
             "variants": [
@@ -1099,7 +1127,11 @@ module.exports = {
                     "price": 990
                 },
                 {
-                    "name": "Menü",
+                    "name": "Hasább.",
+                    "price": 1390
+                },
+                {
+                    "name": "Steakbur.",
                     "price": 1390
                 }
             ],
@@ -1251,16 +1283,16 @@ module.exports = {
             "type": "none",
             "variants": [
                 {
-                    "name": "1,75 liter",
-                    "price": 480
+                    "name": "0,33 liter",
+                    "price": 190
                 },
                 {
                     "name": "1 liter",
                     "price": 350
                 },
                 {
-                    "name": "0,33 liter",
-                    "price": 190
+                    "name": "1,75 liter",
+                    "price": 480
                 }
             ],
             "options": []
@@ -1275,16 +1307,16 @@ module.exports = {
             "type": "none",
             "variants": [
                 {
-                    "name": "1,75 liter",
-                    "price": 480
+                    "name": "0,33 liter",
+                    "price": 190
                 },
                 {
                     "name": "1 liter",
                     "price": 350
                 },
                 {
-                    "name": "0,33 liter",
-                    "price": 190
+                    "name": "1,75 liter",
+                    "price": 480
                 }
             ],
             "options": []
@@ -1299,16 +1331,16 @@ module.exports = {
             "type": "none",
             "variants": [
                 {
-                    "name": "1,75 liter",
-                    "price": 480
+                    "name": "0,33 liter",
+                    "price": 190
                 },
                 {
                     "name": "1 liter",
                     "price": 350
                 },
                 {
-                    "name": "0,33 liter",
-                    "price": 190
+                    "name": "1,75 liter",
+                    "price": 480
                 }
             ],
             "options": []
@@ -1323,16 +1355,16 @@ module.exports = {
             "type": "none",
             "variants": [
                 {
-                    "name": "1,75 liter",
-                    "price": 480
+                    "name": "0,33 liter",
+                    "price": 190
                 },
                 {
                     "name": "1 liter",
                     "price": 350
                 },
                 {
-                    "name": "0,33 liter",
-                    "price": 190
+                    "name": "1,75 liter",
+                    "price": 480
                 }
             ],
             "options": []
@@ -1501,5 +1533,5 @@ module.exports = {
             "fix": 1000
         }
     },
-    "version": "3e0011e9b0956f009d7b2931719ca65d"
+    "version": "48fef07fd0f94830c087df8e37f78f6e"
 };

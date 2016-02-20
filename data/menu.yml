@@ -318,35 +318,39 @@ Hamburgerek:
         Meex burger:
             type: hamburger
             image: meex-burger
-            Leírás: friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa
+            Leírás: friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, opcionálisan hasáb- vagy steakburgonyával
             Árak:
                 Szendvics: 750
-                Menü: 990
+                "Hasább.": 990
+                "Steakbur.": 990
         Meex sajtburger:
             type: hamburger
             image: meex-burger
-            Leírás: friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt
+            Leírás: friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával
             Árak:
                 Szendvics: 850
-                Menü: 1090
+                "Hasább.": 1090
+                "Steakbur.": 1090
         Dupla Meex burger:
             type: hamburger
             image: meex-burger
-            Leírás: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa
+            Leírás: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, opcionálisan hasáb- vagy steakburgonyával
             Árak:
                 Szendvics: 1250
-                Menü: 1490
+                "Hasább.": 1490
+                "Steakbur.": 1490
         Dupla Meex sajtburger:
             type: hamburger
             image: meex-burger
-            Leírás: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt
+            Leírás: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával
             Árak:
                 Szendvics: 1450
-                Menü: 1590
+                "Hasább.": 1590
+                "Steakbur.": 1590
         Cheese Lovers Burger:
             type: hamburger
             image: meex-burger
-            Leírás: alap + választható sajt
+            Leírás: alap + választható sajt, opcionálisan hasáb- vagy steakburgonyával
             Opciók:
                 Sajt:
                     - rostonsült mozzarella
@@ -354,32 +358,36 @@ Hamburgerek:
                     - rántott camabert
             Árak:
                 Szendvics: 890
-                Menü: 1190
+                "Hasább.": 1190
+                "Steakbur.": 1190
         Texasi Tüzes Burger:
             type: hamburger
             image: meex-burger
-            Leírás: alap + 100% marhahús, jalapeno, cheddar sajt
+            Leírás: alap + 100% marhahús, jalapeno, cheddar sajt, opcionálisan hasáb- vagy steakburgonyával
             Árak:
                 Szendvics: 990
-                Menü: 1390
+                "Hasább.": 1390
+                "Steakbur.": 1390
         New York Burger:
             type: hamburger
             image: meex-burger
-            Leírás: alap + rostonsült csirke, füstölt sajt, tükörtojás
+            Leírás: alap + rostonsült csirke, füstölt sajt, tükörtojás, opcionálisan hasáb- vagy steakburgonyával
             Árak:
                 Szendvics: 990
-                Menü: 1390
+                "Hasább.": 1390
+                "Steakbur.": 1390
         Hungarian Burger:
             type: hamburger
             image: meex-burger
-            Leírás: alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt
+            Leírás: alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt, opcionálisan hasáb- vagy steakburgonyával
             Opciók:
                 Hús:
                     - panko morzsás sertés
                     - csirke
             Árak:
                 Szendvics: 990
-                Menü: 1390
+                "Hasább.": 1390
+                "Steakbur.": 1390
 
 # Fitnesz szendvicsek:
 #     Választék:
@@ -430,24 +438,24 @@ Saláták:
     Választék:
         Pepsi:
             Árak:
-                1,75 liter: 480
-                1 liter: 350
                 0,33 liter: 190
+                1 liter: 350
+                1,75 liter: 480
         Pepsi Max:
             Árak:
-                1,75 liter: 480
-                1 liter: 350
                 0,33 liter: 190
+                1 liter: 350
+                1,75 liter: 480
         Mirinda:
             Árak:
-                1,75 liter: 480
-                1 liter: 350
                 0,33 liter: 190
+                1 liter: 350
+                1,75 liter: 480
         Canada Dry:
             Árak:
-                1,75 liter: 480
-                1 liter: 350
                 0,33 liter: 190
+                1 liter: 350
+                1,75 liter: 480
 
         Lipton Ice Tea:
             Árak:

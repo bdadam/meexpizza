@@ -17,7 +17,7 @@
                             <p class="in-cart-count"></p>
                         </div>
                     </div>
-                    <div class="prices">
+                    <div class="prices num-variants-{{ dish.variants.length }}">
                         {% for variant in dish.variants %}
                             <button data-add-to-cart data-id="{{ dish.id }}" data-variant="{{ variant.name }}">
                                 <svg class="icon-cart" style="fill: white;"><use xlink:href="#icon-cart"></use></svg>

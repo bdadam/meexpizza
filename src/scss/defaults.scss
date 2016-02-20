@@ -89,6 +89,15 @@ address {
     font-style: normal;
 }
 
+[type=radio] {
+    position: absolute;
+    margin-top: 5px;
+
+    & + label {
+        padding-left: 16px;
+    }
+}
+
 .radio-toggle {
     display: table;
     width: 100%;

@@ -176,17 +176,34 @@
             border: 0;
             background: none;
             text-align: center;
-            padding: 4px 8px;
-            margin-left: 4px;
+            padding: 4px 4px;
+            // margin-left: 4px;
             color: #fff;
             font-weight: 600;
             border-radius: 2px;
-            background-color: #5cb85c;
+            border-radius: 3px;
 
-            background-color: #38c;
+            user-select: none;
+
+            // background-color: #5cb85c;
+            // background-color: #38c;
+            // background-color: #5ae;
+            // background-color: #16a;
+
+            // background-image: linear-gradient(to bottom, #38c 0%, #5ae 50%, #16a 100%);
+            // background-image: linear-gradient(to bottom, #38c 0%, #16a 50%, #5ae 100%);
+            // background-image: linear-gradient(to bottom, #58a 0%, #368 50%, #7ac 100%);
+            // background-image: linear-gradient(to bottom, #7ac 0%, #368 50%, #58a 100%);
+
+            background-color: #4A7D9F;
+
             font-size: 0.8rem;
 
             line-height: 1.5;
+
+            text-align: center;
+            display: block;
+            width: 100%;
 
             &:hover, &:active, &:focus {
                 background-color: #449d44;
@@ -196,11 +213,29 @@
             .price {
                 font-size: 1.125rem;
             }
+        }
 
+        &.num-variants-2 button {
+            display: block;
+            @include col(1/2);
+            text-align: center;
+        }
+
+        &.num-variants-3 button {
+            display: block;
+            @include col(1/3);
+            text-align: center;
+        }
+
+        &.num-variants-2 button, &.num-variants-3 button {
             .variant {
                 &:after {
                     content: "\a";
                     white-space: pre;
+
+                    @media screen and (min-width: 1024px) {
+                        display: none;
+                    }
                 }
             }
         }
@@ -378,7 +413,7 @@ dt {
     // border-radius: 12px;
     border-radius: 3px;
 
-    width: 90%;
+    width: 86%;
 
     @media screen and (min-width: 1024px) {
         max-width: 960px;
@@ -400,6 +435,20 @@ dt {
     right: 12px;
     font-size: 2.5rem;
     font-weight: bold;
+
+
+    top: -17px;
+    right: -17px;
+    font-size: 32px;
+    line-height: 1;
+    padding: 0;
+    color: #fff;
+    background-color: #333;
+    width: 34px;
+    height: 34px;
+    display: block;
+    border-radius: 50%;
+    border: 2px solid #f1f1f1;
 }
 
 .modal-content {
@@ -412,8 +461,8 @@ dt {
     }
 
     h4 {
-        display: inline-block;
-        margin: 0 12px 0 0;
+        // display: inline-block;
+        // margin: 0 12px 0 0;
     }
 
     span {
@@ -449,6 +498,12 @@ dt {
         display: block;
         margin-top: 4px;
         width: 100%;
+    }
+
+    .dish-image {
+        width: 100px;
+        float: left;
+        margin-right: 12px;
     }
 }
 

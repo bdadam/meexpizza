@@ -354,7 +354,8 @@ module.exports = {
             "id": "hamburgerek-meex-burger",
             "variants": {
                 "Szendvics": 750,
-                "Menü": 990
+                "Hasább.": 990,
+                "Steakbur.": 990
             }
         },
         {
@@ -363,7 +364,8 @@ module.exports = {
             "id": "hamburgerek-meex-sajtburger",
             "variants": {
                 "Szendvics": 850,
-                "Menü": 1090
+                "Hasább.": 1090,
+                "Steakbur.": 1090
             }
         },
         {
@@ -372,7 +374,8 @@ module.exports = {
             "id": "hamburgerek-dupla-meex-burger",
             "variants": {
                 "Szendvics": 1250,
-                "Menü": 1490
+                "Hasább.": 1490,
+                "Steakbur.": 1490
             }
         },
         {
@@ -381,7 +384,8 @@ module.exports = {
             "id": "hamburgerek-dupla-meex-sajtburger",
             "variants": {
                 "Szendvics": 1450,
-                "Menü": 1590
+                "Hasább.": 1590,
+                "Steakbur.": 1590
             }
         },
         {
@@ -390,7 +394,8 @@ module.exports = {
             "id": "hamburgerek-cheese-lovers-burger",
             "variants": {
                 "Szendvics": 890,
-                "Menü": 1190
+                "Hasább.": 1190,
+                "Steakbur.": 1190
             }
         },
         {
@@ -399,7 +404,8 @@ module.exports = {
             "id": "hamburgerek-texasi-tuzes-burger",
             "variants": {
                 "Szendvics": 990,
-                "Menü": 1390
+                "Hasább.": 1390,
+                "Steakbur.": 1390
             }
         },
         {
@@ -408,7 +414,8 @@ module.exports = {
             "id": "hamburgerek-new-york-burger",
             "variants": {
                 "Szendvics": 990,
-                "Menü": 1390
+                "Hasább.": 1390,
+                "Steakbur.": 1390
             }
         },
         {
@@ -417,7 +424,8 @@ module.exports = {
             "id": "hamburgerek-hungarian-burger",
             "variants": {
                 "Szendvics": 990,
-                "Menü": 1390
+                "Hasább.": 1390,
+                "Steakbur.": 1390
             }
         },
         {
@@ -489,9 +497,9 @@ module.exports = {
             "name": "Pepsi",
             "id": "uditok-pepsi",
             "variants": {
-                "1,75 liter": 480,
+                "0,33 liter": 190,
                 "1 liter": 350,
-                "0,33 liter": 190
+                "1,75 liter": 480
             }
         },
         {
@@ -499,9 +507,9 @@ module.exports = {
             "name": "Pepsi Max",
             "id": "uditok-pepsi-max",
             "variants": {
-                "1,75 liter": 480,
+                "0,33 liter": 190,
                 "1 liter": 350,
-                "0,33 liter": 190
+                "1,75 liter": 480
             }
         },
         {
@@ -509,9 +517,9 @@ module.exports = {
             "name": "Mirinda",
             "id": "uditok-mirinda",
             "variants": {
-                "1,75 liter": 480,
+                "0,33 liter": 190,
                 "1 liter": 350,
-                "0,33 liter": 190
+                "1,75 liter": 480
             }
         },
         {
@@ -519,9 +527,9 @@ module.exports = {
             "name": "Canada Dry",
             "id": "uditok-canada-dry",
             "variants": {
-                "1,75 liter": 480,
+                "0,33 liter": 190,
                 "1 liter": 350,
-                "0,33 liter": 190
+                "1,75 liter": 480
             }
         },
         {
