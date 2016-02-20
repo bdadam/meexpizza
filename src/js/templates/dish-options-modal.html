@@ -24,7 +24,7 @@
         </section>
 
         <div class="pizza-modal-group" v-if="availableExtras && availableExtras.length">
-            <h4>Extrák: </h4>
+            <h4>Kiválasztott extrák</h4>
             <span v-if="order.extras.length === 0">Még nem választottál extrát.</span>
             <a class="selected-extra" href="#" v-for="extra in order.extras" @click.prevent="removeExtra(extra)">{{ extra.name }}&nbsp;({{ extra.price }}&nbsp;Ft)</a>
         </div>
@@ -37,7 +37,7 @@
 
     <div class="modal-content" style="background-color: #f1f1f1;">
         <section v-if="availableExtras && availableExtras.length">
-            <h3 style="margin-top: 12px;">Extrák</h3>
+            <h3 style="margin-top: 12px; margin-bottom: 12px;">Választható extrák</h3>
             <div class="pizza-modal-group" v-for="extra in availableExtras">
                 <h4>{{ extra.name }}&nbsp;({{ extra.price }}&nbsp;Ft):</h4>
                 <a class="available-extra" v-for="item in extra.list" @click.prevent="addExtra(extra.name, item, extra.price)" href="#">{{ item }}</a>
