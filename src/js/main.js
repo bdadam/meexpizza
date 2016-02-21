@@ -86,85 +86,6 @@ setTimeout(() => {
     } catch(ex) { }
 });
 
-shoppingCart.subscribe(() => {
-    const state = shoppingCart.getState();
-    var ids = {};
-    state.inCart.forEach(obj => {
-        ids[obj.dish.id] = (ids[obj.dish.id] || 0) + 1;
-    });
-
-    $(`[data-dish-id] .in-cart-count`).text('');
-
-    Object.keys(ids).forEach(id => {
-        var count = ids[id];
-        $(`[data-dish-id=${id}] .in-cart-count`).text(`${count} db a kosárban`);
-    });
-});
-
-shoppingCart.subscribe(() => {
-    const state = shoppingCart.getState();
-
-    if (state.isEmpty) {
-        // $('#side-cart .default-content').show();
-        $('#side-cart button.order').attr('disabled', true);
-    } else {
-        // $('#side-cart .default-content').hide();
-        $('#side-cart button.order').attr('disabled', false);
-    }
-
-    const viewModel = {
-        showEmptyMessage: state.inCart.length === 0,
-        isEmpty: state.inCart.length === 0,
-        lines: state.inCart.map(item => {
-            const dishFromCard = find(menucard.dishes, dish => dish.id === item.dishId);
-            if (dishFromCard) {
-                return { id: item.timestamp, name: `${dishFromCard.name} (${item.variant})`, price: find(dishFromCard.variants, v => v.name === item.variant).price };
-            }
-        }),
-        deliveryFee: menucard.deliveryFees[state.address.city].fix || 0,
-        minForFreeDelivery: menucard.deliveryFees[state.address.city].min || 0
-    };
-
-    viewModel.total = viewModel.lines.reduce((prev, l) => prev + l.price, 0) + viewModel.deliveryFee;
-    viewModel.minTotalNotReached = viewModel.total < viewModel.minForFreeDelivery;
-    viewModel.showMinForFreeDeliveryMessage = state.inCart.length > 0 && viewModel.minTotalNotReached;
-
-    var tpl = require('mustache!./templates/shopping-cart.html');
-    $('.cart-calculation').html(tpl(viewModel));
-});
-
-
-shoppingCart.subscribe(() => {
-    const address = shoppingCart.getState().address;
-    const orderForm = $('#side-cart .order-form')
-
-    orderForm.find('[name=city]').val(address.city);
-    orderForm.find('[name=name]').val(address.name);
-    orderForm.find('[name=street]').val(address.street);
-    orderForm.find('[name=phone]').val(address.phone);
-});
-
-const orderForm = $('#side-cart .order-form').on('input change', (e) => {
-    const address = {
-        city: orderForm.find('[name=city]').val(),
-        name: orderForm.find('[name=name]').val(),
-        street: orderForm.find('[name=street]').val(),
-        phone: orderForm.find('[name=phone]').val()
-    };
-
-    shoppingCart.dispatch({ type: 'ADDRESS_CHANGE', address });
-});
-
-$(document).on('click', 'button[data-remove-order-item]', function(e) {
-    var timestamp = $(this).data('removeOrderItem');
-    shoppingCart.dispatch({ type: 'REMOVE', timestamp: timestamp });
-});
-
-$(document).on('click', 'button[data-duplicate-order-item]', function(e) {
-    var timestamp = $(this).data('duplicateOrderItem');
-    shoppingCart.dispatch({ type: 'DUPLICATE', timestamp: timestamp });
-});
-
 $(document).on('click', 'button[data-add-to-cart]', function (e) {
     const el = $(this);
     const id = el.data('id');
@@ -258,40 +179,22 @@ const shoppingCartModel = new Vue({
                 const extras = item.extras;
 
                 return price + extras.reduce((prevSum, cur) => prevSum + cur.price, 0);
-            }).reduce((prevSum, cur) => prevSum + cur);
+            }).reduce((prevSum, cur) => prevSum + cur) + this.deliveryFee;
         },
-        deliveryFee: _ => 800
+        deliveryFee: function() {
+            return menucard.deliveryFees[this.address.city].fix || 0;
+        },
+        minOrderValue: function() {
+            return menucard.deliveryFees[this.address.city].min || 0;
+        }
     },
 
     methods: {
         addOrderItem: item => {
             shoppingCartModel.items.push(item);
         },
-        removeOrderItem: id => {
-
-        },
-        duplicateOrderItem: id => {
-            let idx;
-            let itemToDuplicate;
-
-            
-
-
-            // shoppingCartModel.items.forEach((i, index) => {
-            //     console.log(i, index);
-            //     if (i.timestamp === id) {
-            //         idx = index;
-            //         itemToDuplicate = i;
-            //     }
-            // });
-
-            // console.log(idx, itemToDuplicate);
-
-            // if (idx >= 0 && itemToDuplicate) {
-            //     const newItem = Object.assign({}, itemToDuplicate, { timestamp: +new Date() });
-            //     shoppingCartModel.items.splice(idx, 0, newItem);
-            // }
-        },
+        removeOrderItem: id => {},
+        duplicateOrderItem: id => {},
         clear: _ => {},
 
         submitOrder: _ => {
@@ -386,40 +289,6 @@ const isDeliveryClosedNow = (now = new Date()) => {
 
     return true;
 };
-
-
-
-// Vue.component('preorder-warning', {
-//     template: '<p x-v-if="!closed">Éttermünk jelenleg zárva van. Kiszállítást csak a következő nyitás után tudunk vállalni.</p>',
-//     computed: { closed: isDeliveryClosedNow }
-// });
-
-
-// var MyComponent = Vue.extend({
-//     template: '<div>A custom component!</div>'
-// });
-//
-// Vue.component('preorder-warning', MyComponent);
-//
-// new Vue({
-//   el: 'body'
-// })
-
-
-// setTimeout(() => {
-//
-// Vue.component('preorder-warning', {
-//   template: '<div>A custom component!</div>'
-// });
-// }, 2000);
-
-// setInterval(_ => {
-//
-//
-//
-// }, 1000);
-
-// console.log(isDeliveryClosedNow(new Date(2016, 1, 26, 22, 31)));
 
 /*
 Events:
@@ -519,65 +388,3 @@ Rántott sajt:
 //         console.log('Error', e);
 //     }
 // })
-
-
-// const showPizzaModal = (id, variant) => {
-//     const Vue = require('vue');
-//     const html = require('html!./templates/pizza-extras-modal.html');
-//     const modal = require('./modal');
-//
-//     const dish = menucard.dishes.filter(d => d.id === id)[0];
-//
-//     const m = modal.show(html);
-//     const model = window.model = new Vue({
-//         el: m.el,
-//         data: {
-//             selectedExtras: [],
-//             sizes: [],
-//             selectedSize: '',
-//             variants: dish.variants,
-//             selectedVariant: variant,
-//             imageName: dish.imageName,
-//
-//             name: dish.name,
-//             description: dish.description
-//         },
-//
-//         computed: {
-//             availableExtras: () => {
-//                 return menucard.pizzaExtras;
-//             },
-//             totalPrice: function () {
-//                 const selectedVariant = this.selectedVariant;
-//                 const basePrice = this.variants.filter(v => v.name === selectedVariant)[0].price;
-//                 const extraPrice = this.selectedExtras.reduce((prev, curr) => curr.price + prev, 0);
-//                 return basePrice + extraPrice;
-//             }
-//         },
-//
-//         methods: {
-//             addExtra: (category, name, price) => {
-//                 const alreadyAdded = model.selectedExtras.filter(x => x.category === category && x.name === name).length > 0;
-//                 if (!alreadyAdded) {
-//                     model.selectedExtras.push({ category, name, price });
-//                 }
-//             },
-//             removeExtra: (extra) => {
-//                 model.selectedExtras = model.selectedExtras.filter(ex => ex.name !== extra.name || ex.category !== extra.category);
-//             },
-//             cancel: () => {
-//                 modal.hide();
-//                 model.$destroy();
-//             },
-//             addToCart: () => {
-//                 shoppingCart.dispatch({ type: 'ADD', dish: { id, variant: model.selectedVariant, extras: model.selectedExtras.map(ex => ({ name: ex.name, category: ex.category })) }, timestamp: +new Date() });
-//                 modal.hide();
-//                 model.$destroy();
-//             }
-//         }
-//     });
-// };
-//
-// const showHamburgerModal = (id, variant) => {
-//
-// };

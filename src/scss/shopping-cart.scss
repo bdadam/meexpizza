@@ -1,0 +1,44 @@
+.order-form {
+    .order-item {
+        margin-bottom: 8px;
+        @include cf();
+        border-bottom: 1px solid #dedede;
+        padding-bottom: 4px;
+    }
+
+    .item-title {
+        font-weight: 600;
+        @include span(3/4);
+    }
+
+    .item-price {
+        @include span(1/4, $cycle: 2);
+        text-align: right;
+    }
+
+    .item-extras {
+        padding-left: 8px;
+    }
+
+    .item-extra-name {
+        @include span(3/4);
+    }
+
+    .item-extra-price {
+        @include span(1/4, $cycle: 2);
+        text-align: right;
+    }
+
+    .actions {
+        text-align: right;
+
+        button {
+            border: 0;
+            color: #777;
+
+            svg {
+                fill: #777;
+            }
+        }
+    }
+}

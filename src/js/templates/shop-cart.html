@@ -1,40 +1,41 @@
-<section id="shcart" class="card">
+<section id="kosar" class="card">
     <h2 class="card-title">Shopping Cart</h2>
-
     <div class="card-content">
         <form class="order-form" @submit.prevent="submitOrder">
             <p v-if="items.length === 0">A kosár még üres. Az ételeket a "Kosárba" gomb megnyomásával adhatod hozzá a rendeléshez. </p>
 
-
             <div>
-                <div v-for="item in visibleItems">
-                    <div class="item-title">{{ item.dish.name }} <span v-if="item.variant">({{ item.variant }})</span></div>
-                    <div class="item-price">{{ item.price }} Ft</div>
-                    <div class="item-extras" v-if="item.extras && item.extras.length > 0">
-                        <div class="item-extra" v-for="extra in item.extras">
+                <div class="order-item" v-for="item in visibleItems">
+                    <div class="row">
+                        <div class="item-title">{{ item.dish.name }} <span v-if="item.variant">({{ item.variant }})</span></div>
+                        <div class="item-price">{{ item.price }}&nbsp;Ft</div>
+                    </div>
+
+                    <div class="item-extras row" v-if="item.extras && item.extras.length > 0">
+                        <div class="item-extra row" v-for="extra in item.extras">
                             <div class="item-extra-name">+ {{ extra.name }}</div>
-                            <div class="item-extra-price">{{ extra.price }} Ft</div>
+                            <div class="item-extra-price">{{ extra.price }}&nbsp;Ft</div>
                         </div>
                     </div>
 
-                    <div class="actions">
-                        <button @click="duplicateOrderItem(item.timestamp)">+</button>
-                        <button @click="removeOrder(item.timestamp)">-</button>
-                        <button @click="editOrder(item.timestamp)">Szerkesztés</button>
+                    <div class="actions row">
+                        <button @click="duplicateOrderItem(item.timestamp)"><svg class="icon-plus"><use xlink:href="#icon-plus"></use></svg> Még egyet</button>
+                        <button @click="removeOrderItem(item.timestamp)"><svg class="icon-minus"><use xlink:href="#icon-minus"></use></svg> Nem kérem</button>
+                        <!-- <button @click="editOrderItem(item.timestamp)">Extrák</button> -->
                     </div>
                 </div>
-                <div v-if="deliveryFee">
+                <div class="order-item row" v-if="deliveryFee > 0 && visibleItems.length > 0">
                     <div class="item-title">Kiszállítási díj</div>
-                    <div class="item-price">{{ deliveryFee }} Ft</div>
+                    <div class="item-price">{{ deliveryFee }}&nbsp;Ft</div>
                 </div>
 
-                <div v-if="totalPrice > 0">
+                <div class="order-item row" v-if="totalPrice > 0">
                     <div class="item-title">Végösszeg</div>
-                    <div class="item-price">{{ totalPrice }} Ft</div>
+                    <div class="item-price">{{ totalPrice }}&nbsp;Ft</div>
                 </div>
             </div>
 
-            <label for="city">Város</label>
+            <label for="city">Lakhely</label>
             <select id="city" name="city" v-model="address.city">
                 <option value="">Válaszd ki a városod</option>
                 <option v-for="city in availableCities">{{ city }}</option>

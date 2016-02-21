@@ -20,6 +20,11 @@ body {
     line-height: 1.4;
 }
 
+.row {
+    @include span(1);
+    @include cf;
+}
+
 .container {
     @include cf();
     position: relative;
