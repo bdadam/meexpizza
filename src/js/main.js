@@ -22,69 +22,103 @@ page((context, next) => {
 
 const menucard = require('../../data/menucard2.generated');
 
-var defaultState = {
-    inCart: [],
-    serializedForm: '',
-    isEmpty: true,
-    address: { city: 'Gyöngyös' }
-};
+// var defaultState = {
+//     inCart: [],
+//     serializedForm: '',
+//     isEmpty: true,
+//     address: { city: 'Gyöngyös' }
+// };
 
-const shoppingCart = redux.createStore((state = defaultState, action) => {
-    let newState = defaultState;
+
+const defaultState = { items: [] };
+
+const shoppingCartStore = redux.createStore((state = defaultState, action) => {
 
     switch(action.type) {
-        // case 'ADD':
-        //     newState = Object.assign({}, state, { inCart: [...state.inCart, { dish: action.dish, timestamp: action.timestamp }] });
-        //     break;
-        case 'ADD_ORDER_ITEM':
-
-            break;
+        case 'ADD':
+            return Object.assign({}, state, { items: [...state.items, Object.assign({}, action.item)] });
         case 'REMOVE':
-            const inCart = state.inCart.filter(x => x.timestamp !== action.timestamp);
-            newState = Object.assign({}, state, { inCart });
-            break;
+            return Object.assign({}, state, { items: state.items.filter(i => i.timestamp !== action.timestamp) });
         case 'DUPLICATE':
-            newState = Object.assign({}, state, {
-                inCart: flatMap(state.inCart, item => {
+            return Object.assign({}, state, {
+                items: flatMap(state.items, item => {
                                     return item.timestamp !== action.timestamp
                                         ? item
                                         : [item, Object.assign({}, item, { timestamp: +new Date() })];
                                     })
                                 });
-            break;
-        case 'RESTORE':
-            newState = Object.assign({}, state, defaultState, action.state);
-            break;
-        case 'ADDRESS_CHANGE':
-            newState = Object.assign({}, state, { address: action.address });
-            break;
-        case 'EMPTY_CART':
-            newState = Object.assign({}, state, { inCart: [] });
-            break;
+        // case 'RESTORE':
+        // case 'REPLACE':
+
+        case 'CLEAR':
+        // case 'ORDER_SUCCEEDED':
+            return defaultState;
         default:
-            // no-op
             return state;
     }
-
-    newState.isEmpty = newState.inCart.length === 0;
-    newState.deliveryFee = menucard.deliveryFees[newState.address.city].fix || 0;
-    newState.deliveryFreeFrom = menucard.deliveryFees[newState.address.city].min || 0;
-
-    return newState;
 });
 
-shoppingCart.subscribe(() => {
-    try {
-        localStorage.shoppingCart = JSON.stringify(shoppingCart.getState());
-    } catch(ex) { }
-});
+shoppingCartStore.dispatch({ type: 'INIT' });
 
-setTimeout(() => {
-    try {
-        const state = JSON.parse(localStorage.shoppingCart);
-        shoppingCart.dispatch({ type: 'RESTORE', state })
-    } catch(ex) { }
-});
+
+
+
+// const shoppingCart = redux.createStore((state = defaultState, action) => {
+//     let newState = defaultState;
+//
+//     switch(action.type) {
+//         // case 'ADD':
+//         //     newState = Object.assign({}, state, { inCart: [...state.inCart, { dish: action.dish, timestamp: action.timestamp }] });
+//         //     break;
+//         case 'ADD_ORDER_ITEM':
+//
+//             break;
+//         case 'REMOVE':
+//             const inCart = state.inCart.filter(x => x.timestamp !== action.timestamp);
+//             newState = Object.assign({}, state, { inCart });
+//             break;
+//         case 'DUPLICATE':
+//             newState = Object.assign({}, state, {
+//                 inCart: flatMap(state.inCart, item => {
+//                                     return item.timestamp !== action.timestamp
+//                                         ? item
+//                                         : [item, Object.assign({}, item, { timestamp: +new Date() })];
+//                                     })
+//                                 });
+//             break;
+//         case 'RESTORE':
+//             newState = Object.assign({}, state, defaultState, action.state);
+//             break;
+//         case 'ADDRESS_CHANGE':
+//             newState = Object.assign({}, state, { address: action.address });
+//             break;
+//         case 'EMPTY_CART':
+//             newState = Object.assign({}, state, { inCart: [] });
+//             break;
+//         default:
+//             // no-op
+//             return state;
+//     }
+//
+//     newState.isEmpty = newState.inCart.length === 0;
+//     newState.deliveryFee = menucard.deliveryFees[newState.address.city].fix || 0;
+//     newState.deliveryFreeFrom = menucard.deliveryFees[newState.address.city].min || 0;
+//
+//     return newState;
+// });
+//
+// shoppingCart.subscribe(() => {
+//     try {
+//         localStorage.shoppingCart = JSON.stringify(shoppingCart.getState());
+//     } catch(ex) { }
+// });
+//
+// setTimeout(() => {
+//     try {
+//         const state = JSON.parse(localStorage.shoppingCart);
+//         shoppingCart.dispatch({ type: 'RESTORE', state })
+//     } catch(ex) { }
+// });
 
 $(document).on('click', 'button[data-add-to-cart]', function (e) {
     const el = $(this);
@@ -104,45 +138,19 @@ $(document).on('click', 'button[data-add-to-cart]', function (e) {
     if (dish.type !== 'none' || (dish.options && dish.options.length)) {
         showDishOptionsModal(orderItem);
     } else {
-        shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', orderItem });
+        shoppingCartStore.dispatch({ type: 'ADD', item: orderItem });
     }
 });
 
 
-const LocalStorage = {
-    read: (key, defaultValue = '') => {
-        try {
-            return localStorage.getItem(key) || defaultValue;
-        } catch(ex) { return defaultValue; }
-    },
-
-    readJson: (key, defaultObject = null) => {
-        try {
-            return JSON.parse(localStorage.getItem(key)) || defaultObject;
-        } catch(ex) {
-            return defaultObject;
-        }
-    },
-
-    write: (key, value) => {
-        try {
-            localStorage.setItem(key, value);
-        } catch(ex) {}
-    },
-
-    writeJson: (key, value) => {
-        try {
-            localStorage.setItem(key, JSON.stringify(value));
-        } catch(ex) {}
-    }
-};
+const LocalStorage = require('./localStorage');
 
 const shoppingCartModel = new Vue({
     el: '#shopping-cart-placeholder',
     template: require('html!./templates/shop-cart.html'),
     data: {
         availableCities: Object.keys(menucard.deliveryFees),
-        items: LocalStorage.readJson('items', []),
+        items: shoppingCartStore.getState().items,
         address: {
             name: LocalStorage.read('name'),
             city: LocalStorage.read('city'),
@@ -168,20 +176,30 @@ const shoppingCartModel = new Vue({
                 const variant = item.variant;
                 const price = find(dish.variants, v => v.name === item.variant).price;
                 const extras = item.extras;
-                return { dish, variant, price, extras };
+                const timestamp = item.timestamp;
+
+                return { dish, variant, price, extras, timestamp };
             });
         },
         totalPrice: function() {
-            return this.items.map(item => {
+            const x = this.items.map(item => {
                 const dish = find(menucard.dishes, d => d.id === item.dishId);
                 const variant = item.variant;
                 const price = find(dish.variants, v => v.name === item.variant).price;
                 const extras = item.extras;
+                const sumExtras = extras.reduce((prevSum, cur) => prevSum + cur.price, 0);
+                return price + sumExtras;
+            }).reduce((prevSum, cur) => {
+                return prevSum + cur;
+            }, 0) + this.deliveryFee;
 
-                return price + extras.reduce((prevSum, cur) => prevSum + cur.price, 0);
-            }).reduce((prevSum, cur) => prevSum + cur) + this.deliveryFee;
+            return x;
         },
         deliveryFee: function() {
+            if (!this.address.city) {
+                return 0;
+            }
+
             return menucard.deliveryFees[this.address.city].fix || 0;
         },
         minOrderValue: function() {
@@ -193,15 +211,27 @@ const shoppingCartModel = new Vue({
         addOrderItem: item => {
             shoppingCartModel.items.push(item);
         },
-        removeOrderItem: id => {},
-        duplicateOrderItem: id => {},
-        clear: _ => {},
+        removeOrderItem: timestamp => {
+            shoppingCartStore.dispatch({ type: 'REMOVE', timestamp });
+        },
+        duplicateOrderItem: timestamp => {
+            console.log(timestamp);
+            shoppingCartStore.dispatch({ type: 'DUPLICATE', timestamp });
+        },
+        clear: _ => {
+            shoppingCartStore.dispatch({ type: 'CLEAR' });
+        },
 
         submitOrder: _ => {
             console.log(shoppingCartModel.address);
             console.log(shoppingCartModel.items);
         }
     }
+});
+
+shoppingCartStore.subscribe(_ => {
+    const state = shoppingCartStore.getState();
+    Vue.set(shoppingCartModel, 'items',  state.items);
 });
 
 const dishOptionsModalHtml = require('html!./templates/dish-options-modal.html');
@@ -251,8 +281,9 @@ const showDishOptionsModal = order => {
                 model.$destroy();
             },
             addToCart: () => {
-                shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', order: model.order });
-                shoppingCartModel.addOrderItem(model.order);
+                // shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', order: model.order });
+                // shoppingCartModel.addOrderItem(model.order);
+                shoppingCartStore.dispatch({ type: 'ADD', item: model.order });
                 modal.hide();
                 model.$destroy();
             }

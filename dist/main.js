@@ -46,6 +46,8 @@
 
 	'use strict';
 	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
 	__webpack_require__(1).polyfill();
 	__webpack_require__(2);
 	__webpack_require__(3);
@@ -70,72 +72,101 @@
 	
 	var menucard = __webpack_require__(119);
 	
-	var defaultState = {
-	    inCart: [],
-	    serializedForm: '',
-	    isEmpty: true,
-	    address: { city: 'Gyöngyös' }
-	};
+	// var defaultState = {
+	//     inCart: [],
+	//     serializedForm: '',
+	//     isEmpty: true,
+	//     address: { city: 'Gyöngyös' }
+	// };
 	
-	var shoppingCart = redux.createStore(function () {
+	var defaultState = { items: [] };
+	
+	var shoppingCartStore = redux.createStore(function () {
 	    var state = arguments.length <= 0 || arguments[0] === undefined ? defaultState : arguments[0];
 	    var action = arguments[1];
 	
-	    var newState = defaultState;
-	
 	    switch (action.type) {
-	        // case 'ADD':
-	        //     newState = Object.assign({}, state, { inCart: [...state.inCart, { dish: action.dish, timestamp: action.timestamp }] });
-	        //     break;
-	        case 'ADD_ORDER_ITEM':
-	
-	            break;
+	        case 'ADD':
+	            return Object.assign({}, state, { items: [].concat(_toConsumableArray(state.items), [Object.assign({}, action.item)]) });
 	        case 'REMOVE':
-	            var inCart = state.inCart.filter(function (x) {
-	                return x.timestamp !== action.timestamp;
-	            });
-	            newState = Object.assign({}, state, { inCart: inCart });
-	            break;
+	            return Object.assign({}, state, { items: state.items.filter(function (i) {
+	                    return i.timestamp !== action.timestamp;
+	                }) });
 	        case 'DUPLICATE':
-	            newState = Object.assign({}, state, {
-	                inCart: flatMap(state.inCart, function (item) {
+	            return Object.assign({}, state, {
+	                items: flatMap(state.items, function (item) {
 	                    return item.timestamp !== action.timestamp ? item : [item, Object.assign({}, item, { timestamp: +new Date() })];
 	                })
 	            });
-	            break;
-	        case 'RESTORE':
-	            newState = Object.assign({}, state, defaultState, action.state);
-	            break;
-	        case 'ADDRESS_CHANGE':
-	            newState = Object.assign({}, state, { address: action.address });
-	            break;
-	        case 'EMPTY_CART':
-	            newState = Object.assign({}, state, { inCart: [] });
-	            break;
+	        // case 'RESTORE':
+	        // case 'REPLACE':
+	
+	        case 'CLEAR':
+	            // case 'ORDER_SUCCEEDED':
+	            return defaultState;
 	        default:
-	            // no-op
 	            return state;
 	    }
-	
-	    newState.isEmpty = newState.inCart.length === 0;
-	    newState.deliveryFee = menucard.deliveryFees[newState.address.city].fix || 0;
-	    newState.deliveryFreeFrom = menucard.deliveryFees[newState.address.city].min || 0;
-	
-	    return newState;
 	});
 	
-	shoppingCart.subscribe(function () {
-	    try {
-	        localStorage.shoppingCart = JSON.stringify(shoppingCart.getState());
-	    } catch (ex) {}
-	});
+	shoppingCartStore.dispatch({ type: 'INIT' });
 	
-	setTimeout(function () {
-	    try {
-	        var state = JSON.parse(localStorage.shoppingCart);
-	        shoppingCart.dispatch({ type: 'RESTORE', state: state });
-	    } catch (ex) {}
-	});
+	// const shoppingCart = redux.createStore((state = defaultState, action) => {
+	//     let newState = defaultState;
+	//
+	//     switch(action.type) {
+	//         // case 'ADD':
+	//         //     newState = Object.assign({}, state, { inCart: [...state.inCart, { dish: action.dish, timestamp: action.timestamp }] });
+	//         //     break;
+	//         case 'ADD_ORDER_ITEM':
+	//
+	//             break;
+	//         case 'REMOVE':
+	//             const inCart = state.inCart.filter(x => x.timestamp !== action.timestamp);
+	//             newState = Object.assign({}, state, { inCart });
+	//             break;
+	//         case 'DUPLICATE':
+	//             newState = Object.assign({}, state, {
+	//                 inCart: flatMap(state.inCart, item => {
+	//                                     return item.timestamp !== action.timestamp
+	//                                         ? item
+	//                                         : [item, Object.assign({}, item, { timestamp: +new Date() })];
+	//                                     })
+	//                                 });
+	//             break;
+	//         case 'RESTORE':
+	//             newState = Object.assign({}, state, defaultState, action.state);
+	//             break;
+	//         case 'ADDRESS_CHANGE':
+	//             newState = Object.assign({}, state, { address: action.address });
+	//             break;
+	//         case 'EMPTY_CART':
+	//             newState = Object.assign({}, state, { inCart: [] });
+	//             break;
+	//         default:
+	//             // no-op
+	//             return state;
+	//     }
+	//
+	//     newState.isEmpty = newState.inCart.length === 0;
+	//     newState.deliveryFee = menucard.deliveryFees[newState.address.city].fix || 0;
+	//     newState.deliveryFreeFrom = menucard.deliveryFees[newState.address.city].min || 0;
+	//
+	//     return newState;
+	// });
+	//
+	// shoppingCart.subscribe(() => {
+	//     try {
+	//         localStorage.shoppingCart = JSON.stringify(shoppingCart.getState());
+	//     } catch(ex) { }
+	// });
+	//
+	// setTimeout(() => {
+	//     try {
+	//         const state = JSON.parse(localStorage.shoppingCart);
+	//         shoppingCart.dispatch({ type: 'RESTORE', state })
+	//     } catch(ex) { }
+	// });
 	
 	$(document).on('click', 'button[data-add-to-cart]', function (e) {
 	    var el = $(this);
@@ -157,50 +188,18 @@
 	    if (dish.type !== 'none' || dish.options && dish.options.length) {
 	        showDishOptionsModal(orderItem);
 	    } else {
-	        shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', orderItem: orderItem });
+	        shoppingCartStore.dispatch({ type: 'ADD', item: orderItem });
 	    }
 	});
 	
-	var LocalStorage = {
-	    read: function read(key) {
-	        var defaultValue = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
-	
-	        try {
-	            return localStorage.getItem(key) || defaultValue;
-	        } catch (ex) {
-	            return defaultValue;
-	        }
-	    },
-	
-	    readJson: function readJson(key) {
-	        var defaultObject = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-	
-	        try {
-	            return JSON.parse(localStorage.getItem(key)) || defaultObject;
-	        } catch (ex) {
-	            return defaultObject;
-	        }
-	    },
-	
-	    write: function write(key, value) {
-	        try {
-	            localStorage.setItem(key, value);
-	        } catch (ex) {}
-	    },
-	
-	    writeJson: function writeJson(key, value) {
-	        try {
-	            localStorage.setItem(key, JSON.stringify(value));
-	        } catch (ex) {}
-	    }
-	};
+	var LocalStorage = __webpack_require__(123);
 	
 	var shoppingCartModel = new Vue({
 	    el: '#shopping-cart-placeholder',
 	    template: __webpack_require__(120),
 	    data: {
 	        availableCities: Object.keys(menucard.deliveryFees),
-	        items: LocalStorage.readJson('items', []),
+	        items: shoppingCartStore.getState().items,
 	        address: {
 	            name: LocalStorage.read('name'),
 	            city: LocalStorage.read('city'),
@@ -242,11 +241,13 @@
 	                    return v.name === item.variant;
 	                }).price;
 	                var extras = item.extras;
-	                return { dish: dish, variant: variant, price: price, extras: extras };
+	                var timestamp = item.timestamp;
+	
+	                return { dish: dish, variant: variant, price: price, extras: extras, timestamp: timestamp };
 	            });
 	        },
 	        totalPrice: function totalPrice() {
-	            return this.items.map(function (item) {
+	            var x = this.items.map(function (item) {
 	                var dish = find(menucard.dishes, function (d) {
 	                    return d.id === item.dishId;
 	                });
@@ -255,15 +256,21 @@
 	                    return v.name === item.variant;
 	                }).price;
 	                var extras = item.extras;
-	
-	                return price + extras.reduce(function (prevSum, cur) {
+	                var sumExtras = extras.reduce(function (prevSum, cur) {
 	                    return prevSum + cur.price;
 	                }, 0);
+	                return price + sumExtras;
 	            }).reduce(function (prevSum, cur) {
 	                return prevSum + cur;
-	            }) + this.deliveryFee;
+	            }, 0) + this.deliveryFee;
+	
+	            return x;
 	        },
 	        deliveryFee: function deliveryFee() {
+	            if (!this.address.city) {
+	                return 0;
+	            }
+	
 	            return menucard.deliveryFees[this.address.city].fix || 0;
 	        },
 	        minOrderValue: function minOrderValue() {
@@ -275,15 +282,27 @@
 	        addOrderItem: function addOrderItem(item) {
 	            shoppingCartModel.items.push(item);
 	        },
-	        removeOrderItem: function removeOrderItem(id) {},
-	        duplicateOrderItem: function duplicateOrderItem(id) {},
-	        clear: function clear(_) {},
+	        removeOrderItem: function removeOrderItem(timestamp) {
+	            shoppingCartStore.dispatch({ type: 'REMOVE', timestamp: timestamp });
+	        },
+	        duplicateOrderItem: function duplicateOrderItem(timestamp) {
+	            console.log(timestamp);
+	            shoppingCartStore.dispatch({ type: 'DUPLICATE', timestamp: timestamp });
+	        },
+	        clear: function clear(_) {
+	            shoppingCartStore.dispatch({ type: 'CLEAR' });
+	        },
 	
 	        submitOrder: function submitOrder(_) {
 	            console.log(shoppingCartModel.address);
 	            console.log(shoppingCartModel.items);
 	        }
 	    }
+	});
+	
+	shoppingCartStore.subscribe(function (_) {
+	    var state = shoppingCartStore.getState();
+	    Vue.set(shoppingCartModel, 'items', state.items);
 	});
 	
 	var dishOptionsModalHtml = __webpack_require__(121);
@@ -343,8 +362,9 @@
 	                model.$destroy();
 	            },
 	            addToCart: function addToCart() {
-	                shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', order: model.order });
-	                shoppingCartModel.addOrderItem(model.order);
+	                // shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', order: model.order });
+	                // shoppingCartModel.addOrderItem(model.order);
+	                shoppingCartStore.dispatch({ type: 'ADD', item: model.order });
 	                modal.hide();
 	                model.$destroy();
 	            }
@@ -26946,6 +26966,48 @@
 	        }
 	    }
 	};
+
+/***/ },
+/* 123 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	var LocalStorage = {
+	    read: function read(key) {
+	        var defaultValue = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+	
+	        try {
+	            return localStorage.getItem(key) || defaultValue;
+	        } catch (ex) {
+	            return defaultValue;
+	        }
+	    },
+	
+	    readJson: function readJson(key) {
+	        var defaultObject = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+	
+	        try {
+	            return JSON.parse(localStorage.getItem(key)) || defaultObject;
+	        } catch (ex) {
+	            return defaultObject;
+	        }
+	    },
+	
+	    write: function write(key, value) {
+	        try {
+	            localStorage.setItem(key, value);
+	        } catch (ex) {}
+	    },
+	
+	    writeJson: function writeJson(key, value) {
+	        try {
+	            localStorage.setItem(key, JSON.stringify(value));
+	        } catch (ex) {}
+	    }
+	};
+	
+	module.exports = LocalStorage;
 
 /***/ }
 /******/ ]);
