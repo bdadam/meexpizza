@@ -1,5 +1,5 @@
 require('es6-object-assign').polyfill();
-require('lazysizes/lazysizes');
+// require('lazysizes/lazysizes');
 require('document-register-element');
 
 require('./navi').init();
@@ -22,14 +22,6 @@ page((context, next) => {
 
 const menucard = require('../../data/menucard2.generated');
 
-// var defaultState = {
-//     inCart: [],
-//     serializedForm: '',
-//     isEmpty: true,
-//     address: { city: 'Gyöngyös' }
-// };
-
-
 const defaultState = { items: [] };
 
 const shoppingCartStore = redux.createStore((state = defaultState, action) => {
@@ -47,7 +39,8 @@ const shoppingCartStore = redux.createStore((state = defaultState, action) => {
                                         : [item, Object.assign({}, item, { timestamp: +new Date() })];
                                     })
                                 });
-        // case 'RESTORE':
+        case 'RESTORE':
+            return Object.assign({}, state, { items: action.items });
         // case 'REPLACE':
 
         case 'CLEAR':
@@ -59,66 +52,6 @@ const shoppingCartStore = redux.createStore((state = defaultState, action) => {
 });
 
 shoppingCartStore.dispatch({ type: 'INIT' });
-
-
-
-
-// const shoppingCart = redux.createStore((state = defaultState, action) => {
-//     let newState = defaultState;
-//
-//     switch(action.type) {
-//         // case 'ADD':
-//         //     newState = Object.assign({}, state, { inCart: [...state.inCart, { dish: action.dish, timestamp: action.timestamp }] });
-//         //     break;
-//         case 'ADD_ORDER_ITEM':
-//
-//             break;
-//         case 'REMOVE':
-//             const inCart = state.inCart.filter(x => x.timestamp !== action.timestamp);
-//             newState = Object.assign({}, state, { inCart });
-//             break;
-//         case 'DUPLICATE':
-//             newState = Object.assign({}, state, {
-//                 inCart: flatMap(state.inCart, item => {
-//                                     return item.timestamp !== action.timestamp
-//                                         ? item
-//                                         : [item, Object.assign({}, item, { timestamp: +new Date() })];
-//                                     })
-//                                 });
-//             break;
-//         case 'RESTORE':
-//             newState = Object.assign({}, state, defaultState, action.state);
-//             break;
-//         case 'ADDRESS_CHANGE':
-//             newState = Object.assign({}, state, { address: action.address });
-//             break;
-//         case 'EMPTY_CART':
-//             newState = Object.assign({}, state, { inCart: [] });
-//             break;
-//         default:
-//             // no-op
-//             return state;
-//     }
-//
-//     newState.isEmpty = newState.inCart.length === 0;
-//     newState.deliveryFee = menucard.deliveryFees[newState.address.city].fix || 0;
-//     newState.deliveryFreeFrom = menucard.deliveryFees[newState.address.city].min || 0;
-//
-//     return newState;
-// });
-//
-// shoppingCart.subscribe(() => {
-//     try {
-//         localStorage.shoppingCart = JSON.stringify(shoppingCart.getState());
-//     } catch(ex) { }
-// });
-//
-// setTimeout(() => {
-//     try {
-//         const state = JSON.parse(localStorage.shoppingCart);
-//         shoppingCart.dispatch({ type: 'RESTORE', state })
-//     } catch(ex) { }
-// });
 
 $(document).on('click', 'button[data-add-to-cart]', function (e) {
     const el = $(this);
@@ -145,9 +78,12 @@ $(document).on('click', 'button[data-add-to-cart]', function (e) {
 
 const LocalStorage = require('./localStorage');
 
+const savedItems = LocalStorage.readJson('items');
+shoppingCartStore.dispatch({ type: 'RESTORE', items: savedItems });
+
 const shoppingCartModel = new Vue({
     el: '#shopping-cart-placeholder',
-    template: require('html!./templates/shop-cart.html'),
+    template: require('./templates/shop-cart.html'),
     data: {
         availableCities: Object.keys(menucard.deliveryFees),
         items: shoppingCartStore.getState().items,
@@ -215,7 +151,6 @@ const shoppingCartModel = new Vue({
             shoppingCartStore.dispatch({ type: 'REMOVE', timestamp });
         },
         duplicateOrderItem: timestamp => {
-            console.log(timestamp);
             shoppingCartStore.dispatch({ type: 'DUPLICATE', timestamp });
         },
         clear: _ => {
@@ -234,7 +169,7 @@ shoppingCartStore.subscribe(_ => {
     Vue.set(shoppingCartModel, 'items',  state.items);
 });
 
-const dishOptionsModalHtml = require('html!./templates/dish-options-modal.html');
+const dishOptionsModalHtml = require('./templates/dish-options-modal.html');
 const modal = require('./modal');
 
 const showDishOptionsModal = order => {
@@ -281,8 +216,6 @@ const showDishOptionsModal = order => {
                 model.$destroy();
             },
             addToCart: () => {
-                // shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', order: model.order });
-                // shoppingCartModel.addOrderItem(model.order);
                 shoppingCartStore.dispatch({ type: 'ADD', item: model.order });
                 modal.hide();
                 model.$destroy();
@@ -322,45 +255,10 @@ const isDeliveryClosedNow = (now = new Date()) => {
 };
 
 /*
-Events:
-- add-to-cart - directly
-- add-to-cart - extras should be chosen
-- remove from cart
-- duplicate cart item
-- reset cart
-- restore state
-- change address
-- change notes
-- extra added to order item
-- extra removed from order item
-- note added to order item
-- variant changed in order item
-- city changed
-
-Pizza kérdések:
-(- Milyen méret?)
-- Milyen extra feltétek?
-
 3-kívánság pizza:
 - Milyen alap?
 - Milyen 3 ingyenes feltét?
-
-
-Üdítő:
-- Milyen méret?
-
-Hamburger:
-- Menü vagy sem?
-- Milyen burgonya?
-- Milyen szósz?
-
-Rántott sajt:
-- Milyen burgonya?
-- Milyen szósz?
-
 */
-
-
 
 // $.ajax({
 //     url: 'https://meexpizza.firebaseio.com/orders.json',
