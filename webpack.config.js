@@ -4,6 +4,7 @@ module.exports = {
 	cache: true,
     watch: true,
     devtool: 'source-map',
+	failOnError: false,
 	entry: {
         main: './src/js/main.js',
 	},
