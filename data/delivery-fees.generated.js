@@ -2,12 +2,6 @@ module.exports = {
     "Gyöngyös": {
         "min": 1000
     },
-    "Karácsondi úti gyártelep": {
-        "min": 2000
-    },
-    "KRF Kollégium": {
-        "min": 2000
-    },
     "Abasár": {
         "fix": 800
     },

@@ -1,0 +1,58 @@
+<section id="shcart" class="card">
+    <h2 class="card-title">Shopping Cart</h2>
+
+    <div class="card-content">
+        <form class="order-form" @submit.prevent="submitOrder">
+            <p v-if="items.length === 0">A kosár még üres. Az ételeket a "Kosárba" gomb megnyomásával adhatod hozzá a rendeléshez. </p>
+
+
+            <div>
+                <div v-for="item in visibleItems">
+                    <div class="item-title">{{ item.dish.name }} <span v-if="item.variant">({{ item.variant }})</span></div>
+                    <div class="item-price">{{ item.price }} Ft</div>
+                    <div class="item-extras" v-if="item.extras && item.extras.length > 0">
+                        <div class="item-extra" v-for="extra in item.extras">
+                            <div class="item-extra-name">+ {{ extra.name }}</div>
+                            <div class="item-extra-price">{{ extra.price }} Ft</div>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button @click="duplicateOrderItem(item.timestamp)">+</button>
+                        <button @click="removeOrder(item.timestamp)">-</button>
+                        <button @click="editOrder(item.timestamp)">Szerkesztés</button>
+                    </div>
+                </div>
+                <div v-if="deliveryFee">
+                    <div class="item-title">Kiszállítási díj</div>
+                    <div class="item-price">{{ deliveryFee }} Ft</div>
+                </div>
+
+                <div v-if="totalPrice > 0">
+                    <div class="item-title">Végösszeg</div>
+                    <div class="item-price">{{ totalPrice }} Ft</div>
+                </div>
+            </div>
+
+            <label for="city">Város</label>
+            <select id="city" name="city" v-model="address.city">
+                <option value="">Válaszd ki a városod</option>
+                <option v-for="city in availableCities">{{ city }}</option>
+            </select>
+
+            <label for="name">Neved</label>
+            <input type="text" name="name" id="name" v-model="address.name">
+
+            <label for="street">Utca, házszám</label>
+            <input type="text" name="street" id="street" v-model="address.street">
+
+            <label for="phone">Telefonszámod</label>
+            <input type="text" name="phone" id="phone" v-model="address.phone">
+
+            <label for="notes">Megjegyzések</label>
+            <textarea rows="3" name="notes" id="notes" placeholder="Egyéb megjegyzés, pl. pontos helszín (belső udvar, emelet) stb." v-model="notes"></textarea>
+
+            <button type="submit">Megrendelés</button>
+        </form>
+    </div>
+</section>

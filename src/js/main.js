@@ -6,6 +6,7 @@ require('./navi').init();
 require('./social');
 require('./google-map');
 
+const Vue = require('vue');
 const page = require('page');
 const redux = require('redux');
 const flatMap = require('lodash/flatMap');
@@ -32,8 +33,11 @@ const shoppingCart = redux.createStore((state = defaultState, action) => {
     let newState = defaultState;
 
     switch(action.type) {
-        case 'ADD':
-            newState = Object.assign({}, state, { inCart: [...state.inCart, { dish: action.dish, timestamp: action.timestamp }] });
+        // case 'ADD':
+        //     newState = Object.assign({}, state, { inCart: [...state.inCart, { dish: action.dish, timestamp: action.timestamp }] });
+        //     break;
+        case 'ADD_ORDER_ITEM':
+
             break;
         case 'REMOVE':
             const inCart = state.inCart.filter(x => x.timestamp !== action.timestamp);
@@ -108,8 +112,6 @@ shoppingCart.subscribe(() => {
         $('#side-cart button.order').attr('disabled', false);
     }
 
-    console.log(state.inCart);
-
     const viewModel = {
         showEmptyMessage: state.inCart.length === 0,
         isEmpty: state.inCart.length === 0,
@@ -169,53 +171,142 @@ $(document).on('click', 'button[data-add-to-cart]', function (e) {
     const variant = el.data('variant');
     const dish = find(menucard.dishes, d => d.id === id);
 
-    // Object.keys(dish.options).map(opt => ({ name: key,   }))
-
-    const order = {
+    const orderItem = {
         dishId: id,
         variant,
         extras: [],
-        notes: '',
         timestamp: +new Date()
     };
 
+    // TODO: pizza-3-free-options
+
     if (dish.type !== 'none' || (dish.options && dish.options.length)) {
-        showDishOptionsModal(order);
+        showDishOptionsModal(orderItem);
     } else {
-        shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
+        shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', orderItem });
     }
-
-
-    /*
-    switch(dish.type) {
-        case 'pizza':
-            showPizzaModal(id, variant);
-            break;
-        case 'pizza-3-free-options':
-            showPizzaModal(id, variant, { freeOptions: 3 });
-            break;
-        case 'hamburger':
-            showHamburgerModal(id, variant);
-            break;
-        default:
-            if (dish.options && dish.options.length) {
-
-            } else {
-                shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
-            }
-    }
-    */
 });
 
+
+const LocalStorage = {
+    read: (key, defaultValue = '') => {
+        try {
+            return localStorage.getItem(key) || defaultValue;
+        } catch(ex) { return defaultValue; }
+    },
+
+    readJson: (key, defaultObject = null) => {
+        try {
+            return JSON.parse(localStorage.getItem(key)) || defaultObject;
+        } catch(ex) {
+            return defaultObject;
+        }
+    },
+
+    write: (key, value) => {
+        try {
+            localStorage.setItem(key, value);
+        } catch(ex) {}
+    },
+
+    writeJson: (key, value) => {
+        try {
+            localStorage.setItem(key, JSON.stringify(value));
+        } catch(ex) {}
+    }
+};
+
+const shoppingCartModel = new Vue({
+    el: '#shopping-cart-placeholder',
+    template: require('html!./templates/shop-cart.html'),
+    data: {
+        availableCities: Object.keys(menucard.deliveryFees),
+        items: LocalStorage.readJson('items', []),
+        address: {
+            name: LocalStorage.read('name'),
+            city: LocalStorage.read('city'),
+            street: LocalStorage.read('street'),
+            phone: LocalStorage.read('phone')
+        },
+        notes: LocalStorage.read('notes')
+    },
+
+    watch: {
+        'address.city': _ => LocalStorage.write('city', shoppingCartModel.address.city),
+        'address.name': _ => LocalStorage.write('name', shoppingCartModel.address.name),
+        'address.street': _ => LocalStorage.write('street', shoppingCartModel.address.street),
+        'address.phone': _ => LocalStorage.write('phone', shoppingCartModel.address.phone),
+        notes: _ => LocalStorage.write('notes', shoppingCartModel.notes),
+        items: _ => LocalStorage.writeJson('items', shoppingCartModel.items)
+    },
+
+    computed: {
+        visibleItems: function() {
+            return this.items.map(item => {
+                const dish = find(menucard.dishes, d => d.id === item.dishId);
+                const variant = item.variant;
+                const price = find(dish.variants, v => v.name === item.variant).price;
+                const extras = item.extras;
+                return { dish, variant, price, extras };
+            });
+        },
+        totalPrice: function() {
+            return this.items.map(item => {
+                const dish = find(menucard.dishes, d => d.id === item.dishId);
+                const variant = item.variant;
+                const price = find(dish.variants, v => v.name === item.variant).price;
+                const extras = item.extras;
+
+                return price + extras.reduce((prevSum, cur) => prevSum + cur.price, 0);
+            }).reduce((prevSum, cur) => prevSum + cur);
+        },
+        deliveryFee: _ => 800
+    },
+
+    methods: {
+        addOrderItem: item => {
+            shoppingCartModel.items.push(item);
+        },
+        removeOrderItem: id => {
+
+        },
+        duplicateOrderItem: id => {
+            let idx;
+            let itemToDuplicate;
+
+            
+
+
+            // shoppingCartModel.items.forEach((i, index) => {
+            //     console.log(i, index);
+            //     if (i.timestamp === id) {
+            //         idx = index;
+            //         itemToDuplicate = i;
+            //     }
+            // });
+
+            // console.log(idx, itemToDuplicate);
+
+            // if (idx >= 0 && itemToDuplicate) {
+            //     const newItem = Object.assign({}, itemToDuplicate, { timestamp: +new Date() });
+            //     shoppingCartModel.items.splice(idx, 0, newItem);
+            // }
+        },
+        clear: _ => {},
+
+        submitOrder: _ => {
+            console.log(shoppingCartModel.address);
+            console.log(shoppingCartModel.items);
+        }
+    }
+});
+
+const dishOptionsModalHtml = require('html!./templates/dish-options-modal.html');
+const modal = require('./modal');
+
 const showDishOptionsModal = order => {
-    const Vue = require('vue');
-    const html = require('html!./templates/dish-options-modal.html');
-    const modal = require('./modal');
-
     const dish = find(menucard.dishes, d => d.id === order.dishId);
-
-    const m = modal.show(html);
-
+    const m = modal.show(dishOptionsModalHtml);
     const model = new Vue({
         el: m.el,
         data: {
@@ -257,19 +348,78 @@ const showDishOptionsModal = order => {
                 model.$destroy();
             },
             addToCart: () => {
-                console.log(model.order);
                 shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', order: model.order });
+                shoppingCartModel.addOrderItem(model.order);
                 modal.hide();
                 model.$destroy();
             }
         }
     });
-
 };
 
 
 const dayOfWeek = new Date().getDay() || 7;
 $(`.opening-hours dd:nth-of-type(${dayOfWeek}), .opening-hours dt:nth-of-type(${dayOfWeek})`).css({ fontWeight: 700 });
+
+const isDeliveryClosedNow = (now = new Date()) => {
+    const day = now.getDay();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+
+    const openingHours = [
+        [1030, 2030], // Sunday
+        [11030, 12130], // Monday
+        [21030, 22130],
+        [31030, 32130],
+        [41030, 42130],
+        [51030, 52230],
+        [61030, 62230]
+    ];
+
+    const num = day * 10000 + hours * 100 + minutes;
+
+    for (let day of openingHours) {
+        if (num >= day[0] && num <= day[1]) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+
+
+// Vue.component('preorder-warning', {
+//     template: '<p x-v-if="!closed">Éttermünk jelenleg zárva van. Kiszállítást csak a következő nyitás után tudunk vállalni.</p>',
+//     computed: { closed: isDeliveryClosedNow }
+// });
+
+
+// var MyComponent = Vue.extend({
+//     template: '<div>A custom component!</div>'
+// });
+//
+// Vue.component('preorder-warning', MyComponent);
+//
+// new Vue({
+//   el: 'body'
+// })
+
+
+// setTimeout(() => {
+//
+// Vue.component('preorder-warning', {
+//   template: '<div>A custom component!</div>'
+// });
+// }, 2000);
+
+// setInterval(_ => {
+//
+//
+//
+// }, 1000);
+
+// console.log(isDeliveryClosedNow(new Date(2016, 1, 26, 22, 31)));
 
 /*
 Events:

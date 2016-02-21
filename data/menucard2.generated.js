@@ -1499,12 +1499,6 @@ module.exports = {
         "Gyöngyös": {
             "min": 1000
         },
-        "Karácsondi úti gyártelep": {
-            "min": 2000
-        },
-        "KRF Kollégium": {
-            "min": 2000
-        },
         "Abasár": {
             "fix": 800
         },
@@ -1533,5 +1527,5 @@ module.exports = {
             "fix": 1000
         }
     },
-    "version": "48fef07fd0f94830c087df8e37f78f6e"
+    "version": "41884ba888dc34dbd2bb3444e5105c08"
 };

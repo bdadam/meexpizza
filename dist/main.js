@@ -46,8 +46,6 @@
 
 	'use strict';
 	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-	
 	__webpack_require__(1).polyfill();
 	__webpack_require__(2);
 	__webpack_require__(3);
@@ -56,20 +54,21 @@
 	__webpack_require__(6);
 	__webpack_require__(7);
 	
-	var page = __webpack_require__(8);
-	var redux = __webpack_require__(12);
-	var flatMap = __webpack_require__(21);
-	var find = __webpack_require__(109);
+	var Vue = __webpack_require__(8);
+	var page = __webpack_require__(9);
+	var redux = __webpack_require__(13);
+	var flatMap = __webpack_require__(22);
+	var find = __webpack_require__(110);
 	var $ = __webpack_require__(5);
 	
-	var tracking = __webpack_require__(117);
+	var tracking = __webpack_require__(118);
 	
 	page(function (context, next) {
 	    tracking.pageview();
 	    next();
 	});
 	
-	var menucard = __webpack_require__(118);
+	var menucard = __webpack_require__(119);
 	
 	var defaultState = {
 	    inCart: [],
@@ -85,8 +84,11 @@
 	    var newState = defaultState;
 	
 	    switch (action.type) {
-	        case 'ADD':
-	            newState = Object.assign({}, state, { inCart: [].concat(_toConsumableArray(state.inCart), [{ dish: action.dish, timestamp: action.timestamp }]) });
+	        // case 'ADD':
+	        //     newState = Object.assign({}, state, { inCart: [...state.inCart, { dish: action.dish, timestamp: action.timestamp }] });
+	        //     break;
+	        case 'ADD_ORDER_ITEM':
+	
 	            break;
 	        case 'REMOVE':
 	            var inCart = state.inCart.filter(function (x) {
@@ -161,8 +163,6 @@
 	        $('#side-cart button.order').attr('disabled', false);
 	    }
 	
-	    console.log(state.inCart);
-	
 	    var viewModel = {
 	        showEmptyMessage: state.inCart.length === 0,
 	        isEmpty: state.inCart.length === 0,
@@ -186,7 +186,7 @@
 	    viewModel.minTotalNotReached = viewModel.total < viewModel.minForFreeDelivery;
 	    viewModel.showMinForFreeDeliveryMessage = state.inCart.length > 0 && viewModel.minTotalNotReached;
 	
-	    var tpl = __webpack_require__(119);
+	    var tpl = __webpack_require__(120);
 	    $('.cart-calculation').html(tpl(viewModel));
 	});
 	
@@ -229,53 +229,170 @@
 	        return d.id === id;
 	    });
 	
-	    // Object.keys(dish.options).map(opt => ({ name: key,   }))
-	
-	    var order = {
+	    var orderItem = {
 	        dishId: id,
 	        variant: variant,
 	        extras: [],
-	        notes: '',
 	        timestamp: +new Date()
 	    };
 	
-	    if (dish.type !== 'none' || dish.options && dish.options.length) {
-	        showDishOptionsModal(order);
-	    } else {
-	        shoppingCart.dispatch({ type: 'ADD', dish: { id: id, variant: variant }, timestamp: +new Date() });
-	    }
+	    // TODO: pizza-3-free-options
 	
-	    /*
-	    switch(dish.type) {
-	        case 'pizza':
-	            showPizzaModal(id, variant);
-	            break;
-	        case 'pizza-3-free-options':
-	            showPizzaModal(id, variant, { freeOptions: 3 });
-	            break;
-	        case 'hamburger':
-	            showHamburgerModal(id, variant);
-	            break;
-	        default:
-	            if (dish.options && dish.options.length) {
-	              } else {
-	                shoppingCart.dispatch({ type: 'ADD', dish: { id, variant }, timestamp: +new Date() });
-	            }
+	    if (dish.type !== 'none' || dish.options && dish.options.length) {
+	        showDishOptionsModal(orderItem);
+	    } else {
+	        shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', orderItem: orderItem });
 	    }
-	    */
 	});
 	
-	var showDishOptionsModal = function showDishOptionsModal(order) {
-	    var Vue = __webpack_require__(123);
-	    var html = __webpack_require__(124);
-	    var modal = __webpack_require__(125);
+	var LocalStorage = {
+	    read: function read(key) {
+	        var defaultValue = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
 	
+	        try {
+	            return localStorage.getItem(key) || defaultValue;
+	        } catch (ex) {
+	            return defaultValue;
+	        }
+	    },
+	
+	    readJson: function readJson(key) {
+	        var defaultObject = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+	
+	        try {
+	            return JSON.parse(localStorage.getItem(key)) || defaultObject;
+	        } catch (ex) {
+	            return defaultObject;
+	        }
+	    },
+	
+	    write: function write(key, value) {
+	        try {
+	            localStorage.setItem(key, value);
+	        } catch (ex) {}
+	    },
+	
+	    writeJson: function writeJson(key, value) {
+	        try {
+	            localStorage.setItem(key, JSON.stringify(value));
+	        } catch (ex) {}
+	    }
+	};
+	
+	var shoppingCartModel = new Vue({
+	    el: '#shopping-cart-placeholder',
+	    template: __webpack_require__(124),
+	    data: {
+	        availableCities: Object.keys(menucard.deliveryFees),
+	        items: LocalStorage.readJson('items', []),
+	        address: {
+	            name: LocalStorage.read('name'),
+	            city: LocalStorage.read('city'),
+	            street: LocalStorage.read('street'),
+	            phone: LocalStorage.read('phone')
+	        },
+	        notes: LocalStorage.read('notes')
+	    },
+	
+	    watch: {
+	        'address.city': function addressCity(_) {
+	            return LocalStorage.write('city', shoppingCartModel.address.city);
+	        },
+	        'address.name': function addressName(_) {
+	            return LocalStorage.write('name', shoppingCartModel.address.name);
+	        },
+	        'address.street': function addressStreet(_) {
+	            return LocalStorage.write('street', shoppingCartModel.address.street);
+	        },
+	        'address.phone': function addressPhone(_) {
+	            return LocalStorage.write('phone', shoppingCartModel.address.phone);
+	        },
+	        notes: function notes(_) {
+	            return LocalStorage.write('notes', shoppingCartModel.notes);
+	        },
+	        items: function items(_) {
+	            return LocalStorage.writeJson('items', shoppingCartModel.items);
+	        }
+	    },
+	
+	    computed: {
+	        visibleItems: function visibleItems() {
+	            return this.items.map(function (item) {
+	                var dish = find(menucard.dishes, function (d) {
+	                    return d.id === item.dishId;
+	                });
+	                var variant = item.variant;
+	                var price = find(dish.variants, function (v) {
+	                    return v.name === item.variant;
+	                }).price;
+	                var extras = item.extras;
+	                return { dish: dish, variant: variant, price: price, extras: extras };
+	            });
+	        },
+	        totalPrice: function totalPrice() {
+	            return this.items.map(function (item) {
+	                var dish = find(menucard.dishes, function (d) {
+	                    return d.id === item.dishId;
+	                });
+	                var variant = item.variant;
+	                var price = find(dish.variants, function (v) {
+	                    return v.name === item.variant;
+	                }).price;
+	                var extras = item.extras;
+	
+	                return price + extras.reduce(function (prevSum, cur) {
+	                    return prevSum + cur.price;
+	                }, 0);
+	            }).reduce(function (prevSum, cur) {
+	                return prevSum + cur;
+	            });
+	        },
+	        deliveryFee: function deliveryFee(_) {
+	            return 800;
+	        }
+	    },
+	
+	    methods: {
+	        addOrderItem: function addOrderItem(item) {
+	            shoppingCartModel.items.push(item);
+	        },
+	        removeOrderItem: function removeOrderItem(id) {},
+	        duplicateOrderItem: function duplicateOrderItem(id) {
+	            var idx = undefined;
+	            var itemToDuplicate = undefined;
+	
+	            // shoppingCartModel.items.forEach((i, index) => {
+	            //     console.log(i, index);
+	            //     if (i.timestamp === id) {
+	            //         idx = index;
+	            //         itemToDuplicate = i;
+	            //     }
+	            // });
+	
+	            // console.log(idx, itemToDuplicate);
+	
+	            // if (idx >= 0 && itemToDuplicate) {
+	            //     const newItem = Object.assign({}, itemToDuplicate, { timestamp: +new Date() });
+	            //     shoppingCartModel.items.splice(idx, 0, newItem);
+	            // }
+	        },
+	        clear: function clear(_) {},
+	
+	        submitOrder: function submitOrder(_) {
+	            console.log(shoppingCartModel.address);
+	            console.log(shoppingCartModel.items);
+	        }
+	    }
+	});
+	
+	var dishOptionsModalHtml = __webpack_require__(125);
+	var modal = __webpack_require__(126);
+	
+	var showDishOptionsModal = function showDishOptionsModal(order) {
 	    var dish = find(menucard.dishes, function (d) {
 	        return d.id === order.dishId;
 	    });
-	
-	    var m = modal.show(html);
-	
+	    var m = modal.show(dishOptionsModalHtml);
 	    var model = new Vue({
 	        el: m.el,
 	        data: {
@@ -325,8 +442,8 @@
 	                model.$destroy();
 	            },
 	            addToCart: function addToCart() {
-	                console.log(model.order);
 	                shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', order: model.order });
+	                shoppingCartModel.addOrderItem(model.order);
 	                modal.hide();
 	                model.$destroy();
 	            }
@@ -337,6 +454,79 @@
 	var dayOfWeek = new Date().getDay() || 7;
 	$('.opening-hours dd:nth-of-type(' + dayOfWeek + '), .opening-hours dt:nth-of-type(' + dayOfWeek + ')').css({ fontWeight: 700 });
 	
+	var isDeliveryClosedNow = function isDeliveryClosedNow() {
+	    var now = arguments.length <= 0 || arguments[0] === undefined ? new Date() : arguments[0];
+	
+	    var day = now.getDay();
+	    var hours = now.getHours();
+	    var minutes = now.getMinutes();
+	
+	    var openingHours = [[1030, 2030], // Sunday
+	    [11030, 12130], // Monday
+	    [21030, 22130], [31030, 32130], [41030, 42130], [51030, 52230], [61030, 62230]];
+	
+	    var num = day * 10000 + hours * 100 + minutes;
+	
+	    var _iteratorNormalCompletion = true;
+	    var _didIteratorError = false;
+	    var _iteratorError = undefined;
+	
+	    try {
+	        for (var _iterator = openingHours[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            var _day = _step.value;
+	
+	            if (num >= _day[0] && num <= _day[1]) {
+	                return false;
+	            }
+	        }
+	    } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	    } finally {
+	        try {
+	            if (!_iteratorNormalCompletion && _iterator.return) {
+	                _iterator.return();
+	            }
+	        } finally {
+	            if (_didIteratorError) {
+	                throw _iteratorError;
+	            }
+	        }
+	    }
+	
+	    return true;
+	};
+	
+	// Vue.component('preorder-warning', {
+	//     template: '<p x-v-if="!closed">Éttermünk jelenleg zárva van. Kiszállítást csak a következő nyitás után tudunk vállalni.</p>',
+	//     computed: { closed: isDeliveryClosedNow }
+	// });
+
+	// var MyComponent = Vue.extend({
+	//     template: '<div>A custom component!</div>'
+	// });
+	//
+	// Vue.component('preorder-warning', MyComponent);
+	//
+	// new Vue({
+	//   el: 'body'
+	// })
+
+	// setTimeout(() => {
+	//
+	// Vue.component('preorder-warning', {
+	//   template: '<div>A custom component!</div>'
+	// });
+	// }, 2000);
+
+	// setInterval(_ => {
+	//
+	//
+	//
+	// }, 1000);
+
+	// console.log(isDeliveryClosedNow(new Date(2016, 1, 26, 22, 31)));
+
 	/*
 	Events:
 	- add-to-cart - directly
@@ -11153,6956 +11343,6 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {  /* globals require, module */
-	
-	  'use strict';
-	
-	  /**
-	   * Module dependencies.
-	   */
-	
-	  var pathtoRegexp = __webpack_require__(10);
-	
-	  /**
-	   * Module exports.
-	   */
-	
-	  module.exports = page;
-	
-	  /**
-	   * Detect click event
-	   */
-	  var clickEvent = ('undefined' !== typeof document) && document.ontouchstart ? 'touchstart' : 'click';
-	
-	  /**
-	   * To work properly with the URL
-	   * history.location generated polyfill in https://github.com/devote/HTML5-History-API
-	   */
-	
-	  var location = ('undefined' !== typeof window) && (window.history.location || window.location);
-	
-	  /**
-	   * Perform initial dispatch.
-	   */
-	
-	  var dispatch = true;
-	
-	
-	  /**
-	   * Decode URL components (query string, pathname, hash).
-	   * Accommodates both regular percent encoding and x-www-form-urlencoded format.
-	   */
-	  var decodeURLComponents = true;
-	
-	  /**
-	   * Base path.
-	   */
-	
-	  var base = '';
-	
-	  /**
-	   * Running flag.
-	   */
-	
-	  var running;
-	
-	  /**
-	   * HashBang option
-	   */
-	
-	  var hashbang = false;
-	
-	  /**
-	   * Previous context, for capturing
-	   * page exit events.
-	   */
-	
-	  var prevContext;
-	
-	  /**
-	   * Register `path` with callback `fn()`,
-	   * or route `path`, or redirection,
-	   * or `page.start()`.
-	   *
-	   *   page(fn);
-	   *   page('*', fn);
-	   *   page('/user/:id', load, user);
-	   *   page('/user/' + user.id, { some: 'thing' });
-	   *   page('/user/' + user.id);
-	   *   page('/from', '/to')
-	   *   page();
-	   *
-	   * @param {String|Function} path
-	   * @param {Function} fn...
-	   * @api public
-	   */
-	
-	  function page(path, fn) {
-	    // <callback>
-	    if ('function' === typeof path) {
-	      return page('*', path);
-	    }
-	
-	    // route <path> to <callback ...>
-	    if ('function' === typeof fn) {
-	      var route = new Route(path);
-	      for (var i = 1; i < arguments.length; ++i) {
-	        page.callbacks.push(route.middleware(arguments[i]));
-	      }
-	      // show <path> with [state]
-	    } else if ('string' === typeof path) {
-	      page['string' === typeof fn ? 'redirect' : 'show'](path, fn);
-	      // start [options]
-	    } else {
-	      page.start(path);
-	    }
-	  }
-	
-	  /**
-	   * Callback functions.
-	   */
-	
-	  page.callbacks = [];
-	  page.exits = [];
-	
-	  /**
-	   * Current path being processed
-	   * @type {String}
-	   */
-	  page.current = '';
-	
-	  /**
-	   * Number of pages navigated to.
-	   * @type {number}
-	   *
-	   *     page.len == 0;
-	   *     page('/login');
-	   *     page.len == 1;
-	   */
-	
-	  page.len = 0;
-	
-	  /**
-	   * Get or set basepath to `path`.
-	   *
-	   * @param {String} path
-	   * @api public
-	   */
-	
-	  page.base = function(path) {
-	    if (0 === arguments.length) return base;
-	    base = path;
-	  };
-	
-	  /**
-	   * Bind with the given `options`.
-	   *
-	   * Options:
-	   *
-	   *    - `click` bind to click events [true]
-	   *    - `popstate` bind to popstate [true]
-	   *    - `dispatch` perform initial dispatch [true]
-	   *
-	   * @param {Object} options
-	   * @api public
-	   */
-	
-	  page.start = function(options) {
-	    options = options || {};
-	    if (running) return;
-	    running = true;
-	    if (false === options.dispatch) dispatch = false;
-	    if (false === options.decodeURLComponents) decodeURLComponents = false;
-	    if (false !== options.popstate) window.addEventListener('popstate', onpopstate, false);
-	    if (false !== options.click) {
-	      document.addEventListener(clickEvent, onclick, false);
-	    }
-	    if (true === options.hashbang) hashbang = true;
-	    if (!dispatch) return;
-	    var url = (hashbang && ~location.hash.indexOf('#!')) ? location.hash.substr(2) + location.search : location.pathname + location.search + location.hash;
-	    page.replace(url, null, true, dispatch);
-	  };
-	
-	  /**
-	   * Unbind click and popstate event handlers.
-	   *
-	   * @api public
-	   */
-	
-	  page.stop = function() {
-	    if (!running) return;
-	    page.current = '';
-	    page.len = 0;
-	    running = false;
-	    document.removeEventListener(clickEvent, onclick, false);
-	    window.removeEventListener('popstate', onpopstate, false);
-	  };
-	
-	  /**
-	   * Show `path` with optional `state` object.
-	   *
-	   * @param {String} path
-	   * @param {Object} state
-	   * @param {Boolean} dispatch
-	   * @return {Context}
-	   * @api public
-	   */
-	
-	  page.show = function(path, state, dispatch, push) {
-	    var ctx = new Context(path, state);
-	    page.current = ctx.path;
-	    if (false !== dispatch) page.dispatch(ctx);
-	    if (false !== ctx.handled && false !== push) ctx.pushState();
-	    return ctx;
-	  };
-	
-	  /**
-	   * Goes back in the history
-	   * Back should always let the current route push state and then go back.
-	   *
-	   * @param {String} path - fallback path to go back if no more history exists, if undefined defaults to page.base
-	   * @param {Object} [state]
-	   * @api public
-	   */
-	
-	  page.back = function(path, state) {
-	    if (page.len > 0) {
-	      // this may need more testing to see if all browsers
-	      // wait for the next tick to go back in history
-	      history.back();
-	      page.len--;
-	    } else if (path) {
-	      setTimeout(function() {
-	        page.show(path, state);
-	      });
-	    }else{
-	      setTimeout(function() {
-	        page.show(base, state);
-	      });
-	    }
-	  };
-	
-	
-	  /**
-	   * Register route to redirect from one path to other
-	   * or just redirect to another route
-	   *
-	   * @param {String} from - if param 'to' is undefined redirects to 'from'
-	   * @param {String} [to]
-	   * @api public
-	   */
-	  page.redirect = function(from, to) {
-	    // Define route from a path to another
-	    if ('string' === typeof from && 'string' === typeof to) {
-	      page(from, function(e) {
-	        setTimeout(function() {
-	          page.replace(to);
-	        }, 0);
-	      });
-	    }
-	
-	    // Wait for the push state and replace it with another
-	    if ('string' === typeof from && 'undefined' === typeof to) {
-	      setTimeout(function() {
-	        page.replace(from);
-	      }, 0);
-	    }
-	  };
-	
-	  /**
-	   * Replace `path` with optional `state` object.
-	   *
-	   * @param {String} path
-	   * @param {Object} state
-	   * @return {Context}
-	   * @api public
-	   */
-	
-	
-	  page.replace = function(path, state, init, dispatch) {
-	    var ctx = new Context(path, state);
-	    page.current = ctx.path;
-	    ctx.init = init;
-	    ctx.save(); // save before dispatching, which may redirect
-	    if (false !== dispatch) page.dispatch(ctx);
-	    return ctx;
-	  };
-	
-	  /**
-	   * Dispatch the given `ctx`.
-	   *
-	   * @param {Object} ctx
-	   * @api private
-	   */
-	
-	  page.dispatch = function(ctx) {
-	    var prev = prevContext,
-	      i = 0,
-	      j = 0;
-	
-	    prevContext = ctx;
-	
-	    function nextExit() {
-	      var fn = page.exits[j++];
-	      if (!fn) return nextEnter();
-	      fn(prev, nextExit);
-	    }
-	
-	    function nextEnter() {
-	      var fn = page.callbacks[i++];
-	
-	      if (ctx.path !== page.current) {
-	        ctx.handled = false;
-	        return;
-	      }
-	      if (!fn) return unhandled(ctx);
-	      fn(ctx, nextEnter);
-	    }
-	
-	    if (prev) {
-	      nextExit();
-	    } else {
-	      nextEnter();
-	    }
-	  };
-	
-	  /**
-	   * Unhandled `ctx`. When it's not the initial
-	   * popstate then redirect. If you wish to handle
-	   * 404s on your own use `page('*', callback)`.
-	   *
-	   * @param {Context} ctx
-	   * @api private
-	   */
-	
-	  function unhandled(ctx) {
-	    if (ctx.handled) return;
-	    var current;
-	
-	    if (hashbang) {
-	      current = base + location.hash.replace('#!', '');
-	    } else {
-	      current = location.pathname + location.search;
-	    }
-	
-	    if (current === ctx.canonicalPath) return;
-	    page.stop();
-	    ctx.handled = false;
-	    location.href = ctx.canonicalPath;
-	  }
-	
-	  /**
-	   * Register an exit route on `path` with
-	   * callback `fn()`, which will be called
-	   * on the previous context when a new
-	   * page is visited.
-	   */
-	  page.exit = function(path, fn) {
-	    if (typeof path === 'function') {
-	      return page.exit('*', path);
-	    }
-	
-	    var route = new Route(path);
-	    for (var i = 1; i < arguments.length; ++i) {
-	      page.exits.push(route.middleware(arguments[i]));
-	    }
-	  };
-	
-	  /**
-	   * Remove URL encoding from the given `str`.
-	   * Accommodates whitespace in both x-www-form-urlencoded
-	   * and regular percent-encoded form.
-	   *
-	   * @param {str} URL component to decode
-	   */
-	  function decodeURLEncodedURIComponent(val) {
-	    if (typeof val !== 'string') { return val; }
-	    return decodeURLComponents ? decodeURIComponent(val.replace(/\+/g, ' ')) : val;
-	  }
-	
-	  /**
-	   * Initialize a new "request" `Context`
-	   * with the given `path` and optional initial `state`.
-	   *
-	   * @param {String} path
-	   * @param {Object} state
-	   * @api public
-	   */
-	
-	  function Context(path, state) {
-	    if ('/' === path[0] && 0 !== path.indexOf(base)) path = base + (hashbang ? '#!' : '') + path;
-	    var i = path.indexOf('?');
-	
-	    this.canonicalPath = path;
-	    this.path = path.replace(base, '') || '/';
-	    if (hashbang) this.path = this.path.replace('#!', '') || '/';
-	
-	    this.title = document.title;
-	    this.state = state || {};
-	    this.state.path = path;
-	    this.querystring = ~i ? decodeURLEncodedURIComponent(path.slice(i + 1)) : '';
-	    this.pathname = decodeURLEncodedURIComponent(~i ? path.slice(0, i) : path);
-	    this.params = {};
-	
-	    // fragment
-	    this.hash = '';
-	    if (!hashbang) {
-	      if (!~this.path.indexOf('#')) return;
-	      var parts = this.path.split('#');
-	      this.path = parts[0];
-	      this.hash = decodeURLEncodedURIComponent(parts[1]) || '';
-	      this.querystring = this.querystring.split('#')[0];
-	    }
-	  }
-	
-	  /**
-	   * Expose `Context`.
-	   */
-	
-	  page.Context = Context;
-	
-	  /**
-	   * Push state.
-	   *
-	   * @api private
-	   */
-	
-	  Context.prototype.pushState = function() {
-	    page.len++;
-	    history.pushState(this.state, this.title, hashbang && this.path !== '/' ? '#!' + this.path : this.canonicalPath);
-	  };
-	
-	  /**
-	   * Save the context state.
-	   *
-	   * @api public
-	   */
-	
-	  Context.prototype.save = function() {
-	    history.replaceState(this.state, this.title, hashbang && this.path !== '/' ? '#!' + this.path : this.canonicalPath);
-	  };
-	
-	  /**
-	   * Initialize `Route` with the given HTTP `path`,
-	   * and an array of `callbacks` and `options`.
-	   *
-	   * Options:
-	   *
-	   *   - `sensitive`    enable case-sensitive routes
-	   *   - `strict`       enable strict matching for trailing slashes
-	   *
-	   * @param {String} path
-	   * @param {Object} options.
-	   * @api private
-	   */
-	
-	  function Route(path, options) {
-	    options = options || {};
-	    this.path = (path === '*') ? '(.*)' : path;
-	    this.method = 'GET';
-	    this.regexp = pathtoRegexp(this.path,
-	      this.keys = [],
-	      options.sensitive,
-	      options.strict);
-	  }
-	
-	  /**
-	   * Expose `Route`.
-	   */
-	
-	  page.Route = Route;
-	
-	  /**
-	   * Return route middleware with
-	   * the given callback `fn()`.
-	   *
-	   * @param {Function} fn
-	   * @return {Function}
-	   * @api public
-	   */
-	
-	  Route.prototype.middleware = function(fn) {
-	    var self = this;
-	    return function(ctx, next) {
-	      if (self.match(ctx.path, ctx.params)) return fn(ctx, next);
-	      next();
-	    };
-	  };
-	
-	  /**
-	   * Check if this route matches `path`, if so
-	   * populate `params`.
-	   *
-	   * @param {String} path
-	   * @param {Object} params
-	   * @return {Boolean}
-	   * @api private
-	   */
-	
-	  Route.prototype.match = function(path, params) {
-	    var keys = this.keys,
-	      qsIndex = path.indexOf('?'),
-	      pathname = ~qsIndex ? path.slice(0, qsIndex) : path,
-	      m = this.regexp.exec(decodeURIComponent(pathname));
-	
-	    if (!m) return false;
-	
-	    for (var i = 1, len = m.length; i < len; ++i) {
-	      var key = keys[i - 1];
-	      var val = decodeURLEncodedURIComponent(m[i]);
-	      if (val !== undefined || !(hasOwnProperty.call(params, key.name))) {
-	        params[key.name] = val;
-	      }
-	    }
-	
-	    return true;
-	  };
-	
-	
-	  /**
-	   * Handle "populate" events.
-	   */
-	
-	  var onpopstate = (function () {
-	    var loaded = false;
-	    if ('undefined' === typeof window) {
-	      return;
-	    }
-	    if (document.readyState === 'complete') {
-	      loaded = true;
-	    } else {
-	      window.addEventListener('load', function() {
-	        setTimeout(function() {
-	          loaded = true;
-	        }, 0);
-	      });
-	    }
-	    return function onpopstate(e) {
-	      if (!loaded) return;
-	      if (e.state) {
-	        var path = e.state.path;
-	        page.replace(path, e.state);
-	      } else {
-	        page.show(location.pathname + location.hash, undefined, undefined, false);
-	      }
-	    };
-	  })();
-	  /**
-	   * Handle "click" events.
-	   */
-	
-	  function onclick(e) {
-	
-	    if (1 !== which(e)) return;
-	
-	    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
-	    if (e.defaultPrevented) return;
-	
-	
-	
-	    // ensure link
-	    var el = e.target;
-	    while (el && 'A' !== el.nodeName) el = el.parentNode;
-	    if (!el || 'A' !== el.nodeName) return;
-	
-	
-	
-	    // Ignore if tag has
-	    // 1. "download" attribute
-	    // 2. rel="external" attribute
-	    if (el.hasAttribute('download') || el.getAttribute('rel') === 'external') return;
-	
-	    // ensure non-hash for the same path
-	    var link = el.getAttribute('href');
-	    if (!hashbang && el.pathname === location.pathname && (el.hash || '#' === link)) return;
-	
-	
-	
-	    // Check for mailto: in the href
-	    if (link && link.indexOf('mailto:') > -1) return;
-	
-	    // check target
-	    if (el.target) return;
-	
-	    // x-origin
-	    if (!sameOrigin(el.href)) return;
-	
-	
-	
-	    // rebuild path
-	    var path = el.pathname + el.search + (el.hash || '');
-	
-	    // strip leading "/[drive letter]:" on NW.js on Windows
-	    if (typeof process !== 'undefined' && path.match(/^\/[a-zA-Z]:\//)) {
-	      path = path.replace(/^\/[a-zA-Z]:\//, '/');
-	    }
-	
-	    // same page
-	    var orig = path;
-	
-	    if (path.indexOf(base) === 0) {
-	      path = path.substr(base.length);
-	    }
-	
-	    if (hashbang) path = path.replace('#!', '');
-	
-	    if (base && orig === path) return;
-	
-	    e.preventDefault();
-	    page.show(orig);
-	  }
-	
-	  /**
-	   * Event button.
-	   */
-	
-	  function which(e) {
-	    e = e || window.event;
-	    return null === e.which ? e.button : e.which;
-	  }
-	
-	  /**
-	   * Check if `href` is the same origin.
-	   */
-	
-	  function sameOrigin(href) {
-	    var origin = location.protocol + '//' + location.hostname;
-	    if (location.port) origin += ':' + location.port;
-	    return (href && (0 === href.indexOf(origin)));
-	  }
-	
-	  page.sameOrigin = sameOrigin;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ },
-/* 9 */
-/***/ function(module, exports) {
-
-	// shim for using process in browser
-	
-	var process = module.exports = {};
-	var queue = [];
-	var draining = false;
-	var currentQueue;
-	var queueIndex = -1;
-	
-	function cleanUpNextTick() {
-	    draining = false;
-	    if (currentQueue.length) {
-	        queue = currentQueue.concat(queue);
-	    } else {
-	        queueIndex = -1;
-	    }
-	    if (queue.length) {
-	        drainQueue();
-	    }
-	}
-	
-	function drainQueue() {
-	    if (draining) {
-	        return;
-	    }
-	    var timeout = setTimeout(cleanUpNextTick);
-	    draining = true;
-	
-	    var len = queue.length;
-	    while(len) {
-	        currentQueue = queue;
-	        queue = [];
-	        while (++queueIndex < len) {
-	            if (currentQueue) {
-	                currentQueue[queueIndex].run();
-	            }
-	        }
-	        queueIndex = -1;
-	        len = queue.length;
-	    }
-	    currentQueue = null;
-	    draining = false;
-	    clearTimeout(timeout);
-	}
-	
-	process.nextTick = function (fun) {
-	    var args = new Array(arguments.length - 1);
-	    if (arguments.length > 1) {
-	        for (var i = 1; i < arguments.length; i++) {
-	            args[i - 1] = arguments[i];
-	        }
-	    }
-	    queue.push(new Item(fun, args));
-	    if (queue.length === 1 && !draining) {
-	        setTimeout(drainQueue, 0);
-	    }
-	};
-	
-	// v8 likes predictible objects
-	function Item(fun, array) {
-	    this.fun = fun;
-	    this.array = array;
-	}
-	Item.prototype.run = function () {
-	    this.fun.apply(null, this.array);
-	};
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-	process.version = ''; // empty string to avoid regexp issues
-	process.versions = {};
-	
-	function noop() {}
-	
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-	
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	};
-	
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-	process.umask = function() { return 0; };
-
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isarray = __webpack_require__(11)
-	
-	/**
-	 * Expose `pathToRegexp`.
-	 */
-	module.exports = pathToRegexp
-	module.exports.parse = parse
-	module.exports.compile = compile
-	module.exports.tokensToFunction = tokensToFunction
-	module.exports.tokensToRegExp = tokensToRegExp
-	
-	/**
-	 * The main path matching regexp utility.
-	 *
-	 * @type {RegExp}
-	 */
-	var PATH_REGEXP = new RegExp([
-	  // Match escaped characters that would otherwise appear in future matches.
-	  // This allows the user to escape special characters that won't transform.
-	  '(\\\\.)',
-	  // Match Express-style parameters and un-named parameters with a prefix
-	  // and optional suffixes. Matches appear as:
-	  //
-	  // "/:test(\\d+)?" => ["/", "test", "\d+", undefined, "?", undefined]
-	  // "/route(\\d+)"  => [undefined, undefined, undefined, "\d+", undefined, undefined]
-	  // "/*"            => ["/", undefined, undefined, undefined, undefined, "*"]
-	  '([\\/.])?(?:(?:\\:(\\w+)(?:\\(((?:\\\\.|[^()])+)\\))?|\\(((?:\\\\.|[^()])+)\\))([+*?])?|(\\*))'
-	].join('|'), 'g')
-	
-	/**
-	 * Parse a string for the raw tokens.
-	 *
-	 * @param  {String} str
-	 * @return {Array}
-	 */
-	function parse (str) {
-	  var tokens = []
-	  var key = 0
-	  var index = 0
-	  var path = ''
-	  var res
-	
-	  while ((res = PATH_REGEXP.exec(str)) != null) {
-	    var m = res[0]
-	    var escaped = res[1]
-	    var offset = res.index
-	    path += str.slice(index, offset)
-	    index = offset + m.length
-	
-	    // Ignore already escaped sequences.
-	    if (escaped) {
-	      path += escaped[1]
-	      continue
-	    }
-	
-	    // Push the current path onto the tokens.
-	    if (path) {
-	      tokens.push(path)
-	      path = ''
-	    }
-	
-	    var prefix = res[2]
-	    var name = res[3]
-	    var capture = res[4]
-	    var group = res[5]
-	    var suffix = res[6]
-	    var asterisk = res[7]
-	
-	    var repeat = suffix === '+' || suffix === '*'
-	    var optional = suffix === '?' || suffix === '*'
-	    var delimiter = prefix || '/'
-	    var pattern = capture || group || (asterisk ? '.*' : '[^' + delimiter + ']+?')
-	
-	    tokens.push({
-	      name: name || key++,
-	      prefix: prefix || '',
-	      delimiter: delimiter,
-	      optional: optional,
-	      repeat: repeat,
-	      pattern: escapeGroup(pattern)
-	    })
-	  }
-	
-	  // Match any characters still remaining.
-	  if (index < str.length) {
-	    path += str.substr(index)
-	  }
-	
-	  // If the path exists, push it onto the end.
-	  if (path) {
-	    tokens.push(path)
-	  }
-	
-	  return tokens
-	}
-	
-	/**
-	 * Compile a string to a template function for the path.
-	 *
-	 * @param  {String}   str
-	 * @return {Function}
-	 */
-	function compile (str) {
-	  return tokensToFunction(parse(str))
-	}
-	
-	/**
-	 * Expose a method for transforming tokens into the path function.
-	 */
-	function tokensToFunction (tokens) {
-	  // Compile all the tokens into regexps.
-	  var matches = new Array(tokens.length)
-	
-	  // Compile all the patterns before compilation.
-	  for (var i = 0; i < tokens.length; i++) {
-	    if (typeof tokens[i] === 'object') {
-	      matches[i] = new RegExp('^' + tokens[i].pattern + '$')
-	    }
-	  }
-	
-	  return function (obj) {
-	    var path = ''
-	    var data = obj || {}
-	
-	    for (var i = 0; i < tokens.length; i++) {
-	      var token = tokens[i]
-	
-	      if (typeof token === 'string') {
-	        path += token
-	
-	        continue
-	      }
-	
-	      var value = data[token.name]
-	      var segment
-	
-	      if (value == null) {
-	        if (token.optional) {
-	          continue
-	        } else {
-	          throw new TypeError('Expected "' + token.name + '" to be defined')
-	        }
-	      }
-	
-	      if (isarray(value)) {
-	        if (!token.repeat) {
-	          throw new TypeError('Expected "' + token.name + '" to not repeat, but received "' + value + '"')
-	        }
-	
-	        if (value.length === 0) {
-	          if (token.optional) {
-	            continue
-	          } else {
-	            throw new TypeError('Expected "' + token.name + '" to not be empty')
-	          }
-	        }
-	
-	        for (var j = 0; j < value.length; j++) {
-	          segment = encodeURIComponent(value[j])
-	
-	          if (!matches[i].test(segment)) {
-	            throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
-	          }
-	
-	          path += (j === 0 ? token.prefix : token.delimiter) + segment
-	        }
-	
-	        continue
-	      }
-	
-	      segment = encodeURIComponent(value)
-	
-	      if (!matches[i].test(segment)) {
-	        throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
-	      }
-	
-	      path += token.prefix + segment
-	    }
-	
-	    return path
-	  }
-	}
-	
-	/**
-	 * Escape a regular expression string.
-	 *
-	 * @param  {String} str
-	 * @return {String}
-	 */
-	function escapeString (str) {
-	  return str.replace(/([.+*?=^!:${}()[\]|\/])/g, '\\$1')
-	}
-	
-	/**
-	 * Escape the capturing group by escaping special characters and meaning.
-	 *
-	 * @param  {String} group
-	 * @return {String}
-	 */
-	function escapeGroup (group) {
-	  return group.replace(/([=!:$\/()])/g, '\\$1')
-	}
-	
-	/**
-	 * Attach the keys as a property of the regexp.
-	 *
-	 * @param  {RegExp} re
-	 * @param  {Array}  keys
-	 * @return {RegExp}
-	 */
-	function attachKeys (re, keys) {
-	  re.keys = keys
-	  return re
-	}
-	
-	/**
-	 * Get the flags for a regexp from the options.
-	 *
-	 * @param  {Object} options
-	 * @return {String}
-	 */
-	function flags (options) {
-	  return options.sensitive ? '' : 'i'
-	}
-	
-	/**
-	 * Pull out keys from a regexp.
-	 *
-	 * @param  {RegExp} path
-	 * @param  {Array}  keys
-	 * @return {RegExp}
-	 */
-	function regexpToRegexp (path, keys) {
-	  // Use a negative lookahead to match only capturing groups.
-	  var groups = path.source.match(/\((?!\?)/g)
-	
-	  if (groups) {
-	    for (var i = 0; i < groups.length; i++) {
-	      keys.push({
-	        name: i,
-	        prefix: null,
-	        delimiter: null,
-	        optional: false,
-	        repeat: false,
-	        pattern: null
-	      })
-	    }
-	  }
-	
-	  return attachKeys(path, keys)
-	}
-	
-	/**
-	 * Transform an array into a regexp.
-	 *
-	 * @param  {Array}  path
-	 * @param  {Array}  keys
-	 * @param  {Object} options
-	 * @return {RegExp}
-	 */
-	function arrayToRegexp (path, keys, options) {
-	  var parts = []
-	
-	  for (var i = 0; i < path.length; i++) {
-	    parts.push(pathToRegexp(path[i], keys, options).source)
-	  }
-	
-	  var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options))
-	
-	  return attachKeys(regexp, keys)
-	}
-	
-	/**
-	 * Create a path regexp from string input.
-	 *
-	 * @param  {String} path
-	 * @param  {Array}  keys
-	 * @param  {Object} options
-	 * @return {RegExp}
-	 */
-	function stringToRegexp (path, keys, options) {
-	  var tokens = parse(path)
-	  var re = tokensToRegExp(tokens, options)
-	
-	  // Attach keys back to the regexp.
-	  for (var i = 0; i < tokens.length; i++) {
-	    if (typeof tokens[i] !== 'string') {
-	      keys.push(tokens[i])
-	    }
-	  }
-	
-	  return attachKeys(re, keys)
-	}
-	
-	/**
-	 * Expose a function for taking tokens and returning a RegExp.
-	 *
-	 * @param  {Array}  tokens
-	 * @param  {Array}  keys
-	 * @param  {Object} options
-	 * @return {RegExp}
-	 */
-	function tokensToRegExp (tokens, options) {
-	  options = options || {}
-	
-	  var strict = options.strict
-	  var end = options.end !== false
-	  var route = ''
-	  var lastToken = tokens[tokens.length - 1]
-	  var endsWithSlash = typeof lastToken === 'string' && /\/$/.test(lastToken)
-	
-	  // Iterate over the tokens and create our regexp string.
-	  for (var i = 0; i < tokens.length; i++) {
-	    var token = tokens[i]
-	
-	    if (typeof token === 'string') {
-	      route += escapeString(token)
-	    } else {
-	      var prefix = escapeString(token.prefix)
-	      var capture = token.pattern
-	
-	      if (token.repeat) {
-	        capture += '(?:' + prefix + capture + ')*'
-	      }
-	
-	      if (token.optional) {
-	        if (prefix) {
-	          capture = '(?:' + prefix + '(' + capture + '))?'
-	        } else {
-	          capture = '(' + capture + ')?'
-	        }
-	      } else {
-	        capture = prefix + '(' + capture + ')'
-	      }
-	
-	      route += capture
-	    }
-	  }
-	
-	  // In non-strict mode we allow a slash at the end of match. If the path to
-	  // match already ends with a slash, we remove it for consistency. The slash
-	  // is valid at the end of a path match, not in the middle. This is important
-	  // in non-ending mode, where "/test/" shouldn't match "/test//route".
-	  if (!strict) {
-	    route = (endsWithSlash ? route.slice(0, -2) : route) + '(?:\\/(?=$))?'
-	  }
-	
-	  if (end) {
-	    route += '$'
-	  } else {
-	    // In non-ending mode, we need the capturing groups to match as much as
-	    // possible by using a positive lookahead to the end or next path segment.
-	    route += strict && endsWithSlash ? '' : '(?=\\/|$)'
-	  }
-	
-	  return new RegExp('^' + route, flags(options))
-	}
-	
-	/**
-	 * Normalize the given path string, returning a regular expression.
-	 *
-	 * An empty array can be passed in for the keys, which will hold the
-	 * placeholder key descriptions. For example, using `/user/:id`, `keys` will
-	 * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
-	 *
-	 * @param  {(String|RegExp|Array)} path
-	 * @param  {Array}                 [keys]
-	 * @param  {Object}                [options]
-	 * @return {RegExp}
-	 */
-	function pathToRegexp (path, keys, options) {
-	  keys = keys || []
-	
-	  if (!isarray(keys)) {
-	    options = keys
-	    keys = []
-	  } else if (!options) {
-	    options = {}
-	  }
-	
-	  if (path instanceof RegExp) {
-	    return regexpToRegexp(path, keys, options)
-	  }
-	
-	  if (isarray(path)) {
-	    return arrayToRegexp(path, keys, options)
-	  }
-	
-	  return stringToRegexp(path, keys, options)
-	}
-
-
-/***/ },
-/* 11 */
-/***/ function(module, exports) {
-
-	module.exports = Array.isArray || function (arr) {
-	  return Object.prototype.toString.call(arr) == '[object Array]';
-	};
-
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	exports.__esModule = true;
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	var _createStore = __webpack_require__(13);
-	
-	var _createStore2 = _interopRequireDefault(_createStore);
-	
-	var _combineReducers = __webpack_require__(15);
-	
-	var _combineReducers2 = _interopRequireDefault(_combineReducers);
-	
-	var _bindActionCreators = __webpack_require__(18);
-	
-	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
-	
-	var _applyMiddleware = __webpack_require__(19);
-	
-	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
-	
-	var _compose = __webpack_require__(20);
-	
-	var _compose2 = _interopRequireDefault(_compose);
-	
-	/*
-	* This is a dummy function to check if the function name has been altered by minification.
-	* If the function has been minified and NODE_ENV !== 'production', warn the user.
-	*/
-	function isCrushed() {}
-	
-	if (isCrushed.name !== 'isCrushed' && ("production") !== 'production') {
-	  /*eslint-disable no-console */
-	  console.error('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
-	  /*eslint-enable */
-	}
-	
-	exports.createStore = _createStore2['default'];
-	exports.combineReducers = _combineReducers2['default'];
-	exports.bindActionCreators = _bindActionCreators2['default'];
-	exports.applyMiddleware = _applyMiddleware2['default'];
-	exports.compose = _compose2['default'];
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	exports.__esModule = true;
-	exports['default'] = createStore;
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	var _utilsIsPlainObject = __webpack_require__(14);
-	
-	var _utilsIsPlainObject2 = _interopRequireDefault(_utilsIsPlainObject);
-	
-	/**
-	 * These are private action types reserved by Redux.
-	 * For any unknown actions, you must return the current state.
-	 * If the current state is undefined, you must return the initial state.
-	 * Do not reference these action types directly in your code.
-	 */
-	var ActionTypes = {
-	  INIT: '@@redux/INIT'
-	};
-	
-	exports.ActionTypes = ActionTypes;
-	/**
-	 * Creates a Redux store that holds the state tree.
-	 * The only way to change the data in the store is to call `dispatch()` on it.
-	 *
-	 * There should only be a single store in your app. To specify how different
-	 * parts of the state tree respond to actions, you may combine several reducers
-	 * into a single reducer function by using `combineReducers`.
-	 *
-	 * @param {Function} reducer A function that returns the next state tree, given
-	 * the current state tree and the action to handle.
-	 *
-	 * @param {any} [initialState] The initial state. You may optionally specify it
-	 * to hydrate the state from the server in universal apps, or to restore a
-	 * previously serialized user session.
-	 * If you use `combineReducers` to produce the root reducer function, this must be
-	 * an object with the same shape as `combineReducers` keys.
-	 *
-	 * @returns {Store} A Redux store that lets you read the state, dispatch actions
-	 * and subscribe to changes.
-	 */
-	
-	function createStore(reducer, initialState) {
-	  if (typeof reducer !== 'function') {
-	    throw new Error('Expected the reducer to be a function.');
-	  }
-	
-	  var currentReducer = reducer;
-	  var currentState = initialState;
-	  var listeners = [];
-	  var isDispatching = false;
-	
-	  /**
-	   * Reads the state tree managed by the store.
-	   *
-	   * @returns {any} The current state tree of your application.
-	   */
-	  function getState() {
-	    return currentState;
-	  }
-	
-	  /**
-	   * Adds a change listener. It will be called any time an action is dispatched,
-	   * and some part of the state tree may potentially have changed. You may then
-	   * call `getState()` to read the current state tree inside the callback.
-	   *
-	   * @param {Function} listener A callback to be invoked on every dispatch.
-	   * @returns {Function} A function to remove this change listener.
-	   */
-	  function subscribe(listener) {
-	    listeners.push(listener);
-	    var isSubscribed = true;
-	
-	    return function unsubscribe() {
-	      if (!isSubscribed) {
-	        return;
-	      }
-	
-	      isSubscribed = false;
-	      var index = listeners.indexOf(listener);
-	      listeners.splice(index, 1);
-	    };
-	  }
-	
-	  /**
-	   * Dispatches an action. It is the only way to trigger a state change.
-	   *
-	   * The `reducer` function, used to create the store, will be called with the
-	   * current state tree and the given `action`. Its return value will
-	   * be considered the **next** state of the tree, and the change listeners
-	   * will be notified.
-	   *
-	   * The base implementation only supports plain object actions. If you want to
-	   * dispatch a Promise, an Observable, a thunk, or something else, you need to
-	   * wrap your store creating function into the corresponding middleware. For
-	   * example, see the documentation for the `redux-thunk` package. Even the
-	   * middleware will eventually dispatch plain object actions using this method.
-	   *
-	   * @param {Object} action A plain object representing “what changed”. It is
-	   * a good idea to keep actions serializable so you can record and replay user
-	   * sessions, or use the time travelling `redux-devtools`. An action must have
-	   * a `type` property which may not be `undefined`. It is a good idea to use
-	   * string constants for action types.
-	   *
-	   * @returns {Object} For convenience, the same action object you dispatched.
-	   *
-	   * Note that, if you use a custom middleware, it may wrap `dispatch()` to
-	   * return something else (for example, a Promise you can await).
-	   */
-	  function dispatch(action) {
-	    if (!_utilsIsPlainObject2['default'](action)) {
-	      throw new Error('Actions must be plain objects. ' + 'Use custom middleware for async actions.');
-	    }
-	
-	    if (typeof action.type === 'undefined') {
-	      throw new Error('Actions may not have an undefined "type" property. ' + 'Have you misspelled a constant?');
-	    }
-	
-	    if (isDispatching) {
-	      throw new Error('Reducers may not dispatch actions.');
-	    }
-	
-	    try {
-	      isDispatching = true;
-	      currentState = currentReducer(currentState, action);
-	    } finally {
-	      isDispatching = false;
-	    }
-	
-	    listeners.slice().forEach(function (listener) {
-	      return listener();
-	    });
-	    return action;
-	  }
-	
-	  /**
-	   * Replaces the reducer currently used by the store to calculate the state.
-	   *
-	   * You might need this if your app implements code splitting and you want to
-	   * load some of the reducers dynamically. You might also need this if you
-	   * implement a hot reloading mechanism for Redux.
-	   *
-	   * @param {Function} nextReducer The reducer for the store to use instead.
-	   * @returns {void}
-	   */
-	  function replaceReducer(nextReducer) {
-	    currentReducer = nextReducer;
-	    dispatch({ type: ActionTypes.INIT });
-	  }
-	
-	  // When a store is created, an "INIT" action is dispatched so that every
-	  // reducer returns their initial state. This effectively populates
-	  // the initial state tree.
-	  dispatch({ type: ActionTypes.INIT });
-	
-	  return {
-	    dispatch: dispatch,
-	    subscribe: subscribe,
-	    getState: getState,
-	    replaceReducer: replaceReducer
-	  };
-	}
-
-/***/ },
-/* 14 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	exports.__esModule = true;
-	exports['default'] = isPlainObject;
-	var fnToString = function fnToString(fn) {
-	  return Function.prototype.toString.call(fn);
-	};
-	var objStringValue = fnToString(Object);
-	
-	/**
-	 * @param {any} obj The object to inspect.
-	 * @returns {boolean} True if the argument appears to be a plain object.
-	 */
-	
-	function isPlainObject(obj) {
-	  if (!obj || typeof obj !== 'object') {
-	    return false;
-	  }
-	
-	  var proto = typeof obj.constructor === 'function' ? Object.getPrototypeOf(obj) : Object.prototype;
-	
-	  if (proto === null) {
-	    return true;
-	  }
-	
-	  var constructor = proto.constructor;
-	
-	  return typeof constructor === 'function' && constructor instanceof constructor && fnToString(constructor) === objStringValue;
-	}
-	
-	module.exports = exports['default'];
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	exports.__esModule = true;
-	exports['default'] = combineReducers;
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	var _createStore = __webpack_require__(13);
-	
-	var _utilsIsPlainObject = __webpack_require__(14);
-	
-	var _utilsIsPlainObject2 = _interopRequireDefault(_utilsIsPlainObject);
-	
-	var _utilsMapValues = __webpack_require__(16);
-	
-	var _utilsMapValues2 = _interopRequireDefault(_utilsMapValues);
-	
-	var _utilsPick = __webpack_require__(17);
-	
-	var _utilsPick2 = _interopRequireDefault(_utilsPick);
-	
-	/* eslint-disable no-console */
-	
-	function getUndefinedStateErrorMessage(key, action) {
-	  var actionType = action && action.type;
-	  var actionName = actionType && '"' + actionType.toString() + '"' || 'an action';
-	
-	  return 'Reducer "' + key + '" returned undefined handling ' + actionName + '. ' + 'To ignore an action, you must explicitly return the previous state.';
-	}
-	
-	function getUnexpectedStateShapeWarningMessage(inputState, reducers, action) {
-	  var reducerKeys = Object.keys(reducers);
-	  var argumentName = action && action.type === _createStore.ActionTypes.INIT ? 'initialState argument passed to createStore' : 'previous state received by the reducer';
-	
-	  if (reducerKeys.length === 0) {
-	    return 'Store does not have a valid reducer. Make sure the argument passed ' + 'to combineReducers is an object whose values are reducers.';
-	  }
-	
-	  if (!_utilsIsPlainObject2['default'](inputState)) {
-	    return 'The ' + argumentName + ' has unexpected type of "' + ({}).toString.call(inputState).match(/\s([a-z|A-Z]+)/)[1] + '". Expected argument to be an object with the following ' + ('keys: "' + reducerKeys.join('", "') + '"');
-	  }
-	
-	  var unexpectedKeys = Object.keys(inputState).filter(function (key) {
-	    return !reducers.hasOwnProperty(key);
-	  });
-	
-	  if (unexpectedKeys.length > 0) {
-	    return 'Unexpected ' + (unexpectedKeys.length > 1 ? 'keys' : 'key') + ' ' + ('"' + unexpectedKeys.join('", "') + '" found in ' + argumentName + '. ') + 'Expected to find one of the known reducer keys instead: ' + ('"' + reducerKeys.join('", "') + '". Unexpected keys will be ignored.');
-	  }
-	}
-	
-	function assertReducerSanity(reducers) {
-	  Object.keys(reducers).forEach(function (key) {
-	    var reducer = reducers[key];
-	    var initialState = reducer(undefined, { type: _createStore.ActionTypes.INIT });
-	
-	    if (typeof initialState === 'undefined') {
-	      throw new Error('Reducer "' + key + '" returned undefined during initialization. ' + 'If the state passed to the reducer is undefined, you must ' + 'explicitly return the initial state. The initial state may ' + 'not be undefined.');
-	    }
-	
-	    var type = '@@redux/PROBE_UNKNOWN_ACTION_' + Math.random().toString(36).substring(7).split('').join('.');
-	    if (typeof reducer(undefined, { type: type }) === 'undefined') {
-	      throw new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + ('Don\'t try to handle ' + _createStore.ActionTypes.INIT + ' or other actions in "redux/*" ') + 'namespace. They are considered private. Instead, you must return the ' + 'current state for any unknown actions, unless it is undefined, ' + 'in which case you must return the initial state, regardless of the ' + 'action type. The initial state may not be undefined.');
-	    }
-	  });
-	}
-	
-	/**
-	 * Turns an object whose values are different reducer functions, into a single
-	 * reducer function. It will call every child reducer, and gather their results
-	 * into a single state object, whose keys correspond to the keys of the passed
-	 * reducer functions.
-	 *
-	 * @param {Object} reducers An object whose values correspond to different
-	 * reducer functions that need to be combined into one. One handy way to obtain
-	 * it is to use ES6 `import * as reducers` syntax. The reducers may never return
-	 * undefined for any action. Instead, they should return their initial state
-	 * if the state passed to them was undefined, and the current state for any
-	 * unrecognized action.
-	 *
-	 * @returns {Function} A reducer function that invokes every reducer inside the
-	 * passed object, and builds a state object with the same shape.
-	 */
-	
-	function combineReducers(reducers) {
-	  var finalReducers = _utilsPick2['default'](reducers, function (val) {
-	    return typeof val === 'function';
-	  });
-	  var sanityError;
-	
-	  try {
-	    assertReducerSanity(finalReducers);
-	  } catch (e) {
-	    sanityError = e;
-	  }
-	
-	  return function combination(state, action) {
-	    if (state === undefined) state = {};
-	
-	    if (sanityError) {
-	      throw sanityError;
-	    }
-	
-	    if (false) {
-	      var warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action);
-	      if (warningMessage) {
-	        console.error(warningMessage);
-	      }
-	    }
-	
-	    var hasChanged = false;
-	    var finalState = _utilsMapValues2['default'](finalReducers, function (reducer, key) {
-	      var previousStateForKey = state[key];
-	      var nextStateForKey = reducer(previousStateForKey, action);
-	      if (typeof nextStateForKey === 'undefined') {
-	        var errorMessage = getUndefinedStateErrorMessage(key, action);
-	        throw new Error(errorMessage);
-	      }
-	      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
-	      return nextStateForKey;
-	    });
-	
-	    return hasChanged ? finalState : state;
-	  };
-	}
-	
-	module.exports = exports['default'];
-
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
-	/**
-	 * Applies a function to every key-value pair inside an object.
-	 *
-	 * @param {Object} obj The source object.
-	 * @param {Function} fn The mapper function that receives the value and the key.
-	 * @returns {Object} A new object that contains the mapped values for the keys.
-	 */
-	"use strict";
-	
-	exports.__esModule = true;
-	exports["default"] = mapValues;
-	
-	function mapValues(obj, fn) {
-	  return Object.keys(obj).reduce(function (result, key) {
-	    result[key] = fn(obj[key], key);
-	    return result;
-	  }, {});
-	}
-	
-	module.exports = exports["default"];
-
-/***/ },
-/* 17 */
-/***/ function(module, exports) {
-
-	/**
-	 * Picks key-value pairs from an object where values satisfy a predicate.
-	 *
-	 * @param {Object} obj The object to pick from.
-	 * @param {Function} fn The predicate the values must satisfy to be copied.
-	 * @returns {Object} The object with the values that satisfied the predicate.
-	 */
-	"use strict";
-	
-	exports.__esModule = true;
-	exports["default"] = pick;
-	
-	function pick(obj, fn) {
-	  return Object.keys(obj).reduce(function (result, key) {
-	    if (fn(obj[key])) {
-	      result[key] = obj[key];
-	    }
-	    return result;
-	  }, {});
-	}
-	
-	module.exports = exports["default"];
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	exports.__esModule = true;
-	exports['default'] = bindActionCreators;
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	var _utilsMapValues = __webpack_require__(16);
-	
-	var _utilsMapValues2 = _interopRequireDefault(_utilsMapValues);
-	
-	function bindActionCreator(actionCreator, dispatch) {
-	  return function () {
-	    return dispatch(actionCreator.apply(undefined, arguments));
-	  };
-	}
-	
-	/**
-	 * Turns an object whose values are action creators, into an object with the
-	 * same keys, but with every function wrapped into a `dispatch` call so they
-	 * may be invoked directly. This is just a convenience method, as you can call
-	 * `store.dispatch(MyActionCreators.doSomething())` yourself just fine.
-	 *
-	 * For convenience, you can also pass a single function as the first argument,
-	 * and get a function in return.
-	 *
-	 * @param {Function|Object} actionCreators An object whose values are action
-	 * creator functions. One handy way to obtain it is to use ES6 `import * as`
-	 * syntax. You may also pass a single function.
-	 *
-	 * @param {Function} dispatch The `dispatch` function available on your Redux
-	 * store.
-	 *
-	 * @returns {Function|Object} The object mimicking the original object, but with
-	 * every action creator wrapped into the `dispatch` call. If you passed a
-	 * function as `actionCreators`, the return value will also be a single
-	 * function.
-	 */
-	
-	function bindActionCreators(actionCreators, dispatch) {
-	  if (typeof actionCreators === 'function') {
-	    return bindActionCreator(actionCreators, dispatch);
-	  }
-	
-	  if (typeof actionCreators !== 'object' || actionCreators === null || actionCreators === undefined) {
-	    throw new Error('bindActionCreators expected an object or a function, instead received ' + (actionCreators === null ? 'null' : typeof actionCreators) + '. ' + 'Did you write "import ActionCreators from" instead of "import * as ActionCreators from"?');
-	  }
-	
-	  return _utilsMapValues2['default'](actionCreators, function (actionCreator) {
-	    return bindActionCreator(actionCreator, dispatch);
-	  });
-	}
-	
-	module.exports = exports['default'];
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	exports.__esModule = true;
-	
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-	
-	exports['default'] = applyMiddleware;
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	var _compose = __webpack_require__(20);
-	
-	var _compose2 = _interopRequireDefault(_compose);
-	
-	/**
-	 * Creates a store enhancer that applies middleware to the dispatch method
-	 * of the Redux store. This is handy for a variety of tasks, such as expressing
-	 * asynchronous actions in a concise manner, or logging every action payload.
-	 *
-	 * See `redux-thunk` package as an example of the Redux middleware.
-	 *
-	 * Because middleware is potentially asynchronous, this should be the first
-	 * store enhancer in the composition chain.
-	 *
-	 * Note that each middleware will be given the `dispatch` and `getState` functions
-	 * as named arguments.
-	 *
-	 * @param {...Function} middlewares The middleware chain to be applied.
-	 * @returns {Function} A store enhancer applying the middleware.
-	 */
-	
-	function applyMiddleware() {
-	  for (var _len = arguments.length, middlewares = Array(_len), _key = 0; _key < _len; _key++) {
-	    middlewares[_key] = arguments[_key];
-	  }
-	
-	  return function (next) {
-	    return function (reducer, initialState) {
-	      var store = next(reducer, initialState);
-	      var _dispatch = store.dispatch;
-	      var chain = [];
-	
-	      var middlewareAPI = {
-	        getState: store.getState,
-	        dispatch: function dispatch(action) {
-	          return _dispatch(action);
-	        }
-	      };
-	      chain = middlewares.map(function (middleware) {
-	        return middleware(middlewareAPI);
-	      });
-	      _dispatch = _compose2['default'].apply(undefined, chain)(store.dispatch);
-	
-	      return _extends({}, store, {
-	        dispatch: _dispatch
-	      });
-	    };
-	  };
-	}
-	
-	module.exports = exports['default'];
-
-/***/ },
-/* 20 */
-/***/ function(module, exports) {
-
-	/**
-	 * Composes single-argument functions from right to left.
-	 *
-	 * @param {...Function} funcs The functions to compose.
-	 * @returns {Function} A function obtained by composing functions from right to
-	 * left. For example, compose(f, g, h) is identical to arg => f(g(h(arg))).
-	 */
-	"use strict";
-	
-	exports.__esModule = true;
-	exports["default"] = compose;
-	
-	function compose() {
-	  for (var _len = arguments.length, funcs = Array(_len), _key = 0; _key < _len; _key++) {
-	    funcs[_key] = arguments[_key];
-	  }
-	
-	  return function () {
-	    if (funcs.length === 0) {
-	      return arguments[0];
-	    }
-	
-	    var last = funcs[funcs.length - 1];
-	    var rest = funcs.slice(0, -1);
-	
-	    return rest.reduceRight(function (composed, f) {
-	      return f(composed);
-	    }, last.apply(undefined, arguments));
-	  };
-	}
-	
-	module.exports = exports["default"];
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var arrayMap = __webpack_require__(22),
-	    baseFlatten = __webpack_require__(23),
-	    baseIteratee = __webpack_require__(35);
-	
-	/**
-	 * Creates an array of flattened values by running each element in `array`
-	 * through `iteratee` and concating its result to the other mapped values.
-	 * The iteratee is invoked with three arguments: (value, index|key, array).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Array
-	 * @param {Array} array The array to iterate over.
-	 * @param {Function|Object|string} [iteratee=_.identity] The function invoked per iteration.
-	 * @returns {Array} Returns the new array.
-	 * @example
-	 *
-	 * function duplicate(n) {
-	 *   return [n, n];
-	 * }
-	 *
-	 * _.flatMap([1, 2], duplicate);
-	 * // => [1, 1, 2, 2]
-	 */
-	function flatMap(array, iteratee) {
-	  var length = array ? array.length : 0;
-	  return length ? baseFlatten(arrayMap(array, baseIteratee(iteratee, 3))) : [];
-	}
-	
-	module.exports = flatMap;
-
-
-/***/ },
-/* 22 */
-/***/ function(module, exports) {
-
-	/**
-	 * A specialized version of `_.map` for arrays without support for iteratee
-	 * shorthands.
-	 *
-	 * @private
-	 * @param {Array} array The array to iterate over.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Array} Returns the new mapped array.
-	 */
-	function arrayMap(array, iteratee) {
-	  var index = -1,
-	      length = array.length,
-	      result = Array(length);
-	
-	  while (++index < length) {
-	    result[index] = iteratee(array[index], index, array);
-	  }
-	  return result;
-	}
-	
-	module.exports = arrayMap;
-
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var arrayPush = __webpack_require__(24),
-	    isArguments = __webpack_require__(25),
-	    isArray = __webpack_require__(34),
-	    isArrayLikeObject = __webpack_require__(26);
-	
-	/**
-	 * The base implementation of `_.flatten` with support for restricting flattening.
-	 *
-	 * @private
-	 * @param {Array} array The array to flatten.
-	 * @param {boolean} [isDeep] Specify a deep flatten.
-	 * @param {boolean} [isStrict] Restrict flattening to arrays-like objects.
-	 * @param {Array} [result=[]] The initial result value.
-	 * @returns {Array} Returns the new flattened array.
-	 */
-	function baseFlatten(array, isDeep, isStrict, result) {
-	  result || (result = []);
-	
-	  var index = -1,
-	      length = array.length;
-	
-	  while (++index < length) {
-	    var value = array[index];
-	    if (isArrayLikeObject(value) &&
-	        (isStrict || isArray(value) || isArguments(value))) {
-	      if (isDeep) {
-	        // Recursively flatten arrays (susceptible to call stack limits).
-	        baseFlatten(value, isDeep, isStrict, result);
-	      } else {
-	        arrayPush(result, value);
-	      }
-	    } else if (!isStrict) {
-	      result[result.length] = value;
-	    }
-	  }
-	  return result;
-	}
-	
-	module.exports = baseFlatten;
-
-
-/***/ },
-/* 24 */
-/***/ function(module, exports) {
-
-	/**
-	 * Appends the elements of `values` to `array`.
-	 *
-	 * @private
-	 * @param {Array} array The array to modify.
-	 * @param {Array} values The values to append.
-	 * @returns {Array} Returns `array`.
-	 */
-	function arrayPush(array, values) {
-	  var index = -1,
-	      length = values.length,
-	      offset = array.length;
-	
-	  while (++index < length) {
-	    array[offset + index] = values[index];
-	  }
-	  return array;
-	}
-	
-	module.exports = arrayPush;
-
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var isArrayLikeObject = __webpack_require__(26);
-	
-	/** `Object#toString` result references. */
-	var argsTag = '[object Arguments]';
-	
-	/** Used for built-in method references. */
-	var objectProto = global.Object.prototype;
-	
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-	
-	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var objectToString = objectProto.toString;
-	
-	/** Built-in value references. */
-	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-	
-	/**
-	 * Checks if `value` is likely an `arguments` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
-	 * @example
-	 *
-	 * _.isArguments(function() { return arguments; }());
-	 * // => true
-	 *
-	 * _.isArguments([1, 2, 3]);
-	 * // => false
-	 */
-	function isArguments(value) {
-	  // Safari 8.1 incorrectly makes `arguments.callee` enumerable in strict mode.
-	  return isArrayLikeObject(value) && hasOwnProperty.call(value, 'callee') &&
-	    (!propertyIsEnumerable.call(value, 'callee') || objectToString.call(value) == argsTag);
-	}
-	
-	module.exports = isArguments;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isArrayLike = __webpack_require__(27),
-	    isObjectLike = __webpack_require__(33);
-	
-	/**
-	 * This method is like `_.isArrayLike` except that it also checks if `value`
-	 * is an object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @type Function
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an array-like object, else `false`.
-	 * @example
-	 *
-	 * _.isArrayLikeObject([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArrayLikeObject(document.body.children);
-	 * // => true
-	 *
-	 * _.isArrayLikeObject('abc');
-	 * // => false
-	 *
-	 * _.isArrayLikeObject(_.noop);
-	 * // => false
-	 */
-	function isArrayLikeObject(value) {
-	  return isObjectLike(value) && isArrayLike(value);
-	}
-	
-	module.exports = isArrayLikeObject;
-
-
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var getLength = __webpack_require__(28),
-	    isFunction = __webpack_require__(30),
-	    isLength = __webpack_require__(32);
-	
-	/**
-	 * Checks if `value` is array-like. A value is considered array-like if it's
-	 * not a function and has a `value.length` that's an integer greater than or
-	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @type Function
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
-	 * @example
-	 *
-	 * _.isArrayLike([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArrayLike(document.body.children);
-	 * // => true
-	 *
-	 * _.isArrayLike('abc');
-	 * // => true
-	 *
-	 * _.isArrayLike(_.noop);
-	 * // => false
-	 */
-	function isArrayLike(value) {
-	  return value != null &&
-	    !(typeof value == 'function' && isFunction(value)) && isLength(getLength(value));
-	}
-	
-	module.exports = isArrayLike;
-
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseProperty = __webpack_require__(29);
-	
-	/**
-	 * Gets the "length" property value of `object`.
-	 *
-	 * **Note:** This function is used to avoid a [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792)
-	 * that affects Safari on at least iOS 8.1-8.3 ARM64.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {*} Returns the "length" value.
-	 */
-	var getLength = baseProperty('length');
-	
-	module.exports = getLength;
-
-
-/***/ },
-/* 29 */
-/***/ function(module, exports) {
-
-	/**
-	 * The base implementation of `_.property` without support for deep paths.
-	 *
-	 * @private
-	 * @param {string} key The key of the property to get.
-	 * @returns {Function} Returns the new function.
-	 */
-	function baseProperty(key) {
-	  return function(object) {
-	    return object == null ? undefined : object[key];
-	  };
-	}
-	
-	module.exports = baseProperty;
-
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var isObject = __webpack_require__(31);
-	
-	/** `Object#toString` result references. */
-	var funcTag = '[object Function]',
-	    genTag = '[object GeneratorFunction]';
-	
-	/** Used for built-in method references. */
-	var objectProto = global.Object.prototype;
-	
-	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var objectToString = objectProto.toString;
-	
-	/**
-	 * Checks if `value` is classified as a `Function` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
-	 * @example
-	 *
-	 * _.isFunction(_);
-	 * // => true
-	 *
-	 * _.isFunction(/abc/);
-	 * // => false
-	 */
-	function isFunction(value) {
-	  // The use of `Object#toString` avoids issues with the `typeof` operator
-	  // in Safari 8 which returns 'object' for typed array constructors, and
-	  // PhantomJS 1.9 which returns 'function' for `NodeList` instances.
-	  var tag = isObject(value) ? objectToString.call(value) : '';
-	  return tag == funcTag || tag == genTag;
-	}
-	
-	module.exports = isFunction;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 31 */
-/***/ function(module, exports) {
-
-	/**
-	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
-	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
-	 * @example
-	 *
-	 * _.isObject({});
-	 * // => true
-	 *
-	 * _.isObject([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObject(_.noop);
-	 * // => true
-	 *
-	 * _.isObject(null);
-	 * // => false
-	 */
-	function isObject(value) {
-	  // Avoid a V8 JIT bug in Chrome 19-20.
-	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-	  var type = typeof value;
-	  return !!value && (type == 'object' || type == 'function');
-	}
-	
-	module.exports = isObject;
-
-
-/***/ },
-/* 32 */
-/***/ function(module, exports) {
-
-	/** Used as references for various `Number` constants. */
-	var MAX_SAFE_INTEGER = 9007199254740991;
-	
-	/**
-	 * Checks if `value` is a valid array-like length.
-	 *
-	 * **Note:** This function is loosely based on [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
-	 * @example
-	 *
-	 * _.isLength(3);
-	 * // => true
-	 *
-	 * _.isLength(Number.MIN_VALUE);
-	 * // => false
-	 *
-	 * _.isLength(Infinity);
-	 * // => false
-	 *
-	 * _.isLength('3');
-	 * // => false
-	 */
-	function isLength(value) {
-	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-	}
-	
-	module.exports = isLength;
-
-
-/***/ },
-/* 33 */
-/***/ function(module, exports) {
-
-	/**
-	 * Checks if `value` is object-like. A value is object-like if it's not `null`
-	 * and has a `typeof` result of "object".
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-	 * @example
-	 *
-	 * _.isObjectLike({});
-	 * // => true
-	 *
-	 * _.isObjectLike([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObjectLike(_.noop);
-	 * // => false
-	 *
-	 * _.isObjectLike(null);
-	 * // => false
-	 */
-	function isObjectLike(value) {
-	  return !!value && typeof value == 'object';
-	}
-	
-	module.exports = isObjectLike;
-
-
-/***/ },
-/* 34 */
-/***/ function(module, exports) {
-
-	/**
-	 * Checks if `value` is classified as an `Array` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @type Function
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
-	 * @example
-	 *
-	 * _.isArray([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArray(document.body.children);
-	 * // => false
-	 *
-	 * _.isArray('abc');
-	 * // => false
-	 *
-	 * _.isArray(_.noop);
-	 * // => false
-	 */
-	var isArray = Array.isArray;
-	
-	module.exports = isArray;
-
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseMatches = __webpack_require__(36),
-	    baseMatchesProperty = __webpack_require__(92),
-	    identity = __webpack_require__(106),
-	    isArray = __webpack_require__(34),
-	    property = __webpack_require__(107);
-	
-	/**
-	 * The base implementation of `_.iteratee`.
-	 *
-	 * @private
-	 * @param {*} [value=_.identity] The value to convert to an iteratee.
-	 * @returns {Function} Returns the iteratee.
-	 */
-	function baseIteratee(value) {
-	  var type = typeof value;
-	  if (type == 'function') {
-	    return value;
-	  }
-	  if (value == null) {
-	    return identity;
-	  }
-	  if (type == 'object') {
-	    return isArray(value)
-	      ? baseMatchesProperty(value[0], value[1])
-	      : baseMatches(value);
-	  }
-	  return property(value);
-	}
-	
-	module.exports = baseIteratee;
-
-
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseIsMatch = __webpack_require__(37),
-	    getMatchData = __webpack_require__(88);
-	
-	/**
-	 * The base implementation of `_.matches` which doesn't clone `source`.
-	 *
-	 * @private
-	 * @param {Object} source The object of property values to match.
-	 * @returns {Function} Returns the new function.
-	 */
-	function baseMatches(source) {
-	  var matchData = getMatchData(source);
-	  if (matchData.length == 1 && matchData[0][2]) {
-	    var key = matchData[0][0],
-	        value = matchData[0][1];
-	
-	    return function(object) {
-	      if (object == null) {
-	        return false;
-	      }
-	      return object[key] === value &&
-	        (value !== undefined || (key in Object(object)));
-	    };
-	  }
-	  return function(object) {
-	    return object === source || baseIsMatch(object, source, matchData);
-	  };
-	}
-	
-	module.exports = baseMatches;
-
-
-/***/ },
-/* 37 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Stack = __webpack_require__(38),
-	    baseIsEqual = __webpack_require__(67);
-	
-	/** Used to compose bitmasks for comparison styles. */
-	var UNORDERED_COMPARE_FLAG = 1,
-	    PARTIAL_COMPARE_FLAG = 2;
-	
-	/**
-	 * The base implementation of `_.isMatch` without support for iteratee shorthands.
-	 *
-	 * @private
-	 * @param {Object} object The object to inspect.
-	 * @param {Object} source The object of property values to match.
-	 * @param {Array} matchData The property names, values, and compare flags to match.
-	 * @param {Function} [customizer] The function to customize comparisons.
-	 * @returns {boolean} Returns `true` if `object` is a match, else `false`.
-	 */
-	function baseIsMatch(object, source, matchData, customizer) {
-	  var index = matchData.length,
-	      length = index,
-	      noCustomizer = !customizer;
-	
-	  if (object == null) {
-	    return !length;
-	  }
-	  object = Object(object);
-	  while (index--) {
-	    var data = matchData[index];
-	    if ((noCustomizer && data[2])
-	          ? data[1] !== object[data[0]]
-	          : !(data[0] in object)
-	        ) {
-	      return false;
-	    }
-	  }
-	  while (++index < length) {
-	    data = matchData[index];
-	    var key = data[0],
-	        objValue = object[key],
-	        srcValue = data[1];
-	
-	    if (noCustomizer && data[2]) {
-	      if (objValue === undefined && !(key in object)) {
-	        return false;
-	      }
-	    } else {
-	      var stack = new Stack,
-	          result = customizer ? customizer(objValue, srcValue, key, object, source, stack) : undefined;
-	
-	      if (!(result === undefined
-	            ? baseIsEqual(srcValue, objValue, customizer, UNORDERED_COMPARE_FLAG | PARTIAL_COMPARE_FLAG, stack)
-	            : result
-	          )) {
-	        return false;
-	      }
-	    }
-	  }
-	  return true;
-	}
-	
-	module.exports = baseIsMatch;
-
-
-/***/ },
-/* 38 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var stackClear = __webpack_require__(39),
-	    stackDelete = __webpack_require__(40),
-	    stackGet = __webpack_require__(44),
-	    stackHas = __webpack_require__(46),
-	    stackSet = __webpack_require__(48);
-	
-	/**
-	 * Creates a stack cache object to store key-value pairs.
-	 *
-	 * @private
-	 * @param {Array} [values] The values to cache.
-	 */
-	function Stack(values) {
-	  var index = -1,
-	      length = values ? values.length : 0;
-	
-	  this.clear();
-	  while (++index < length) {
-	    var entry = values[index];
-	    this.set(entry[0], entry[1]);
-	  }
-	}
-	
-	// Add functions to the `Stack` cache.
-	Stack.prototype.clear = stackClear;
-	Stack.prototype['delete'] = stackDelete;
-	Stack.prototype.get = stackGet;
-	Stack.prototype.has = stackHas;
-	Stack.prototype.set = stackSet;
-	
-	module.exports = Stack;
-
-
-/***/ },
-/* 39 */
-/***/ function(module, exports) {
-
-	/**
-	 * Removes all key-value entries from the stack.
-	 *
-	 * @private
-	 * @name clear
-	 * @memberOf Stack
-	 */
-	function stackClear() {
-	  this.__data__ = { 'array': [], 'map': null };
-	}
-	
-	module.exports = stackClear;
-
-
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var assocDelete = __webpack_require__(41);
-	
-	/**
-	 * Removes `key` and its value from the stack.
-	 *
-	 * @private
-	 * @name delete
-	 * @memberOf Stack
-	 * @param {string} key The key of the value to remove.
-	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
-	 */
-	function stackDelete(key) {
-	  var data = this.__data__,
-	      array = data.array;
-	
-	  return array ? assocDelete(array, key) : data.map['delete'](key);
-	}
-	
-	module.exports = stackDelete;
-
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var assocIndexOf = __webpack_require__(42);
-	
-	/** Used for built-in method references. */
-	var arrayProto = global.Array.prototype;
-	
-	/** Built-in value references. */
-	var splice = arrayProto.splice;
-	
-	/**
-	 * Removes `key` and its value from the associative array.
-	 *
-	 * @private
-	 * @param {Array} array The array to query.
-	 * @param {string} key The key of the value to remove.
-	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
-	 */
-	function assocDelete(array, key) {
-	  var index = assocIndexOf(array, key);
-	  if (index < 0) {
-	    return false;
-	  }
-	  var lastIndex = array.length - 1;
-	  if (index == lastIndex) {
-	    array.pop();
-	  } else {
-	    splice.call(array, index, 1);
-	  }
-	  return true;
-	}
-	
-	module.exports = assocDelete;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 42 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var eq = __webpack_require__(43);
-	
-	/**
-	 * Gets the index at which the first occurrence of `key` is found in `array`
-	 * of key-value pairs.
-	 *
-	 * @private
-	 * @param {Array} array The array to search.
-	 * @param {*} key The key to search for.
-	 * @returns {number} Returns the index of the matched value, else `-1`.
-	 */
-	function assocIndexOf(array, key) {
-	  var length = array.length;
-	  while (length--) {
-	    if (eq(array[length][0], key)) {
-	      return length;
-	    }
-	  }
-	  return -1;
-	}
-	
-	module.exports = assocIndexOf;
-
-
-/***/ },
-/* 43 */
-/***/ function(module, exports) {
-
-	/**
-	 * Performs a [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
-	 * comparison between two values to determine if they are equivalent.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to compare.
-	 * @param {*} other The other value to compare.
-	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
-	 * @example
-	 *
-	 * var object = { 'user': 'fred' };
-	 * var other = { 'user': 'fred' };
-	 *
-	 * _.eq(object, object);
-	 * // => true
-	 *
-	 * _.eq(object, other);
-	 * // => false
-	 *
-	 * _.eq('a', 'a');
-	 * // => true
-	 *
-	 * _.eq('a', Object('a'));
-	 * // => false
-	 *
-	 * _.eq(NaN, NaN);
-	 * // => true
-	 */
-	function eq(value, other) {
-	  return value === other || (value !== value && other !== other);
-	}
-	
-	module.exports = eq;
-
-
-/***/ },
-/* 44 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var assocGet = __webpack_require__(45);
-	
-	/**
-	 * Gets the stack value for `key`.
-	 *
-	 * @private
-	 * @name get
-	 * @memberOf Stack
-	 * @param {string} key The key of the value to get.
-	 * @returns {*} Returns the entry value.
-	 */
-	function stackGet(key) {
-	  var data = this.__data__,
-	      array = data.array;
-	
-	  return array ? assocGet(array, key) : data.map.get(key);
-	}
-	
-	module.exports = stackGet;
-
-
-/***/ },
-/* 45 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var assocIndexOf = __webpack_require__(42);
-	
-	/**
-	 * Gets the associative array value for `key`.
-	 *
-	 * @private
-	 * @param {Array} array The array to query.
-	 * @param {string} key The key of the value to get.
-	 * @returns {*} Returns the entry value.
-	 */
-	function assocGet(array, key) {
-	  var index = assocIndexOf(array, key);
-	  return index < 0 ? undefined : array[index][1];
-	}
-	
-	module.exports = assocGet;
-
-
-/***/ },
-/* 46 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var assocHas = __webpack_require__(47);
-	
-	/**
-	 * Checks if a stack value for `key` exists.
-	 *
-	 * @private
-	 * @name has
-	 * @memberOf Stack
-	 * @param {string} key The key of the entry to check.
-	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-	 */
-	function stackHas(key) {
-	  var data = this.__data__,
-	      array = data.array;
-	
-	  return array ? assocHas(array, key) : data.map.has(key);
-	}
-	
-	module.exports = stackHas;
-
-
-/***/ },
-/* 47 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var assocIndexOf = __webpack_require__(42);
-	
-	/**
-	 * Checks if an associative array value for `key` exists.
-	 *
-	 * @private
-	 * @param {Array} array The array to query.
-	 * @param {string} key The key of the entry to check.
-	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-	 */
-	function assocHas(array, key) {
-	  return assocIndexOf(array, key) > -1;
-	}
-	
-	module.exports = assocHas;
-
-
-/***/ },
-/* 48 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var MapCache = __webpack_require__(49),
-	    assocSet = __webpack_require__(65);
-	
-	/** Used as the size to enable large array optimizations. */
-	var LARGE_ARRAY_SIZE = 200;
-	
-	/**
-	 * Sets the stack `key` to `value`.
-	 *
-	 * @private
-	 * @name set
-	 * @memberOf Stack
-	 * @param {string} key The key of the value to set.
-	 * @param {*} value The value to set.
-	 * @returns {Object} Returns the stack cache object.
-	 */
-	function stackSet(key, value) {
-	  var data = this.__data__,
-	      array = data.array;
-	
-	  if (array) {
-	    if (array.length < (LARGE_ARRAY_SIZE - 1)) {
-	      assocSet(array, key, value);
-	    } else {
-	      data.array = null;
-	      data.map = new MapCache(array);
-	    }
-	  }
-	  var map = data.map;
-	  if (map) {
-	    map.set(key, value);
-	  }
-	  return this;
-	}
-	
-	module.exports = stackSet;
-
-
-/***/ },
-/* 49 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var mapClear = __webpack_require__(50),
-	    mapDelete = __webpack_require__(57),
-	    mapGet = __webpack_require__(61),
-	    mapHas = __webpack_require__(63),
-	    mapSet = __webpack_require__(64);
-	
-	/**
-	 * Creates a map cache object to store key-value pairs.
-	 *
-	 * @private
-	 * @param {Array} [values] The values to cache.
-	 */
-	function MapCache(values) {
-	  var index = -1,
-	      length = values ? values.length : 0;
-	
-	  this.clear();
-	  while (++index < length) {
-	    var entry = values[index];
-	    this.set(entry[0], entry[1]);
-	  }
-	}
-	
-	// Add functions to the `MapCache`.
-	MapCache.prototype.clear = mapClear;
-	MapCache.prototype['delete'] = mapDelete;
-	MapCache.prototype.get = mapGet;
-	MapCache.prototype.has = mapHas;
-	MapCache.prototype.set = mapSet;
-	
-	module.exports = MapCache;
-
-
-/***/ },
-/* 50 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Hash = __webpack_require__(51),
-	    Map = __webpack_require__(56);
-	
-	/**
-	 * Removes all key-value entries from the map.
-	 *
-	 * @private
-	 * @name clear
-	 * @memberOf MapCache
-	 */
-	function mapClear() {
-	  this.__data__ = { 'hash': new Hash, 'map': Map ? new Map : [], 'string': new Hash };
-	}
-	
-	module.exports = mapClear;
-
-
-/***/ },
-/* 51 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var nativeCreate = __webpack_require__(52);
-	
-	/** Used for built-in method references. */
-	var objectProto = global.Object.prototype;
-	
-	/**
-	 * Creates an hash object.
-	 *
-	 * @private
-	 * @returns {Object} Returns the new hash object.
-	 */
-	function Hash() {}
-	
-	// Avoid inheriting from `Object.prototype` when possible.
-	Hash.prototype = nativeCreate ? nativeCreate(null) : objectProto;
-	
-	module.exports = Hash;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 52 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var getNative = __webpack_require__(53);
-	
-	/* Built-in method references that are verified to be native. */
-	var nativeCreate = getNative(Object, 'create');
-	
-	module.exports = nativeCreate;
-
-
-/***/ },
-/* 53 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isNative = __webpack_require__(54);
-	
-	/**
-	 * Gets the native function at `key` of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {string} key The key of the method to get.
-	 * @returns {*} Returns the function if it's native, else `undefined`.
-	 */
-	function getNative(object, key) {
-	  var value = object == null ? undefined : object[key];
-	  return isNative(value) ? value : undefined;
-	}
-	
-	module.exports = getNative;
-
-
-/***/ },
-/* 54 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var isFunction = __webpack_require__(30),
-	    isHostObject = __webpack_require__(55),
-	    isObjectLike = __webpack_require__(33);
-	
-	/** Used to match `RegExp` [syntax characters](http://ecma-international.org/ecma-262/6.0/#sec-patterns). */
-	var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
-	
-	/** Used to detect host constructors (Safari > 5). */
-	var reIsHostCtor = /^\[object .+?Constructor\]$/;
-	
-	/** Used for built-in method references. */
-	var objectProto = global.Object.prototype;
-	
-	/** Used to resolve the decompiled source of functions. */
-	var funcToString = global.Function.prototype.toString;
-	
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-	
-	/** Used to detect if a method is native. */
-	var reIsNative = RegExp('^' +
-	  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
-	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
-	);
-	
-	/**
-	 * Checks if `value` is a native function.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a native function, else `false`.
-	 * @example
-	 *
-	 * _.isNative(Array.prototype.push);
-	 * // => true
-	 *
-	 * _.isNative(_);
-	 * // => false
-	 */
-	function isNative(value) {
-	  if (value == null) {
-	    return false;
-	  }
-	  if (isFunction(value)) {
-	    return reIsNative.test(funcToString.call(value));
-	  }
-	  return isObjectLike(value) &&
-	    (isHostObject(value) ? reIsNative : reIsHostCtor).test(value);
-	}
-	
-	module.exports = isNative;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 55 */
-/***/ function(module, exports) {
-
-	/**
-	 * Checks if `value` is a host object in IE < 9.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
-	 */
-	function isHostObject(value) {
-	  // Many host objects are `Object` objects that can coerce to strings
-	  // despite having improperly defined `toString` methods.
-	  var result = false;
-	  if (value != null && typeof value.toString != 'function') {
-	    try {
-	      result = !!(value + '');
-	    } catch (e) {}
-	  }
-	  return result;
-	}
-	
-	module.exports = isHostObject;
-
-
-/***/ },
-/* 56 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var getNative = __webpack_require__(53);
-	
-	/* Built-in method references that are verified to be native. */
-	var Map = getNative(global, 'Map');
-	
-	module.exports = Map;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 57 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Map = __webpack_require__(56),
-	    assocDelete = __webpack_require__(41),
-	    hashDelete = __webpack_require__(58),
-	    isKeyable = __webpack_require__(60);
-	
-	/**
-	 * Removes `key` and its value from the map.
-	 *
-	 * @private
-	 * @name delete
-	 * @memberOf MapCache
-	 * @param {string} key The key of the value to remove.
-	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
-	 */
-	function mapDelete(key) {
-	  var data = this.__data__;
-	  if (isKeyable(key)) {
-	    return hashDelete(typeof key == 'string' ? data.string : data.hash, key);
-	  }
-	  return Map ? data.map['delete'](key) : assocDelete(data.map, key);
-	}
-	
-	module.exports = mapDelete;
-
-
-/***/ },
-/* 58 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var hashHas = __webpack_require__(59);
-	
-	/**
-	 * Removes `key` and its value from the hash.
-	 *
-	 * @private
-	 * @param {Object} hash The hash to modify.
-	 * @param {string} key The key of the value to remove.
-	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
-	 */
-	function hashDelete(hash, key) {
-	  return hashHas(hash, key) && delete hash[key];
-	}
-	
-	module.exports = hashDelete;
-
-
-/***/ },
-/* 59 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var nativeCreate = __webpack_require__(52);
-	
-	/** Used for built-in method references. */
-	var objectProto = global.Object.prototype;
-	
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-	
-	/**
-	 * Checks if a hash value for `key` exists.
-	 *
-	 * @private
-	 * @param {Object} hash The hash to query.
-	 * @param {string} key The key of the entry to check.
-	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-	 */
-	function hashHas(hash, key) {
-	  return nativeCreate ? hash[key] !== undefined : hasOwnProperty.call(hash, key);
-	}
-	
-	module.exports = hashHas;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 60 */
-/***/ function(module, exports) {
-
-	/**
-	 * Checks if `value` is suitable for use as unique object key.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
-	 */
-	function isKeyable(value) {
-	  var type = typeof value;
-	  return type == 'number' || type == 'boolean' ||
-	    (type == 'string' && value !== '__proto__') || value == null;
-	}
-	
-	module.exports = isKeyable;
-
-
-/***/ },
-/* 61 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Map = __webpack_require__(56),
-	    assocGet = __webpack_require__(45),
-	    hashGet = __webpack_require__(62),
-	    isKeyable = __webpack_require__(60);
-	
-	/**
-	 * Gets the map value for `key`.
-	 *
-	 * @private
-	 * @name get
-	 * @memberOf MapCache
-	 * @param {string} key The key of the value to get.
-	 * @returns {*} Returns the entry value.
-	 */
-	function mapGet(key) {
-	  var data = this.__data__;
-	  if (isKeyable(key)) {
-	    return hashGet(typeof key == 'string' ? data.string : data.hash, key);
-	  }
-	  return Map ? data.map.get(key) : assocGet(data.map, key);
-	}
-	
-	module.exports = mapGet;
-
-
-/***/ },
-/* 62 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var nativeCreate = __webpack_require__(52);
-	
-	/** Used to stand-in for `undefined` hash values. */
-	var HASH_UNDEFINED = '__lodash_hash_undefined__';
-	
-	/** Used for built-in method references. */
-	var objectProto = global.Object.prototype;
-	
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-	
-	/**
-	 * Gets the hash value for `key`.
-	 *
-	 * @private
-	 * @param {Object} hash The hash to query.
-	 * @param {string} key The key of the value to get.
-	 * @returns {*} Returns the entry value.
-	 */
-	function hashGet(hash, key) {
-	  if (nativeCreate) {
-	    var result = hash[key];
-	    return result === HASH_UNDEFINED ? undefined : result;
-	  }
-	  return hasOwnProperty.call(hash, key) ? hash[key] : undefined;
-	}
-	
-	module.exports = hashGet;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 63 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Map = __webpack_require__(56),
-	    assocHas = __webpack_require__(47),
-	    hashHas = __webpack_require__(59),
-	    isKeyable = __webpack_require__(60);
-	
-	/**
-	 * Checks if a map value for `key` exists.
-	 *
-	 * @private
-	 * @name has
-	 * @memberOf MapCache
-	 * @param {string} key The key of the entry to check.
-	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-	 */
-	function mapHas(key) {
-	  var data = this.__data__;
-	  if (isKeyable(key)) {
-	    return hashHas(typeof key == 'string' ? data.string : data.hash, key);
-	  }
-	  return Map ? data.map.has(key) : assocHas(data.map, key);
-	}
-	
-	module.exports = mapHas;
-
-
-/***/ },
-/* 64 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Map = __webpack_require__(56),
-	    assocSet = __webpack_require__(65),
-	    hashSet = __webpack_require__(66),
-	    isKeyable = __webpack_require__(60);
-	
-	/**
-	 * Sets the map `key` to `value`.
-	 *
-	 * @private
-	 * @name set
-	 * @memberOf MapCache
-	 * @param {string} key The key of the value to set.
-	 * @param {*} value The value to set.
-	 * @returns {Object} Returns the map cache object.
-	 */
-	function mapSet(key, value) {
-	  var data = this.__data__;
-	  if (isKeyable(key)) {
-	    hashSet(typeof key == 'string' ? data.string : data.hash, key, value);
-	  } else if (Map) {
-	    data.map.set(key, value);
-	  } else {
-	    assocSet(data.map, key, value);
-	  }
-	  return this;
-	}
-	
-	module.exports = mapSet;
-
-
-/***/ },
-/* 65 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var assocIndexOf = __webpack_require__(42);
-	
-	/**
-	 * Sets the associative array `key` to `value`.
-	 *
-	 * @private
-	 * @param {Array} array The array to modify.
-	 * @param {string} key The key of the value to set.
-	 * @param {*} value The value to set.
-	 */
-	function assocSet(array, key, value) {
-	  var index = assocIndexOf(array, key);
-	  if (index < 0) {
-	    array.push([key, value]);
-	  } else {
-	    array[index][1] = value;
-	  }
-	}
-	
-	module.exports = assocSet;
-
-
-/***/ },
-/* 66 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var nativeCreate = __webpack_require__(52);
-	
-	/** Used to stand-in for `undefined` hash values. */
-	var HASH_UNDEFINED = '__lodash_hash_undefined__';
-	
-	/**
-	 * Sets the hash `key` to `value`.
-	 *
-	 * @private
-	 * @param {Object} hash The hash to modify.
-	 * @param {string} key The key of the value to set.
-	 * @param {*} value The value to set.
-	 */
-	function hashSet(hash, key, value) {
-	  hash[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
-	}
-	
-	module.exports = hashSet;
-
-
-/***/ },
-/* 67 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseIsEqualDeep = __webpack_require__(68),
-	    isObject = __webpack_require__(31),
-	    isObjectLike = __webpack_require__(33);
-	
-	/**
-	 * The base implementation of `_.isEqual` which supports partial comparisons
-	 * and tracks traversed objects.
-	 *
-	 * @private
-	 * @param {*} value The value to compare.
-	 * @param {*} other The other value to compare.
-	 * @param {Function} [customizer] The function to customize comparisons.
-	 * @param {boolean} [bitmask] The bitmask of comparison flags.
-	 *  The bitmask may be composed of the following flags:
-	 *     1 - Unordered comparison
-	 *     2 - Partial comparison
-	 * @param {Object} [stack] Tracks traversed `value` and `other` objects.
-	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
-	 */
-	function baseIsEqual(value, other, customizer, bitmask, stack) {
-	  if (value === other) {
-	    return true;
-	  }
-	  if (value == null || other == null || (!isObject(value) && !isObjectLike(other))) {
-	    return value !== value && other !== other;
-	  }
-	  return baseIsEqualDeep(value, other, baseIsEqual, customizer, bitmask, stack);
-	}
-	
-	module.exports = baseIsEqual;
-
-
-/***/ },
-/* 68 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var Stack = __webpack_require__(38),
-	    equalArrays = __webpack_require__(69),
-	    equalByTag = __webpack_require__(71),
-	    equalObjects = __webpack_require__(76),
-	    getTag = __webpack_require__(85),
-	    isArray = __webpack_require__(34),
-	    isHostObject = __webpack_require__(55),
-	    isTypedArray = __webpack_require__(87);
-	
-	/** Used to compose bitmasks for comparison styles. */
-	var PARTIAL_COMPARE_FLAG = 2;
-	
-	/** `Object#toString` result references. */
-	var argsTag = '[object Arguments]',
-	    arrayTag = '[object Array]',
-	    objectTag = '[object Object]';
-	
-	/** Used for built-in method references. */
-	var objectProto = global.Object.prototype;
-	
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-	
-	/**
-	 * A specialized version of `baseIsEqual` for arrays and objects which performs
-	 * deep comparisons and tracks traversed objects enabling objects with circular
-	 * references to be compared.
-	 *
-	 * @private
-	 * @param {Object} object The object to compare.
-	 * @param {Object} other The other object to compare.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
-	 * @param {Function} [customizer] The function to customize comparisons.
-	 * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
-	 * @param {Object} [stack] Tracks traversed `object` and `other` objects.
-	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
-	 */
-	function baseIsEqualDeep(object, other, equalFunc, customizer, bitmask, stack) {
-	  var objIsArr = isArray(object),
-	      othIsArr = isArray(other),
-	      objTag = arrayTag,
-	      othTag = arrayTag;
-	
-	  if (!objIsArr) {
-	    objTag = getTag(object);
-	    if (objTag == argsTag) {
-	      objTag = objectTag;
-	    } else if (objTag != objectTag) {
-	      objIsArr = isTypedArray(object);
-	    }
-	  }
-	  if (!othIsArr) {
-	    othTag = getTag(other);
-	    if (othTag == argsTag) {
-	      othTag = objectTag;
-	    } else if (othTag != objectTag) {
-	      othIsArr = isTypedArray(other);
-	    }
-	  }
-	  var objIsObj = objTag == objectTag && !isHostObject(object),
-	      othIsObj = othTag == objectTag && !isHostObject(other),
-	      isSameTag = objTag == othTag;
-	
-	  if (isSameTag && !(objIsArr || objIsObj)) {
-	    return equalByTag(object, other, objTag, equalFunc, customizer, bitmask);
-	  }
-	  var isPartial = bitmask & PARTIAL_COMPARE_FLAG;
-	  if (!isPartial) {
-	    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
-	        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
-	
-	    if (objIsWrapped || othIsWrapped) {
-	      return equalFunc(objIsWrapped ? object.value() : object, othIsWrapped ? other.value() : other, customizer, bitmask, stack);
-	    }
-	  }
-	  if (!isSameTag) {
-	    return false;
-	  }
-	  stack || (stack = new Stack);
-	  return (objIsArr ? equalArrays : equalObjects)(object, other, equalFunc, customizer, bitmask, stack);
-	}
-	
-	module.exports = baseIsEqualDeep;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 69 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var arraySome = __webpack_require__(70);
-	
-	/** Used to compose bitmasks for comparison styles. */
-	var UNORDERED_COMPARE_FLAG = 1,
-	    PARTIAL_COMPARE_FLAG = 2;
-	
-	/**
-	 * A specialized version of `baseIsEqualDeep` for arrays with support for
-	 * partial deep comparisons.
-	 *
-	 * @private
-	 * @param {Array} array The array to compare.
-	 * @param {Array} other The other array to compare.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
-	 * @param {Function} [customizer] The function to customize comparisons.
-	 * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
-	 * @param {Object} [stack] Tracks traversed `array` and `other` objects.
-	 * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
-	 */
-	function equalArrays(array, other, equalFunc, customizer, bitmask, stack) {
-	  var index = -1,
-	      isPartial = bitmask & PARTIAL_COMPARE_FLAG,
-	      isUnordered = bitmask & UNORDERED_COMPARE_FLAG,
-	      arrLength = array.length,
-	      othLength = other.length;
-	
-	  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
-	    return false;
-	  }
-	  // Assume cyclic values are equal.
-	  var stacked = stack.get(array);
-	  if (stacked) {
-	    return stacked == other;
-	  }
-	  var result = true;
-	  stack.set(array, other);
-	
-	  // Ignore non-index properties.
-	  while (++index < arrLength) {
-	    var arrValue = array[index],
-	        othValue = other[index];
-	
-	    if (customizer) {
-	      var compared = isPartial
-	        ? customizer(othValue, arrValue, index, other, array, stack)
-	        : customizer(arrValue, othValue, index, array, other, stack);
-	    }
-	    if (compared !== undefined) {
-	      if (compared) {
-	        continue;
-	      }
-	      result = false;
-	      break;
-	    }
-	    // Recursively compare arrays (susceptible to call stack limits).
-	    if (isUnordered) {
-	      if (!arraySome(other, function(othValue) {
-	            return arrValue === othValue || equalFunc(arrValue, othValue, customizer, bitmask, stack);
-	          })) {
-	        result = false;
-	        break;
-	      }
-	    } else if (!(arrValue === othValue || equalFunc(arrValue, othValue, customizer, bitmask, stack))) {
-	      result = false;
-	      break;
-	    }
-	  }
-	  stack['delete'](array);
-	  return result;
-	}
-	
-	module.exports = equalArrays;
-
-
-/***/ },
-/* 70 */
-/***/ function(module, exports) {
-
-	/**
-	 * A specialized version of `_.some` for arrays without support for iteratee
-	 * shorthands.
-	 *
-	 * @private
-	 * @param {Array} array The array to iterate over.
-	 * @param {Function} predicate The function invoked per iteration.
-	 * @returns {boolean} Returns `true` if any element passes the predicate check, else `false`.
-	 */
-	function arraySome(array, predicate) {
-	  var index = -1,
-	      length = array.length;
-	
-	  while (++index < length) {
-	    if (predicate(array[index], index, array)) {
-	      return true;
-	    }
-	  }
-	  return false;
-	}
-	
-	module.exports = arraySome;
-
-
-/***/ },
-/* 71 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Symbol = __webpack_require__(72),
-	    Uint8Array = __webpack_require__(73),
-	    mapToArray = __webpack_require__(74),
-	    setToArray = __webpack_require__(75);
-	
-	/** Used to compose bitmasks for comparison styles. */
-	var UNORDERED_COMPARE_FLAG = 1,
-	    PARTIAL_COMPARE_FLAG = 2;
-	
-	/** `Object#toString` result references. */
-	var boolTag = '[object Boolean]',
-	    dateTag = '[object Date]',
-	    errorTag = '[object Error]',
-	    mapTag = '[object Map]',
-	    numberTag = '[object Number]',
-	    regexpTag = '[object RegExp]',
-	    setTag = '[object Set]',
-	    stringTag = '[object String]',
-	    symbolTag = '[object Symbol]';
-	
-	var arrayBufferTag = '[object ArrayBuffer]';
-	
-	/** Used to convert symbols to primitives and strings. */
-	var symbolProto = Symbol ? Symbol.prototype : undefined,
-	    symbolValueOf = Symbol ? symbolProto.valueOf : undefined;
-	
-	/**
-	 * A specialized version of `baseIsEqualDeep` for comparing objects of
-	 * the same `toStringTag`.
-	 *
-	 * **Note:** This function only supports comparing values with tags of
-	 * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
-	 *
-	 * @private
-	 * @param {Object} object The object to compare.
-	 * @param {Object} other The other object to compare.
-	 * @param {string} tag The `toStringTag` of the objects to compare.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
-	 * @param {Function} [customizer] The function to customize comparisons.
-	 * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
-	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
-	 */
-	function equalByTag(object, other, tag, equalFunc, customizer, bitmask) {
-	  switch (tag) {
-	    case arrayBufferTag:
-	      if ((object.byteLength != other.byteLength) ||
-	          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
-	        return false;
-	      }
-	      return true;
-	
-	    case boolTag:
-	    case dateTag:
-	      // Coerce dates and booleans to numbers, dates to milliseconds and booleans
-	      // to `1` or `0` treating invalid dates coerced to `NaN` as not equal.
-	      return +object == +other;
-	
-	    case errorTag:
-	      return object.name == other.name && object.message == other.message;
-	
-	    case numberTag:
-	      // Treat `NaN` vs. `NaN` as equal.
-	      return (object != +object) ? other != +other : object == +other;
-	
-	    case regexpTag:
-	    case stringTag:
-	      // Coerce regexes to strings and treat strings primitives and string
-	      // objects as equal. See https://es5.github.io/#x15.10.6.4 for more details.
-	      return object == (other + '');
-	
-	    case mapTag:
-	      var convert = mapToArray;
-	
-	    case setTag:
-	      var isPartial = bitmask & PARTIAL_COMPARE_FLAG;
-	      convert || (convert = setToArray);
-	
-	      // Recursively compare objects (susceptible to call stack limits).
-	      return (isPartial || object.size == other.size) &&
-	        equalFunc(convert(object), convert(other), customizer, bitmask | UNORDERED_COMPARE_FLAG);
-	
-	    case symbolTag:
-	      return !!Symbol && (symbolValueOf.call(object) == symbolValueOf.call(other));
-	  }
-	  return false;
-	}
-	
-	module.exports = equalByTag;
-
-
-/***/ },
-/* 72 */
-/***/ function(module, exports) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {/** Built-in value references. */
-	var Symbol = global.Symbol;
-	
-	module.exports = Symbol;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 73 */
-/***/ function(module, exports) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {/** Built-in value references. */
-	var Uint8Array = global.Uint8Array;
-	
-	module.exports = Uint8Array;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 74 */
-/***/ function(module, exports) {
-
-	/**
-	 * Converts `map` to an array.
-	 *
-	 * @private
-	 * @param {Object} map The map to convert.
-	 * @returns {Array} Returns the converted array.
-	 */
-	function mapToArray(map) {
-	  var index = -1,
-	      result = Array(map.size);
-	
-	  map.forEach(function(value, key) {
-	    result[++index] = [key, value];
-	  });
-	  return result;
-	}
-	
-	module.exports = mapToArray;
-
-
-/***/ },
-/* 75 */
-/***/ function(module, exports) {
-
-	/**
-	 * Converts `set` to an array.
-	 *
-	 * @private
-	 * @param {Object} set The set to convert.
-	 * @returns {Array} Returns the converted array.
-	 */
-	function setToArray(set) {
-	  var index = -1,
-	      result = Array(set.size);
-	
-	  set.forEach(function(value) {
-	    result[++index] = value;
-	  });
-	  return result;
-	}
-	
-	module.exports = setToArray;
-
-
-/***/ },
-/* 76 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseHas = __webpack_require__(77),
-	    keys = __webpack_require__(78);
-	
-	/** Used to compose bitmasks for comparison styles. */
-	var PARTIAL_COMPARE_FLAG = 2;
-	
-	/**
-	 * A specialized version of `baseIsEqualDeep` for objects with support for
-	 * partial deep comparisons.
-	 *
-	 * @private
-	 * @param {Object} object The object to compare.
-	 * @param {Object} other The other object to compare.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
-	 * @param {Function} [customizer] The function to customize comparisons.
-	 * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
-	 * @param {Object} [stack] Tracks traversed `object` and `other` objects.
-	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
-	 */
-	function equalObjects(object, other, equalFunc, customizer, bitmask, stack) {
-	  var isPartial = bitmask & PARTIAL_COMPARE_FLAG,
-	      objProps = keys(object),
-	      objLength = objProps.length,
-	      othProps = keys(other),
-	      othLength = othProps.length;
-	
-	  if (objLength != othLength && !isPartial) {
-	    return false;
-	  }
-	  var index = objLength;
-	  while (index--) {
-	    var key = objProps[index];
-	    if (!(isPartial ? key in other : baseHas(other, key))) {
-	      return false;
-	    }
-	  }
-	  // Assume cyclic values are equal.
-	  var stacked = stack.get(object);
-	  if (stacked) {
-	    return stacked == other;
-	  }
-	  var result = true;
-	  stack.set(object, other);
-	
-	  var skipCtor = isPartial;
-	  while (++index < objLength) {
-	    key = objProps[index];
-	    var objValue = object[key],
-	        othValue = other[key];
-	
-	    if (customizer) {
-	      var compared = isPartial
-	        ? customizer(othValue, objValue, key, other, object, stack)
-	        : customizer(objValue, othValue, key, object, other, stack);
-	    }
-	    // Recursively compare objects (susceptible to call stack limits).
-	    if (!(compared === undefined
-	          ? (objValue === othValue || equalFunc(objValue, othValue, customizer, bitmask, stack))
-	          : compared
-	        )) {
-	      result = false;
-	      break;
-	    }
-	    skipCtor || (skipCtor = key == 'constructor');
-	  }
-	  if (result && !skipCtor) {
-	    var objCtor = object.constructor,
-	        othCtor = other.constructor;
-	
-	    // Non `Object` object instances with different constructors are not equal.
-	    if (objCtor != othCtor &&
-	        ('constructor' in object && 'constructor' in other) &&
-	        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
-	          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
-	      result = false;
-	    }
-	  }
-	  stack['delete'](object);
-	  return result;
-	}
-	
-	module.exports = equalObjects;
-
-
-/***/ },
-/* 77 */
-/***/ function(module, exports) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {/** Used for built-in method references. */
-	var objectProto = global.Object.prototype;
-	
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-	
-	/** Built-in value references. */
-	var getPrototypeOf = Object.getPrototypeOf;
-	
-	/**
-	 * The base implementation of `_.has` without support for deep paths.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {Array|string} key The key to check.
-	 * @returns {boolean} Returns `true` if `key` exists, else `false`.
-	 */
-	function baseHas(object, key) {
-	  // Avoid a bug in IE 10-11 where objects with a [[Prototype]] of `null`,
-	  // that are composed entirely of index properties, return `false` for
-	  // `hasOwnProperty` checks of them.
-	  return hasOwnProperty.call(object, key) ||
-	    (typeof object == 'object' && key in object && getPrototypeOf(object) === null);
-	}
-	
-	module.exports = baseHas;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 78 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseHas = __webpack_require__(77),
-	    baseKeys = __webpack_require__(79),
-	    indexKeys = __webpack_require__(80),
-	    isArrayLike = __webpack_require__(27),
-	    isIndex = __webpack_require__(83),
-	    isPrototype = __webpack_require__(84);
-	
-	/**
-	 * Creates an array of the own enumerable property names of `object`.
-	 *
-	 * **Note:** Non-object values are coerced to objects. See the
-	 * [ES spec](http://ecma-international.org/ecma-262/6.0/#sec-object.keys)
-	 * for more details.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 * @example
-	 *
-	 * function Foo() {
-	 *   this.a = 1;
-	 *   this.b = 2;
-	 * }
-	 *
-	 * Foo.prototype.c = 3;
-	 *
-	 * _.keys(new Foo);
-	 * // => ['a', 'b'] (iteration order is not guaranteed)
-	 *
-	 * _.keys('hi');
-	 * // => ['0', '1']
-	 */
-	function keys(object) {
-	  var isProto = isPrototype(object);
-	  if (!(isProto || isArrayLike(object))) {
-	    return baseKeys(object);
-	  }
-	  var indexes = indexKeys(object),
-	      skipIndexes = !!indexes,
-	      result = indexes || [],
-	      length = result.length;
-	
-	  for (var key in object) {
-	    if (baseHas(object, key) &&
-	        !(skipIndexes && (key == 'length' || isIndex(key, length))) &&
-	        !(isProto && key == 'constructor')) {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-	
-	module.exports = keys;
-
-
-/***/ },
-/* 79 */
-/***/ function(module, exports) {
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeKeys = Object.keys;
-	
-	/**
-	 * The base implementation of `_.keys` which doesn't skip the constructor
-	 * property of prototypes or treat sparse arrays as dense.
-	 *
-	 * @private
-	 * @type Function
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function baseKeys(object) {
-	  return nativeKeys(Object(object));
-	}
-	
-	module.exports = baseKeys;
-
-
-/***/ },
-/* 80 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseTimes = __webpack_require__(81),
-	    isArguments = __webpack_require__(25),
-	    isArray = __webpack_require__(34),
-	    isLength = __webpack_require__(32),
-	    isString = __webpack_require__(82);
-	
-	/**
-	 * Creates an array of index keys for `object` values of arrays,
-	 * `arguments` objects, and strings, otherwise `null` is returned.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array|null} Returns index keys, else `null`.
-	 */
-	function indexKeys(object) {
-	  var length = object ? object.length : undefined;
-	  return (isLength(length) && (isArray(object) || isString(object) || isArguments(object)))
-	    ? baseTimes(length, String)
-	    : null;
-	}
-	
-	module.exports = indexKeys;
-
-
-/***/ },
-/* 81 */
-/***/ function(module, exports) {
-
-	/**
-	 * The base implementation of `_.times` without support for iteratee shorthands
-	 * or max array length checks.
-	 *
-	 * @private
-	 * @param {number} n The number of times to invoke `iteratee`.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Array} Returns the array of results.
-	 */
-	function baseTimes(n, iteratee) {
-	  var index = -1,
-	      result = Array(n);
-	
-	  while (++index < n) {
-	    result[index] = iteratee(index);
-	  }
-	  return result;
-	}
-	
-	module.exports = baseTimes;
-
-
-/***/ },
-/* 82 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var isArray = __webpack_require__(34),
-	    isObjectLike = __webpack_require__(33);
-	
-	/** `Object#toString` result references. */
-	var stringTag = '[object String]';
-	
-	/** Used for built-in method references. */
-	var objectProto = global.Object.prototype;
-	
-	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var objectToString = objectProto.toString;
-	
-	/**
-	 * Checks if `value` is classified as a `String` primitive or object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
-	 * @example
-	 *
-	 * _.isString('abc');
-	 * // => true
-	 *
-	 * _.isString(1);
-	 * // => false
-	 */
-	function isString(value) {
-	  return typeof value == 'string' ||
-	    (!isArray(value) && isObjectLike(value) && objectToString.call(value) == stringTag);
-	}
-	
-	module.exports = isString;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 83 */
-/***/ function(module, exports) {
-
-	/** Used as references for various `Number` constants. */
-	var MAX_SAFE_INTEGER = 9007199254740991;
-	
-	/** Used to detect unsigned integer values. */
-	var reIsUint = /^(?:0|[1-9]\d*)$/;
-	
-	/**
-	 * Checks if `value` is a valid array-like index.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
-	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
-	 */
-	function isIndex(value, length) {
-	  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
-	  length = length == null ? MAX_SAFE_INTEGER : length;
-	  return value > -1 && value % 1 == 0 && value < length;
-	}
-	
-	module.exports = isIndex;
-
-
-/***/ },
-/* 84 */
-/***/ function(module, exports) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {/** Used for built-in method references. */
-	var objectProto = global.Object.prototype;
-	
-	/**
-	 * Checks if `value` is likely a prototype object.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
-	 */
-	function isPrototype(value) {
-	  var Ctor = value && value.constructor,
-	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
-	
-	  return value === proto;
-	}
-	
-	module.exports = isPrototype;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 85 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var Map = __webpack_require__(56),
-	    Set = __webpack_require__(86);
-	
-	/** `Object#toString` result references. */
-	var mapTag = '[object Map]',
-	    objectTag = '[object Object]',
-	    setTag = '[object Set]';
-	
-	/** Used for built-in method references. */
-	var objectProto = global.Object.prototype;
-	
-	/** Used to resolve the decompiled source of functions. */
-	var funcToString = global.Function.prototype.toString;
-	
-	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var objectToString = objectProto.toString;
-	
-	/** Used to detect maps and sets. */
-	var mapCtorString = Map ? funcToString.call(Map) : '',
-	    setCtorString = Set ? funcToString.call(Set) : '';
-	
-	/**
-	 * Gets the `toStringTag` of `value`.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @returns {string} Returns the `toStringTag`.
-	 */
-	function getTag(value) {
-	  return objectToString.call(value);
-	}
-	
-	// Fallback for IE 11 providing `toStringTag` values for maps and sets.
-	if ((Map && getTag(new Map) != mapTag) || (Set && getTag(new Set) != setTag)) {
-	  getTag = function(value) {
-	    var result = objectToString.call(value),
-	        Ctor = result == objectTag ? value.constructor : null,
-	        ctorString = typeof Ctor == 'function' ? funcToString.call(Ctor) : '';
-	
-	    if (ctorString) {
-	      if (ctorString == mapCtorString) {
-	        return mapTag;
-	      }
-	      if (ctorString == setCtorString) {
-	        return setTag;
-	      }
-	    }
-	    return result;
-	  };
-	}
-	
-	module.exports = getTag;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 86 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var getNative = __webpack_require__(53);
-	
-	/* Built-in method references that are verified to be native. */
-	var Set = getNative(global, 'Set');
-	
-	module.exports = Set;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 87 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var isLength = __webpack_require__(32),
-	    isObjectLike = __webpack_require__(33);
-	
-	/** `Object#toString` result references. */
-	var argsTag = '[object Arguments]',
-	    arrayTag = '[object Array]',
-	    boolTag = '[object Boolean]',
-	    dateTag = '[object Date]',
-	    errorTag = '[object Error]',
-	    funcTag = '[object Function]',
-	    mapTag = '[object Map]',
-	    numberTag = '[object Number]',
-	    objectTag = '[object Object]',
-	    regexpTag = '[object RegExp]',
-	    setTag = '[object Set]',
-	    stringTag = '[object String]',
-	    weakMapTag = '[object WeakMap]';
-	
-	var arrayBufferTag = '[object ArrayBuffer]',
-	    float32Tag = '[object Float32Array]',
-	    float64Tag = '[object Float64Array]',
-	    int8Tag = '[object Int8Array]',
-	    int16Tag = '[object Int16Array]',
-	    int32Tag = '[object Int32Array]',
-	    uint8Tag = '[object Uint8Array]',
-	    uint8ClampedTag = '[object Uint8ClampedArray]',
-	    uint16Tag = '[object Uint16Array]',
-	    uint32Tag = '[object Uint32Array]';
-	
-	/** Used to identify `toStringTag` values of typed arrays. */
-	var typedArrayTags = {};
-	typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
-	typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
-	typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
-	typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
-	typedArrayTags[uint32Tag] = true;
-	typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
-	typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
-	typedArrayTags[dateTag] = typedArrayTags[errorTag] =
-	typedArrayTags[funcTag] = typedArrayTags[mapTag] =
-	typedArrayTags[numberTag] = typedArrayTags[objectTag] =
-	typedArrayTags[regexpTag] = typedArrayTags[setTag] =
-	typedArrayTags[stringTag] = typedArrayTags[weakMapTag] = false;
-	
-	/** Used for built-in method references. */
-	var objectProto = global.Object.prototype;
-	
-	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var objectToString = objectProto.toString;
-	
-	/**
-	 * Checks if `value` is classified as a typed array.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
-	 * @example
-	 *
-	 * _.isTypedArray(new Uint8Array);
-	 * // => true
-	 *
-	 * _.isTypedArray([]);
-	 * // => false
-	 */
-	function isTypedArray(value) {
-	  return isObjectLike(value) && isLength(value.length) && !!typedArrayTags[objectToString.call(value)];
-	}
-	
-	module.exports = isTypedArray;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 88 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isStrictComparable = __webpack_require__(89),
-	    toPairs = __webpack_require__(90);
-	
-	/**
-	 * Gets the property names, values, and compare flags of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the match data of `object`.
-	 */
-	function getMatchData(object) {
-	  var result = toPairs(object),
-	      length = result.length;
-	
-	  while (length--) {
-	    result[length][2] = isStrictComparable(result[length][1]);
-	  }
-	  return result;
-	}
-	
-	module.exports = getMatchData;
-
-
-/***/ },
-/* 89 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isObject = __webpack_require__(31);
-	
-	/**
-	 * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` if suitable for strict
-	 *  equality comparisons, else `false`.
-	 */
-	function isStrictComparable(value) {
-	  return value === value && !isObject(value);
-	}
-	
-	module.exports = isStrictComparable;
-
-
-/***/ },
-/* 90 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseToPairs = __webpack_require__(91),
-	    keys = __webpack_require__(78);
-	
-	/**
-	 * Creates an array of own enumerable key-value pairs for `object`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the new array of key-value pairs.
-	 * @example
-	 *
-	 * function Foo() {
-	 *   this.a = 1;
-	 *   this.b = 2;
-	 * }
-	 *
-	 * Foo.prototype.c = 3;
-	 *
-	 * _.toPairs(new Foo);
-	 * // => [['a', 1], ['b', 2]] (iteration order is not guaranteed)
-	 */
-	function toPairs(object) {
-	  return baseToPairs(object, keys(object));
-	}
-	
-	module.exports = toPairs;
-
-
-/***/ },
-/* 91 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var arrayMap = __webpack_require__(22);
-	
-	/**
-	 * The base implementation of `_.toPairs` and `_.toPairsIn` which creates an array
-	 * of key-value pairs for `object` corresponding to the property names of `props`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {Array} props The property names to get values for.
-	 * @returns {Object} Returns the new array of key-value pairs.
-	 */
-	function baseToPairs(object, props) {
-	  return arrayMap(props, function(key) {
-	    return [key, object[key]];
-	  });
-	}
-	
-	module.exports = baseToPairs;
-
-
-/***/ },
-/* 92 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseIsEqual = __webpack_require__(67),
-	    get = __webpack_require__(93),
-	    hasIn = __webpack_require__(100);
-	
-	/** Used to compose bitmasks for comparison styles. */
-	var UNORDERED_COMPARE_FLAG = 1,
-	    PARTIAL_COMPARE_FLAG = 2;
-	
-	/**
-	 * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
-	 *
-	 * @private
-	 * @param {string} path The path of the property to get.
-	 * @param {*} srcValue The value to match.
-	 * @returns {Function} Returns the new function.
-	 */
-	function baseMatchesProperty(path, srcValue) {
-	  return function(object) {
-	    var objValue = get(object, path);
-	    return (objValue === undefined && objValue === srcValue)
-	      ? hasIn(object, path)
-	      : baseIsEqual(srcValue, objValue, undefined, UNORDERED_COMPARE_FLAG | PARTIAL_COMPARE_FLAG);
-	  };
-	}
-	
-	module.exports = baseMatchesProperty;
-
-
-/***/ },
-/* 93 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseGet = __webpack_require__(94);
-	
-	/**
-	 * Gets the value at `path` of `object`. If the resolved value is
-	 * `undefined` the `defaultValue` is used in its place.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @param {Array|string} path The path of the property to get.
-	 * @param {*} [defaultValue] The value returned if the resolved value is `undefined`.
-	 * @returns {*} Returns the resolved value.
-	 * @example
-	 *
-	 * var object = { 'a': [{ 'b': { 'c': 3 } }] };
-	 *
-	 * _.get(object, 'a[0].b.c');
-	 * // => 3
-	 *
-	 * _.get(object, ['a', '0', 'b', 'c']);
-	 * // => 3
-	 *
-	 * _.get(object, 'a.b.c', 'default');
-	 * // => 'default'
-	 */
-	function get(object, path, defaultValue) {
-	  var result = object == null ? undefined : baseGet(object, path);
-	  return result === undefined ? defaultValue : result;
-	}
-	
-	module.exports = get;
-
-
-/***/ },
-/* 94 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseToPath = __webpack_require__(95),
-	    isKey = __webpack_require__(99);
-	
-	/**
-	 * The base implementation of `_.get` without support for default values.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {Array|string} path The path of the property to get.
-	 * @returns {*} Returns the resolved value.
-	 */
-	function baseGet(object, path) {
-	  path = isKey(path, object) ? [path + ''] : baseToPath(path);
-	
-	  var index = 0,
-	      length = path.length;
-	
-	  while (object != null && index < length) {
-	    object = object[path[index++]];
-	  }
-	  return (index && index == length) ? object : undefined;
-	}
-	
-	module.exports = baseGet;
-
-
-/***/ },
-/* 95 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isArray = __webpack_require__(34),
-	    stringToPath = __webpack_require__(96);
-	
-	/**
-	 * The base implementation of `_.toPath` which only converts `value` to a
-	 * path if it's not one.
-	 *
-	 * @private
-	 * @param {*} value The value to process.
-	 * @returns {Array} Returns the property path array.
-	 */
-	function baseToPath(value) {
-	  return isArray(value) ? value : stringToPath(value);
-	}
-	
-	module.exports = baseToPath;
-
-
-/***/ },
-/* 96 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var toString = __webpack_require__(97);
-	
-	/** Used to match property names within property paths. */
-	var rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]/g;
-	
-	/** Used to match backslashes in property paths. */
-	var reEscapeChar = /\\(\\)?/g;
-	
-	/**
-	 * Converts `string` to a property path array.
-	 *
-	 * @private
-	 * @param {string} string The string to convert.
-	 * @returns {Array} Returns the property path array.
-	 */
-	function stringToPath(string) {
-	  var result = [];
-	  toString(string).replace(rePropName, function(match, number, quote, string) {
-	    result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
-	  });
-	  return result;
-	}
-	
-	module.exports = stringToPath;
-
-
-/***/ },
-/* 97 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Symbol = __webpack_require__(72),
-	    isSymbol = __webpack_require__(98);
-	
-	/** Used as references for various `Number` constants. */
-	var INFINITY = 1 / 0;
-	
-	/** Used to convert symbols to primitives and strings. */
-	var symbolProto = Symbol ? Symbol.prototype : undefined,
-	    symbolToString = Symbol ? symbolProto.toString : undefined;
-	
-	/**
-	 * Converts `value` to a string if it's not one. An empty string is returned
-	 * for `null` and `undefined` values. The sign of `-0` is preserved.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to process.
-	 * @returns {string} Returns the string.
-	 * @example
-	 *
-	 * _.toString(null);
-	 * // => ''
-	 *
-	 * _.toString(-0);
-	 * // => '-0'
-	 *
-	 * _.toString([1, 2, 3]);
-	 * // => '1,2,3'
-	 */
-	function toString(value) {
-	  // Exit early for strings to avoid a performance hit in some environments.
-	  if (typeof value == 'string') {
-	    return value;
-	  }
-	  if (value == null) {
-	    return '';
-	  }
-	  if (isSymbol(value)) {
-	    return Symbol ? symbolToString.call(value) : '';
-	  }
-	  var result = (value + '');
-	  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
-	}
-	
-	module.exports = toString;
-
-
-/***/ },
-/* 98 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var isObjectLike = __webpack_require__(33);
-	
-	/** `Object#toString` result references. */
-	var symbolTag = '[object Symbol]';
-	
-	/** Used for built-in method references. */
-	var objectProto = global.Object.prototype;
-	
-	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var objectToString = objectProto.toString;
-	
-	/**
-	 * Checks if `value` is classified as a `Symbol` primitive or object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
-	 * @example
-	 *
-	 * _.isSymbol(Symbol.iterator);
-	 * // => true
-	 *
-	 * _.isSymbol('abc');
-	 * // => false
-	 */
-	function isSymbol(value) {
-	  return typeof value == 'symbol' ||
-	    (isObjectLike(value) && objectToString.call(value) == symbolTag);
-	}
-	
-	module.exports = isSymbol;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 99 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isArray = __webpack_require__(34);
-	
-	/** Used to match property names within property paths. */
-	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
-	    reIsPlainProp = /^\w*$/;
-	
-	/**
-	 * Checks if `value` is a property name and not a property path.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @param {Object} [object] The object to query keys on.
-	 * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
-	 */
-	function isKey(value, object) {
-	  if (typeof value == 'number') {
-	    return true;
-	  }
-	  return !isArray(value) &&
-	    (reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
-	      (object != null && value in Object(object)));
-	}
-	
-	module.exports = isKey;
-
-
-/***/ },
-/* 100 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseHasIn = __webpack_require__(101),
-	    hasPath = __webpack_require__(102);
-	
-	/**
-	 * Checks if `path` is a direct or inherited property of `object`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @param {Array|string} path The path to check.
-	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
-	 * @example
-	 *
-	 * var object = _.create({ 'a': _.create({ 'b': _.create({ 'c': 3 }) }) });
-	 *
-	 * _.hasIn(object, 'a');
-	 * // => true
-	 *
-	 * _.hasIn(object, 'a.b.c');
-	 * // => true
-	 *
-	 * _.hasIn(object, ['a', 'b', 'c']);
-	 * // => true
-	 *
-	 * _.hasIn(object, 'b');
-	 * // => false
-	 */
-	function hasIn(object, path) {
-	  return hasPath(object, path, baseHasIn);
-	}
-	
-	module.exports = hasIn;
-
-
-/***/ },
-/* 101 */
-/***/ function(module, exports) {
-
-	/**
-	 * The base implementation of `_.hasIn` without support for deep paths.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {Array|string} key The key to check.
-	 * @returns {boolean} Returns `true` if `key` exists, else `false`.
-	 */
-	function baseHasIn(object, key) {
-	  return key in Object(object);
-	}
-	
-	module.exports = baseHasIn;
-
-
-/***/ },
-/* 102 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseToPath = __webpack_require__(95),
-	    isArguments = __webpack_require__(25),
-	    isArray = __webpack_require__(34),
-	    isIndex = __webpack_require__(83),
-	    isKey = __webpack_require__(99),
-	    isLength = __webpack_require__(32),
-	    isString = __webpack_require__(82),
-	    last = __webpack_require__(103),
-	    parent = __webpack_require__(104);
-	
-	/**
-	 * Checks if `path` exists on `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {Array|string} path The path to check.
-	 * @param {Function} hasFunc The function to check properties.
-	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
-	 */
-	function hasPath(object, path, hasFunc) {
-	  if (object == null) {
-	    return false;
-	  }
-	  var result = hasFunc(object, path);
-	  if (!result && !isKey(path)) {
-	    path = baseToPath(path);
-	    object = parent(object, path);
-	    if (object != null) {
-	      path = last(path);
-	      result = hasFunc(object, path);
-	    }
-	  }
-	  return result || (isLength(object && object.length) && isIndex(path, object.length) &&
-	    (isArray(object) || isString(object) || isArguments(object)));
-	}
-	
-	module.exports = hasPath;
-
-
-/***/ },
-/* 103 */
-/***/ function(module, exports) {
-
-	/**
-	 * Gets the last element of `array`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Array
-	 * @param {Array} array The array to query.
-	 * @returns {*} Returns the last element of `array`.
-	 * @example
-	 *
-	 * _.last([1, 2, 3]);
-	 * // => 3
-	 */
-	function last(array) {
-	  var length = array ? array.length : 0;
-	  return length ? array[length - 1] : undefined;
-	}
-	
-	module.exports = last;
-
-
-/***/ },
-/* 104 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseSlice = __webpack_require__(105),
-	    get = __webpack_require__(93);
-	
-	/**
-	 * Gets the parent value at `path` of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {Array} path The path to get the parent value of.
-	 * @returns {*} Returns the parent value.
-	 */
-	function parent(object, path) {
-	  return path.length == 1 ? object : get(object, baseSlice(path, 0, -1));
-	}
-	
-	module.exports = parent;
-
-
-/***/ },
-/* 105 */
-/***/ function(module, exports) {
-
-	/**
-	 * The base implementation of `_.slice` without an iteratee call guard.
-	 *
-	 * @private
-	 * @param {Array} array The array to slice.
-	 * @param {number} [start=0] The start position.
-	 * @param {number} [end=array.length] The end position.
-	 * @returns {Array} Returns the slice of `array`.
-	 */
-	function baseSlice(array, start, end) {
-	  var index = -1,
-	      length = array.length;
-	
-	  if (start < 0) {
-	    start = -start > length ? 0 : (length + start);
-	  }
-	  end = end > length ? length : end;
-	  if (end < 0) {
-	    end += length;
-	  }
-	  length = start > end ? 0 : ((end - start) >>> 0);
-	  start >>>= 0;
-	
-	  var result = Array(length);
-	  while (++index < length) {
-	    result[index] = array[index + start];
-	  }
-	  return result;
-	}
-	
-	module.exports = baseSlice;
-
-
-/***/ },
-/* 106 */
-/***/ function(module, exports) {
-
-	/**
-	 * This method returns the first argument provided to it.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Util
-	 * @param {*} value Any value.
-	 * @returns {*} Returns `value`.
-	 * @example
-	 *
-	 * var object = { 'user': 'fred' };
-	 *
-	 * _.identity(object) === object;
-	 * // => true
-	 */
-	function identity(value) {
-	  return value;
-	}
-	
-	module.exports = identity;
-
-
-/***/ },
-/* 107 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseProperty = __webpack_require__(29),
-	    basePropertyDeep = __webpack_require__(108),
-	    isKey = __webpack_require__(99);
-	
-	/**
-	 * Creates a function that returns the value at `path` of a given object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Util
-	 * @param {Array|string} path The path of the property to get.
-	 * @returns {Function} Returns the new function.
-	 * @example
-	 *
-	 * var objects = [
-	 *   { 'a': { 'b': { 'c': 2 } } },
-	 *   { 'a': { 'b': { 'c': 1 } } }
-	 * ];
-	 *
-	 * _.map(objects, _.property('a.b.c'));
-	 * // => [2, 1]
-	 *
-	 * _.map(_.sortBy(objects, _.property(['a', 'b', 'c'])), 'a.b.c');
-	 * // => [1, 2]
-	 */
-	function property(path) {
-	  return isKey(path) ? baseProperty(path) : basePropertyDeep(path);
-	}
-	
-	module.exports = property;
-
-
-/***/ },
-/* 108 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseGet = __webpack_require__(94);
-	
-	/**
-	 * A specialized version of `baseProperty` which supports deep paths.
-	 *
-	 * @private
-	 * @param {Array|string} path The path of the property to get.
-	 * @returns {Function} Returns the new function.
-	 */
-	function basePropertyDeep(path) {
-	  return function(object) {
-	    return baseGet(object, path);
-	  };
-	}
-	
-	module.exports = basePropertyDeep;
-
-
-/***/ },
-/* 109 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseEach = __webpack_require__(110),
-	    baseFind = __webpack_require__(115),
-	    baseFindIndex = __webpack_require__(116),
-	    baseIteratee = __webpack_require__(35),
-	    isArray = __webpack_require__(34);
-	
-	/**
-	 * Iterates over elements of `collection`, returning the first element
-	 * `predicate` returns truthy for. The predicate is invoked with three arguments:
-	 * (value, index|key, collection).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Collection
-	 * @param {Array|Object} collection The collection to search.
-	 * @param {Function|Object|string} [predicate=_.identity] The function invoked per iteration.
-	 * @returns {*} Returns the matched element, else `undefined`.
-	 * @example
-	 *
-	 * var users = [
-	 *   { 'user': 'barney',  'age': 36, 'active': true },
-	 *   { 'user': 'fred',    'age': 40, 'active': false },
-	 *   { 'user': 'pebbles', 'age': 1,  'active': true }
-	 * ];
-	 *
-	 * _.find(users, function(o) { return o.age < 40; });
-	 * // => object for 'barney'
-	 *
-	 * // using the `_.matches` iteratee shorthand
-	 * _.find(users, { 'age': 1, 'active': true });
-	 * // => object for 'pebbles'
-	 *
-	 * // using the `_.matchesProperty` iteratee shorthand
-	 * _.find(users, ['active', false]);
-	 * // => object for 'fred'
-	 *
-	 * // using the `_.property` iteratee shorthand
-	 * _.find(users, 'active');
-	 * // => object for 'barney'
-	 */
-	function find(collection, predicate) {
-	  predicate = baseIteratee(predicate, 3);
-	  if (isArray(collection)) {
-	    var index = baseFindIndex(collection, predicate);
-	    return index > -1 ? collection[index] : undefined;
-	  }
-	  return baseFind(collection, predicate, baseEach);
-	}
-	
-	module.exports = find;
-
-
-/***/ },
-/* 110 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseForOwn = __webpack_require__(111),
-	    createBaseEach = __webpack_require__(114);
-	
-	/**
-	 * The base implementation of `_.forEach` without support for iteratee shorthands.
-	 *
-	 * @private
-	 * @param {Array|Object} collection The collection to iterate over.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Array|Object} Returns `collection`.
-	 */
-	var baseEach = createBaseEach(baseForOwn);
-	
-	module.exports = baseEach;
-
-
-/***/ },
-/* 111 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseFor = __webpack_require__(112),
-	    keys = __webpack_require__(78);
-	
-	/**
-	 * The base implementation of `_.forOwn` without support for iteratee shorthands.
-	 *
-	 * @private
-	 * @param {Object} object The object to iterate over.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Object} Returns `object`.
-	 */
-	function baseForOwn(object, iteratee) {
-	  return object && baseFor(object, iteratee, keys);
-	}
-	
-	module.exports = baseForOwn;
-
-
-/***/ },
-/* 112 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var createBaseFor = __webpack_require__(113);
-	
-	/**
-	 * The base implementation of `baseForIn` and `baseForOwn` which iterates
-	 * over `object` properties returned by `keysFunc` invoking `iteratee` for
-	 * each property. Iteratee functions may exit iteration early by explicitly
-	 * returning `false`.
-	 *
-	 * @private
-	 * @param {Object} object The object to iterate over.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @param {Function} keysFunc The function to get the keys of `object`.
-	 * @returns {Object} Returns `object`.
-	 */
-	var baseFor = createBaseFor();
-	
-	module.exports = baseFor;
-
-
-/***/ },
-/* 113 */
-/***/ function(module, exports) {
-
-	/**
-	 * Creates a base function for methods like `_.forIn`.
-	 *
-	 * @private
-	 * @param {boolean} [fromRight] Specify iterating from right to left.
-	 * @returns {Function} Returns the new base function.
-	 */
-	function createBaseFor(fromRight) {
-	  return function(object, iteratee, keysFunc) {
-	    var index = -1,
-	        iterable = Object(object),
-	        props = keysFunc(object),
-	        length = props.length;
-	
-	    while (length--) {
-	      var key = props[fromRight ? length : ++index];
-	      if (iteratee(iterable[key], key, iterable) === false) {
-	        break;
-	      }
-	    }
-	    return object;
-	  };
-	}
-	
-	module.exports = createBaseFor;
-
-
-/***/ },
-/* 114 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isArrayLike = __webpack_require__(27);
-	
-	/**
-	 * Creates a `baseEach` or `baseEachRight` function.
-	 *
-	 * @private
-	 * @param {Function} eachFunc The function to iterate over a collection.
-	 * @param {boolean} [fromRight] Specify iterating from right to left.
-	 * @returns {Function} Returns the new base function.
-	 */
-	function createBaseEach(eachFunc, fromRight) {
-	  return function(collection, iteratee) {
-	    if (collection == null) {
-	      return collection;
-	    }
-	    if (!isArrayLike(collection)) {
-	      return eachFunc(collection, iteratee);
-	    }
-	    var length = collection.length,
-	        index = fromRight ? length : -1,
-	        iterable = Object(collection);
-	
-	    while ((fromRight ? index-- : ++index < length)) {
-	      if (iteratee(iterable[index], index, iterable) === false) {
-	        break;
-	      }
-	    }
-	    return collection;
-	  };
-	}
-	
-	module.exports = createBaseEach;
-
-
-/***/ },
-/* 115 */
-/***/ function(module, exports) {
-
-	/**
-	 * The base implementation of methods like `_.find` and `_.findKey`, without
-	 * support for iteratee shorthands, which iterates over `collection` using
-	 * `eachFunc`.
-	 *
-	 * @private
-	 * @param {Array|Object} collection The collection to search.
-	 * @param {Function} predicate The function invoked per iteration.
-	 * @param {Function} eachFunc The function to iterate over `collection`.
-	 * @param {boolean} [retKey] Specify returning the key of the found element instead of the element itself.
-	 * @returns {*} Returns the found element or its key, else `undefined`.
-	 */
-	function baseFind(collection, predicate, eachFunc, retKey) {
-	  var result;
-	  eachFunc(collection, function(value, key, collection) {
-	    if (predicate(value, key, collection)) {
-	      result = retKey ? key : value;
-	      return false;
-	    }
-	  });
-	  return result;
-	}
-	
-	module.exports = baseFind;
-
-
-/***/ },
-/* 116 */
-/***/ function(module, exports) {
-
-	/**
-	 * The base implementation of `_.findIndex` and `_.findLastIndex` without
-	 * support for iteratee shorthands.
-	 *
-	 * @private
-	 * @param {Array} array The array to search.
-	 * @param {Function} predicate The function invoked per iteration.
-	 * @param {boolean} [fromRight] Specify iterating from right to left.
-	 * @returns {number} Returns the index of the matched value, else `-1`.
-	 */
-	function baseFindIndex(array, predicate, fromRight) {
-	  var length = array.length,
-	      index = fromRight ? length : -1;
-	
-	  while ((fromRight ? index-- : ++index < length)) {
-	    if (predicate(array[index], index, array)) {
-	      return index;
-	    }
-	  }
-	  return -1;
-	}
-	
-	module.exports = baseFindIndex;
-
-
-/***/ },
-/* 117 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	if (!window.ga) {
-	    if (location.hostname !== 'localhost') {
-	        (function (i, s, o, g, r, a, m) {
-	            i['GoogleAnalyticsObject'] = r;i[r] = i[r] || function () {
-	                (i[r].q = i[r].q || []).push(arguments);
-	            }, i[r].l = 1 * new Date();a = s.createElement(o), m = s.getElementsByTagName(o)[0];a.async = 1;a.src = g;m.parentNode.insertBefore(a, m);
-	        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-	    } else {
-	        window.ga = function () {};
-	    }
-	}
-	
-	module.exports = {
-	    pageview: function pageview() {
-	        ga('create', 'UA-73703688-1', 'auto');
-	        ga('send', 'pageview');
-	    }
-	};
-
-/***/ },
-/* 118 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	module.exports = {
-	    "categories": [{
-	        "name": "Klasszikus pizzák",
-	        "id": "klasszikus-pizzak"
-	    }, {
-	        "name": "Extra pizzák",
-	        "id": "extra-pizzak"
-	    }, {
-	        "name": "Full a fullban pizzák",
-	        "id": "full-a-fullban-pizzak"
-	    }, {
-	        "name": "Tészták",
-	        "id": "tesztak"
-	    }, {
-	        "name": "Fúziós ételek",
-	        "id": "fuzios-etelek"
-	    }, {
-	        "name": "Rántott sajtok és frissensültek",
-	        "id": "rantott-sajtok-es-frissensultek"
-	    }, {
-	        "name": "Hamburgerek",
-	        "id": "hamburgerek"
-	    }, {
-	        "name": "Saláták",
-	        "id": "salatak"
-	    }, {
-	        "name": "Édességek",
-	        "id": "edessegek"
-	    }, {
-	        "name": "Üdítők",
-	        "id": "uditok"
-	    }],
-	    "dishes": [{
-	        "categoryId": "klasszikus-pizzak",
-	        "id": "margarita-pizza",
-	        "category": "Klasszikus pizzák",
-	        "name": "Margarita pizza",
-	        "description": "fűszeres paradicsomszósz, sajt",
-	        "imageName": "margarita-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1070
-	        }, {
-	            "name": "40cm",
-	            "price": 2070
-	        }, {
-	            "name": "50cm",
-	            "price": 2920
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "klasszikus-pizzak",
-	        "id": "sonkas-pizza",
-	        "category": "Klasszikus pizzák",
-	        "name": "Sonkás pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, sonka",
-	        "imageName": "sonkas-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1070
-	        }, {
-	            "name": "40cm",
-	            "price": 2070
-	        }, {
-	            "name": "50cm",
-	            "price": 2920
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "klasszikus-pizzak",
-	        "id": "szalamis-pizza",
-	        "category": "Klasszikus pizzák",
-	        "name": "Szalámis pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, paprikás szalámi",
-	        "imageName": "szalamis-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1070
-	        }, {
-	            "name": "40cm",
-	            "price": 2070
-	        }, {
-	            "name": "50cm",
-	            "price": 2920
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "klasszikus-pizzak",
-	        "id": "sonka-ku-pizza",
-	        "category": "Klasszikus pizzák",
-	        "name": "Sonka-ku pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, sonka, kukorica",
-	        "imageName": "sonka-ku-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1070
-	        }, {
-	            "name": "40cm",
-	            "price": 2070
-	        }, {
-	            "name": "50cm",
-	            "price": 2920
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "klasszikus-pizzak",
-	        "id": "bacon-pizza",
-	        "category": "Klasszikus pizzák",
-	        "name": "Bacon pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, pirított bacon",
-	        "imageName": "bacon-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1070
-	        }, {
-	            "name": "40cm",
-	            "price": 2070
-	        }, {
-	            "name": "50cm",
-	            "price": 2920
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "klasszikus-pizzak",
-	        "id": "4-sajtos-pizza",
-	        "category": "Klasszikus pizzák",
-	        "name": "4 Sajtos pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, parmezán, gorgonzola, füstölt sajt",
-	        "imageName": "4-sajtos-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1070
-	        }, {
-	            "name": "40cm",
-	            "price": 2070
-	        }, {
-	            "name": "50cm",
-	            "price": 2920
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "klasszikus-pizzak",
-	        "id": "hawaii-pizza",
-	        "category": "Klasszikus pizzák",
-	        "name": "Hawaii pizza",
-	        "description": "fűszeres paradicsomszósz vagy fűszeres tejfölös szósz, sajt, sonka, ananász, füstölt sajt",
-	        "imageName": "hawaii-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1070
-	        }, {
-	            "name": "40cm",
-	            "price": 2070
-	        }, {
-	            "name": "50cm",
-	            "price": 2920
-	        }],
-	        "options": [{
-	            "name": "Alap",
-	            "list": ["fűszeres paradicsomszósz", "fűszeres tejfölös szósz"]
-	        }]
-	    }, {
-	        "categoryId": "extra-pizzak",
-	        "id": "tonhalas-pizza",
-	        "category": "Extra pizzák",
-	        "name": "Tonhalas pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek",
-	        "imageName": "tonhalas-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1190
-	        }, {
-	            "name": "40cm",
-	            "price": 2450
-	        }, {
-	            "name": "50cm",
-	            "price": 3540
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "extra-pizzak",
-	        "id": "piedone-pizza",
-	        "category": "Extra pizzák",
-	        "name": "Piedone pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika",
-	        "imageName": "piedone-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1190
-	        }, {
-	            "name": "40cm",
-	            "price": 2450
-	        }, {
-	            "name": "50cm",
-	            "price": 3540
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "extra-pizzak",
-	        "id": "joasszony-pizza",
-	        "category": "Extra pizzák",
-	        "name": "Jóasszony pizza",
-	        "description": "fűszeres paradicsomszósz alap, sajt, paprikás szalámi, csípős cseresznyepaprika, csiperke gomba, hagyma",
-	        "imageName": "joasszony-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1190
-	        }, {
-	            "name": "40cm",
-	            "price": 2450
-	        }, {
-	            "name": "50cm",
-	            "price": 3540
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "extra-pizzak",
-	        "id": "3-kivansag-pizza",
-	        "category": "Extra pizzák",
-	        "name": "3 Kívánság pizza",
-	        "description": "szabadon választott szósz alap, sajt, és pluszban három feltét",
-	        "imageName": "3-kivansag-pizza",
-	        "type": "pizza-3-free-options",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1190
-	        }, {
-	            "name": "40cm",
-	            "price": 2450
-	        }, {
-	            "name": "50cm",
-	            "price": 3540
-	        }],
-	        "options": [{
-	            "name": "Alap",
-	            "list": ["fűszeres paradicsomszósz alap", "fűszeres tejfölös szósz", "fokhagymás bbq szósz", "TODO"]
-	        }]
-	    }, {
-	        "categoryId": "extra-pizzak",
-	        "id": "chuck-norris-pizza",
-	        "category": "Extra pizzák",
-	        "name": "Chuck Norris pizza",
-	        "description": "extra erős chilipaszta, sajt, grillezett csirkemell, paradicsomkarika, szeletekre vágott lilahagyma",
-	        "imageName": "chuck-norris-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1190
-	        }, {
-	            "name": "40cm",
-	            "price": 2450
-	        }, {
-	            "name": "50cm",
-	            "price": 3540
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "szex-es-new-york-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Szex & New York pizza",
-	        "description": "választható alap, bacon, kukorica, brokkoli, camambert, tükörtojás",
-	        "imageName": "szex-es-new-york-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }, {
-	            "name": "40cm",
-	            "price": 3100
-	        }, {
-	            "name": "50cm",
-	            "price": 3950
-	        }],
-	        "options": [{
-	            "name": "Alap",
-	            "list": ["fűszeres paradicsomszósz alap", "fűszeres tejfölös szósz", "fokhagymás bbq szósz", "TODO"]
-	        }]
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "victorio-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Victorio pizza",
-	        "description": "fokhagymás tejfölös alap, sajt, póréhagyma, mozzarella golyó, pirított bacon, juhturó",
-	        "imageName": "victorio-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }, {
-	            "name": "40cm",
-	            "price": 3100
-	        }, {
-	            "name": "50cm",
-	            "price": 3950
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "hus-zabalo-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Hús-zabáló pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, csirkemell, sült tarja, sonka, bacon",
-	        "imageName": "hus-zabalo-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }, {
-	            "name": "40cm",
-	            "price": 3100
-	        }, {
-	            "name": "50cm",
-	            "price": 3950
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "master-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Master pizza",
-	        "description": "tejfölös mustáros tárkonyos ízvilág, sajt, sonka, kukorica, pirított bacon, csiperke gomba",
-	        "imageName": "master-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }, {
-	            "name": "40cm",
-	            "price": 3100
-	        }, {
-	            "name": "50cm",
-	            "price": 3950
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "barbeque-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Barbeque pizza",
-	        "description": "bbq alap szósz, sajt, bacon vagy csirkemell, vöröshagyma, pritamin paprika szeletek",
-	        "imageName": "barbeque-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }, {
-	            "name": "40cm",
-	            "price": 3100
-	        }, {
-	            "name": "50cm",
-	            "price": 3950
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "jalapeno-barbeque-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Jalapeno Barbeque pizza",
-	        "description": "fokhagymás bbq szósz, sajt, csirkemell, pirított póréhagyma, paradicsomkarika , jalapeno",
-	        "imageName": "jalapeno-barbeque-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }, {
-	            "name": "40cm",
-	            "price": 3100
-	        }, {
-	            "name": "50cm",
-	            "price": 3950
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "tenger-kincsei-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Tenger kincsei pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, pácban érlelt tenger gyümölcsei, vegyes magozott olíva bogyó",
-	        "imageName": "tenger-kincsei-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }, {
-	            "name": "40cm",
-	            "price": 3100
-	        }, {
-	            "name": "50cm",
-	            "price": 3950
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "dani-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Dani pizza",
-	        "description": "tejfölös fokhagymás alap, sajt, főtt tarja, lila hagyma, bacon, szeletekre vágott jalapeno paprika",
-	        "imageName": "dani-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }, {
-	            "name": "40cm",
-	            "price": 3100
-	        }, {
-	            "name": "50cm",
-	            "price": 3950
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "meex-toltott-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Meex töltött pizza",
-	        "description": "tejfölös alap, paprikás szalámi, ruccola, ízletes cheddar sajt, jalapeno paprika",
-	        "imageName": "meex-toltott-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1450
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "full-a-fullban-pizzak",
-	        "id": "bossy-pizza",
-	        "category": "Full a fullban pizzák",
-	        "name": "Bossy pizza",
-	        "description": "fűszeres paradicsomszósz, sajt, pármai sonka, frissen vágott ruccola, koktél paradicsom",
-	        "imageName": "bossy-pizza",
-	        "type": "pizza",
-	        "variants": [{
-	            "name": "30cm",
-	            "price": 1550
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "tesztak",
-	        "id": "carbonara",
-	        "category": "Tészták",
-	        "name": "Carbonara",
-	        "description": "bacon, sonka, tojás, tejszín, parmezán sajt, spagetti",
-	        "imageName": "carbonara",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "tesztak",
-	        "id": "peperoncino",
-	        "category": "Tészták",
-	        "name": "Peperoncino",
-	        "description": "pirított fokhagymás olívaolaj, chili, petrezselyem, csípős, spagetti",
-	        "imageName": "peperoncino",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "tesztak",
-	        "id": "milanoi",
-	        "category": "Tészták",
-	        "name": "Milánói",
-	        "description": "paradicsomszósz, sonka, gomba, trappista sajt, spagetti",
-	        "imageName": "milanoi",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "tesztak",
-	        "id": "meex-i",
-	        "category": "Tészták",
-	        "name": "Meex I",
-	        "description": "csirke, gomba, fokhagyma, fűszeres tejszínes szósz, parmezán, spagetti",
-	        "imageName": "meex-i",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1190
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "tesztak",
-	        "id": "meex-ii",
-	        "category": "Tészták",
-	        "name": "Meex II",
-	        "description": "csirke, gomba, fokhagyma, fűszeres tejszínes szósz, kukorica, parmezán, pennetészta",
-	        "imageName": "meex-ii",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1190
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "tesztak",
-	        "id": "bolognai",
-	        "category": "Tészták",
-	        "name": "Bolognai",
-	        "description": "paradicsomos alap, hagyma, darált sertés, fűszerek, spagetti",
-	        "imageName": "bolognai",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1190
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "fuzios-etelek",
-	        "id": "akay-torok-pizza",
-	        "category": "Fúziós ételek",
-	        "name": "Akay - török pizza",
-	        "description": "fűszeres paradicsomos alap, sajt, sonka",
-	        "imageName": "akay-torok-pizza",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 490
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "fuzios-etelek",
-	        "id": "banu-torok-pizza",
-	        "category": "Fúziós ételek",
-	        "name": "Banu - török pizza",
-	        "description": "tejfölös alap, sajt, tarja, pirított fokhagyma",
-	        "imageName": "banu-torok-pizza",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 490
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "fuzios-etelek",
-	        "id": "cahil-torok-pizza",
-	        "category": "Fúziós ételek",
-	        "name": "Cahil - török pizza",
-	        "description": "bbq alap, sajt, ropogós bacon",
-	        "imageName": "cahil-torok-pizza",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 490
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "fuzios-etelek",
-	        "id": "torok-pizza-menu",
-	        "category": "Fúziós ételek",
-	        "name": "Török pizza menü",
-	        "description": "választható török pizzával, hasábburgonyával és egy 0,33l-es üdítővel",
-	        "imageName": "torok-pizza-menu",
-	        "type": "none",
-	        "variants": [{
-	            "name": "Akay",
-	            "price": 990
-	        }, {
-	            "name": "Banu",
-	            "price": 990
-	        }, {
-	            "name": "Cahil",
-	            "price": 990
-	        }],
-	        "options": [{
-	            "name": "Üdítő",
-	            "list": ["Pepsi", "Lipton Ice Tea (zöldtea)", "Lipton Ice Tea (őszibarack)"]
-	        }]
-	    }, {
-	        "categoryId": "rantott-sajtok-es-frissensultek",
-	        "id": "izletes-cheddar-sajtfalatkak",
-	        "category": "Rántott sajtok és frissensültek",
-	        "name": "Ízletes cheddar sajtfalatkák",
-	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
-	        "imageName": "rantottsajt-cheddar",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1290
-	        }],
-	        "options": [{
-	            "name": "Köret",
-	            "list": ["hasábburgonya", "steakburgonya"]
-	        }, {
-	            "name": "Szósz",
-	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
-	        }]
-	    }, {
-	        "categoryId": "rantott-sajtok-es-frissensultek",
-	        "id": "camembert-sajt",
-	        "category": "Rántott sajtok és frissensültek",
-	        "name": "Camembert sajt",
-	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
-	        "imageName": "rantottsajt-camambert",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1290
-	        }],
-	        "options": [{
-	            "name": "Köret",
-	            "list": ["hasábburgonya", "steakburgonya"]
-	        }, {
-	            "name": "Szósz",
-	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
-	        }]
-	    }, {
-	        "categoryId": "rantott-sajtok-es-frissensultek",
-	        "id": "trappista-sajt",
-	        "category": "Rántott sajtok és frissensültek",
-	        "name": "Trappista sajt",
-	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
-	        "imageName": "rantottsajt-trappista",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1290
-	        }],
-	        "options": [{
-	            "name": "Köret",
-	            "list": ["hasábburgonya", "steakburgonya"]
-	        }, {
-	            "name": "Szósz",
-	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
-	        }]
-	    }, {
-	        "categoryId": "rantott-sajtok-es-frissensultek",
-	        "id": "buffalo-csirkeszarnyak",
-	        "category": "Rántott sajtok és frissensültek",
-	        "name": "Buffalo csirkeszárnyak",
-	        "description": "TODO",
-	        "imageName": "buffalo-csirkeszarnyak",
-	        "type": "none",
-	        "variants": [{
-	            "name": "6 darab",
-	            "price": 780
-	        }, {
-	            "name": "12 darab",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "rantott-sajtok-es-frissensultek",
-	        "id": "buffalo-csirkeszarnyak-menu",
-	        "category": "Rántott sajtok és frissensültek",
-	        "name": "Buffalo csirkeszárnyak menü",
-	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
-	        "imageName": "buffalo-csirkeszarnyak",
-	        "type": "none",
-	        "variants": [{
-	            "name": "6 darab",
-	            "price": 1190
-	        }, {
-	            "name": "12 darab",
-	            "price": 1350
-	        }],
-	        "options": [{
-	            "name": "Köret",
-	            "list": ["hasábburgonya", "steakburgonya"]
-	        }, {
-	            "name": "Szósz",
-	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
-	        }]
-	    }, {
-	        "categoryId": "rantott-sajtok-es-frissensultek",
-	        "id": "fitneszcsirke",
-	        "category": "Rántott sajtok és frissensültek",
-	        "name": "Fitneszcsirke",
-	        "description": "roston sült csirkemellszelet, friss saláta vagy párold zöldköret vagy párolt gyümölcs",
-	        "imageName": "fitneszcsirke",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 990
-	        }],
-	        "options": [{
-	            "name": "Köret",
-	            "list": ["friss saláta", "párolt zöldköret", "párolt gyümölcs"]
-	        }]
-	    }, {
-	        "categoryId": "hamburgerek",
-	        "id": "meex-burger",
-	        "category": "Hamburgerek",
-	        "name": "Meex burger",
-	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, opcionálisan hasáb- vagy steakburgonyával",
-	        "imageName": "meex-burger",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "Szendvics",
-	            "price": 750
-	        }, {
-	            "name": "Hasább.",
-	            "price": 990
-	        }, {
-	            "name": "Steakbur.",
-	            "price": 990
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "hamburgerek",
-	        "id": "meex-sajtburger",
-	        "category": "Hamburgerek",
-	        "name": "Meex sajtburger",
-	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával",
-	        "imageName": "meex-burger",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "Szendvics",
-	            "price": 850
-	        }, {
-	            "name": "Hasább.",
-	            "price": 1090
-	        }, {
-	            "name": "Steakbur.",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "hamburgerek",
-	        "id": "dupla-meex-burger",
-	        "category": "Hamburgerek",
-	        "name": "Dupla Meex burger",
-	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, opcionálisan hasáb- vagy steakburgonyával",
-	        "imageName": "meex-burger",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "Szendvics",
-	            "price": 1250
-	        }, {
-	            "name": "Hasább.",
-	            "price": 1490
-	        }, {
-	            "name": "Steakbur.",
-	            "price": 1490
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "hamburgerek",
-	        "id": "dupla-meex-sajtburger",
-	        "category": "Hamburgerek",
-	        "name": "Dupla Meex sajtburger",
-	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával",
-	        "imageName": "meex-burger",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "Szendvics",
-	            "price": 1450
-	        }, {
-	            "name": "Hasább.",
-	            "price": 1590
-	        }, {
-	            "name": "Steakbur.",
-	            "price": 1590
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "hamburgerek",
-	        "id": "cheese-lovers-burger",
-	        "category": "Hamburgerek",
-	        "name": "Cheese Lovers Burger",
-	        "description": "alap + választható sajt, opcionálisan hasáb- vagy steakburgonyával",
-	        "imageName": "meex-burger",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "Szendvics",
-	            "price": 890
-	        }, {
-	            "name": "Hasább.",
-	            "price": 1190
-	        }, {
-	            "name": "Steakbur.",
-	            "price": 1190
-	        }],
-	        "options": [{
-	            "name": "Sajt",
-	            "list": ["rostonsült mozzarella", "rántott trappista", "rántott camabert"]
-	        }]
-	    }, {
-	        "categoryId": "hamburgerek",
-	        "id": "texasi-tuzes-burger",
-	        "category": "Hamburgerek",
-	        "name": "Texasi Tüzes Burger",
-	        "description": "alap + 100% marhahús, jalapeno, cheddar sajt, opcionálisan hasáb- vagy steakburgonyával",
-	        "imageName": "meex-burger",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "Szendvics",
-	            "price": 990
-	        }, {
-	            "name": "Hasább.",
-	            "price": 1390
-	        }, {
-	            "name": "Steakbur.",
-	            "price": 1390
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "hamburgerek",
-	        "id": "new-york-burger",
-	        "category": "Hamburgerek",
-	        "name": "New York Burger",
-	        "description": "alap + rostonsült csirke, füstölt sajt, tükörtojás, opcionálisan hasáb- vagy steakburgonyával",
-	        "imageName": "meex-burger",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "Szendvics",
-	            "price": 990
-	        }, {
-	            "name": "Hasább.",
-	            "price": 1390
-	        }, {
-	            "name": "Steakbur.",
-	            "price": 1390
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "hamburgerek",
-	        "id": "hungarian-burger",
-	        "category": "Hamburgerek",
-	        "name": "Hungarian Burger",
-	        "description": "alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt, opcionálisan hasáb- vagy steakburgonyával",
-	        "imageName": "meex-burger",
-	        "type": "hamburger",
-	        "variants": [{
-	            "name": "Szendvics",
-	            "price": 990
-	        }, {
-	            "name": "Hasább.",
-	            "price": 1390
-	        }, {
-	            "name": "Steakbur.",
-	            "price": 1390
-	        }],
-	        "options": [{
-	            "name": "Hús",
-	            "list": ["panko morzsás sertés", "csirke"]
-	        }]
-	    }, {
-	        "categoryId": "salatak",
-	        "id": "hawaii-jerce-salata",
-	        "category": "Saláták",
-	        "name": "Hawaii Jérce saláta",
-	        "description": "roston sült csirkemell, ananász, friss zsenge jégsaláta, joghurtos tartár, pizzakenyér-szeletekkel tálalva",
-	        "imageName": "hawaii-jerce-salata",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "salatak",
-	        "id": "miami-salata",
-	        "category": "Saláták",
-	        "name": "Miami saláta",
-	        "description": "grillezett tejszínes csirkemellcsíkok, parmezán, friss zsenge jégsaláta, paradicsom, uborka, pizzakenyér-szeletekkel tálalva",
-	        "imageName": "miami-salata",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "salatak",
-	        "id": "miami-2-salata",
-	        "category": "Saláták",
-	        "name": "Miami 2 saláta",
-	        "description": "mézes-mustáros tejszínes csirkemell, friss zsenge jégsaláta, paradicsom, uborka, pizzakenyér-szeletekkel tálalva",
-	        "imageName": "miami-2-salata",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "salatak",
-	        "id": "mozarella-salata",
-	        "category": "Saláták",
-	        "name": "Mozarella saláta",
-	        "description": "mozarella golyók, paradicsomkarikák, olívaolajos bazsalikommal és oregánóval, pizzakenyér szeletekkel tálalva",
-	        "imageName": "mozarella-salata",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "salatak",
-	        "id": "tonhal-salata",
-	        "category": "Saláták",
-	        "name": "Tonhal saláta",
-	        "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, tonhaltörzs, sajtkocka, pizzakenyér szeletekkel tálalva",
-	        "imageName": "tonhal-salata",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "salatak",
-	        "id": "cezar-salata",
-	        "category": "Saláták",
-	        "name": "Cézár saláta",
-	        "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, grillezett fűszeres csirkemell, parmezán, pizzakenyér szeletekkel tálalva",
-	        "imageName": "cezar-salata",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 1090
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "edessegek",
-	        "id": "profiterol",
-	        "category": "Édességek",
-	        "name": "Profiterol",
-	        "description": "Profiterol golyók fehér- és tejcsokoládé bevonattal, tejszínhab koronával",
-	        "imageName": "profiterol",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 600
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "edessegek",
-	        "id": "panna-cotta",
-	        "category": "Édességek",
-	        "name": "Panna Cotta",
-	        "description": "tejszínes desszert, gyümölcsszósszal",
-	        "imageName": "panna-cotta",
-	        "type": "none",
-	        "variants": [{
-	            "name": "",
-	            "price": 600
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "uditok",
-	        "id": "pepsi",
-	        "category": "Üdítők",
-	        "name": "Pepsi",
-	        "description": "",
-	        "imageName": "pepsi",
-	        "type": "none",
-	        "variants": [{
-	            "name": "0,33 liter",
-	            "price": 190
-	        }, {
-	            "name": "1 liter",
-	            "price": 350
-	        }, {
-	            "name": "1,75 liter",
-	            "price": 480
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "uditok",
-	        "id": "pepsi-max",
-	        "category": "Üdítők",
-	        "name": "Pepsi Max",
-	        "description": "",
-	        "imageName": "pepsi-max",
-	        "type": "none",
-	        "variants": [{
-	            "name": "0,33 liter",
-	            "price": 190
-	        }, {
-	            "name": "1 liter",
-	            "price": 350
-	        }, {
-	            "name": "1,75 liter",
-	            "price": 480
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "uditok",
-	        "id": "mirinda",
-	        "category": "Üdítők",
-	        "name": "Mirinda",
-	        "description": "",
-	        "imageName": "mirinda",
-	        "type": "none",
-	        "variants": [{
-	            "name": "0,33 liter",
-	            "price": 190
-	        }, {
-	            "name": "1 liter",
-	            "price": 350
-	        }, {
-	            "name": "1,75 liter",
-	            "price": 480
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "uditok",
-	        "id": "canada-dry",
-	        "category": "Üdítők",
-	        "name": "Canada Dry",
-	        "description": "",
-	        "imageName": "canada-dry",
-	        "type": "none",
-	        "variants": [{
-	            "name": "0,33 liter",
-	            "price": 190
-	        }, {
-	            "name": "1 liter",
-	            "price": 350
-	        }, {
-	            "name": "1,75 liter",
-	            "price": 480
-	        }],
-	        "options": []
-	    }, {
-	        "categoryId": "uditok",
-	        "id": "lipton-ice-tea",
-	        "category": "Üdítők",
-	        "name": "Lipton Ice Tea",
-	        "description": "",
-	        "imageName": "lipton-ice-tea",
-	        "type": "none",
-	        "variants": [{
-	            "name": "0,33 liter",
-	            "price": 190
-	        }],
-	        "options": []
-	    }],
-	    "pizzaExtras": [{
-	        "name": "Húsok",
-	        "price": 250,
-	        "list": ["sonka", "tarja", "bacon", "szalámi", "csirkemell"]
-	    }, {
-	        "name": "Halféleségek",
-	        "price": 300,
-	        "list": ["tengergyümölcsei", "tonhal"]
-	    }, {
-	        "name": "Prémium sonkák",
-	        "price": 450,
-	        "list": ["pármai", "serrano", "mangalica"]
-	    }, {
-	        "name": "Tejes készítmények, sajtok",
-	        "price": 250,
-	        "list": ["tejföl", "juhtúró", "sajt", "füstölt sajt"]
-	    }, {
-	        "name": "Prémium sajtok",
-	        "price": 300,
-	        "list": ["gorgonzola sajt", "parmezán sajt", "mozzarella golyó", "feta sajt"]
-	    }, {
-	        "name": "Zöldségek",
-	        "price": 150,
-	        "list": ["kukorica", "gomba", "fokhagyma", "hagyma", "póréhagyma", "capribogyó", "fehér és vörös óriásbab", "édes pepperóni", "erős cseresznyepaprika", "jalapeno paprika", "padlizsán", "cukkini", "répa", "pritamin paprika", "magozott zöld és fekete olívabogyó", "ruccola", "paradicsom", "brokkoli"]
-	    }, {
-	        "name": "Gyümölcsök",
-	        "price": 150,
-	        "list": ["ananász", "citrom"]
-	    }],
-	    "hamburgerExtras": [{
-	        "name": "Zöldségek",
-	        "price": 100,
-	        "list": ["jégsaláta", "paradicsom", "uborka"]
-	    }, {
-	        "name": "Húsok",
-	        "price": 300,
-	        "list": ["Húspogácsa"]
-	    }, {
-	        "name": "Sajtok",
-	        "price": 150,
-	        "list": ["parmezán", "gorgonzola", "cheddar"]
-	    }],
-	    "deliveryFees": {
-	        "Gyöngyös": {
-	            "min": 1000
-	        },
-	        "Karácsondi úti gyártelep": {
-	            "min": 2000
-	        },
-	        "KRF Kollégium": {
-	            "min": 2000
-	        },
-	        "Abasár": {
-	            "fix": 800
-	        },
-	        "Detk": {
-	            "fix": 800
-	        },
-	        "Gyöngyöshalász": {
-	            "fix": 800
-	        },
-	        "Gyöngyössolymos": {
-	            "fix": 800
-	        },
-	        "Gyöngyöstarján": {
-	            "fix": 800
-	        },
-	        "Mátrafüred": {
-	            "fix": 800
-	        },
-	        "Nagyréde": {
-	            "fix": 800
-	        },
-	        "Pálosvörösmart": {
-	            "fix": 800
-	        },
-	        "Visonta": {
-	            "fix": 1000
-	        }
-	    },
-	    "version": "48fef07fd0f94830c087df8e37f78f6e"
-	};
-
-/***/ },
-/* 119 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var H = __webpack_require__(120);
-	module.exports = function() { var T = new H.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");if(t.s(t.f("isEmpty",c,p,1),c,p,0,12,149,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<p class=\"default-content\">\r");t.b("\n" + i);t.b("    A kosár még üres.\r");t.b("\n" + i);t.b("    Az ételeket a \"Kosárba\" gomb megnyomásával adhatod hozzá a rendeléshez.\r");t.b("\n" + i);t.b("</p>\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(t.s(t.f("lines",c,p,1),c,p,0,175,597,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("    <div class=\"line\">\r");t.b("\n" + i);t.b("        <div class=\"name\">");t.b(t.v(t.f("name",c,p,0)));t.b("</div>\r");t.b("\n" + i);t.b("        <div class=\"price\">");t.b(t.v(t.f("price",c,p,0)));t.b(" Ft</div>\r");t.b("\n" + i);t.b("        <div class=\"actions\">\r");t.b("\n" + i);t.b("            <button data-duplicate-order-item=\"");t.b(t.v(t.f("id",c,p,0)));t.b("\"><svg><use xlink:href=\"#icon-plus\"></use></svg> Még</button>\r");t.b("\n" + i);t.b("            <button data-remove-order-item=\"");t.b(t.v(t.f("id",c,p,0)));t.b("\"><svg><use xlink:href=\"#icon-minus\"></use></svg> Ki a kosárból</button>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("    </div>\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(t.s(t.f("deliveryFee",c,p,1),c,p,0,627,735,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<div class=\"delivery-fee\">\r");t.b("\n" + i);t.b("    <div>Kiszállítási díj</div>\r");t.b("\n" + i);t.b("    <div>");t.b(t.v(t.f("deliveryFee",c,p,0)));t.b(" Ft</div>\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(t.s(t.f("total",c,p,1),c,p,0,765,816,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<div>Végösszeg</div>\r");t.b("\n" + i);t.b("<div>");t.b(t.v(t.f("total",c,p,0)));t.b(" Ft</div>\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(t.s(t.f("showMinForFreeDeliveryMessage",c,p,1),c,p,0,864,950,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<p>A minimális ");t.b(t.v(t.f("minForFreeDelivery",c,p,0)));t.b(" Ft rendelési értéket még nem érted el.</p>\r");t.b("\n" + i);});c.pop();}return t.fl(); },partials: {}, subs: {  }}, "{{#isEmpty}}\r\n<p class=\"default-content\">\r\n    A kosár még üres.\r\n    Az ételeket a \"Kosárba\" gomb megnyomásával adhatod hozzá a rendeléshez.\r\n</p>\r\n{{/isEmpty}}\r\n\r\n{{#lines}}\r\n    <div class=\"line\">\r\n        <div class=\"name\">{{ name }}</div>\r\n        <div class=\"price\">{{ price }} Ft</div>\r\n        <div class=\"actions\">\r\n            <button data-duplicate-order-item=\"{{ id }}\"><svg><use xlink:href=\"#icon-plus\"></use></svg> Még</button>\r\n            <button data-remove-order-item=\"{{ id }}\"><svg><use xlink:href=\"#icon-minus\"></use></svg> Ki a kosárból</button>\r\n        </div>\r\n    </div>\r\n{{/lines}}\r\n\r\n{{#deliveryFee}}\r\n<div class=\"delivery-fee\">\r\n    <div>Kiszállítási díj</div>\r\n    <div>{{ deliveryFee }} Ft</div>\r\n</div>\r\n{{/deliveryFee}}\r\n\r\n{{#total}}\r\n<div>Végösszeg</div>\r\n<div>{{ total }} Ft</div>\r\n{{/total}}\r\n\r\n{{#showMinForFreeDeliveryMessage}}\r\n<p>A minimális {{ minForFreeDelivery }} Ft rendelési értéket még nem érted el.</p>\r\n{{/showMinForFreeDeliveryMessage}}\r\n", H);return T.render.apply(T, arguments); };
-
-/***/ },
-/* 120 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	 *  Copyright 2011 Twitter, Inc.
-	 *  Licensed under the Apache License, Version 2.0 (the "License");
-	 *  you may not use this file except in compliance with the License.
-	 *  You may obtain a copy of the License at
-	 *
-	 *  http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 *  Unless required by applicable law or agreed to in writing, software
-	 *  distributed under the License is distributed on an "AS IS" BASIS,
-	 *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 *  See the License for the specific language governing permissions and
-	 *  limitations under the License.
-	 */
-	
-	// This file is for use with Node.js. See dist/ for browser files.
-	
-	var Hogan = __webpack_require__(121);
-	Hogan.Template = __webpack_require__(122).Template;
-	Hogan.template = Hogan.Template;
-	module.exports = Hogan;
-
-
-/***/ },
-/* 121 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	 *  Copyright 2011 Twitter, Inc.
-	 *  Licensed under the Apache License, Version 2.0 (the "License");
-	 *  you may not use this file except in compliance with the License.
-	 *  You may obtain a copy of the License at
-	 *
-	 *  http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 *  Unless required by applicable law or agreed to in writing, software
-	 *  distributed under the License is distributed on an "AS IS" BASIS,
-	 *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 *  See the License for the specific language governing permissions and
-	 *  limitations under the License.
-	 */
-	
-	(function (Hogan) {
-	  // Setup regex  assignments
-	  // remove whitespace according to Mustache spec
-	  var rIsWhitespace = /\S/,
-	      rQuot = /\"/g,
-	      rNewline =  /\n/g,
-	      rCr = /\r/g,
-	      rSlash = /\\/g,
-	      rLineSep = /\u2028/,
-	      rParagraphSep = /\u2029/;
-	
-	  Hogan.tags = {
-	    '#': 1, '^': 2, '<': 3, '$': 4,
-	    '/': 5, '!': 6, '>': 7, '=': 8, '_v': 9,
-	    '{': 10, '&': 11, '_t': 12
-	  };
-	
-	  Hogan.scan = function scan(text, delimiters) {
-	    var len = text.length,
-	        IN_TEXT = 0,
-	        IN_TAG_TYPE = 1,
-	        IN_TAG = 2,
-	        state = IN_TEXT,
-	        tagType = null,
-	        tag = null,
-	        buf = '',
-	        tokens = [],
-	        seenTag = false,
-	        i = 0,
-	        lineStart = 0,
-	        otag = '{{',
-	        ctag = '}}';
-	
-	    function addBuf() {
-	      if (buf.length > 0) {
-	        tokens.push({tag: '_t', text: new String(buf)});
-	        buf = '';
-	      }
-	    }
-	
-	    function lineIsWhitespace() {
-	      var isAllWhitespace = true;
-	      for (var j = lineStart; j < tokens.length; j++) {
-	        isAllWhitespace =
-	          (Hogan.tags[tokens[j].tag] < Hogan.tags['_v']) ||
-	          (tokens[j].tag == '_t' && tokens[j].text.match(rIsWhitespace) === null);
-	        if (!isAllWhitespace) {
-	          return false;
-	        }
-	      }
-	
-	      return isAllWhitespace;
-	    }
-	
-	    function filterLine(haveSeenTag, noNewLine) {
-	      addBuf();
-	
-	      if (haveSeenTag && lineIsWhitespace()) {
-	        for (var j = lineStart, next; j < tokens.length; j++) {
-	          if (tokens[j].text) {
-	            if ((next = tokens[j+1]) && next.tag == '>') {
-	              // set indent to token value
-	              next.indent = tokens[j].text.toString()
-	            }
-	            tokens.splice(j, 1);
-	          }
-	        }
-	      } else if (!noNewLine) {
-	        tokens.push({tag:'\n'});
-	      }
-	
-	      seenTag = false;
-	      lineStart = tokens.length;
-	    }
-	
-	    function changeDelimiters(text, index) {
-	      var close = '=' + ctag,
-	          closeIndex = text.indexOf(close, index),
-	          delimiters = trim(
-	            text.substring(text.indexOf('=', index) + 1, closeIndex)
-	          ).split(' ');
-	
-	      otag = delimiters[0];
-	      ctag = delimiters[delimiters.length - 1];
-	
-	      return closeIndex + close.length - 1;
-	    }
-	
-	    if (delimiters) {
-	      delimiters = delimiters.split(' ');
-	      otag = delimiters[0];
-	      ctag = delimiters[1];
-	    }
-	
-	    for (i = 0; i < len; i++) {
-	      if (state == IN_TEXT) {
-	        if (tagChange(otag, text, i)) {
-	          --i;
-	          addBuf();
-	          state = IN_TAG_TYPE;
-	        } else {
-	          if (text.charAt(i) == '\n') {
-	            filterLine(seenTag);
-	          } else {
-	            buf += text.charAt(i);
-	          }
-	        }
-	      } else if (state == IN_TAG_TYPE) {
-	        i += otag.length - 1;
-	        tag = Hogan.tags[text.charAt(i + 1)];
-	        tagType = tag ? text.charAt(i + 1) : '_v';
-	        if (tagType == '=') {
-	          i = changeDelimiters(text, i);
-	          state = IN_TEXT;
-	        } else {
-	          if (tag) {
-	            i++;
-	          }
-	          state = IN_TAG;
-	        }
-	        seenTag = i;
-	      } else {
-	        if (tagChange(ctag, text, i)) {
-	          tokens.push({tag: tagType, n: trim(buf), otag: otag, ctag: ctag,
-	                       i: (tagType == '/') ? seenTag - otag.length : i + ctag.length});
-	          buf = '';
-	          i += ctag.length - 1;
-	          state = IN_TEXT;
-	          if (tagType == '{') {
-	            if (ctag == '}}') {
-	              i++;
-	            } else {
-	              cleanTripleStache(tokens[tokens.length - 1]);
-	            }
-	          }
-	        } else {
-	          buf += text.charAt(i);
-	        }
-	      }
-	    }
-	
-	    filterLine(seenTag, true);
-	
-	    return tokens;
-	  }
-	
-	  function cleanTripleStache(token) {
-	    if (token.n.substr(token.n.length - 1) === '}') {
-	      token.n = token.n.substring(0, token.n.length - 1);
-	    }
-	  }
-	
-	  function trim(s) {
-	    if (s.trim) {
-	      return s.trim();
-	    }
-	
-	    return s.replace(/^\s*|\s*$/g, '');
-	  }
-	
-	  function tagChange(tag, text, index) {
-	    if (text.charAt(index) != tag.charAt(0)) {
-	      return false;
-	    }
-	
-	    for (var i = 1, l = tag.length; i < l; i++) {
-	      if (text.charAt(index + i) != tag.charAt(i)) {
-	        return false;
-	      }
-	    }
-	
-	    return true;
-	  }
-	
-	  // the tags allowed inside super templates
-	  var allowedInSuper = {'_t': true, '\n': true, '$': true, '/': true};
-	
-	  function buildTree(tokens, kind, stack, customTags) {
-	    var instructions = [],
-	        opener = null,
-	        tail = null,
-	        token = null;
-	
-	    tail = stack[stack.length - 1];
-	
-	    while (tokens.length > 0) {
-	      token = tokens.shift();
-	
-	      if (tail && tail.tag == '<' && !(token.tag in allowedInSuper)) {
-	        throw new Error('Illegal content in < super tag.');
-	      }
-	
-	      if (Hogan.tags[token.tag] <= Hogan.tags['$'] || isOpener(token, customTags)) {
-	        stack.push(token);
-	        token.nodes = buildTree(tokens, token.tag, stack, customTags);
-	      } else if (token.tag == '/') {
-	        if (stack.length === 0) {
-	          throw new Error('Closing tag without opener: /' + token.n);
-	        }
-	        opener = stack.pop();
-	        if (token.n != opener.n && !isCloser(token.n, opener.n, customTags)) {
-	          throw new Error('Nesting error: ' + opener.n + ' vs. ' + token.n);
-	        }
-	        opener.end = token.i;
-	        return instructions;
-	      } else if (token.tag == '\n') {
-	        token.last = (tokens.length == 0) || (tokens[0].tag == '\n');
-	      }
-	
-	      instructions.push(token);
-	    }
-	
-	    if (stack.length > 0) {
-	      throw new Error('missing closing tag: ' + stack.pop().n);
-	    }
-	
-	    return instructions;
-	  }
-	
-	  function isOpener(token, tags) {
-	    for (var i = 0, l = tags.length; i < l; i++) {
-	      if (tags[i].o == token.n) {
-	        token.tag = '#';
-	        return true;
-	      }
-	    }
-	  }
-	
-	  function isCloser(close, open, tags) {
-	    for (var i = 0, l = tags.length; i < l; i++) {
-	      if (tags[i].c == close && tags[i].o == open) {
-	        return true;
-	      }
-	    }
-	  }
-	
-	  function stringifySubstitutions(obj) {
-	    var items = [];
-	    for (var key in obj) {
-	      items.push('"' + esc(key) + '": function(c,p,t,i) {' + obj[key] + '}');
-	    }
-	    return "{ " + items.join(",") + " }";
-	  }
-	
-	  function stringifyPartials(codeObj) {
-	    var partials = [];
-	    for (var key in codeObj.partials) {
-	      partials.push('"' + esc(key) + '":{name:"' + esc(codeObj.partials[key].name) + '", ' + stringifyPartials(codeObj.partials[key]) + "}");
-	    }
-	    return "partials: {" + partials.join(",") + "}, subs: " + stringifySubstitutions(codeObj.subs);
-	  }
-	
-	  Hogan.stringify = function(codeObj, text, options) {
-	    return "{code: function (c,p,i) { " + Hogan.wrapMain(codeObj.code) + " }," + stringifyPartials(codeObj) +  "}";
-	  }
-	
-	  var serialNo = 0;
-	  Hogan.generate = function(tree, text, options) {
-	    serialNo = 0;
-	    var context = { code: '', subs: {}, partials: {} };
-	    Hogan.walk(tree, context);
-	
-	    if (options.asString) {
-	      return this.stringify(context, text, options);
-	    }
-	
-	    return this.makeTemplate(context, text, options);
-	  }
-	
-	  Hogan.wrapMain = function(code) {
-	    return 'var t=this;t.b(i=i||"");' + code + 'return t.fl();';
-	  }
-	
-	  Hogan.template = Hogan.Template;
-	
-	  Hogan.makeTemplate = function(codeObj, text, options) {
-	    var template = this.makePartials(codeObj);
-	    template.code = new Function('c', 'p', 'i', this.wrapMain(codeObj.code));
-	    return new this.template(template, text, this, options);
-	  }
-	
-	  Hogan.makePartials = function(codeObj) {
-	    var key, template = {subs: {}, partials: codeObj.partials, name: codeObj.name};
-	    for (key in template.partials) {
-	      template.partials[key] = this.makePartials(template.partials[key]);
-	    }
-	    for (key in codeObj.subs) {
-	      template.subs[key] = new Function('c', 'p', 't', 'i', codeObj.subs[key]);
-	    }
-	    return template;
-	  }
-	
-	  function esc(s) {
-	    return s.replace(rSlash, '\\\\')
-	            .replace(rQuot, '\\\"')
-	            .replace(rNewline, '\\n')
-	            .replace(rCr, '\\r')
-	            .replace(rLineSep, '\\u2028')
-	            .replace(rParagraphSep, '\\u2029');
-	  }
-	
-	  function chooseMethod(s) {
-	    return (~s.indexOf('.')) ? 'd' : 'f';
-	  }
-	
-	  function createPartial(node, context) {
-	    var prefix = "<" + (context.prefix || "");
-	    var sym = prefix + node.n + serialNo++;
-	    context.partials[sym] = {name: node.n, partials: {}};
-	    context.code += 't.b(t.rp("' +  esc(sym) + '",c,p,"' + (node.indent || '') + '"));';
-	    return sym;
-	  }
-	
-	  Hogan.codegen = {
-	    '#': function(node, context) {
-	      context.code += 'if(t.s(t.' + chooseMethod(node.n) + '("' + esc(node.n) + '",c,p,1),' +
-	                      'c,p,0,' + node.i + ',' + node.end + ',"' + node.otag + " " + node.ctag + '")){' +
-	                      't.rs(c,p,' + 'function(c,p,t){';
-	      Hogan.walk(node.nodes, context);
-	      context.code += '});c.pop();}';
-	    },
-	
-	    '^': function(node, context) {
-	      context.code += 'if(!t.s(t.' + chooseMethod(node.n) + '("' + esc(node.n) + '",c,p,1),c,p,1,0,0,"")){';
-	      Hogan.walk(node.nodes, context);
-	      context.code += '};';
-	    },
-	
-	    '>': createPartial,
-	    '<': function(node, context) {
-	      var ctx = {partials: {}, code: '', subs: {}, inPartial: true};
-	      Hogan.walk(node.nodes, ctx);
-	      var template = context.partials[createPartial(node, context)];
-	      template.subs = ctx.subs;
-	      template.partials = ctx.partials;
-	    },
-	
-	    '$': function(node, context) {
-	      var ctx = {subs: {}, code: '', partials: context.partials, prefix: node.n};
-	      Hogan.walk(node.nodes, ctx);
-	      context.subs[node.n] = ctx.code;
-	      if (!context.inPartial) {
-	        context.code += 't.sub("' + esc(node.n) + '",c,p,i);';
-	      }
-	    },
-	
-	    '\n': function(node, context) {
-	      context.code += write('"\\n"' + (node.last ? '' : ' + i'));
-	    },
-	
-	    '_v': function(node, context) {
-	      context.code += 't.b(t.v(t.' + chooseMethod(node.n) + '("' + esc(node.n) + '",c,p,0)));';
-	    },
-	
-	    '_t': function(node, context) {
-	      context.code += write('"' + esc(node.text) + '"');
-	    },
-	
-	    '{': tripleStache,
-	
-	    '&': tripleStache
-	  }
-	
-	  function tripleStache(node, context) {
-	    context.code += 't.b(t.t(t.' + chooseMethod(node.n) + '("' + esc(node.n) + '",c,p,0)));';
-	  }
-	
-	  function write(s) {
-	    return 't.b(' + s + ');';
-	  }
-	
-	  Hogan.walk = function(nodelist, context) {
-	    var func;
-	    for (var i = 0, l = nodelist.length; i < l; i++) {
-	      func = Hogan.codegen[nodelist[i].tag];
-	      func && func(nodelist[i], context);
-	    }
-	    return context;
-	  }
-	
-	  Hogan.parse = function(tokens, text, options) {
-	    options = options || {};
-	    return buildTree(tokens, '', [], options.sectionTags || []);
-	  }
-	
-	  Hogan.cache = {};
-	
-	  Hogan.cacheKey = function(text, options) {
-	    return [text, !!options.asString, !!options.disableLambda, options.delimiters, !!options.modelGet].join('||');
-	  }
-	
-	  Hogan.compile = function(text, options) {
-	    options = options || {};
-	    var key = Hogan.cacheKey(text, options);
-	    var template = this.cache[key];
-	
-	    if (template) {
-	      var partials = template.partials;
-	      for (var name in partials) {
-	        delete partials[name].instance;
-	      }
-	      return template;
-	    }
-	
-	    template = this.generate(this.parse(this.scan(text, options.delimiters), text, options), text, options);
-	    return this.cache[key] = template;
-	  }
-	})( true ? exports : Hogan);
-
-
-/***/ },
-/* 122 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	 *  Copyright 2011 Twitter, Inc.
-	 *  Licensed under the Apache License, Version 2.0 (the "License");
-	 *  you may not use this file except in compliance with the License.
-	 *  You may obtain a copy of the License at
-	 *
-	 *  http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 *  Unless required by applicable law or agreed to in writing, software
-	 *  distributed under the License is distributed on an "AS IS" BASIS,
-	 *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 *  See the License for the specific language governing permissions and
-	 *  limitations under the License.
-	 */
-	
-	var Hogan = {};
-	
-	(function (Hogan) {
-	  Hogan.Template = function (codeObj, text, compiler, options) {
-	    codeObj = codeObj || {};
-	    this.r = codeObj.code || this.r;
-	    this.c = compiler;
-	    this.options = options || {};
-	    this.text = text || '';
-	    this.partials = codeObj.partials || {};
-	    this.subs = codeObj.subs || {};
-	    this.buf = '';
-	  }
-	
-	  Hogan.Template.prototype = {
-	    // render: replaced by generated code.
-	    r: function (context, partials, indent) { return ''; },
-	
-	    // variable escaping
-	    v: hoganEscape,
-	
-	    // triple stache
-	    t: coerceToString,
-	
-	    render: function render(context, partials, indent) {
-	      return this.ri([context], partials || {}, indent);
-	    },
-	
-	    // render internal -- a hook for overrides that catches partials too
-	    ri: function (context, partials, indent) {
-	      return this.r(context, partials, indent);
-	    },
-	
-	    // ensurePartial
-	    ep: function(symbol, partials) {
-	      var partial = this.partials[symbol];
-	
-	      // check to see that if we've instantiated this partial before
-	      var template = partials[partial.name];
-	      if (partial.instance && partial.base == template) {
-	        return partial.instance;
-	      }
-	
-	      if (typeof template == 'string') {
-	        if (!this.c) {
-	          throw new Error("No compiler available.");
-	        }
-	        template = this.c.compile(template, this.options);
-	      }
-	
-	      if (!template) {
-	        return null;
-	      }
-	
-	      // We use this to check whether the partials dictionary has changed
-	      this.partials[symbol].base = template;
-	
-	      if (partial.subs) {
-	        // Make sure we consider parent template now
-	        if (!partials.stackText) partials.stackText = {};
-	        for (key in partial.subs) {
-	          if (!partials.stackText[key]) {
-	            partials.stackText[key] = (this.activeSub !== undefined && partials.stackText[this.activeSub]) ? partials.stackText[this.activeSub] : this.text;
-	          }
-	        }
-	        template = createSpecializedPartial(template, partial.subs, partial.partials,
-	          this.stackSubs, this.stackPartials, partials.stackText);
-	      }
-	      this.partials[symbol].instance = template;
-	
-	      return template;
-	    },
-	
-	    // tries to find a partial in the current scope and render it
-	    rp: function(symbol, context, partials, indent) {
-	      var partial = this.ep(symbol, partials);
-	      if (!partial) {
-	        return '';
-	      }
-	
-	      return partial.ri(context, partials, indent);
-	    },
-	
-	    // render a section
-	    rs: function(context, partials, section) {
-	      var tail = context[context.length - 1];
-	
-	      if (!isArray(tail)) {
-	        section(context, partials, this);
-	        return;
-	      }
-	
-	      for (var i = 0; i < tail.length; i++) {
-	        context.push(tail[i]);
-	        section(context, partials, this);
-	        context.pop();
-	      }
-	    },
-	
-	    // maybe start a section
-	    s: function(val, ctx, partials, inverted, start, end, tags) {
-	      var pass;
-	
-	      if (isArray(val) && val.length === 0) {
-	        return false;
-	      }
-	
-	      if (typeof val == 'function') {
-	        val = this.ms(val, ctx, partials, inverted, start, end, tags);
-	      }
-	
-	      pass = !!val;
-	
-	      if (!inverted && pass && ctx) {
-	        ctx.push((typeof val == 'object') ? val : ctx[ctx.length - 1]);
-	      }
-	
-	      return pass;
-	    },
-	
-	    // find values with dotted names
-	    d: function(key, ctx, partials, returnFound) {
-	      var found,
-	          names = key.split('.'),
-	          val = this.f(names[0], ctx, partials, returnFound),
-	          doModelGet = this.options.modelGet,
-	          cx = null;
-	
-	      if (key === '.' && isArray(ctx[ctx.length - 2])) {
-	        val = ctx[ctx.length - 1];
-	      } else {
-	        for (var i = 1; i < names.length; i++) {
-	          found = findInScope(names[i], val, doModelGet);
-	          if (found !== undefined) {
-	            cx = val;
-	            val = found;
-	          } else {
-	            val = '';
-	          }
-	        }
-	      }
-	
-	      if (returnFound && !val) {
-	        return false;
-	      }
-	
-	      if (!returnFound && typeof val == 'function') {
-	        ctx.push(cx);
-	        val = this.mv(val, ctx, partials);
-	        ctx.pop();
-	      }
-	
-	      return val;
-	    },
-	
-	    // find values with normal names
-	    f: function(key, ctx, partials, returnFound) {
-	      var val = false,
-	          v = null,
-	          found = false,
-	          doModelGet = this.options.modelGet;
-	
-	      for (var i = ctx.length - 1; i >= 0; i--) {
-	        v = ctx[i];
-	        val = findInScope(key, v, doModelGet);
-	        if (val !== undefined) {
-	          found = true;
-	          break;
-	        }
-	      }
-	
-	      if (!found) {
-	        return (returnFound) ? false : "";
-	      }
-	
-	      if (!returnFound && typeof val == 'function') {
-	        val = this.mv(val, ctx, partials);
-	      }
-	
-	      return val;
-	    },
-	
-	    // higher order templates
-	    ls: function(func, cx, partials, text, tags) {
-	      var oldTags = this.options.delimiters;
-	
-	      this.options.delimiters = tags;
-	      this.b(this.ct(coerceToString(func.call(cx, text)), cx, partials));
-	      this.options.delimiters = oldTags;
-	
-	      return false;
-	    },
-	
-	    // compile text
-	    ct: function(text, cx, partials) {
-	      if (this.options.disableLambda) {
-	        throw new Error('Lambda features disabled.');
-	      }
-	      return this.c.compile(text, this.options).render(cx, partials);
-	    },
-	
-	    // template result buffering
-	    b: function(s) { this.buf += s; },
-	
-	    fl: function() { var r = this.buf; this.buf = ''; return r; },
-	
-	    // method replace section
-	    ms: function(func, ctx, partials, inverted, start, end, tags) {
-	      var textSource,
-	          cx = ctx[ctx.length - 1],
-	          result = func.call(cx);
-	
-	      if (typeof result == 'function') {
-	        if (inverted) {
-	          return true;
-	        } else {
-	          textSource = (this.activeSub && this.subsText && this.subsText[this.activeSub]) ? this.subsText[this.activeSub] : this.text;
-	          return this.ls(result, cx, partials, textSource.substring(start, end), tags);
-	        }
-	      }
-	
-	      return result;
-	    },
-	
-	    // method replace variable
-	    mv: function(func, ctx, partials) {
-	      var cx = ctx[ctx.length - 1];
-	      var result = func.call(cx);
-	
-	      if (typeof result == 'function') {
-	        return this.ct(coerceToString(result.call(cx)), cx, partials);
-	      }
-	
-	      return result;
-	    },
-	
-	    sub: function(name, context, partials, indent) {
-	      var f = this.subs[name];
-	      if (f) {
-	        this.activeSub = name;
-	        f(context, partials, this, indent);
-	        this.activeSub = false;
-	      }
-	    }
-	
-	  };
-	
-	  //Find a key in an object
-	  function findInScope(key, scope, doModelGet) {
-	    var val;
-	
-	    if (scope && typeof scope == 'object') {
-	
-	      if (scope[key] !== undefined) {
-	        val = scope[key];
-	
-	      // try lookup with get for backbone or similar model data
-	      } else if (doModelGet && scope.get && typeof scope.get == 'function') {
-	        val = scope.get(key);
-	      }
-	    }
-	
-	    return val;
-	  }
-	
-	  function createSpecializedPartial(instance, subs, partials, stackSubs, stackPartials, stackText) {
-	    function PartialTemplate() {};
-	    PartialTemplate.prototype = instance;
-	    function Substitutions() {};
-	    Substitutions.prototype = instance.subs;
-	    var key;
-	    var partial = new PartialTemplate();
-	    partial.subs = new Substitutions();
-	    partial.subsText = {};  //hehe. substext.
-	    partial.buf = '';
-	
-	    stackSubs = stackSubs || {};
-	    partial.stackSubs = stackSubs;
-	    partial.subsText = stackText;
-	    for (key in subs) {
-	      if (!stackSubs[key]) stackSubs[key] = subs[key];
-	    }
-	    for (key in stackSubs) {
-	      partial.subs[key] = stackSubs[key];
-	    }
-	
-	    stackPartials = stackPartials || {};
-	    partial.stackPartials = stackPartials;
-	    for (key in partials) {
-	      if (!stackPartials[key]) stackPartials[key] = partials[key];
-	    }
-	    for (key in stackPartials) {
-	      partial.partials[key] = stackPartials[key];
-	    }
-	
-	    return partial;
-	  }
-	
-	  var rAmp = /&/g,
-	      rLt = /</g,
-	      rGt = />/g,
-	      rApos = /\'/g,
-	      rQuot = /\"/g,
-	      hChars = /[&<>\"\']/;
-	
-	  function coerceToString(val) {
-	    return String((val === null || val === undefined) ? '' : val);
-	  }
-	
-	  function hoganEscape(str) {
-	    str = coerceToString(str);
-	    return hChars.test(str) ?
-	      str
-	        .replace(rAmp, '&amp;')
-	        .replace(rLt, '&lt;')
-	        .replace(rGt, '&gt;')
-	        .replace(rApos, '&#39;')
-	        .replace(rQuot, '&quot;') :
-	      str;
-	  }
-	
-	  var isArray = Array.isArray || function(a) {
-	    return Object.prototype.toString.call(a) === '[object Array]';
-	  };
-	
-	})( true ? exports : Hogan);
-
-
-/***/ },
-/* 123 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/* WEBPACK VAR INJECTION */(function(global) {/*!
 	 * Vue.js v1.0.16
 	 * (c) 2016 Evan You
@@ -27698,13 +20938,6963 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {  /* globals require, module */
+	
+	  'use strict';
+	
+	  /**
+	   * Module dependencies.
+	   */
+	
+	  var pathtoRegexp = __webpack_require__(11);
+	
+	  /**
+	   * Module exports.
+	   */
+	
+	  module.exports = page;
+	
+	  /**
+	   * Detect click event
+	   */
+	  var clickEvent = ('undefined' !== typeof document) && document.ontouchstart ? 'touchstart' : 'click';
+	
+	  /**
+	   * To work properly with the URL
+	   * history.location generated polyfill in https://github.com/devote/HTML5-History-API
+	   */
+	
+	  var location = ('undefined' !== typeof window) && (window.history.location || window.location);
+	
+	  /**
+	   * Perform initial dispatch.
+	   */
+	
+	  var dispatch = true;
+	
+	
+	  /**
+	   * Decode URL components (query string, pathname, hash).
+	   * Accommodates both regular percent encoding and x-www-form-urlencoded format.
+	   */
+	  var decodeURLComponents = true;
+	
+	  /**
+	   * Base path.
+	   */
+	
+	  var base = '';
+	
+	  /**
+	   * Running flag.
+	   */
+	
+	  var running;
+	
+	  /**
+	   * HashBang option
+	   */
+	
+	  var hashbang = false;
+	
+	  /**
+	   * Previous context, for capturing
+	   * page exit events.
+	   */
+	
+	  var prevContext;
+	
+	  /**
+	   * Register `path` with callback `fn()`,
+	   * or route `path`, or redirection,
+	   * or `page.start()`.
+	   *
+	   *   page(fn);
+	   *   page('*', fn);
+	   *   page('/user/:id', load, user);
+	   *   page('/user/' + user.id, { some: 'thing' });
+	   *   page('/user/' + user.id);
+	   *   page('/from', '/to')
+	   *   page();
+	   *
+	   * @param {String|Function} path
+	   * @param {Function} fn...
+	   * @api public
+	   */
+	
+	  function page(path, fn) {
+	    // <callback>
+	    if ('function' === typeof path) {
+	      return page('*', path);
+	    }
+	
+	    // route <path> to <callback ...>
+	    if ('function' === typeof fn) {
+	      var route = new Route(path);
+	      for (var i = 1; i < arguments.length; ++i) {
+	        page.callbacks.push(route.middleware(arguments[i]));
+	      }
+	      // show <path> with [state]
+	    } else if ('string' === typeof path) {
+	      page['string' === typeof fn ? 'redirect' : 'show'](path, fn);
+	      // start [options]
+	    } else {
+	      page.start(path);
+	    }
+	  }
+	
+	  /**
+	   * Callback functions.
+	   */
+	
+	  page.callbacks = [];
+	  page.exits = [];
+	
+	  /**
+	   * Current path being processed
+	   * @type {String}
+	   */
+	  page.current = '';
+	
+	  /**
+	   * Number of pages navigated to.
+	   * @type {number}
+	   *
+	   *     page.len == 0;
+	   *     page('/login');
+	   *     page.len == 1;
+	   */
+	
+	  page.len = 0;
+	
+	  /**
+	   * Get or set basepath to `path`.
+	   *
+	   * @param {String} path
+	   * @api public
+	   */
+	
+	  page.base = function(path) {
+	    if (0 === arguments.length) return base;
+	    base = path;
+	  };
+	
+	  /**
+	   * Bind with the given `options`.
+	   *
+	   * Options:
+	   *
+	   *    - `click` bind to click events [true]
+	   *    - `popstate` bind to popstate [true]
+	   *    - `dispatch` perform initial dispatch [true]
+	   *
+	   * @param {Object} options
+	   * @api public
+	   */
+	
+	  page.start = function(options) {
+	    options = options || {};
+	    if (running) return;
+	    running = true;
+	    if (false === options.dispatch) dispatch = false;
+	    if (false === options.decodeURLComponents) decodeURLComponents = false;
+	    if (false !== options.popstate) window.addEventListener('popstate', onpopstate, false);
+	    if (false !== options.click) {
+	      document.addEventListener(clickEvent, onclick, false);
+	    }
+	    if (true === options.hashbang) hashbang = true;
+	    if (!dispatch) return;
+	    var url = (hashbang && ~location.hash.indexOf('#!')) ? location.hash.substr(2) + location.search : location.pathname + location.search + location.hash;
+	    page.replace(url, null, true, dispatch);
+	  };
+	
+	  /**
+	   * Unbind click and popstate event handlers.
+	   *
+	   * @api public
+	   */
+	
+	  page.stop = function() {
+	    if (!running) return;
+	    page.current = '';
+	    page.len = 0;
+	    running = false;
+	    document.removeEventListener(clickEvent, onclick, false);
+	    window.removeEventListener('popstate', onpopstate, false);
+	  };
+	
+	  /**
+	   * Show `path` with optional `state` object.
+	   *
+	   * @param {String} path
+	   * @param {Object} state
+	   * @param {Boolean} dispatch
+	   * @return {Context}
+	   * @api public
+	   */
+	
+	  page.show = function(path, state, dispatch, push) {
+	    var ctx = new Context(path, state);
+	    page.current = ctx.path;
+	    if (false !== dispatch) page.dispatch(ctx);
+	    if (false !== ctx.handled && false !== push) ctx.pushState();
+	    return ctx;
+	  };
+	
+	  /**
+	   * Goes back in the history
+	   * Back should always let the current route push state and then go back.
+	   *
+	   * @param {String} path - fallback path to go back if no more history exists, if undefined defaults to page.base
+	   * @param {Object} [state]
+	   * @api public
+	   */
+	
+	  page.back = function(path, state) {
+	    if (page.len > 0) {
+	      // this may need more testing to see if all browsers
+	      // wait for the next tick to go back in history
+	      history.back();
+	      page.len--;
+	    } else if (path) {
+	      setTimeout(function() {
+	        page.show(path, state);
+	      });
+	    }else{
+	      setTimeout(function() {
+	        page.show(base, state);
+	      });
+	    }
+	  };
+	
+	
+	  /**
+	   * Register route to redirect from one path to other
+	   * or just redirect to another route
+	   *
+	   * @param {String} from - if param 'to' is undefined redirects to 'from'
+	   * @param {String} [to]
+	   * @api public
+	   */
+	  page.redirect = function(from, to) {
+	    // Define route from a path to another
+	    if ('string' === typeof from && 'string' === typeof to) {
+	      page(from, function(e) {
+	        setTimeout(function() {
+	          page.replace(to);
+	        }, 0);
+	      });
+	    }
+	
+	    // Wait for the push state and replace it with another
+	    if ('string' === typeof from && 'undefined' === typeof to) {
+	      setTimeout(function() {
+	        page.replace(from);
+	      }, 0);
+	    }
+	  };
+	
+	  /**
+	   * Replace `path` with optional `state` object.
+	   *
+	   * @param {String} path
+	   * @param {Object} state
+	   * @return {Context}
+	   * @api public
+	   */
+	
+	
+	  page.replace = function(path, state, init, dispatch) {
+	    var ctx = new Context(path, state);
+	    page.current = ctx.path;
+	    ctx.init = init;
+	    ctx.save(); // save before dispatching, which may redirect
+	    if (false !== dispatch) page.dispatch(ctx);
+	    return ctx;
+	  };
+	
+	  /**
+	   * Dispatch the given `ctx`.
+	   *
+	   * @param {Object} ctx
+	   * @api private
+	   */
+	
+	  page.dispatch = function(ctx) {
+	    var prev = prevContext,
+	      i = 0,
+	      j = 0;
+	
+	    prevContext = ctx;
+	
+	    function nextExit() {
+	      var fn = page.exits[j++];
+	      if (!fn) return nextEnter();
+	      fn(prev, nextExit);
+	    }
+	
+	    function nextEnter() {
+	      var fn = page.callbacks[i++];
+	
+	      if (ctx.path !== page.current) {
+	        ctx.handled = false;
+	        return;
+	      }
+	      if (!fn) return unhandled(ctx);
+	      fn(ctx, nextEnter);
+	    }
+	
+	    if (prev) {
+	      nextExit();
+	    } else {
+	      nextEnter();
+	    }
+	  };
+	
+	  /**
+	   * Unhandled `ctx`. When it's not the initial
+	   * popstate then redirect. If you wish to handle
+	   * 404s on your own use `page('*', callback)`.
+	   *
+	   * @param {Context} ctx
+	   * @api private
+	   */
+	
+	  function unhandled(ctx) {
+	    if (ctx.handled) return;
+	    var current;
+	
+	    if (hashbang) {
+	      current = base + location.hash.replace('#!', '');
+	    } else {
+	      current = location.pathname + location.search;
+	    }
+	
+	    if (current === ctx.canonicalPath) return;
+	    page.stop();
+	    ctx.handled = false;
+	    location.href = ctx.canonicalPath;
+	  }
+	
+	  /**
+	   * Register an exit route on `path` with
+	   * callback `fn()`, which will be called
+	   * on the previous context when a new
+	   * page is visited.
+	   */
+	  page.exit = function(path, fn) {
+	    if (typeof path === 'function') {
+	      return page.exit('*', path);
+	    }
+	
+	    var route = new Route(path);
+	    for (var i = 1; i < arguments.length; ++i) {
+	      page.exits.push(route.middleware(arguments[i]));
+	    }
+	  };
+	
+	  /**
+	   * Remove URL encoding from the given `str`.
+	   * Accommodates whitespace in both x-www-form-urlencoded
+	   * and regular percent-encoded form.
+	   *
+	   * @param {str} URL component to decode
+	   */
+	  function decodeURLEncodedURIComponent(val) {
+	    if (typeof val !== 'string') { return val; }
+	    return decodeURLComponents ? decodeURIComponent(val.replace(/\+/g, ' ')) : val;
+	  }
+	
+	  /**
+	   * Initialize a new "request" `Context`
+	   * with the given `path` and optional initial `state`.
+	   *
+	   * @param {String} path
+	   * @param {Object} state
+	   * @api public
+	   */
+	
+	  function Context(path, state) {
+	    if ('/' === path[0] && 0 !== path.indexOf(base)) path = base + (hashbang ? '#!' : '') + path;
+	    var i = path.indexOf('?');
+	
+	    this.canonicalPath = path;
+	    this.path = path.replace(base, '') || '/';
+	    if (hashbang) this.path = this.path.replace('#!', '') || '/';
+	
+	    this.title = document.title;
+	    this.state = state || {};
+	    this.state.path = path;
+	    this.querystring = ~i ? decodeURLEncodedURIComponent(path.slice(i + 1)) : '';
+	    this.pathname = decodeURLEncodedURIComponent(~i ? path.slice(0, i) : path);
+	    this.params = {};
+	
+	    // fragment
+	    this.hash = '';
+	    if (!hashbang) {
+	      if (!~this.path.indexOf('#')) return;
+	      var parts = this.path.split('#');
+	      this.path = parts[0];
+	      this.hash = decodeURLEncodedURIComponent(parts[1]) || '';
+	      this.querystring = this.querystring.split('#')[0];
+	    }
+	  }
+	
+	  /**
+	   * Expose `Context`.
+	   */
+	
+	  page.Context = Context;
+	
+	  /**
+	   * Push state.
+	   *
+	   * @api private
+	   */
+	
+	  Context.prototype.pushState = function() {
+	    page.len++;
+	    history.pushState(this.state, this.title, hashbang && this.path !== '/' ? '#!' + this.path : this.canonicalPath);
+	  };
+	
+	  /**
+	   * Save the context state.
+	   *
+	   * @api public
+	   */
+	
+	  Context.prototype.save = function() {
+	    history.replaceState(this.state, this.title, hashbang && this.path !== '/' ? '#!' + this.path : this.canonicalPath);
+	  };
+	
+	  /**
+	   * Initialize `Route` with the given HTTP `path`,
+	   * and an array of `callbacks` and `options`.
+	   *
+	   * Options:
+	   *
+	   *   - `sensitive`    enable case-sensitive routes
+	   *   - `strict`       enable strict matching for trailing slashes
+	   *
+	   * @param {String} path
+	   * @param {Object} options.
+	   * @api private
+	   */
+	
+	  function Route(path, options) {
+	    options = options || {};
+	    this.path = (path === '*') ? '(.*)' : path;
+	    this.method = 'GET';
+	    this.regexp = pathtoRegexp(this.path,
+	      this.keys = [],
+	      options.sensitive,
+	      options.strict);
+	  }
+	
+	  /**
+	   * Expose `Route`.
+	   */
+	
+	  page.Route = Route;
+	
+	  /**
+	   * Return route middleware with
+	   * the given callback `fn()`.
+	   *
+	   * @param {Function} fn
+	   * @return {Function}
+	   * @api public
+	   */
+	
+	  Route.prototype.middleware = function(fn) {
+	    var self = this;
+	    return function(ctx, next) {
+	      if (self.match(ctx.path, ctx.params)) return fn(ctx, next);
+	      next();
+	    };
+	  };
+	
+	  /**
+	   * Check if this route matches `path`, if so
+	   * populate `params`.
+	   *
+	   * @param {String} path
+	   * @param {Object} params
+	   * @return {Boolean}
+	   * @api private
+	   */
+	
+	  Route.prototype.match = function(path, params) {
+	    var keys = this.keys,
+	      qsIndex = path.indexOf('?'),
+	      pathname = ~qsIndex ? path.slice(0, qsIndex) : path,
+	      m = this.regexp.exec(decodeURIComponent(pathname));
+	
+	    if (!m) return false;
+	
+	    for (var i = 1, len = m.length; i < len; ++i) {
+	      var key = keys[i - 1];
+	      var val = decodeURLEncodedURIComponent(m[i]);
+	      if (val !== undefined || !(hasOwnProperty.call(params, key.name))) {
+	        params[key.name] = val;
+	      }
+	    }
+	
+	    return true;
+	  };
+	
+	
+	  /**
+	   * Handle "populate" events.
+	   */
+	
+	  var onpopstate = (function () {
+	    var loaded = false;
+	    if ('undefined' === typeof window) {
+	      return;
+	    }
+	    if (document.readyState === 'complete') {
+	      loaded = true;
+	    } else {
+	      window.addEventListener('load', function() {
+	        setTimeout(function() {
+	          loaded = true;
+	        }, 0);
+	      });
+	    }
+	    return function onpopstate(e) {
+	      if (!loaded) return;
+	      if (e.state) {
+	        var path = e.state.path;
+	        page.replace(path, e.state);
+	      } else {
+	        page.show(location.pathname + location.hash, undefined, undefined, false);
+	      }
+	    };
+	  })();
+	  /**
+	   * Handle "click" events.
+	   */
+	
+	  function onclick(e) {
+	
+	    if (1 !== which(e)) return;
+	
+	    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+	    if (e.defaultPrevented) return;
+	
+	
+	
+	    // ensure link
+	    var el = e.target;
+	    while (el && 'A' !== el.nodeName) el = el.parentNode;
+	    if (!el || 'A' !== el.nodeName) return;
+	
+	
+	
+	    // Ignore if tag has
+	    // 1. "download" attribute
+	    // 2. rel="external" attribute
+	    if (el.hasAttribute('download') || el.getAttribute('rel') === 'external') return;
+	
+	    // ensure non-hash for the same path
+	    var link = el.getAttribute('href');
+	    if (!hashbang && el.pathname === location.pathname && (el.hash || '#' === link)) return;
+	
+	
+	
+	    // Check for mailto: in the href
+	    if (link && link.indexOf('mailto:') > -1) return;
+	
+	    // check target
+	    if (el.target) return;
+	
+	    // x-origin
+	    if (!sameOrigin(el.href)) return;
+	
+	
+	
+	    // rebuild path
+	    var path = el.pathname + el.search + (el.hash || '');
+	
+	    // strip leading "/[drive letter]:" on NW.js on Windows
+	    if (typeof process !== 'undefined' && path.match(/^\/[a-zA-Z]:\//)) {
+	      path = path.replace(/^\/[a-zA-Z]:\//, '/');
+	    }
+	
+	    // same page
+	    var orig = path;
+	
+	    if (path.indexOf(base) === 0) {
+	      path = path.substr(base.length);
+	    }
+	
+	    if (hashbang) path = path.replace('#!', '');
+	
+	    if (base && orig === path) return;
+	
+	    e.preventDefault();
+	    page.show(orig);
+	  }
+	
+	  /**
+	   * Event button.
+	   */
+	
+	  function which(e) {
+	    e = e || window.event;
+	    return null === e.which ? e.button : e.which;
+	  }
+	
+	  /**
+	   * Check if `href` is the same origin.
+	   */
+	
+	  function sameOrigin(href) {
+	    var origin = location.protocol + '//' + location.hostname;
+	    if (location.port) origin += ':' + location.port;
+	    return (href && (0 === href.indexOf(origin)));
+	  }
+	
+	  page.sameOrigin = sameOrigin;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	// shim for using process in browser
+	
+	var process = module.exports = {};
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+	
+	function cleanUpNextTick() {
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+	
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = setTimeout(cleanUpNextTick);
+	    draining = true;
+	
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    clearTimeout(timeout);
+	}
+	
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        setTimeout(drainQueue, 0);
+	    }
+	};
+	
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+	
+	function noop() {}
+	
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+	
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+	
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isarray = __webpack_require__(12)
+	
+	/**
+	 * Expose `pathToRegexp`.
+	 */
+	module.exports = pathToRegexp
+	module.exports.parse = parse
+	module.exports.compile = compile
+	module.exports.tokensToFunction = tokensToFunction
+	module.exports.tokensToRegExp = tokensToRegExp
+	
+	/**
+	 * The main path matching regexp utility.
+	 *
+	 * @type {RegExp}
+	 */
+	var PATH_REGEXP = new RegExp([
+	  // Match escaped characters that would otherwise appear in future matches.
+	  // This allows the user to escape special characters that won't transform.
+	  '(\\\\.)',
+	  // Match Express-style parameters and un-named parameters with a prefix
+	  // and optional suffixes. Matches appear as:
+	  //
+	  // "/:test(\\d+)?" => ["/", "test", "\d+", undefined, "?", undefined]
+	  // "/route(\\d+)"  => [undefined, undefined, undefined, "\d+", undefined, undefined]
+	  // "/*"            => ["/", undefined, undefined, undefined, undefined, "*"]
+	  '([\\/.])?(?:(?:\\:(\\w+)(?:\\(((?:\\\\.|[^()])+)\\))?|\\(((?:\\\\.|[^()])+)\\))([+*?])?|(\\*))'
+	].join('|'), 'g')
+	
+	/**
+	 * Parse a string for the raw tokens.
+	 *
+	 * @param  {String} str
+	 * @return {Array}
+	 */
+	function parse (str) {
+	  var tokens = []
+	  var key = 0
+	  var index = 0
+	  var path = ''
+	  var res
+	
+	  while ((res = PATH_REGEXP.exec(str)) != null) {
+	    var m = res[0]
+	    var escaped = res[1]
+	    var offset = res.index
+	    path += str.slice(index, offset)
+	    index = offset + m.length
+	
+	    // Ignore already escaped sequences.
+	    if (escaped) {
+	      path += escaped[1]
+	      continue
+	    }
+	
+	    // Push the current path onto the tokens.
+	    if (path) {
+	      tokens.push(path)
+	      path = ''
+	    }
+	
+	    var prefix = res[2]
+	    var name = res[3]
+	    var capture = res[4]
+	    var group = res[5]
+	    var suffix = res[6]
+	    var asterisk = res[7]
+	
+	    var repeat = suffix === '+' || suffix === '*'
+	    var optional = suffix === '?' || suffix === '*'
+	    var delimiter = prefix || '/'
+	    var pattern = capture || group || (asterisk ? '.*' : '[^' + delimiter + ']+?')
+	
+	    tokens.push({
+	      name: name || key++,
+	      prefix: prefix || '',
+	      delimiter: delimiter,
+	      optional: optional,
+	      repeat: repeat,
+	      pattern: escapeGroup(pattern)
+	    })
+	  }
+	
+	  // Match any characters still remaining.
+	  if (index < str.length) {
+	    path += str.substr(index)
+	  }
+	
+	  // If the path exists, push it onto the end.
+	  if (path) {
+	    tokens.push(path)
+	  }
+	
+	  return tokens
+	}
+	
+	/**
+	 * Compile a string to a template function for the path.
+	 *
+	 * @param  {String}   str
+	 * @return {Function}
+	 */
+	function compile (str) {
+	  return tokensToFunction(parse(str))
+	}
+	
+	/**
+	 * Expose a method for transforming tokens into the path function.
+	 */
+	function tokensToFunction (tokens) {
+	  // Compile all the tokens into regexps.
+	  var matches = new Array(tokens.length)
+	
+	  // Compile all the patterns before compilation.
+	  for (var i = 0; i < tokens.length; i++) {
+	    if (typeof tokens[i] === 'object') {
+	      matches[i] = new RegExp('^' + tokens[i].pattern + '$')
+	    }
+	  }
+	
+	  return function (obj) {
+	    var path = ''
+	    var data = obj || {}
+	
+	    for (var i = 0; i < tokens.length; i++) {
+	      var token = tokens[i]
+	
+	      if (typeof token === 'string') {
+	        path += token
+	
+	        continue
+	      }
+	
+	      var value = data[token.name]
+	      var segment
+	
+	      if (value == null) {
+	        if (token.optional) {
+	          continue
+	        } else {
+	          throw new TypeError('Expected "' + token.name + '" to be defined')
+	        }
+	      }
+	
+	      if (isarray(value)) {
+	        if (!token.repeat) {
+	          throw new TypeError('Expected "' + token.name + '" to not repeat, but received "' + value + '"')
+	        }
+	
+	        if (value.length === 0) {
+	          if (token.optional) {
+	            continue
+	          } else {
+	            throw new TypeError('Expected "' + token.name + '" to not be empty')
+	          }
+	        }
+	
+	        for (var j = 0; j < value.length; j++) {
+	          segment = encodeURIComponent(value[j])
+	
+	          if (!matches[i].test(segment)) {
+	            throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
+	          }
+	
+	          path += (j === 0 ? token.prefix : token.delimiter) + segment
+	        }
+	
+	        continue
+	      }
+	
+	      segment = encodeURIComponent(value)
+	
+	      if (!matches[i].test(segment)) {
+	        throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
+	      }
+	
+	      path += token.prefix + segment
+	    }
+	
+	    return path
+	  }
+	}
+	
+	/**
+	 * Escape a regular expression string.
+	 *
+	 * @param  {String} str
+	 * @return {String}
+	 */
+	function escapeString (str) {
+	  return str.replace(/([.+*?=^!:${}()[\]|\/])/g, '\\$1')
+	}
+	
+	/**
+	 * Escape the capturing group by escaping special characters and meaning.
+	 *
+	 * @param  {String} group
+	 * @return {String}
+	 */
+	function escapeGroup (group) {
+	  return group.replace(/([=!:$\/()])/g, '\\$1')
+	}
+	
+	/**
+	 * Attach the keys as a property of the regexp.
+	 *
+	 * @param  {RegExp} re
+	 * @param  {Array}  keys
+	 * @return {RegExp}
+	 */
+	function attachKeys (re, keys) {
+	  re.keys = keys
+	  return re
+	}
+	
+	/**
+	 * Get the flags for a regexp from the options.
+	 *
+	 * @param  {Object} options
+	 * @return {String}
+	 */
+	function flags (options) {
+	  return options.sensitive ? '' : 'i'
+	}
+	
+	/**
+	 * Pull out keys from a regexp.
+	 *
+	 * @param  {RegExp} path
+	 * @param  {Array}  keys
+	 * @return {RegExp}
+	 */
+	function regexpToRegexp (path, keys) {
+	  // Use a negative lookahead to match only capturing groups.
+	  var groups = path.source.match(/\((?!\?)/g)
+	
+	  if (groups) {
+	    for (var i = 0; i < groups.length; i++) {
+	      keys.push({
+	        name: i,
+	        prefix: null,
+	        delimiter: null,
+	        optional: false,
+	        repeat: false,
+	        pattern: null
+	      })
+	    }
+	  }
+	
+	  return attachKeys(path, keys)
+	}
+	
+	/**
+	 * Transform an array into a regexp.
+	 *
+	 * @param  {Array}  path
+	 * @param  {Array}  keys
+	 * @param  {Object} options
+	 * @return {RegExp}
+	 */
+	function arrayToRegexp (path, keys, options) {
+	  var parts = []
+	
+	  for (var i = 0; i < path.length; i++) {
+	    parts.push(pathToRegexp(path[i], keys, options).source)
+	  }
+	
+	  var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options))
+	
+	  return attachKeys(regexp, keys)
+	}
+	
+	/**
+	 * Create a path regexp from string input.
+	 *
+	 * @param  {String} path
+	 * @param  {Array}  keys
+	 * @param  {Object} options
+	 * @return {RegExp}
+	 */
+	function stringToRegexp (path, keys, options) {
+	  var tokens = parse(path)
+	  var re = tokensToRegExp(tokens, options)
+	
+	  // Attach keys back to the regexp.
+	  for (var i = 0; i < tokens.length; i++) {
+	    if (typeof tokens[i] !== 'string') {
+	      keys.push(tokens[i])
+	    }
+	  }
+	
+	  return attachKeys(re, keys)
+	}
+	
+	/**
+	 * Expose a function for taking tokens and returning a RegExp.
+	 *
+	 * @param  {Array}  tokens
+	 * @param  {Array}  keys
+	 * @param  {Object} options
+	 * @return {RegExp}
+	 */
+	function tokensToRegExp (tokens, options) {
+	  options = options || {}
+	
+	  var strict = options.strict
+	  var end = options.end !== false
+	  var route = ''
+	  var lastToken = tokens[tokens.length - 1]
+	  var endsWithSlash = typeof lastToken === 'string' && /\/$/.test(lastToken)
+	
+	  // Iterate over the tokens and create our regexp string.
+	  for (var i = 0; i < tokens.length; i++) {
+	    var token = tokens[i]
+	
+	    if (typeof token === 'string') {
+	      route += escapeString(token)
+	    } else {
+	      var prefix = escapeString(token.prefix)
+	      var capture = token.pattern
+	
+	      if (token.repeat) {
+	        capture += '(?:' + prefix + capture + ')*'
+	      }
+	
+	      if (token.optional) {
+	        if (prefix) {
+	          capture = '(?:' + prefix + '(' + capture + '))?'
+	        } else {
+	          capture = '(' + capture + ')?'
+	        }
+	      } else {
+	        capture = prefix + '(' + capture + ')'
+	      }
+	
+	      route += capture
+	    }
+	  }
+	
+	  // In non-strict mode we allow a slash at the end of match. If the path to
+	  // match already ends with a slash, we remove it for consistency. The slash
+	  // is valid at the end of a path match, not in the middle. This is important
+	  // in non-ending mode, where "/test/" shouldn't match "/test//route".
+	  if (!strict) {
+	    route = (endsWithSlash ? route.slice(0, -2) : route) + '(?:\\/(?=$))?'
+	  }
+	
+	  if (end) {
+	    route += '$'
+	  } else {
+	    // In non-ending mode, we need the capturing groups to match as much as
+	    // possible by using a positive lookahead to the end or next path segment.
+	    route += strict && endsWithSlash ? '' : '(?=\\/|$)'
+	  }
+	
+	  return new RegExp('^' + route, flags(options))
+	}
+	
+	/**
+	 * Normalize the given path string, returning a regular expression.
+	 *
+	 * An empty array can be passed in for the keys, which will hold the
+	 * placeholder key descriptions. For example, using `/user/:id`, `keys` will
+	 * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
+	 *
+	 * @param  {(String|RegExp|Array)} path
+	 * @param  {Array}                 [keys]
+	 * @param  {Object}                [options]
+	 * @return {RegExp}
+	 */
+	function pathToRegexp (path, keys, options) {
+	  keys = keys || []
+	
+	  if (!isarray(keys)) {
+	    options = keys
+	    keys = []
+	  } else if (!options) {
+	    options = {}
+	  }
+	
+	  if (path instanceof RegExp) {
+	    return regexpToRegexp(path, keys, options)
+	  }
+	
+	  if (isarray(path)) {
+	    return arrayToRegexp(path, keys, options)
+	  }
+	
+	  return stringToRegexp(path, keys, options)
+	}
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	module.exports = Array.isArray || function (arr) {
+	  return Object.prototype.toString.call(arr) == '[object Array]';
+	};
+
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _createStore = __webpack_require__(14);
+	
+	var _createStore2 = _interopRequireDefault(_createStore);
+	
+	var _combineReducers = __webpack_require__(16);
+	
+	var _combineReducers2 = _interopRequireDefault(_combineReducers);
+	
+	var _bindActionCreators = __webpack_require__(19);
+	
+	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
+	
+	var _applyMiddleware = __webpack_require__(20);
+	
+	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
+	
+	var _compose = __webpack_require__(21);
+	
+	var _compose2 = _interopRequireDefault(_compose);
+	
+	/*
+	* This is a dummy function to check if the function name has been altered by minification.
+	* If the function has been minified and NODE_ENV !== 'production', warn the user.
+	*/
+	function isCrushed() {}
+	
+	if (isCrushed.name !== 'isCrushed' && ("production") !== 'production') {
+	  /*eslint-disable no-console */
+	  console.error('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
+	  /*eslint-enable */
+	}
+	
+	exports.createStore = _createStore2['default'];
+	exports.combineReducers = _combineReducers2['default'];
+	exports.bindActionCreators = _bindActionCreators2['default'];
+	exports.applyMiddleware = _applyMiddleware2['default'];
+	exports.compose = _compose2['default'];
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	exports['default'] = createStore;
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _utilsIsPlainObject = __webpack_require__(15);
+	
+	var _utilsIsPlainObject2 = _interopRequireDefault(_utilsIsPlainObject);
+	
+	/**
+	 * These are private action types reserved by Redux.
+	 * For any unknown actions, you must return the current state.
+	 * If the current state is undefined, you must return the initial state.
+	 * Do not reference these action types directly in your code.
+	 */
+	var ActionTypes = {
+	  INIT: '@@redux/INIT'
+	};
+	
+	exports.ActionTypes = ActionTypes;
+	/**
+	 * Creates a Redux store that holds the state tree.
+	 * The only way to change the data in the store is to call `dispatch()` on it.
+	 *
+	 * There should only be a single store in your app. To specify how different
+	 * parts of the state tree respond to actions, you may combine several reducers
+	 * into a single reducer function by using `combineReducers`.
+	 *
+	 * @param {Function} reducer A function that returns the next state tree, given
+	 * the current state tree and the action to handle.
+	 *
+	 * @param {any} [initialState] The initial state. You may optionally specify it
+	 * to hydrate the state from the server in universal apps, or to restore a
+	 * previously serialized user session.
+	 * If you use `combineReducers` to produce the root reducer function, this must be
+	 * an object with the same shape as `combineReducers` keys.
+	 *
+	 * @returns {Store} A Redux store that lets you read the state, dispatch actions
+	 * and subscribe to changes.
+	 */
+	
+	function createStore(reducer, initialState) {
+	  if (typeof reducer !== 'function') {
+	    throw new Error('Expected the reducer to be a function.');
+	  }
+	
+	  var currentReducer = reducer;
+	  var currentState = initialState;
+	  var listeners = [];
+	  var isDispatching = false;
+	
+	  /**
+	   * Reads the state tree managed by the store.
+	   *
+	   * @returns {any} The current state tree of your application.
+	   */
+	  function getState() {
+	    return currentState;
+	  }
+	
+	  /**
+	   * Adds a change listener. It will be called any time an action is dispatched,
+	   * and some part of the state tree may potentially have changed. You may then
+	   * call `getState()` to read the current state tree inside the callback.
+	   *
+	   * @param {Function} listener A callback to be invoked on every dispatch.
+	   * @returns {Function} A function to remove this change listener.
+	   */
+	  function subscribe(listener) {
+	    listeners.push(listener);
+	    var isSubscribed = true;
+	
+	    return function unsubscribe() {
+	      if (!isSubscribed) {
+	        return;
+	      }
+	
+	      isSubscribed = false;
+	      var index = listeners.indexOf(listener);
+	      listeners.splice(index, 1);
+	    };
+	  }
+	
+	  /**
+	   * Dispatches an action. It is the only way to trigger a state change.
+	   *
+	   * The `reducer` function, used to create the store, will be called with the
+	   * current state tree and the given `action`. Its return value will
+	   * be considered the **next** state of the tree, and the change listeners
+	   * will be notified.
+	   *
+	   * The base implementation only supports plain object actions. If you want to
+	   * dispatch a Promise, an Observable, a thunk, or something else, you need to
+	   * wrap your store creating function into the corresponding middleware. For
+	   * example, see the documentation for the `redux-thunk` package. Even the
+	   * middleware will eventually dispatch plain object actions using this method.
+	   *
+	   * @param {Object} action A plain object representing “what changed”. It is
+	   * a good idea to keep actions serializable so you can record and replay user
+	   * sessions, or use the time travelling `redux-devtools`. An action must have
+	   * a `type` property which may not be `undefined`. It is a good idea to use
+	   * string constants for action types.
+	   *
+	   * @returns {Object} For convenience, the same action object you dispatched.
+	   *
+	   * Note that, if you use a custom middleware, it may wrap `dispatch()` to
+	   * return something else (for example, a Promise you can await).
+	   */
+	  function dispatch(action) {
+	    if (!_utilsIsPlainObject2['default'](action)) {
+	      throw new Error('Actions must be plain objects. ' + 'Use custom middleware for async actions.');
+	    }
+	
+	    if (typeof action.type === 'undefined') {
+	      throw new Error('Actions may not have an undefined "type" property. ' + 'Have you misspelled a constant?');
+	    }
+	
+	    if (isDispatching) {
+	      throw new Error('Reducers may not dispatch actions.');
+	    }
+	
+	    try {
+	      isDispatching = true;
+	      currentState = currentReducer(currentState, action);
+	    } finally {
+	      isDispatching = false;
+	    }
+	
+	    listeners.slice().forEach(function (listener) {
+	      return listener();
+	    });
+	    return action;
+	  }
+	
+	  /**
+	   * Replaces the reducer currently used by the store to calculate the state.
+	   *
+	   * You might need this if your app implements code splitting and you want to
+	   * load some of the reducers dynamically. You might also need this if you
+	   * implement a hot reloading mechanism for Redux.
+	   *
+	   * @param {Function} nextReducer The reducer for the store to use instead.
+	   * @returns {void}
+	   */
+	  function replaceReducer(nextReducer) {
+	    currentReducer = nextReducer;
+	    dispatch({ type: ActionTypes.INIT });
+	  }
+	
+	  // When a store is created, an "INIT" action is dispatched so that every
+	  // reducer returns their initial state. This effectively populates
+	  // the initial state tree.
+	  dispatch({ type: ActionTypes.INIT });
+	
+	  return {
+	    dispatch: dispatch,
+	    subscribe: subscribe,
+	    getState: getState,
+	    replaceReducer: replaceReducer
+	  };
+	}
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	exports['default'] = isPlainObject;
+	var fnToString = function fnToString(fn) {
+	  return Function.prototype.toString.call(fn);
+	};
+	var objStringValue = fnToString(Object);
+	
+	/**
+	 * @param {any} obj The object to inspect.
+	 * @returns {boolean} True if the argument appears to be a plain object.
+	 */
+	
+	function isPlainObject(obj) {
+	  if (!obj || typeof obj !== 'object') {
+	    return false;
+	  }
+	
+	  var proto = typeof obj.constructor === 'function' ? Object.getPrototypeOf(obj) : Object.prototype;
+	
+	  if (proto === null) {
+	    return true;
+	  }
+	
+	  var constructor = proto.constructor;
+	
+	  return typeof constructor === 'function' && constructor instanceof constructor && fnToString(constructor) === objStringValue;
+	}
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	exports['default'] = combineReducers;
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _createStore = __webpack_require__(14);
+	
+	var _utilsIsPlainObject = __webpack_require__(15);
+	
+	var _utilsIsPlainObject2 = _interopRequireDefault(_utilsIsPlainObject);
+	
+	var _utilsMapValues = __webpack_require__(17);
+	
+	var _utilsMapValues2 = _interopRequireDefault(_utilsMapValues);
+	
+	var _utilsPick = __webpack_require__(18);
+	
+	var _utilsPick2 = _interopRequireDefault(_utilsPick);
+	
+	/* eslint-disable no-console */
+	
+	function getUndefinedStateErrorMessage(key, action) {
+	  var actionType = action && action.type;
+	  var actionName = actionType && '"' + actionType.toString() + '"' || 'an action';
+	
+	  return 'Reducer "' + key + '" returned undefined handling ' + actionName + '. ' + 'To ignore an action, you must explicitly return the previous state.';
+	}
+	
+	function getUnexpectedStateShapeWarningMessage(inputState, reducers, action) {
+	  var reducerKeys = Object.keys(reducers);
+	  var argumentName = action && action.type === _createStore.ActionTypes.INIT ? 'initialState argument passed to createStore' : 'previous state received by the reducer';
+	
+	  if (reducerKeys.length === 0) {
+	    return 'Store does not have a valid reducer. Make sure the argument passed ' + 'to combineReducers is an object whose values are reducers.';
+	  }
+	
+	  if (!_utilsIsPlainObject2['default'](inputState)) {
+	    return 'The ' + argumentName + ' has unexpected type of "' + ({}).toString.call(inputState).match(/\s([a-z|A-Z]+)/)[1] + '". Expected argument to be an object with the following ' + ('keys: "' + reducerKeys.join('", "') + '"');
+	  }
+	
+	  var unexpectedKeys = Object.keys(inputState).filter(function (key) {
+	    return !reducers.hasOwnProperty(key);
+	  });
+	
+	  if (unexpectedKeys.length > 0) {
+	    return 'Unexpected ' + (unexpectedKeys.length > 1 ? 'keys' : 'key') + ' ' + ('"' + unexpectedKeys.join('", "') + '" found in ' + argumentName + '. ') + 'Expected to find one of the known reducer keys instead: ' + ('"' + reducerKeys.join('", "') + '". Unexpected keys will be ignored.');
+	  }
+	}
+	
+	function assertReducerSanity(reducers) {
+	  Object.keys(reducers).forEach(function (key) {
+	    var reducer = reducers[key];
+	    var initialState = reducer(undefined, { type: _createStore.ActionTypes.INIT });
+	
+	    if (typeof initialState === 'undefined') {
+	      throw new Error('Reducer "' + key + '" returned undefined during initialization. ' + 'If the state passed to the reducer is undefined, you must ' + 'explicitly return the initial state. The initial state may ' + 'not be undefined.');
+	    }
+	
+	    var type = '@@redux/PROBE_UNKNOWN_ACTION_' + Math.random().toString(36).substring(7).split('').join('.');
+	    if (typeof reducer(undefined, { type: type }) === 'undefined') {
+	      throw new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + ('Don\'t try to handle ' + _createStore.ActionTypes.INIT + ' or other actions in "redux/*" ') + 'namespace. They are considered private. Instead, you must return the ' + 'current state for any unknown actions, unless it is undefined, ' + 'in which case you must return the initial state, regardless of the ' + 'action type. The initial state may not be undefined.');
+	    }
+	  });
+	}
+	
+	/**
+	 * Turns an object whose values are different reducer functions, into a single
+	 * reducer function. It will call every child reducer, and gather their results
+	 * into a single state object, whose keys correspond to the keys of the passed
+	 * reducer functions.
+	 *
+	 * @param {Object} reducers An object whose values correspond to different
+	 * reducer functions that need to be combined into one. One handy way to obtain
+	 * it is to use ES6 `import * as reducers` syntax. The reducers may never return
+	 * undefined for any action. Instead, they should return their initial state
+	 * if the state passed to them was undefined, and the current state for any
+	 * unrecognized action.
+	 *
+	 * @returns {Function} A reducer function that invokes every reducer inside the
+	 * passed object, and builds a state object with the same shape.
+	 */
+	
+	function combineReducers(reducers) {
+	  var finalReducers = _utilsPick2['default'](reducers, function (val) {
+	    return typeof val === 'function';
+	  });
+	  var sanityError;
+	
+	  try {
+	    assertReducerSanity(finalReducers);
+	  } catch (e) {
+	    sanityError = e;
+	  }
+	
+	  return function combination(state, action) {
+	    if (state === undefined) state = {};
+	
+	    if (sanityError) {
+	      throw sanityError;
+	    }
+	
+	    if (false) {
+	      var warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action);
+	      if (warningMessage) {
+	        console.error(warningMessage);
+	      }
+	    }
+	
+	    var hasChanged = false;
+	    var finalState = _utilsMapValues2['default'](finalReducers, function (reducer, key) {
+	      var previousStateForKey = state[key];
+	      var nextStateForKey = reducer(previousStateForKey, action);
+	      if (typeof nextStateForKey === 'undefined') {
+	        var errorMessage = getUndefinedStateErrorMessage(key, action);
+	        throw new Error(errorMessage);
+	      }
+	      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+	      return nextStateForKey;
+	    });
+	
+	    return hasChanged ? finalState : state;
+	  };
+	}
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	/**
+	 * Applies a function to every key-value pair inside an object.
+	 *
+	 * @param {Object} obj The source object.
+	 * @param {Function} fn The mapper function that receives the value and the key.
+	 * @returns {Object} A new object that contains the mapped values for the keys.
+	 */
+	"use strict";
+	
+	exports.__esModule = true;
+	exports["default"] = mapValues;
+	
+	function mapValues(obj, fn) {
+	  return Object.keys(obj).reduce(function (result, key) {
+	    result[key] = fn(obj[key], key);
+	    return result;
+	  }, {});
+	}
+	
+	module.exports = exports["default"];
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	/**
+	 * Picks key-value pairs from an object where values satisfy a predicate.
+	 *
+	 * @param {Object} obj The object to pick from.
+	 * @param {Function} fn The predicate the values must satisfy to be copied.
+	 * @returns {Object} The object with the values that satisfied the predicate.
+	 */
+	"use strict";
+	
+	exports.__esModule = true;
+	exports["default"] = pick;
+	
+	function pick(obj, fn) {
+	  return Object.keys(obj).reduce(function (result, key) {
+	    if (fn(obj[key])) {
+	      result[key] = obj[key];
+	    }
+	    return result;
+	  }, {});
+	}
+	
+	module.exports = exports["default"];
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	exports['default'] = bindActionCreators;
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _utilsMapValues = __webpack_require__(17);
+	
+	var _utilsMapValues2 = _interopRequireDefault(_utilsMapValues);
+	
+	function bindActionCreator(actionCreator, dispatch) {
+	  return function () {
+	    return dispatch(actionCreator.apply(undefined, arguments));
+	  };
+	}
+	
+	/**
+	 * Turns an object whose values are action creators, into an object with the
+	 * same keys, but with every function wrapped into a `dispatch` call so they
+	 * may be invoked directly. This is just a convenience method, as you can call
+	 * `store.dispatch(MyActionCreators.doSomething())` yourself just fine.
+	 *
+	 * For convenience, you can also pass a single function as the first argument,
+	 * and get a function in return.
+	 *
+	 * @param {Function|Object} actionCreators An object whose values are action
+	 * creator functions. One handy way to obtain it is to use ES6 `import * as`
+	 * syntax. You may also pass a single function.
+	 *
+	 * @param {Function} dispatch The `dispatch` function available on your Redux
+	 * store.
+	 *
+	 * @returns {Function|Object} The object mimicking the original object, but with
+	 * every action creator wrapped into the `dispatch` call. If you passed a
+	 * function as `actionCreators`, the return value will also be a single
+	 * function.
+	 */
+	
+	function bindActionCreators(actionCreators, dispatch) {
+	  if (typeof actionCreators === 'function') {
+	    return bindActionCreator(actionCreators, dispatch);
+	  }
+	
+	  if (typeof actionCreators !== 'object' || actionCreators === null || actionCreators === undefined) {
+	    throw new Error('bindActionCreators expected an object or a function, instead received ' + (actionCreators === null ? 'null' : typeof actionCreators) + '. ' + 'Did you write "import ActionCreators from" instead of "import * as ActionCreators from"?');
+	  }
+	
+	  return _utilsMapValues2['default'](actionCreators, function (actionCreator) {
+	    return bindActionCreator(actionCreator, dispatch);
+	  });
+	}
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	exports['default'] = applyMiddleware;
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _compose = __webpack_require__(21);
+	
+	var _compose2 = _interopRequireDefault(_compose);
+	
+	/**
+	 * Creates a store enhancer that applies middleware to the dispatch method
+	 * of the Redux store. This is handy for a variety of tasks, such as expressing
+	 * asynchronous actions in a concise manner, or logging every action payload.
+	 *
+	 * See `redux-thunk` package as an example of the Redux middleware.
+	 *
+	 * Because middleware is potentially asynchronous, this should be the first
+	 * store enhancer in the composition chain.
+	 *
+	 * Note that each middleware will be given the `dispatch` and `getState` functions
+	 * as named arguments.
+	 *
+	 * @param {...Function} middlewares The middleware chain to be applied.
+	 * @returns {Function} A store enhancer applying the middleware.
+	 */
+	
+	function applyMiddleware() {
+	  for (var _len = arguments.length, middlewares = Array(_len), _key = 0; _key < _len; _key++) {
+	    middlewares[_key] = arguments[_key];
+	  }
+	
+	  return function (next) {
+	    return function (reducer, initialState) {
+	      var store = next(reducer, initialState);
+	      var _dispatch = store.dispatch;
+	      var chain = [];
+	
+	      var middlewareAPI = {
+	        getState: store.getState,
+	        dispatch: function dispatch(action) {
+	          return _dispatch(action);
+	        }
+	      };
+	      chain = middlewares.map(function (middleware) {
+	        return middleware(middlewareAPI);
+	      });
+	      _dispatch = _compose2['default'].apply(undefined, chain)(store.dispatch);
+	
+	      return _extends({}, store, {
+	        dispatch: _dispatch
+	      });
+	    };
+	  };
+	}
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 21 */
+/***/ function(module, exports) {
+
+	/**
+	 * Composes single-argument functions from right to left.
+	 *
+	 * @param {...Function} funcs The functions to compose.
+	 * @returns {Function} A function obtained by composing functions from right to
+	 * left. For example, compose(f, g, h) is identical to arg => f(g(h(arg))).
+	 */
+	"use strict";
+	
+	exports.__esModule = true;
+	exports["default"] = compose;
+	
+	function compose() {
+	  for (var _len = arguments.length, funcs = Array(_len), _key = 0; _key < _len; _key++) {
+	    funcs[_key] = arguments[_key];
+	  }
+	
+	  return function () {
+	    if (funcs.length === 0) {
+	      return arguments[0];
+	    }
+	
+	    var last = funcs[funcs.length - 1];
+	    var rest = funcs.slice(0, -1);
+	
+	    return rest.reduceRight(function (composed, f) {
+	      return f(composed);
+	    }, last.apply(undefined, arguments));
+	  };
+	}
+	
+	module.exports = exports["default"];
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var arrayMap = __webpack_require__(23),
+	    baseFlatten = __webpack_require__(24),
+	    baseIteratee = __webpack_require__(36);
+	
+	/**
+	 * Creates an array of flattened values by running each element in `array`
+	 * through `iteratee` and concating its result to the other mapped values.
+	 * The iteratee is invoked with three arguments: (value, index|key, array).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Array
+	 * @param {Array} array The array to iterate over.
+	 * @param {Function|Object|string} [iteratee=_.identity] The function invoked per iteration.
+	 * @returns {Array} Returns the new array.
+	 * @example
+	 *
+	 * function duplicate(n) {
+	 *   return [n, n];
+	 * }
+	 *
+	 * _.flatMap([1, 2], duplicate);
+	 * // => [1, 1, 2, 2]
+	 */
+	function flatMap(array, iteratee) {
+	  var length = array ? array.length : 0;
+	  return length ? baseFlatten(arrayMap(array, baseIteratee(iteratee, 3))) : [];
+	}
+	
+	module.exports = flatMap;
+
+
+/***/ },
+/* 23 */
+/***/ function(module, exports) {
+
+	/**
+	 * A specialized version of `_.map` for arrays without support for iteratee
+	 * shorthands.
+	 *
+	 * @private
+	 * @param {Array} array The array to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the new mapped array.
+	 */
+	function arrayMap(array, iteratee) {
+	  var index = -1,
+	      length = array.length,
+	      result = Array(length);
+	
+	  while (++index < length) {
+	    result[index] = iteratee(array[index], index, array);
+	  }
+	  return result;
+	}
+	
+	module.exports = arrayMap;
+
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var arrayPush = __webpack_require__(25),
+	    isArguments = __webpack_require__(26),
+	    isArray = __webpack_require__(35),
+	    isArrayLikeObject = __webpack_require__(27);
+	
+	/**
+	 * The base implementation of `_.flatten` with support for restricting flattening.
+	 *
+	 * @private
+	 * @param {Array} array The array to flatten.
+	 * @param {boolean} [isDeep] Specify a deep flatten.
+	 * @param {boolean} [isStrict] Restrict flattening to arrays-like objects.
+	 * @param {Array} [result=[]] The initial result value.
+	 * @returns {Array} Returns the new flattened array.
+	 */
+	function baseFlatten(array, isDeep, isStrict, result) {
+	  result || (result = []);
+	
+	  var index = -1,
+	      length = array.length;
+	
+	  while (++index < length) {
+	    var value = array[index];
+	    if (isArrayLikeObject(value) &&
+	        (isStrict || isArray(value) || isArguments(value))) {
+	      if (isDeep) {
+	        // Recursively flatten arrays (susceptible to call stack limits).
+	        baseFlatten(value, isDeep, isStrict, result);
+	      } else {
+	        arrayPush(result, value);
+	      }
+	    } else if (!isStrict) {
+	      result[result.length] = value;
+	    }
+	  }
+	  return result;
+	}
+	
+	module.exports = baseFlatten;
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	/**
+	 * Appends the elements of `values` to `array`.
+	 *
+	 * @private
+	 * @param {Array} array The array to modify.
+	 * @param {Array} values The values to append.
+	 * @returns {Array} Returns `array`.
+	 */
+	function arrayPush(array, values) {
+	  var index = -1,
+	      length = values.length,
+	      offset = array.length;
+	
+	  while (++index < length) {
+	    array[offset + index] = values[index];
+	  }
+	  return array;
+	}
+	
+	module.exports = arrayPush;
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var isArrayLikeObject = __webpack_require__(27);
+	
+	/** `Object#toString` result references. */
+	var argsTag = '[object Arguments]';
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/** Built-in value references. */
+	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+	
+	/**
+	 * Checks if `value` is likely an `arguments` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isArguments(function() { return arguments; }());
+	 * // => true
+	 *
+	 * _.isArguments([1, 2, 3]);
+	 * // => false
+	 */
+	function isArguments(value) {
+	  // Safari 8.1 incorrectly makes `arguments.callee` enumerable in strict mode.
+	  return isArrayLikeObject(value) && hasOwnProperty.call(value, 'callee') &&
+	    (!propertyIsEnumerable.call(value, 'callee') || objectToString.call(value) == argsTag);
+	}
+	
+	module.exports = isArguments;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isArrayLike = __webpack_require__(28),
+	    isObjectLike = __webpack_require__(34);
+	
+	/**
+	 * This method is like `_.isArrayLike` except that it also checks if `value`
+	 * is an object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @type Function
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an array-like object, else `false`.
+	 * @example
+	 *
+	 * _.isArrayLikeObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArrayLikeObject(document.body.children);
+	 * // => true
+	 *
+	 * _.isArrayLikeObject('abc');
+	 * // => false
+	 *
+	 * _.isArrayLikeObject(_.noop);
+	 * // => false
+	 */
+	function isArrayLikeObject(value) {
+	  return isObjectLike(value) && isArrayLike(value);
+	}
+	
+	module.exports = isArrayLikeObject;
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var getLength = __webpack_require__(29),
+	    isFunction = __webpack_require__(31),
+	    isLength = __webpack_require__(33);
+	
+	/**
+	 * Checks if `value` is array-like. A value is considered array-like if it's
+	 * not a function and has a `value.length` that's an integer greater than or
+	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @type Function
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+	 * @example
+	 *
+	 * _.isArrayLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArrayLike(document.body.children);
+	 * // => true
+	 *
+	 * _.isArrayLike('abc');
+	 * // => true
+	 *
+	 * _.isArrayLike(_.noop);
+	 * // => false
+	 */
+	function isArrayLike(value) {
+	  return value != null &&
+	    !(typeof value == 'function' && isFunction(value)) && isLength(getLength(value));
+	}
+	
+	module.exports = isArrayLike;
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseProperty = __webpack_require__(30);
+	
+	/**
+	 * Gets the "length" property value of `object`.
+	 *
+	 * **Note:** This function is used to avoid a [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792)
+	 * that affects Safari on at least iOS 8.1-8.3 ARM64.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {*} Returns the "length" value.
+	 */
+	var getLength = baseProperty('length');
+	
+	module.exports = getLength;
+
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	/**
+	 * The base implementation of `_.property` without support for deep paths.
+	 *
+	 * @private
+	 * @param {string} key The key of the property to get.
+	 * @returns {Function} Returns the new function.
+	 */
+	function baseProperty(key) {
+	  return function(object) {
+	    return object == null ? undefined : object[key];
+	  };
+	}
+	
+	module.exports = baseProperty;
+
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var isObject = __webpack_require__(32);
+	
+	/** `Object#toString` result references. */
+	var funcTag = '[object Function]',
+	    genTag = '[object GeneratorFunction]';
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/**
+	 * Checks if `value` is classified as a `Function` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isFunction(_);
+	 * // => true
+	 *
+	 * _.isFunction(/abc/);
+	 * // => false
+	 */
+	function isFunction(value) {
+	  // The use of `Object#toString` avoids issues with the `typeof` operator
+	  // in Safari 8 which returns 'object' for typed array constructors, and
+	  // PhantomJS 1.9 which returns 'function' for `NodeList` instances.
+	  var tag = isObject(value) ? objectToString.call(value) : '';
+	  return tag == funcTag || tag == genTag;
+	}
+	
+	module.exports = isFunction;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 32 */
+/***/ function(module, exports) {
+
+	/**
+	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(_.noop);
+	 * // => true
+	 *
+	 * _.isObject(null);
+	 * // => false
+	 */
+	function isObject(value) {
+	  // Avoid a V8 JIT bug in Chrome 19-20.
+	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+	  var type = typeof value;
+	  return !!value && (type == 'object' || type == 'function');
+	}
+	
+	module.exports = isObject;
+
+
+/***/ },
+/* 33 */
+/***/ function(module, exports) {
+
+	/** Used as references for various `Number` constants. */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+	
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * **Note:** This function is loosely based on [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 * @example
+	 *
+	 * _.isLength(3);
+	 * // => true
+	 *
+	 * _.isLength(Number.MIN_VALUE);
+	 * // => false
+	 *
+	 * _.isLength(Infinity);
+	 * // => false
+	 *
+	 * _.isLength('3');
+	 * // => false
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+	}
+	
+	module.exports = isLength;
+
+
+/***/ },
+/* 34 */
+/***/ function(module, exports) {
+
+	/**
+	 * Checks if `value` is object-like. A value is object-like if it's not `null`
+	 * and has a `typeof` result of "object".
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 * @example
+	 *
+	 * _.isObjectLike({});
+	 * // => true
+	 *
+	 * _.isObjectLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObjectLike(_.noop);
+	 * // => false
+	 *
+	 * _.isObjectLike(null);
+	 * // => false
+	 */
+	function isObjectLike(value) {
+	  return !!value && typeof value == 'object';
+	}
+	
+	module.exports = isObjectLike;
+
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	/**
+	 * Checks if `value` is classified as an `Array` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @type Function
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isArray([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArray(document.body.children);
+	 * // => false
+	 *
+	 * _.isArray('abc');
+	 * // => false
+	 *
+	 * _.isArray(_.noop);
+	 * // => false
+	 */
+	var isArray = Array.isArray;
+	
+	module.exports = isArray;
+
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseMatches = __webpack_require__(37),
+	    baseMatchesProperty = __webpack_require__(93),
+	    identity = __webpack_require__(107),
+	    isArray = __webpack_require__(35),
+	    property = __webpack_require__(108);
+	
+	/**
+	 * The base implementation of `_.iteratee`.
+	 *
+	 * @private
+	 * @param {*} [value=_.identity] The value to convert to an iteratee.
+	 * @returns {Function} Returns the iteratee.
+	 */
+	function baseIteratee(value) {
+	  var type = typeof value;
+	  if (type == 'function') {
+	    return value;
+	  }
+	  if (value == null) {
+	    return identity;
+	  }
+	  if (type == 'object') {
+	    return isArray(value)
+	      ? baseMatchesProperty(value[0], value[1])
+	      : baseMatches(value);
+	  }
+	  return property(value);
+	}
+	
+	module.exports = baseIteratee;
+
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseIsMatch = __webpack_require__(38),
+	    getMatchData = __webpack_require__(89);
+	
+	/**
+	 * The base implementation of `_.matches` which doesn't clone `source`.
+	 *
+	 * @private
+	 * @param {Object} source The object of property values to match.
+	 * @returns {Function} Returns the new function.
+	 */
+	function baseMatches(source) {
+	  var matchData = getMatchData(source);
+	  if (matchData.length == 1 && matchData[0][2]) {
+	    var key = matchData[0][0],
+	        value = matchData[0][1];
+	
+	    return function(object) {
+	      if (object == null) {
+	        return false;
+	      }
+	      return object[key] === value &&
+	        (value !== undefined || (key in Object(object)));
+	    };
+	  }
+	  return function(object) {
+	    return object === source || baseIsMatch(object, source, matchData);
+	  };
+	}
+	
+	module.exports = baseMatches;
+
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Stack = __webpack_require__(39),
+	    baseIsEqual = __webpack_require__(68);
+	
+	/** Used to compose bitmasks for comparison styles. */
+	var UNORDERED_COMPARE_FLAG = 1,
+	    PARTIAL_COMPARE_FLAG = 2;
+	
+	/**
+	 * The base implementation of `_.isMatch` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Object} object The object to inspect.
+	 * @param {Object} source The object of property values to match.
+	 * @param {Array} matchData The property names, values, and compare flags to match.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @returns {boolean} Returns `true` if `object` is a match, else `false`.
+	 */
+	function baseIsMatch(object, source, matchData, customizer) {
+	  var index = matchData.length,
+	      length = index,
+	      noCustomizer = !customizer;
+	
+	  if (object == null) {
+	    return !length;
+	  }
+	  object = Object(object);
+	  while (index--) {
+	    var data = matchData[index];
+	    if ((noCustomizer && data[2])
+	          ? data[1] !== object[data[0]]
+	          : !(data[0] in object)
+	        ) {
+	      return false;
+	    }
+	  }
+	  while (++index < length) {
+	    data = matchData[index];
+	    var key = data[0],
+	        objValue = object[key],
+	        srcValue = data[1];
+	
+	    if (noCustomizer && data[2]) {
+	      if (objValue === undefined && !(key in object)) {
+	        return false;
+	      }
+	    } else {
+	      var stack = new Stack,
+	          result = customizer ? customizer(objValue, srcValue, key, object, source, stack) : undefined;
+	
+	      if (!(result === undefined
+	            ? baseIsEqual(srcValue, objValue, customizer, UNORDERED_COMPARE_FLAG | PARTIAL_COMPARE_FLAG, stack)
+	            : result
+	          )) {
+	        return false;
+	      }
+	    }
+	  }
+	  return true;
+	}
+	
+	module.exports = baseIsMatch;
+
+
+/***/ },
+/* 39 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var stackClear = __webpack_require__(40),
+	    stackDelete = __webpack_require__(41),
+	    stackGet = __webpack_require__(45),
+	    stackHas = __webpack_require__(47),
+	    stackSet = __webpack_require__(49);
+	
+	/**
+	 * Creates a stack cache object to store key-value pairs.
+	 *
+	 * @private
+	 * @param {Array} [values] The values to cache.
+	 */
+	function Stack(values) {
+	  var index = -1,
+	      length = values ? values.length : 0;
+	
+	  this.clear();
+	  while (++index < length) {
+	    var entry = values[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+	
+	// Add functions to the `Stack` cache.
+	Stack.prototype.clear = stackClear;
+	Stack.prototype['delete'] = stackDelete;
+	Stack.prototype.get = stackGet;
+	Stack.prototype.has = stackHas;
+	Stack.prototype.set = stackSet;
+	
+	module.exports = Stack;
+
+
+/***/ },
+/* 40 */
+/***/ function(module, exports) {
+
+	/**
+	 * Removes all key-value entries from the stack.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf Stack
+	 */
+	function stackClear() {
+	  this.__data__ = { 'array': [], 'map': null };
+	}
+	
+	module.exports = stackClear;
+
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var assocDelete = __webpack_require__(42);
+	
+	/**
+	 * Removes `key` and its value from the stack.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function stackDelete(key) {
+	  var data = this.__data__,
+	      array = data.array;
+	
+	  return array ? assocDelete(array, key) : data.map['delete'](key);
+	}
+	
+	module.exports = stackDelete;
+
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var assocIndexOf = __webpack_require__(43);
+	
+	/** Used for built-in method references. */
+	var arrayProto = global.Array.prototype;
+	
+	/** Built-in value references. */
+	var splice = arrayProto.splice;
+	
+	/**
+	 * Removes `key` and its value from the associative array.
+	 *
+	 * @private
+	 * @param {Array} array The array to query.
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function assocDelete(array, key) {
+	  var index = assocIndexOf(array, key);
+	  if (index < 0) {
+	    return false;
+	  }
+	  var lastIndex = array.length - 1;
+	  if (index == lastIndex) {
+	    array.pop();
+	  } else {
+	    splice.call(array, index, 1);
+	  }
+	  return true;
+	}
+	
+	module.exports = assocDelete;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var eq = __webpack_require__(44);
+	
+	/**
+	 * Gets the index at which the first occurrence of `key` is found in `array`
+	 * of key-value pairs.
+	 *
+	 * @private
+	 * @param {Array} array The array to search.
+	 * @param {*} key The key to search for.
+	 * @returns {number} Returns the index of the matched value, else `-1`.
+	 */
+	function assocIndexOf(array, key) {
+	  var length = array.length;
+	  while (length--) {
+	    if (eq(array[length][0], key)) {
+	      return length;
+	    }
+	  }
+	  return -1;
+	}
+	
+	module.exports = assocIndexOf;
+
+
+/***/ },
+/* 44 */
+/***/ function(module, exports) {
+
+	/**
+	 * Performs a [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
+	 * comparison between two values to determine if they are equivalent.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 * @example
+	 *
+	 * var object = { 'user': 'fred' };
+	 * var other = { 'user': 'fred' };
+	 *
+	 * _.eq(object, object);
+	 * // => true
+	 *
+	 * _.eq(object, other);
+	 * // => false
+	 *
+	 * _.eq('a', 'a');
+	 * // => true
+	 *
+	 * _.eq('a', Object('a'));
+	 * // => false
+	 *
+	 * _.eq(NaN, NaN);
+	 * // => true
+	 */
+	function eq(value, other) {
+	  return value === other || (value !== value && other !== other);
+	}
+	
+	module.exports = eq;
+
+
+/***/ },
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var assocGet = __webpack_require__(46);
+	
+	/**
+	 * Gets the stack value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function stackGet(key) {
+	  var data = this.__data__,
+	      array = data.array;
+	
+	  return array ? assocGet(array, key) : data.map.get(key);
+	}
+	
+	module.exports = stackGet;
+
+
+/***/ },
+/* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var assocIndexOf = __webpack_require__(43);
+	
+	/**
+	 * Gets the associative array value for `key`.
+	 *
+	 * @private
+	 * @param {Array} array The array to query.
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function assocGet(array, key) {
+	  var index = assocIndexOf(array, key);
+	  return index < 0 ? undefined : array[index][1];
+	}
+	
+	module.exports = assocGet;
+
+
+/***/ },
+/* 47 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var assocHas = __webpack_require__(48);
+	
+	/**
+	 * Checks if a stack value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf Stack
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function stackHas(key) {
+	  var data = this.__data__,
+	      array = data.array;
+	
+	  return array ? assocHas(array, key) : data.map.has(key);
+	}
+	
+	module.exports = stackHas;
+
+
+/***/ },
+/* 48 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var assocIndexOf = __webpack_require__(43);
+	
+	/**
+	 * Checks if an associative array value for `key` exists.
+	 *
+	 * @private
+	 * @param {Array} array The array to query.
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function assocHas(array, key) {
+	  return assocIndexOf(array, key) > -1;
+	}
+	
+	module.exports = assocHas;
+
+
+/***/ },
+/* 49 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var MapCache = __webpack_require__(50),
+	    assocSet = __webpack_require__(66);
+	
+	/** Used as the size to enable large array optimizations. */
+	var LARGE_ARRAY_SIZE = 200;
+	
+	/**
+	 * Sets the stack `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the stack cache object.
+	 */
+	function stackSet(key, value) {
+	  var data = this.__data__,
+	      array = data.array;
+	
+	  if (array) {
+	    if (array.length < (LARGE_ARRAY_SIZE - 1)) {
+	      assocSet(array, key, value);
+	    } else {
+	      data.array = null;
+	      data.map = new MapCache(array);
+	    }
+	  }
+	  var map = data.map;
+	  if (map) {
+	    map.set(key, value);
+	  }
+	  return this;
+	}
+	
+	module.exports = stackSet;
+
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var mapClear = __webpack_require__(51),
+	    mapDelete = __webpack_require__(58),
+	    mapGet = __webpack_require__(62),
+	    mapHas = __webpack_require__(64),
+	    mapSet = __webpack_require__(65);
+	
+	/**
+	 * Creates a map cache object to store key-value pairs.
+	 *
+	 * @private
+	 * @param {Array} [values] The values to cache.
+	 */
+	function MapCache(values) {
+	  var index = -1,
+	      length = values ? values.length : 0;
+	
+	  this.clear();
+	  while (++index < length) {
+	    var entry = values[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+	
+	// Add functions to the `MapCache`.
+	MapCache.prototype.clear = mapClear;
+	MapCache.prototype['delete'] = mapDelete;
+	MapCache.prototype.get = mapGet;
+	MapCache.prototype.has = mapHas;
+	MapCache.prototype.set = mapSet;
+	
+	module.exports = MapCache;
+
+
+/***/ },
+/* 51 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Hash = __webpack_require__(52),
+	    Map = __webpack_require__(57);
+	
+	/**
+	 * Removes all key-value entries from the map.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf MapCache
+	 */
+	function mapClear() {
+	  this.__data__ = { 'hash': new Hash, 'map': Map ? new Map : [], 'string': new Hash };
+	}
+	
+	module.exports = mapClear;
+
+
+/***/ },
+/* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var nativeCreate = __webpack_require__(53);
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/**
+	 * Creates an hash object.
+	 *
+	 * @private
+	 * @returns {Object} Returns the new hash object.
+	 */
+	function Hash() {}
+	
+	// Avoid inheriting from `Object.prototype` when possible.
+	Hash.prototype = nativeCreate ? nativeCreate(null) : objectProto;
+	
+	module.exports = Hash;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var getNative = __webpack_require__(54);
+	
+	/* Built-in method references that are verified to be native. */
+	var nativeCreate = getNative(Object, 'create');
+	
+	module.exports = nativeCreate;
+
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isNative = __webpack_require__(55);
+	
+	/**
+	 * Gets the native function at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {string} key The key of the method to get.
+	 * @returns {*} Returns the function if it's native, else `undefined`.
+	 */
+	function getNative(object, key) {
+	  var value = object == null ? undefined : object[key];
+	  return isNative(value) ? value : undefined;
+	}
+	
+	module.exports = getNative;
+
+
+/***/ },
+/* 55 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var isFunction = __webpack_require__(31),
+	    isHostObject = __webpack_require__(56),
+	    isObjectLike = __webpack_require__(34);
+	
+	/** Used to match `RegExp` [syntax characters](http://ecma-international.org/ecma-262/6.0/#sec-patterns). */
+	var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+	
+	/** Used to detect host constructors (Safari > 5). */
+	var reIsHostCtor = /^\[object .+?Constructor\]$/;
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/** Used to resolve the decompiled source of functions. */
+	var funcToString = global.Function.prototype.toString;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/** Used to detect if a method is native. */
+	var reIsNative = RegExp('^' +
+	  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+	);
+	
+	/**
+	 * Checks if `value` is a native function.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a native function, else `false`.
+	 * @example
+	 *
+	 * _.isNative(Array.prototype.push);
+	 * // => true
+	 *
+	 * _.isNative(_);
+	 * // => false
+	 */
+	function isNative(value) {
+	  if (value == null) {
+	    return false;
+	  }
+	  if (isFunction(value)) {
+	    return reIsNative.test(funcToString.call(value));
+	  }
+	  return isObjectLike(value) &&
+	    (isHostObject(value) ? reIsNative : reIsHostCtor).test(value);
+	}
+	
+	module.exports = isNative;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 56 */
+/***/ function(module, exports) {
+
+	/**
+	 * Checks if `value` is a host object in IE < 9.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
+	 */
+	function isHostObject(value) {
+	  // Many host objects are `Object` objects that can coerce to strings
+	  // despite having improperly defined `toString` methods.
+	  var result = false;
+	  if (value != null && typeof value.toString != 'function') {
+	    try {
+	      result = !!(value + '');
+	    } catch (e) {}
+	  }
+	  return result;
+	}
+	
+	module.exports = isHostObject;
+
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var getNative = __webpack_require__(54);
+	
+	/* Built-in method references that are verified to be native. */
+	var Map = getNative(global, 'Map');
+	
+	module.exports = Map;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 58 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Map = __webpack_require__(57),
+	    assocDelete = __webpack_require__(42),
+	    hashDelete = __webpack_require__(59),
+	    isKeyable = __webpack_require__(61);
+	
+	/**
+	 * Removes `key` and its value from the map.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function mapDelete(key) {
+	  var data = this.__data__;
+	  if (isKeyable(key)) {
+	    return hashDelete(typeof key == 'string' ? data.string : data.hash, key);
+	  }
+	  return Map ? data.map['delete'](key) : assocDelete(data.map, key);
+	}
+	
+	module.exports = mapDelete;
+
+
+/***/ },
+/* 59 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var hashHas = __webpack_require__(60);
+	
+	/**
+	 * Removes `key` and its value from the hash.
+	 *
+	 * @private
+	 * @param {Object} hash The hash to modify.
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function hashDelete(hash, key) {
+	  return hashHas(hash, key) && delete hash[key];
+	}
+	
+	module.exports = hashDelete;
+
+
+/***/ },
+/* 60 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var nativeCreate = __webpack_require__(53);
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * Checks if a hash value for `key` exists.
+	 *
+	 * @private
+	 * @param {Object} hash The hash to query.
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function hashHas(hash, key) {
+	  return nativeCreate ? hash[key] !== undefined : hasOwnProperty.call(hash, key);
+	}
+	
+	module.exports = hashHas;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 61 */
+/***/ function(module, exports) {
+
+	/**
+	 * Checks if `value` is suitable for use as unique object key.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+	 */
+	function isKeyable(value) {
+	  var type = typeof value;
+	  return type == 'number' || type == 'boolean' ||
+	    (type == 'string' && value !== '__proto__') || value == null;
+	}
+	
+	module.exports = isKeyable;
+
+
+/***/ },
+/* 62 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Map = __webpack_require__(57),
+	    assocGet = __webpack_require__(46),
+	    hashGet = __webpack_require__(63),
+	    isKeyable = __webpack_require__(61);
+	
+	/**
+	 * Gets the map value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function mapGet(key) {
+	  var data = this.__data__;
+	  if (isKeyable(key)) {
+	    return hashGet(typeof key == 'string' ? data.string : data.hash, key);
+	  }
+	  return Map ? data.map.get(key) : assocGet(data.map, key);
+	}
+	
+	module.exports = mapGet;
+
+
+/***/ },
+/* 63 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var nativeCreate = __webpack_require__(53);
+	
+	/** Used to stand-in for `undefined` hash values. */
+	var HASH_UNDEFINED = '__lodash_hash_undefined__';
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * Gets the hash value for `key`.
+	 *
+	 * @private
+	 * @param {Object} hash The hash to query.
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function hashGet(hash, key) {
+	  if (nativeCreate) {
+	    var result = hash[key];
+	    return result === HASH_UNDEFINED ? undefined : result;
+	  }
+	  return hasOwnProperty.call(hash, key) ? hash[key] : undefined;
+	}
+	
+	module.exports = hashGet;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 64 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Map = __webpack_require__(57),
+	    assocHas = __webpack_require__(48),
+	    hashHas = __webpack_require__(60),
+	    isKeyable = __webpack_require__(61);
+	
+	/**
+	 * Checks if a map value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf MapCache
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function mapHas(key) {
+	  var data = this.__data__;
+	  if (isKeyable(key)) {
+	    return hashHas(typeof key == 'string' ? data.string : data.hash, key);
+	  }
+	  return Map ? data.map.has(key) : assocHas(data.map, key);
+	}
+	
+	module.exports = mapHas;
+
+
+/***/ },
+/* 65 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Map = __webpack_require__(57),
+	    assocSet = __webpack_require__(66),
+	    hashSet = __webpack_require__(67),
+	    isKeyable = __webpack_require__(61);
+	
+	/**
+	 * Sets the map `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the map cache object.
+	 */
+	function mapSet(key, value) {
+	  var data = this.__data__;
+	  if (isKeyable(key)) {
+	    hashSet(typeof key == 'string' ? data.string : data.hash, key, value);
+	  } else if (Map) {
+	    data.map.set(key, value);
+	  } else {
+	    assocSet(data.map, key, value);
+	  }
+	  return this;
+	}
+	
+	module.exports = mapSet;
+
+
+/***/ },
+/* 66 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var assocIndexOf = __webpack_require__(43);
+	
+	/**
+	 * Sets the associative array `key` to `value`.
+	 *
+	 * @private
+	 * @param {Array} array The array to modify.
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 */
+	function assocSet(array, key, value) {
+	  var index = assocIndexOf(array, key);
+	  if (index < 0) {
+	    array.push([key, value]);
+	  } else {
+	    array[index][1] = value;
+	  }
+	}
+	
+	module.exports = assocSet;
+
+
+/***/ },
+/* 67 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var nativeCreate = __webpack_require__(53);
+	
+	/** Used to stand-in for `undefined` hash values. */
+	var HASH_UNDEFINED = '__lodash_hash_undefined__';
+	
+	/**
+	 * Sets the hash `key` to `value`.
+	 *
+	 * @private
+	 * @param {Object} hash The hash to modify.
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 */
+	function hashSet(hash, key, value) {
+	  hash[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+	}
+	
+	module.exports = hashSet;
+
+
+/***/ },
+/* 68 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseIsEqualDeep = __webpack_require__(69),
+	    isObject = __webpack_require__(32),
+	    isObjectLike = __webpack_require__(34);
+	
+	/**
+	 * The base implementation of `_.isEqual` which supports partial comparisons
+	 * and tracks traversed objects.
+	 *
+	 * @private
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {boolean} [bitmask] The bitmask of comparison flags.
+	 *  The bitmask may be composed of the following flags:
+	 *     1 - Unordered comparison
+	 *     2 - Partial comparison
+	 * @param {Object} [stack] Tracks traversed `value` and `other` objects.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 */
+	function baseIsEqual(value, other, customizer, bitmask, stack) {
+	  if (value === other) {
+	    return true;
+	  }
+	  if (value == null || other == null || (!isObject(value) && !isObjectLike(other))) {
+	    return value !== value && other !== other;
+	  }
+	  return baseIsEqualDeep(value, other, baseIsEqual, customizer, bitmask, stack);
+	}
+	
+	module.exports = baseIsEqual;
+
+
+/***/ },
+/* 69 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var Stack = __webpack_require__(39),
+	    equalArrays = __webpack_require__(70),
+	    equalByTag = __webpack_require__(72),
+	    equalObjects = __webpack_require__(77),
+	    getTag = __webpack_require__(86),
+	    isArray = __webpack_require__(35),
+	    isHostObject = __webpack_require__(56),
+	    isTypedArray = __webpack_require__(88);
+	
+	/** Used to compose bitmasks for comparison styles. */
+	var PARTIAL_COMPARE_FLAG = 2;
+	
+	/** `Object#toString` result references. */
+	var argsTag = '[object Arguments]',
+	    arrayTag = '[object Array]',
+	    objectTag = '[object Object]';
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * A specialized version of `baseIsEqual` for arrays and objects which performs
+	 * deep comparisons and tracks traversed objects enabling objects with circular
+	 * references to be compared.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
+	 * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function baseIsEqualDeep(object, other, equalFunc, customizer, bitmask, stack) {
+	  var objIsArr = isArray(object),
+	      othIsArr = isArray(other),
+	      objTag = arrayTag,
+	      othTag = arrayTag;
+	
+	  if (!objIsArr) {
+	    objTag = getTag(object);
+	    if (objTag == argsTag) {
+	      objTag = objectTag;
+	    } else if (objTag != objectTag) {
+	      objIsArr = isTypedArray(object);
+	    }
+	  }
+	  if (!othIsArr) {
+	    othTag = getTag(other);
+	    if (othTag == argsTag) {
+	      othTag = objectTag;
+	    } else if (othTag != objectTag) {
+	      othIsArr = isTypedArray(other);
+	    }
+	  }
+	  var objIsObj = objTag == objectTag && !isHostObject(object),
+	      othIsObj = othTag == objectTag && !isHostObject(other),
+	      isSameTag = objTag == othTag;
+	
+	  if (isSameTag && !(objIsArr || objIsObj)) {
+	    return equalByTag(object, other, objTag, equalFunc, customizer, bitmask);
+	  }
+	  var isPartial = bitmask & PARTIAL_COMPARE_FLAG;
+	  if (!isPartial) {
+	    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
+	        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
+	
+	    if (objIsWrapped || othIsWrapped) {
+	      return equalFunc(objIsWrapped ? object.value() : object, othIsWrapped ? other.value() : other, customizer, bitmask, stack);
+	    }
+	  }
+	  if (!isSameTag) {
+	    return false;
+	  }
+	  stack || (stack = new Stack);
+	  return (objIsArr ? equalArrays : equalObjects)(object, other, equalFunc, customizer, bitmask, stack);
+	}
+	
+	module.exports = baseIsEqualDeep;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 70 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var arraySome = __webpack_require__(71);
+	
+	/** Used to compose bitmasks for comparison styles. */
+	var UNORDERED_COMPARE_FLAG = 1,
+	    PARTIAL_COMPARE_FLAG = 2;
+	
+	/**
+	 * A specialized version of `baseIsEqualDeep` for arrays with support for
+	 * partial deep comparisons.
+	 *
+	 * @private
+	 * @param {Array} array The array to compare.
+	 * @param {Array} other The other array to compare.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
+	 * @param {Object} [stack] Tracks traversed `array` and `other` objects.
+	 * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
+	 */
+	function equalArrays(array, other, equalFunc, customizer, bitmask, stack) {
+	  var index = -1,
+	      isPartial = bitmask & PARTIAL_COMPARE_FLAG,
+	      isUnordered = bitmask & UNORDERED_COMPARE_FLAG,
+	      arrLength = array.length,
+	      othLength = other.length;
+	
+	  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+	    return false;
+	  }
+	  // Assume cyclic values are equal.
+	  var stacked = stack.get(array);
+	  if (stacked) {
+	    return stacked == other;
+	  }
+	  var result = true;
+	  stack.set(array, other);
+	
+	  // Ignore non-index properties.
+	  while (++index < arrLength) {
+	    var arrValue = array[index],
+	        othValue = other[index];
+	
+	    if (customizer) {
+	      var compared = isPartial
+	        ? customizer(othValue, arrValue, index, other, array, stack)
+	        : customizer(arrValue, othValue, index, array, other, stack);
+	    }
+	    if (compared !== undefined) {
+	      if (compared) {
+	        continue;
+	      }
+	      result = false;
+	      break;
+	    }
+	    // Recursively compare arrays (susceptible to call stack limits).
+	    if (isUnordered) {
+	      if (!arraySome(other, function(othValue) {
+	            return arrValue === othValue || equalFunc(arrValue, othValue, customizer, bitmask, stack);
+	          })) {
+	        result = false;
+	        break;
+	      }
+	    } else if (!(arrValue === othValue || equalFunc(arrValue, othValue, customizer, bitmask, stack))) {
+	      result = false;
+	      break;
+	    }
+	  }
+	  stack['delete'](array);
+	  return result;
+	}
+	
+	module.exports = equalArrays;
+
+
+/***/ },
+/* 71 */
+/***/ function(module, exports) {
+
+	/**
+	 * A specialized version of `_.some` for arrays without support for iteratee
+	 * shorthands.
+	 *
+	 * @private
+	 * @param {Array} array The array to iterate over.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @returns {boolean} Returns `true` if any element passes the predicate check, else `false`.
+	 */
+	function arraySome(array, predicate) {
+	  var index = -1,
+	      length = array.length;
+	
+	  while (++index < length) {
+	    if (predicate(array[index], index, array)) {
+	      return true;
+	    }
+	  }
+	  return false;
+	}
+	
+	module.exports = arraySome;
+
+
+/***/ },
+/* 72 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Symbol = __webpack_require__(73),
+	    Uint8Array = __webpack_require__(74),
+	    mapToArray = __webpack_require__(75),
+	    setToArray = __webpack_require__(76);
+	
+	/** Used to compose bitmasks for comparison styles. */
+	var UNORDERED_COMPARE_FLAG = 1,
+	    PARTIAL_COMPARE_FLAG = 2;
+	
+	/** `Object#toString` result references. */
+	var boolTag = '[object Boolean]',
+	    dateTag = '[object Date]',
+	    errorTag = '[object Error]',
+	    mapTag = '[object Map]',
+	    numberTag = '[object Number]',
+	    regexpTag = '[object RegExp]',
+	    setTag = '[object Set]',
+	    stringTag = '[object String]',
+	    symbolTag = '[object Symbol]';
+	
+	var arrayBufferTag = '[object ArrayBuffer]';
+	
+	/** Used to convert symbols to primitives and strings. */
+	var symbolProto = Symbol ? Symbol.prototype : undefined,
+	    symbolValueOf = Symbol ? symbolProto.valueOf : undefined;
+	
+	/**
+	 * A specialized version of `baseIsEqualDeep` for comparing objects of
+	 * the same `toStringTag`.
+	 *
+	 * **Note:** This function only supports comparing values with tags of
+	 * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {string} tag The `toStringTag` of the objects to compare.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function equalByTag(object, other, tag, equalFunc, customizer, bitmask) {
+	  switch (tag) {
+	    case arrayBufferTag:
+	      if ((object.byteLength != other.byteLength) ||
+	          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
+	        return false;
+	      }
+	      return true;
+	
+	    case boolTag:
+	    case dateTag:
+	      // Coerce dates and booleans to numbers, dates to milliseconds and booleans
+	      // to `1` or `0` treating invalid dates coerced to `NaN` as not equal.
+	      return +object == +other;
+	
+	    case errorTag:
+	      return object.name == other.name && object.message == other.message;
+	
+	    case numberTag:
+	      // Treat `NaN` vs. `NaN` as equal.
+	      return (object != +object) ? other != +other : object == +other;
+	
+	    case regexpTag:
+	    case stringTag:
+	      // Coerce regexes to strings and treat strings primitives and string
+	      // objects as equal. See https://es5.github.io/#x15.10.6.4 for more details.
+	      return object == (other + '');
+	
+	    case mapTag:
+	      var convert = mapToArray;
+	
+	    case setTag:
+	      var isPartial = bitmask & PARTIAL_COMPARE_FLAG;
+	      convert || (convert = setToArray);
+	
+	      // Recursively compare objects (susceptible to call stack limits).
+	      return (isPartial || object.size == other.size) &&
+	        equalFunc(convert(object), convert(other), customizer, bitmask | UNORDERED_COMPARE_FLAG);
+	
+	    case symbolTag:
+	      return !!Symbol && (symbolValueOf.call(object) == symbolValueOf.call(other));
+	  }
+	  return false;
+	}
+	
+	module.exports = equalByTag;
+
+
+/***/ },
+/* 73 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/** Built-in value references. */
+	var Symbol = global.Symbol;
+	
+	module.exports = Symbol;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 74 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/** Built-in value references. */
+	var Uint8Array = global.Uint8Array;
+	
+	module.exports = Uint8Array;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 75 */
+/***/ function(module, exports) {
+
+	/**
+	 * Converts `map` to an array.
+	 *
+	 * @private
+	 * @param {Object} map The map to convert.
+	 * @returns {Array} Returns the converted array.
+	 */
+	function mapToArray(map) {
+	  var index = -1,
+	      result = Array(map.size);
+	
+	  map.forEach(function(value, key) {
+	    result[++index] = [key, value];
+	  });
+	  return result;
+	}
+	
+	module.exports = mapToArray;
+
+
+/***/ },
+/* 76 */
+/***/ function(module, exports) {
+
+	/**
+	 * Converts `set` to an array.
+	 *
+	 * @private
+	 * @param {Object} set The set to convert.
+	 * @returns {Array} Returns the converted array.
+	 */
+	function setToArray(set) {
+	  var index = -1,
+	      result = Array(set.size);
+	
+	  set.forEach(function(value) {
+	    result[++index] = value;
+	  });
+	  return result;
+	}
+	
+	module.exports = setToArray;
+
+
+/***/ },
+/* 77 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseHas = __webpack_require__(78),
+	    keys = __webpack_require__(79);
+	
+	/** Used to compose bitmasks for comparison styles. */
+	var PARTIAL_COMPARE_FLAG = 2;
+	
+	/**
+	 * A specialized version of `baseIsEqualDeep` for objects with support for
+	 * partial deep comparisons.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
+	 * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function equalObjects(object, other, equalFunc, customizer, bitmask, stack) {
+	  var isPartial = bitmask & PARTIAL_COMPARE_FLAG,
+	      objProps = keys(object),
+	      objLength = objProps.length,
+	      othProps = keys(other),
+	      othLength = othProps.length;
+	
+	  if (objLength != othLength && !isPartial) {
+	    return false;
+	  }
+	  var index = objLength;
+	  while (index--) {
+	    var key = objProps[index];
+	    if (!(isPartial ? key in other : baseHas(other, key))) {
+	      return false;
+	    }
+	  }
+	  // Assume cyclic values are equal.
+	  var stacked = stack.get(object);
+	  if (stacked) {
+	    return stacked == other;
+	  }
+	  var result = true;
+	  stack.set(object, other);
+	
+	  var skipCtor = isPartial;
+	  while (++index < objLength) {
+	    key = objProps[index];
+	    var objValue = object[key],
+	        othValue = other[key];
+	
+	    if (customizer) {
+	      var compared = isPartial
+	        ? customizer(othValue, objValue, key, other, object, stack)
+	        : customizer(objValue, othValue, key, object, other, stack);
+	    }
+	    // Recursively compare objects (susceptible to call stack limits).
+	    if (!(compared === undefined
+	          ? (objValue === othValue || equalFunc(objValue, othValue, customizer, bitmask, stack))
+	          : compared
+	        )) {
+	      result = false;
+	      break;
+	    }
+	    skipCtor || (skipCtor = key == 'constructor');
+	  }
+	  if (result && !skipCtor) {
+	    var objCtor = object.constructor,
+	        othCtor = other.constructor;
+	
+	    // Non `Object` object instances with different constructors are not equal.
+	    if (objCtor != othCtor &&
+	        ('constructor' in object && 'constructor' in other) &&
+	        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
+	          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+	      result = false;
+	    }
+	  }
+	  stack['delete'](object);
+	  return result;
+	}
+	
+	module.exports = equalObjects;
+
+
+/***/ },
+/* 78 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/** Built-in value references. */
+	var getPrototypeOf = Object.getPrototypeOf;
+	
+	/**
+	 * The base implementation of `_.has` without support for deep paths.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} key The key to check.
+	 * @returns {boolean} Returns `true` if `key` exists, else `false`.
+	 */
+	function baseHas(object, key) {
+	  // Avoid a bug in IE 10-11 where objects with a [[Prototype]] of `null`,
+	  // that are composed entirely of index properties, return `false` for
+	  // `hasOwnProperty` checks of them.
+	  return hasOwnProperty.call(object, key) ||
+	    (typeof object == 'object' && key in object && getPrototypeOf(object) === null);
+	}
+	
+	module.exports = baseHas;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 79 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseHas = __webpack_require__(78),
+	    baseKeys = __webpack_require__(80),
+	    indexKeys = __webpack_require__(81),
+	    isArrayLike = __webpack_require__(28),
+	    isIndex = __webpack_require__(84),
+	    isPrototype = __webpack_require__(85);
+	
+	/**
+	 * Creates an array of the own enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects. See the
+	 * [ES spec](http://ecma-international.org/ecma-262/6.0/#sec-object.keys)
+	 * for more details.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keys(new Foo);
+	 * // => ['a', 'b'] (iteration order is not guaranteed)
+	 *
+	 * _.keys('hi');
+	 * // => ['0', '1']
+	 */
+	function keys(object) {
+	  var isProto = isPrototype(object);
+	  if (!(isProto || isArrayLike(object))) {
+	    return baseKeys(object);
+	  }
+	  var indexes = indexKeys(object),
+	      skipIndexes = !!indexes,
+	      result = indexes || [],
+	      length = result.length;
+	
+	  for (var key in object) {
+	    if (baseHas(object, key) &&
+	        !(skipIndexes && (key == 'length' || isIndex(key, length))) &&
+	        !(isProto && key == 'constructor')) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+	
+	module.exports = keys;
+
+
+/***/ },
+/* 80 */
+/***/ function(module, exports) {
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeKeys = Object.keys;
+	
+	/**
+	 * The base implementation of `_.keys` which doesn't skip the constructor
+	 * property of prototypes or treat sparse arrays as dense.
+	 *
+	 * @private
+	 * @type Function
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function baseKeys(object) {
+	  return nativeKeys(Object(object));
+	}
+	
+	module.exports = baseKeys;
+
+
+/***/ },
+/* 81 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseTimes = __webpack_require__(82),
+	    isArguments = __webpack_require__(26),
+	    isArray = __webpack_require__(35),
+	    isLength = __webpack_require__(33),
+	    isString = __webpack_require__(83);
+	
+	/**
+	 * Creates an array of index keys for `object` values of arrays,
+	 * `arguments` objects, and strings, otherwise `null` is returned.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array|null} Returns index keys, else `null`.
+	 */
+	function indexKeys(object) {
+	  var length = object ? object.length : undefined;
+	  return (isLength(length) && (isArray(object) || isString(object) || isArguments(object)))
+	    ? baseTimes(length, String)
+	    : null;
+	}
+	
+	module.exports = indexKeys;
+
+
+/***/ },
+/* 82 */
+/***/ function(module, exports) {
+
+	/**
+	 * The base implementation of `_.times` without support for iteratee shorthands
+	 * or max array length checks.
+	 *
+	 * @private
+	 * @param {number} n The number of times to invoke `iteratee`.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the array of results.
+	 */
+	function baseTimes(n, iteratee) {
+	  var index = -1,
+	      result = Array(n);
+	
+	  while (++index < n) {
+	    result[index] = iteratee(index);
+	  }
+	  return result;
+	}
+	
+	module.exports = baseTimes;
+
+
+/***/ },
+/* 83 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var isArray = __webpack_require__(35),
+	    isObjectLike = __webpack_require__(34);
+	
+	/** `Object#toString` result references. */
+	var stringTag = '[object String]';
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/**
+	 * Checks if `value` is classified as a `String` primitive or object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isString('abc');
+	 * // => true
+	 *
+	 * _.isString(1);
+	 * // => false
+	 */
+	function isString(value) {
+	  return typeof value == 'string' ||
+	    (!isArray(value) && isObjectLike(value) && objectToString.call(value) == stringTag);
+	}
+	
+	module.exports = isString;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 84 */
+/***/ function(module, exports) {
+
+	/** Used as references for various `Number` constants. */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+	
+	/** Used to detect unsigned integer values. */
+	var reIsUint = /^(?:0|[1-9]\d*)$/;
+	
+	/**
+	 * Checks if `value` is a valid array-like index.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+	 */
+	function isIndex(value, length) {
+	  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
+	  length = length == null ? MAX_SAFE_INTEGER : length;
+	  return value > -1 && value % 1 == 0 && value < length;
+	}
+	
+	module.exports = isIndex;
+
+
+/***/ },
+/* 85 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/**
+	 * Checks if `value` is likely a prototype object.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+	 */
+	function isPrototype(value) {
+	  var Ctor = value && value.constructor,
+	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
+	
+	  return value === proto;
+	}
+	
+	module.exports = isPrototype;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 86 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var Map = __webpack_require__(57),
+	    Set = __webpack_require__(87);
+	
+	/** `Object#toString` result references. */
+	var mapTag = '[object Map]',
+	    objectTag = '[object Object]',
+	    setTag = '[object Set]';
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/** Used to resolve the decompiled source of functions. */
+	var funcToString = global.Function.prototype.toString;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/** Used to detect maps and sets. */
+	var mapCtorString = Map ? funcToString.call(Map) : '',
+	    setCtorString = Set ? funcToString.call(Set) : '';
+	
+	/**
+	 * Gets the `toStringTag` of `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	function getTag(value) {
+	  return objectToString.call(value);
+	}
+	
+	// Fallback for IE 11 providing `toStringTag` values for maps and sets.
+	if ((Map && getTag(new Map) != mapTag) || (Set && getTag(new Set) != setTag)) {
+	  getTag = function(value) {
+	    var result = objectToString.call(value),
+	        Ctor = result == objectTag ? value.constructor : null,
+	        ctorString = typeof Ctor == 'function' ? funcToString.call(Ctor) : '';
+	
+	    if (ctorString) {
+	      if (ctorString == mapCtorString) {
+	        return mapTag;
+	      }
+	      if (ctorString == setCtorString) {
+	        return setTag;
+	      }
+	    }
+	    return result;
+	  };
+	}
+	
+	module.exports = getTag;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 87 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var getNative = __webpack_require__(54);
+	
+	/* Built-in method references that are verified to be native. */
+	var Set = getNative(global, 'Set');
+	
+	module.exports = Set;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 88 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var isLength = __webpack_require__(33),
+	    isObjectLike = __webpack_require__(34);
+	
+	/** `Object#toString` result references. */
+	var argsTag = '[object Arguments]',
+	    arrayTag = '[object Array]',
+	    boolTag = '[object Boolean]',
+	    dateTag = '[object Date]',
+	    errorTag = '[object Error]',
+	    funcTag = '[object Function]',
+	    mapTag = '[object Map]',
+	    numberTag = '[object Number]',
+	    objectTag = '[object Object]',
+	    regexpTag = '[object RegExp]',
+	    setTag = '[object Set]',
+	    stringTag = '[object String]',
+	    weakMapTag = '[object WeakMap]';
+	
+	var arrayBufferTag = '[object ArrayBuffer]',
+	    float32Tag = '[object Float32Array]',
+	    float64Tag = '[object Float64Array]',
+	    int8Tag = '[object Int8Array]',
+	    int16Tag = '[object Int16Array]',
+	    int32Tag = '[object Int32Array]',
+	    uint8Tag = '[object Uint8Array]',
+	    uint8ClampedTag = '[object Uint8ClampedArray]',
+	    uint16Tag = '[object Uint16Array]',
+	    uint32Tag = '[object Uint32Array]';
+	
+	/** Used to identify `toStringTag` values of typed arrays. */
+	var typedArrayTags = {};
+	typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+	typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+	typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+	typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+	typedArrayTags[uint32Tag] = true;
+	typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
+	typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
+	typedArrayTags[dateTag] = typedArrayTags[errorTag] =
+	typedArrayTags[funcTag] = typedArrayTags[mapTag] =
+	typedArrayTags[numberTag] = typedArrayTags[objectTag] =
+	typedArrayTags[regexpTag] = typedArrayTags[setTag] =
+	typedArrayTags[stringTag] = typedArrayTags[weakMapTag] = false;
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/**
+	 * Checks if `value` is classified as a typed array.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isTypedArray(new Uint8Array);
+	 * // => true
+	 *
+	 * _.isTypedArray([]);
+	 * // => false
+	 */
+	function isTypedArray(value) {
+	  return isObjectLike(value) && isLength(value.length) && !!typedArrayTags[objectToString.call(value)];
+	}
+	
+	module.exports = isTypedArray;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 89 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isStrictComparable = __webpack_require__(90),
+	    toPairs = __webpack_require__(91);
+	
+	/**
+	 * Gets the property names, values, and compare flags of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the match data of `object`.
+	 */
+	function getMatchData(object) {
+	  var result = toPairs(object),
+	      length = result.length;
+	
+	  while (length--) {
+	    result[length][2] = isStrictComparable(result[length][1]);
+	  }
+	  return result;
+	}
+	
+	module.exports = getMatchData;
+
+
+/***/ },
+/* 90 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isObject = __webpack_require__(32);
+	
+	/**
+	 * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` if suitable for strict
+	 *  equality comparisons, else `false`.
+	 */
+	function isStrictComparable(value) {
+	  return value === value && !isObject(value);
+	}
+	
+	module.exports = isStrictComparable;
+
+
+/***/ },
+/* 91 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseToPairs = __webpack_require__(92),
+	    keys = __webpack_require__(79);
+	
+	/**
+	 * Creates an array of own enumerable key-value pairs for `object`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the new array of key-value pairs.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.toPairs(new Foo);
+	 * // => [['a', 1], ['b', 2]] (iteration order is not guaranteed)
+	 */
+	function toPairs(object) {
+	  return baseToPairs(object, keys(object));
+	}
+	
+	module.exports = toPairs;
+
+
+/***/ },
+/* 92 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var arrayMap = __webpack_require__(23);
+	
+	/**
+	 * The base implementation of `_.toPairs` and `_.toPairsIn` which creates an array
+	 * of key-value pairs for `object` corresponding to the property names of `props`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array} props The property names to get values for.
+	 * @returns {Object} Returns the new array of key-value pairs.
+	 */
+	function baseToPairs(object, props) {
+	  return arrayMap(props, function(key) {
+	    return [key, object[key]];
+	  });
+	}
+	
+	module.exports = baseToPairs;
+
+
+/***/ },
+/* 93 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseIsEqual = __webpack_require__(68),
+	    get = __webpack_require__(94),
+	    hasIn = __webpack_require__(101);
+	
+	/** Used to compose bitmasks for comparison styles. */
+	var UNORDERED_COMPARE_FLAG = 1,
+	    PARTIAL_COMPARE_FLAG = 2;
+	
+	/**
+	 * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
+	 *
+	 * @private
+	 * @param {string} path The path of the property to get.
+	 * @param {*} srcValue The value to match.
+	 * @returns {Function} Returns the new function.
+	 */
+	function baseMatchesProperty(path, srcValue) {
+	  return function(object) {
+	    var objValue = get(object, path);
+	    return (objValue === undefined && objValue === srcValue)
+	      ? hasIn(object, path)
+	      : baseIsEqual(srcValue, objValue, undefined, UNORDERED_COMPARE_FLAG | PARTIAL_COMPARE_FLAG);
+	  };
+	}
+	
+	module.exports = baseMatchesProperty;
+
+
+/***/ },
+/* 94 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseGet = __webpack_require__(95);
+	
+	/**
+	 * Gets the value at `path` of `object`. If the resolved value is
+	 * `undefined` the `defaultValue` is used in its place.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path of the property to get.
+	 * @param {*} [defaultValue] The value returned if the resolved value is `undefined`.
+	 * @returns {*} Returns the resolved value.
+	 * @example
+	 *
+	 * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+	 *
+	 * _.get(object, 'a[0].b.c');
+	 * // => 3
+	 *
+	 * _.get(object, ['a', '0', 'b', 'c']);
+	 * // => 3
+	 *
+	 * _.get(object, 'a.b.c', 'default');
+	 * // => 'default'
+	 */
+	function get(object, path, defaultValue) {
+	  var result = object == null ? undefined : baseGet(object, path);
+	  return result === undefined ? defaultValue : result;
+	}
+	
+	module.exports = get;
+
+
+/***/ },
+/* 95 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseToPath = __webpack_require__(96),
+	    isKey = __webpack_require__(100);
+	
+	/**
+	 * The base implementation of `_.get` without support for default values.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path of the property to get.
+	 * @returns {*} Returns the resolved value.
+	 */
+	function baseGet(object, path) {
+	  path = isKey(path, object) ? [path + ''] : baseToPath(path);
+	
+	  var index = 0,
+	      length = path.length;
+	
+	  while (object != null && index < length) {
+	    object = object[path[index++]];
+	  }
+	  return (index && index == length) ? object : undefined;
+	}
+	
+	module.exports = baseGet;
+
+
+/***/ },
+/* 96 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isArray = __webpack_require__(35),
+	    stringToPath = __webpack_require__(97);
+	
+	/**
+	 * The base implementation of `_.toPath` which only converts `value` to a
+	 * path if it's not one.
+	 *
+	 * @private
+	 * @param {*} value The value to process.
+	 * @returns {Array} Returns the property path array.
+	 */
+	function baseToPath(value) {
+	  return isArray(value) ? value : stringToPath(value);
+	}
+	
+	module.exports = baseToPath;
+
+
+/***/ },
+/* 97 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var toString = __webpack_require__(98);
+	
+	/** Used to match property names within property paths. */
+	var rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]/g;
+	
+	/** Used to match backslashes in property paths. */
+	var reEscapeChar = /\\(\\)?/g;
+	
+	/**
+	 * Converts `string` to a property path array.
+	 *
+	 * @private
+	 * @param {string} string The string to convert.
+	 * @returns {Array} Returns the property path array.
+	 */
+	function stringToPath(string) {
+	  var result = [];
+	  toString(string).replace(rePropName, function(match, number, quote, string) {
+	    result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
+	  });
+	  return result;
+	}
+	
+	module.exports = stringToPath;
+
+
+/***/ },
+/* 98 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Symbol = __webpack_require__(73),
+	    isSymbol = __webpack_require__(99);
+	
+	/** Used as references for various `Number` constants. */
+	var INFINITY = 1 / 0;
+	
+	/** Used to convert symbols to primitives and strings. */
+	var symbolProto = Symbol ? Symbol.prototype : undefined,
+	    symbolToString = Symbol ? symbolProto.toString : undefined;
+	
+	/**
+	 * Converts `value` to a string if it's not one. An empty string is returned
+	 * for `null` and `undefined` values. The sign of `-0` is preserved.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to process.
+	 * @returns {string} Returns the string.
+	 * @example
+	 *
+	 * _.toString(null);
+	 * // => ''
+	 *
+	 * _.toString(-0);
+	 * // => '-0'
+	 *
+	 * _.toString([1, 2, 3]);
+	 * // => '1,2,3'
+	 */
+	function toString(value) {
+	  // Exit early for strings to avoid a performance hit in some environments.
+	  if (typeof value == 'string') {
+	    return value;
+	  }
+	  if (value == null) {
+	    return '';
+	  }
+	  if (isSymbol(value)) {
+	    return Symbol ? symbolToString.call(value) : '';
+	  }
+	  var result = (value + '');
+	  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+	}
+	
+	module.exports = toString;
+
+
+/***/ },
+/* 99 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var isObjectLike = __webpack_require__(34);
+	
+	/** `Object#toString` result references. */
+	var symbolTag = '[object Symbol]';
+	
+	/** Used for built-in method references. */
+	var objectProto = global.Object.prototype;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/**
+	 * Checks if `value` is classified as a `Symbol` primitive or object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isSymbol(Symbol.iterator);
+	 * // => true
+	 *
+	 * _.isSymbol('abc');
+	 * // => false
+	 */
+	function isSymbol(value) {
+	  return typeof value == 'symbol' ||
+	    (isObjectLike(value) && objectToString.call(value) == symbolTag);
+	}
+	
+	module.exports = isSymbol;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 100 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isArray = __webpack_require__(35);
+	
+	/** Used to match property names within property paths. */
+	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+	    reIsPlainProp = /^\w*$/;
+	
+	/**
+	 * Checks if `value` is a property name and not a property path.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {Object} [object] The object to query keys on.
+	 * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+	 */
+	function isKey(value, object) {
+	  if (typeof value == 'number') {
+	    return true;
+	  }
+	  return !isArray(value) &&
+	    (reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+	      (object != null && value in Object(object)));
+	}
+	
+	module.exports = isKey;
+
+
+/***/ },
+/* 101 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseHasIn = __webpack_require__(102),
+	    hasPath = __webpack_require__(103);
+	
+	/**
+	 * Checks if `path` is a direct or inherited property of `object`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path to check.
+	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
+	 * @example
+	 *
+	 * var object = _.create({ 'a': _.create({ 'b': _.create({ 'c': 3 }) }) });
+	 *
+	 * _.hasIn(object, 'a');
+	 * // => true
+	 *
+	 * _.hasIn(object, 'a.b.c');
+	 * // => true
+	 *
+	 * _.hasIn(object, ['a', 'b', 'c']);
+	 * // => true
+	 *
+	 * _.hasIn(object, 'b');
+	 * // => false
+	 */
+	function hasIn(object, path) {
+	  return hasPath(object, path, baseHasIn);
+	}
+	
+	module.exports = hasIn;
+
+
+/***/ },
+/* 102 */
+/***/ function(module, exports) {
+
+	/**
+	 * The base implementation of `_.hasIn` without support for deep paths.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} key The key to check.
+	 * @returns {boolean} Returns `true` if `key` exists, else `false`.
+	 */
+	function baseHasIn(object, key) {
+	  return key in Object(object);
+	}
+	
+	module.exports = baseHasIn;
+
+
+/***/ },
+/* 103 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseToPath = __webpack_require__(96),
+	    isArguments = __webpack_require__(26),
+	    isArray = __webpack_require__(35),
+	    isIndex = __webpack_require__(84),
+	    isKey = __webpack_require__(100),
+	    isLength = __webpack_require__(33),
+	    isString = __webpack_require__(83),
+	    last = __webpack_require__(104),
+	    parent = __webpack_require__(105);
+	
+	/**
+	 * Checks if `path` exists on `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path to check.
+	 * @param {Function} hasFunc The function to check properties.
+	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
+	 */
+	function hasPath(object, path, hasFunc) {
+	  if (object == null) {
+	    return false;
+	  }
+	  var result = hasFunc(object, path);
+	  if (!result && !isKey(path)) {
+	    path = baseToPath(path);
+	    object = parent(object, path);
+	    if (object != null) {
+	      path = last(path);
+	      result = hasFunc(object, path);
+	    }
+	  }
+	  return result || (isLength(object && object.length) && isIndex(path, object.length) &&
+	    (isArray(object) || isString(object) || isArguments(object)));
+	}
+	
+	module.exports = hasPath;
+
+
+/***/ },
+/* 104 */
+/***/ function(module, exports) {
+
+	/**
+	 * Gets the last element of `array`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Array
+	 * @param {Array} array The array to query.
+	 * @returns {*} Returns the last element of `array`.
+	 * @example
+	 *
+	 * _.last([1, 2, 3]);
+	 * // => 3
+	 */
+	function last(array) {
+	  var length = array ? array.length : 0;
+	  return length ? array[length - 1] : undefined;
+	}
+	
+	module.exports = last;
+
+
+/***/ },
+/* 105 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseSlice = __webpack_require__(106),
+	    get = __webpack_require__(94);
+	
+	/**
+	 * Gets the parent value at `path` of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array} path The path to get the parent value of.
+	 * @returns {*} Returns the parent value.
+	 */
+	function parent(object, path) {
+	  return path.length == 1 ? object : get(object, baseSlice(path, 0, -1));
+	}
+	
+	module.exports = parent;
+
+
+/***/ },
+/* 106 */
+/***/ function(module, exports) {
+
+	/**
+	 * The base implementation of `_.slice` without an iteratee call guard.
+	 *
+	 * @private
+	 * @param {Array} array The array to slice.
+	 * @param {number} [start=0] The start position.
+	 * @param {number} [end=array.length] The end position.
+	 * @returns {Array} Returns the slice of `array`.
+	 */
+	function baseSlice(array, start, end) {
+	  var index = -1,
+	      length = array.length;
+	
+	  if (start < 0) {
+	    start = -start > length ? 0 : (length + start);
+	  }
+	  end = end > length ? length : end;
+	  if (end < 0) {
+	    end += length;
+	  }
+	  length = start > end ? 0 : ((end - start) >>> 0);
+	  start >>>= 0;
+	
+	  var result = Array(length);
+	  while (++index < length) {
+	    result[index] = array[index + start];
+	  }
+	  return result;
+	}
+	
+	module.exports = baseSlice;
+
+
+/***/ },
+/* 107 */
+/***/ function(module, exports) {
+
+	/**
+	 * This method returns the first argument provided to it.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Util
+	 * @param {*} value Any value.
+	 * @returns {*} Returns `value`.
+	 * @example
+	 *
+	 * var object = { 'user': 'fred' };
+	 *
+	 * _.identity(object) === object;
+	 * // => true
+	 */
+	function identity(value) {
+	  return value;
+	}
+	
+	module.exports = identity;
+
+
+/***/ },
+/* 108 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseProperty = __webpack_require__(30),
+	    basePropertyDeep = __webpack_require__(109),
+	    isKey = __webpack_require__(100);
+	
+	/**
+	 * Creates a function that returns the value at `path` of a given object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Util
+	 * @param {Array|string} path The path of the property to get.
+	 * @returns {Function} Returns the new function.
+	 * @example
+	 *
+	 * var objects = [
+	 *   { 'a': { 'b': { 'c': 2 } } },
+	 *   { 'a': { 'b': { 'c': 1 } } }
+	 * ];
+	 *
+	 * _.map(objects, _.property('a.b.c'));
+	 * // => [2, 1]
+	 *
+	 * _.map(_.sortBy(objects, _.property(['a', 'b', 'c'])), 'a.b.c');
+	 * // => [1, 2]
+	 */
+	function property(path) {
+	  return isKey(path) ? baseProperty(path) : basePropertyDeep(path);
+	}
+	
+	module.exports = property;
+
+
+/***/ },
+/* 109 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseGet = __webpack_require__(95);
+	
+	/**
+	 * A specialized version of `baseProperty` which supports deep paths.
+	 *
+	 * @private
+	 * @param {Array|string} path The path of the property to get.
+	 * @returns {Function} Returns the new function.
+	 */
+	function basePropertyDeep(path) {
+	  return function(object) {
+	    return baseGet(object, path);
+	  };
+	}
+	
+	module.exports = basePropertyDeep;
+
+
+/***/ },
+/* 110 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseEach = __webpack_require__(111),
+	    baseFind = __webpack_require__(116),
+	    baseFindIndex = __webpack_require__(117),
+	    baseIteratee = __webpack_require__(36),
+	    isArray = __webpack_require__(35);
+	
+	/**
+	 * Iterates over elements of `collection`, returning the first element
+	 * `predicate` returns truthy for. The predicate is invoked with three arguments:
+	 * (value, index|key, collection).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Collection
+	 * @param {Array|Object} collection The collection to search.
+	 * @param {Function|Object|string} [predicate=_.identity] The function invoked per iteration.
+	 * @returns {*} Returns the matched element, else `undefined`.
+	 * @example
+	 *
+	 * var users = [
+	 *   { 'user': 'barney',  'age': 36, 'active': true },
+	 *   { 'user': 'fred',    'age': 40, 'active': false },
+	 *   { 'user': 'pebbles', 'age': 1,  'active': true }
+	 * ];
+	 *
+	 * _.find(users, function(o) { return o.age < 40; });
+	 * // => object for 'barney'
+	 *
+	 * // using the `_.matches` iteratee shorthand
+	 * _.find(users, { 'age': 1, 'active': true });
+	 * // => object for 'pebbles'
+	 *
+	 * // using the `_.matchesProperty` iteratee shorthand
+	 * _.find(users, ['active', false]);
+	 * // => object for 'fred'
+	 *
+	 * // using the `_.property` iteratee shorthand
+	 * _.find(users, 'active');
+	 * // => object for 'barney'
+	 */
+	function find(collection, predicate) {
+	  predicate = baseIteratee(predicate, 3);
+	  if (isArray(collection)) {
+	    var index = baseFindIndex(collection, predicate);
+	    return index > -1 ? collection[index] : undefined;
+	  }
+	  return baseFind(collection, predicate, baseEach);
+	}
+	
+	module.exports = find;
+
+
+/***/ },
+/* 111 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseForOwn = __webpack_require__(112),
+	    createBaseEach = __webpack_require__(115);
+	
+	/**
+	 * The base implementation of `_.forEach` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array|Object} collection The collection to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array|Object} Returns `collection`.
+	 */
+	var baseEach = createBaseEach(baseForOwn);
+	
+	module.exports = baseEach;
+
+
+/***/ },
+/* 112 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseFor = __webpack_require__(113),
+	    keys = __webpack_require__(79);
+	
+	/**
+	 * The base implementation of `_.forOwn` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Object} object The object to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Object} Returns `object`.
+	 */
+	function baseForOwn(object, iteratee) {
+	  return object && baseFor(object, iteratee, keys);
+	}
+	
+	module.exports = baseForOwn;
+
+
+/***/ },
+/* 113 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var createBaseFor = __webpack_require__(114);
+	
+	/**
+	 * The base implementation of `baseForIn` and `baseForOwn` which iterates
+	 * over `object` properties returned by `keysFunc` invoking `iteratee` for
+	 * each property. Iteratee functions may exit iteration early by explicitly
+	 * returning `false`.
+	 *
+	 * @private
+	 * @param {Object} object The object to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @param {Function} keysFunc The function to get the keys of `object`.
+	 * @returns {Object} Returns `object`.
+	 */
+	var baseFor = createBaseFor();
+	
+	module.exports = baseFor;
+
+
+/***/ },
+/* 114 */
+/***/ function(module, exports) {
+
+	/**
+	 * Creates a base function for methods like `_.forIn`.
+	 *
+	 * @private
+	 * @param {boolean} [fromRight] Specify iterating from right to left.
+	 * @returns {Function} Returns the new base function.
+	 */
+	function createBaseFor(fromRight) {
+	  return function(object, iteratee, keysFunc) {
+	    var index = -1,
+	        iterable = Object(object),
+	        props = keysFunc(object),
+	        length = props.length;
+	
+	    while (length--) {
+	      var key = props[fromRight ? length : ++index];
+	      if (iteratee(iterable[key], key, iterable) === false) {
+	        break;
+	      }
+	    }
+	    return object;
+	  };
+	}
+	
+	module.exports = createBaseFor;
+
+
+/***/ },
+/* 115 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isArrayLike = __webpack_require__(28);
+	
+	/**
+	 * Creates a `baseEach` or `baseEachRight` function.
+	 *
+	 * @private
+	 * @param {Function} eachFunc The function to iterate over a collection.
+	 * @param {boolean} [fromRight] Specify iterating from right to left.
+	 * @returns {Function} Returns the new base function.
+	 */
+	function createBaseEach(eachFunc, fromRight) {
+	  return function(collection, iteratee) {
+	    if (collection == null) {
+	      return collection;
+	    }
+	    if (!isArrayLike(collection)) {
+	      return eachFunc(collection, iteratee);
+	    }
+	    var length = collection.length,
+	        index = fromRight ? length : -1,
+	        iterable = Object(collection);
+	
+	    while ((fromRight ? index-- : ++index < length)) {
+	      if (iteratee(iterable[index], index, iterable) === false) {
+	        break;
+	      }
+	    }
+	    return collection;
+	  };
+	}
+	
+	module.exports = createBaseEach;
+
+
+/***/ },
+/* 116 */
+/***/ function(module, exports) {
+
+	/**
+	 * The base implementation of methods like `_.find` and `_.findKey`, without
+	 * support for iteratee shorthands, which iterates over `collection` using
+	 * `eachFunc`.
+	 *
+	 * @private
+	 * @param {Array|Object} collection The collection to search.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @param {Function} eachFunc The function to iterate over `collection`.
+	 * @param {boolean} [retKey] Specify returning the key of the found element instead of the element itself.
+	 * @returns {*} Returns the found element or its key, else `undefined`.
+	 */
+	function baseFind(collection, predicate, eachFunc, retKey) {
+	  var result;
+	  eachFunc(collection, function(value, key, collection) {
+	    if (predicate(value, key, collection)) {
+	      result = retKey ? key : value;
+	      return false;
+	    }
+	  });
+	  return result;
+	}
+	
+	module.exports = baseFind;
+
+
+/***/ },
+/* 117 */
+/***/ function(module, exports) {
+
+	/**
+	 * The base implementation of `_.findIndex` and `_.findLastIndex` without
+	 * support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array} array The array to search.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @param {boolean} [fromRight] Specify iterating from right to left.
+	 * @returns {number} Returns the index of the matched value, else `-1`.
+	 */
+	function baseFindIndex(array, predicate, fromRight) {
+	  var length = array.length,
+	      index = fromRight ? length : -1;
+	
+	  while ((fromRight ? index-- : ++index < length)) {
+	    if (predicate(array[index], index, array)) {
+	      return index;
+	    }
+	  }
+	  return -1;
+	}
+	
+	module.exports = baseFindIndex;
+
+
+/***/ },
+/* 118 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	if (!window.ga) {
+	    if (location.hostname !== 'localhost') {
+	        (function (i, s, o, g, r, a, m) {
+	            i['GoogleAnalyticsObject'] = r;i[r] = i[r] || function () {
+	                (i[r].q = i[r].q || []).push(arguments);
+	            }, i[r].l = 1 * new Date();a = s.createElement(o), m = s.getElementsByTagName(o)[0];a.async = 1;a.src = g;m.parentNode.insertBefore(a, m);
+	        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+	    } else {
+	        window.ga = function () {};
+	    }
+	}
+	
+	module.exports = {
+	    pageview: function pageview() {
+	        ga('create', 'UA-73703688-1', 'auto');
+	        ga('send', 'pageview');
+	    }
+	};
+
+/***/ },
+/* 119 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	module.exports = {
+	    "categories": [{
+	        "name": "Klasszikus pizzák",
+	        "id": "klasszikus-pizzak"
+	    }, {
+	        "name": "Extra pizzák",
+	        "id": "extra-pizzak"
+	    }, {
+	        "name": "Full a fullban pizzák",
+	        "id": "full-a-fullban-pizzak"
+	    }, {
+	        "name": "Tészták",
+	        "id": "tesztak"
+	    }, {
+	        "name": "Fúziós ételek",
+	        "id": "fuzios-etelek"
+	    }, {
+	        "name": "Rántott sajtok és frissensültek",
+	        "id": "rantott-sajtok-es-frissensultek"
+	    }, {
+	        "name": "Hamburgerek",
+	        "id": "hamburgerek"
+	    }, {
+	        "name": "Saláták",
+	        "id": "salatak"
+	    }, {
+	        "name": "Édességek",
+	        "id": "edessegek"
+	    }, {
+	        "name": "Üdítők",
+	        "id": "uditok"
+	    }],
+	    "dishes": [{
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "margarita-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Margarita pizza",
+	        "description": "fűszeres paradicsomszósz, sajt",
+	        "imageName": "margarita-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "sonkas-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Sonkás pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, sonka",
+	        "imageName": "sonkas-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "szalamis-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Szalámis pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, paprikás szalámi",
+	        "imageName": "szalamis-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "sonka-ku-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Sonka-ku pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, sonka, kukorica",
+	        "imageName": "sonka-ku-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "bacon-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Bacon pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, pirított bacon",
+	        "imageName": "bacon-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "4-sajtos-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "4 Sajtos pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, parmezán, gorgonzola, füstölt sajt",
+	        "imageName": "4-sajtos-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "klasszikus-pizzak",
+	        "id": "hawaii-pizza",
+	        "category": "Klasszikus pizzák",
+	        "name": "Hawaii pizza",
+	        "description": "fűszeres paradicsomszósz vagy fűszeres tejfölös szósz, sajt, sonka, ananász, füstölt sajt",
+	        "imageName": "hawaii-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1070
+	        }, {
+	            "name": "40cm",
+	            "price": 2070
+	        }, {
+	            "name": "50cm",
+	            "price": 2920
+	        }],
+	        "options": [{
+	            "name": "Alap",
+	            "list": ["fűszeres paradicsomszósz", "fűszeres tejfölös szósz"]
+	        }]
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "tonhalas-pizza",
+	        "category": "Extra pizzák",
+	        "name": "Tonhalas pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek",
+	        "imageName": "tonhalas-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }, {
+	            "name": "40cm",
+	            "price": 2450
+	        }, {
+	            "name": "50cm",
+	            "price": 3540
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "piedone-pizza",
+	        "category": "Extra pizzák",
+	        "name": "Piedone pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika",
+	        "imageName": "piedone-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }, {
+	            "name": "40cm",
+	            "price": 2450
+	        }, {
+	            "name": "50cm",
+	            "price": 3540
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "joasszony-pizza",
+	        "category": "Extra pizzák",
+	        "name": "Jóasszony pizza",
+	        "description": "fűszeres paradicsomszósz alap, sajt, paprikás szalámi, csípős cseresznyepaprika, csiperke gomba, hagyma",
+	        "imageName": "joasszony-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }, {
+	            "name": "40cm",
+	            "price": 2450
+	        }, {
+	            "name": "50cm",
+	            "price": 3540
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "3-kivansag-pizza",
+	        "category": "Extra pizzák",
+	        "name": "3 Kívánság pizza",
+	        "description": "szabadon választott szósz alap, sajt, és pluszban három feltét",
+	        "imageName": "3-kivansag-pizza",
+	        "type": "pizza-3-free-options",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }, {
+	            "name": "40cm",
+	            "price": 2450
+	        }, {
+	            "name": "50cm",
+	            "price": 3540
+	        }],
+	        "options": [{
+	            "name": "Alap",
+	            "list": ["fűszeres paradicsomszósz alap", "fűszeres tejfölös szósz", "fokhagymás bbq szósz", "TODO"]
+	        }]
+	    }, {
+	        "categoryId": "extra-pizzak",
+	        "id": "chuck-norris-pizza",
+	        "category": "Extra pizzák",
+	        "name": "Chuck Norris pizza",
+	        "description": "extra erős chilipaszta, sajt, grillezett csirkemell, paradicsomkarika, szeletekre vágott lilahagyma",
+	        "imageName": "chuck-norris-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1190
+	        }, {
+	            "name": "40cm",
+	            "price": 2450
+	        }, {
+	            "name": "50cm",
+	            "price": 3540
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "szex-es-new-york-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Szex & New York pizza",
+	        "description": "választható alap, bacon, kukorica, brokkoli, camambert, tükörtojás",
+	        "imageName": "szex-es-new-york-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }, {
+	            "name": "40cm",
+	            "price": 3100
+	        }, {
+	            "name": "50cm",
+	            "price": 3950
+	        }],
+	        "options": [{
+	            "name": "Alap",
+	            "list": ["fűszeres paradicsomszósz alap", "fűszeres tejfölös szósz", "fokhagymás bbq szósz", "TODO"]
+	        }]
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "victorio-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Victorio pizza",
+	        "description": "fokhagymás tejfölös alap, sajt, póréhagyma, mozzarella golyó, pirított bacon, juhturó",
+	        "imageName": "victorio-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }, {
+	            "name": "40cm",
+	            "price": 3100
+	        }, {
+	            "name": "50cm",
+	            "price": 3950
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "hus-zabalo-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Hús-zabáló pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, csirkemell, sült tarja, sonka, bacon",
+	        "imageName": "hus-zabalo-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }, {
+	            "name": "40cm",
+	            "price": 3100
+	        }, {
+	            "name": "50cm",
+	            "price": 3950
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "master-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Master pizza",
+	        "description": "tejfölös mustáros tárkonyos ízvilág, sajt, sonka, kukorica, pirított bacon, csiperke gomba",
+	        "imageName": "master-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }, {
+	            "name": "40cm",
+	            "price": 3100
+	        }, {
+	            "name": "50cm",
+	            "price": 3950
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "barbeque-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Barbeque pizza",
+	        "description": "bbq alap szósz, sajt, bacon vagy csirkemell, vöröshagyma, pritamin paprika szeletek",
+	        "imageName": "barbeque-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }, {
+	            "name": "40cm",
+	            "price": 3100
+	        }, {
+	            "name": "50cm",
+	            "price": 3950
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "jalapeno-barbeque-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Jalapeno Barbeque pizza",
+	        "description": "fokhagymás bbq szósz, sajt, csirkemell, pirított póréhagyma, paradicsomkarika , jalapeno",
+	        "imageName": "jalapeno-barbeque-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }, {
+	            "name": "40cm",
+	            "price": 3100
+	        }, {
+	            "name": "50cm",
+	            "price": 3950
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "tenger-kincsei-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Tenger kincsei pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, pácban érlelt tenger gyümölcsei, vegyes magozott olíva bogyó",
+	        "imageName": "tenger-kincsei-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }, {
+	            "name": "40cm",
+	            "price": 3100
+	        }, {
+	            "name": "50cm",
+	            "price": 3950
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "dani-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Dani pizza",
+	        "description": "tejfölös fokhagymás alap, sajt, főtt tarja, lila hagyma, bacon, szeletekre vágott jalapeno paprika",
+	        "imageName": "dani-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }, {
+	            "name": "40cm",
+	            "price": 3100
+	        }, {
+	            "name": "50cm",
+	            "price": 3950
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "meex-toltott-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Meex töltött pizza",
+	        "description": "tejfölös alap, paprikás szalámi, ruccola, ízletes cheddar sajt, jalapeno paprika",
+	        "imageName": "meex-toltott-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1450
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "full-a-fullban-pizzak",
+	        "id": "bossy-pizza",
+	        "category": "Full a fullban pizzák",
+	        "name": "Bossy pizza",
+	        "description": "fűszeres paradicsomszósz, sajt, pármai sonka, frissen vágott ruccola, koktél paradicsom",
+	        "imageName": "bossy-pizza",
+	        "type": "pizza",
+	        "variants": [{
+	            "name": "30cm",
+	            "price": 1550
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "tesztak",
+	        "id": "carbonara",
+	        "category": "Tészták",
+	        "name": "Carbonara",
+	        "description": "bacon, sonka, tojás, tejszín, parmezán sajt, spagetti",
+	        "imageName": "carbonara",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "tesztak",
+	        "id": "peperoncino",
+	        "category": "Tészták",
+	        "name": "Peperoncino",
+	        "description": "pirított fokhagymás olívaolaj, chili, petrezselyem, csípős, spagetti",
+	        "imageName": "peperoncino",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "tesztak",
+	        "id": "milanoi",
+	        "category": "Tészták",
+	        "name": "Milánói",
+	        "description": "paradicsomszósz, sonka, gomba, trappista sajt, spagetti",
+	        "imageName": "milanoi",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "tesztak",
+	        "id": "meex-i",
+	        "category": "Tészták",
+	        "name": "Meex I",
+	        "description": "csirke, gomba, fokhagyma, fűszeres tejszínes szósz, parmezán, spagetti",
+	        "imageName": "meex-i",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "tesztak",
+	        "id": "meex-ii",
+	        "category": "Tészták",
+	        "name": "Meex II",
+	        "description": "csirke, gomba, fokhagyma, fűszeres tejszínes szósz, kukorica, parmezán, pennetészta",
+	        "imageName": "meex-ii",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "tesztak",
+	        "id": "bolognai",
+	        "category": "Tészták",
+	        "name": "Bolognai",
+	        "description": "paradicsomos alap, hagyma, darált sertés, fűszerek, spagetti",
+	        "imageName": "bolognai",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1190
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "fuzios-etelek",
+	        "id": "akay-torok-pizza",
+	        "category": "Fúziós ételek",
+	        "name": "Akay - török pizza",
+	        "description": "fűszeres paradicsomos alap, sajt, sonka",
+	        "imageName": "akay-torok-pizza",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 490
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "fuzios-etelek",
+	        "id": "banu-torok-pizza",
+	        "category": "Fúziós ételek",
+	        "name": "Banu - török pizza",
+	        "description": "tejfölös alap, sajt, tarja, pirított fokhagyma",
+	        "imageName": "banu-torok-pizza",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 490
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "fuzios-etelek",
+	        "id": "cahil-torok-pizza",
+	        "category": "Fúziós ételek",
+	        "name": "Cahil - török pizza",
+	        "description": "bbq alap, sajt, ropogós bacon",
+	        "imageName": "cahil-torok-pizza",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 490
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "fuzios-etelek",
+	        "id": "torok-pizza-menu",
+	        "category": "Fúziós ételek",
+	        "name": "Török pizza menü",
+	        "description": "választható török pizzával, hasábburgonyával és egy 0,33l-es üdítővel",
+	        "imageName": "torok-pizza-menu",
+	        "type": "none",
+	        "variants": [{
+	            "name": "Akay",
+	            "price": 990
+	        }, {
+	            "name": "Banu",
+	            "price": 990
+	        }, {
+	            "name": "Cahil",
+	            "price": 990
+	        }],
+	        "options": [{
+	            "name": "Üdítő",
+	            "list": ["Pepsi", "Lipton Ice Tea (zöldtea)", "Lipton Ice Tea (őszibarack)"]
+	        }]
+	    }, {
+	        "categoryId": "rantott-sajtok-es-frissensultek",
+	        "id": "izletes-cheddar-sajtfalatkak",
+	        "category": "Rántott sajtok és frissensültek",
+	        "name": "Ízletes cheddar sajtfalatkák",
+	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+	        "imageName": "rantottsajt-cheddar",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1290
+	        }],
+	        "options": [{
+	            "name": "Köret",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szósz",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "rantott-sajtok-es-frissensultek",
+	        "id": "camembert-sajt",
+	        "category": "Rántott sajtok és frissensültek",
+	        "name": "Camembert sajt",
+	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+	        "imageName": "rantottsajt-camambert",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1290
+	        }],
+	        "options": [{
+	            "name": "Köret",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szósz",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "rantott-sajtok-es-frissensultek",
+	        "id": "trappista-sajt",
+	        "category": "Rántott sajtok és frissensültek",
+	        "name": "Trappista sajt",
+	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+	        "imageName": "rantottsajt-trappista",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1290
+	        }],
+	        "options": [{
+	            "name": "Köret",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szósz",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "rantott-sajtok-es-frissensultek",
+	        "id": "buffalo-csirkeszarnyak",
+	        "category": "Rántott sajtok és frissensültek",
+	        "name": "Buffalo csirkeszárnyak",
+	        "description": "TODO",
+	        "imageName": "buffalo-csirkeszarnyak",
+	        "type": "none",
+	        "variants": [{
+	            "name": "6 darab",
+	            "price": 780
+	        }, {
+	            "name": "12 darab",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "rantott-sajtok-es-frissensultek",
+	        "id": "buffalo-csirkeszarnyak-menu",
+	        "category": "Rántott sajtok és frissensültek",
+	        "name": "Buffalo csirkeszárnyak menü",
+	        "description": "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz",
+	        "imageName": "buffalo-csirkeszarnyak",
+	        "type": "none",
+	        "variants": [{
+	            "name": "6 darab",
+	            "price": 1190
+	        }, {
+	            "name": "12 darab",
+	            "price": 1350
+	        }],
+	        "options": [{
+	            "name": "Köret",
+	            "list": ["hasábburgonya", "steakburgonya"]
+	        }, {
+	            "name": "Szósz",
+	            "list": ["házi tartármártás", "gyümölcsszósz", "chilis szósz"]
+	        }]
+	    }, {
+	        "categoryId": "rantott-sajtok-es-frissensultek",
+	        "id": "fitneszcsirke",
+	        "category": "Rántott sajtok és frissensültek",
+	        "name": "Fitneszcsirke",
+	        "description": "roston sült csirkemellszelet, friss saláta vagy párold zöldköret vagy párolt gyümölcs",
+	        "imageName": "fitneszcsirke",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 990
+	        }],
+	        "options": [{
+	            "name": "Köret",
+	            "list": ["friss saláta", "párolt zöldköret", "párolt gyümölcs"]
+	        }]
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "meex-burger",
+	        "category": "Hamburgerek",
+	        "name": "Meex burger",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, opcionálisan hasáb- vagy steakburgonyával",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "Szendvics",
+	            "price": 750
+	        }, {
+	            "name": "Hasább.",
+	            "price": 990
+	        }, {
+	            "name": "Steakbur.",
+	            "price": 990
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "meex-sajtburger",
+	        "category": "Hamburgerek",
+	        "name": "Meex sajtburger",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "Szendvics",
+	            "price": 850
+	        }, {
+	            "name": "Hasább.",
+	            "price": 1090
+	        }, {
+	            "name": "Steakbur.",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "dupla-meex-burger",
+	        "category": "Hamburgerek",
+	        "name": "Dupla Meex burger",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, opcionálisan hasáb- vagy steakburgonyával",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "Szendvics",
+	            "price": 1250
+	        }, {
+	            "name": "Hasább.",
+	            "price": 1490
+	        }, {
+	            "name": "Steakbur.",
+	            "price": 1490
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "dupla-meex-sajtburger",
+	        "category": "Hamburgerek",
+	        "name": "Dupla Meex sajtburger",
+	        "description": "friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "Szendvics",
+	            "price": 1450
+	        }, {
+	            "name": "Hasább.",
+	            "price": 1590
+	        }, {
+	            "name": "Steakbur.",
+	            "price": 1590
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "cheese-lovers-burger",
+	        "category": "Hamburgerek",
+	        "name": "Cheese Lovers Burger",
+	        "description": "alap + választható sajt, opcionálisan hasáb- vagy steakburgonyával",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "Szendvics",
+	            "price": 890
+	        }, {
+	            "name": "Hasább.",
+	            "price": 1190
+	        }, {
+	            "name": "Steakbur.",
+	            "price": 1190
+	        }],
+	        "options": [{
+	            "name": "Sajt",
+	            "list": ["rostonsült mozzarella", "rántott trappista", "rántott camabert"]
+	        }]
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "texasi-tuzes-burger",
+	        "category": "Hamburgerek",
+	        "name": "Texasi Tüzes Burger",
+	        "description": "alap + 100% marhahús, jalapeno, cheddar sajt, opcionálisan hasáb- vagy steakburgonyával",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "Szendvics",
+	            "price": 990
+	        }, {
+	            "name": "Hasább.",
+	            "price": 1390
+	        }, {
+	            "name": "Steakbur.",
+	            "price": 1390
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "new-york-burger",
+	        "category": "Hamburgerek",
+	        "name": "New York Burger",
+	        "description": "alap + rostonsült csirke, füstölt sajt, tükörtojás, opcionálisan hasáb- vagy steakburgonyával",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "Szendvics",
+	            "price": 990
+	        }, {
+	            "name": "Hasább.",
+	            "price": 1390
+	        }, {
+	            "name": "Steakbur.",
+	            "price": 1390
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "hamburgerek",
+	        "id": "hungarian-burger",
+	        "category": "Hamburgerek",
+	        "name": "Hungarian Burger",
+	        "description": "alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt, opcionálisan hasáb- vagy steakburgonyával",
+	        "imageName": "meex-burger",
+	        "type": "hamburger",
+	        "variants": [{
+	            "name": "Szendvics",
+	            "price": 990
+	        }, {
+	            "name": "Hasább.",
+	            "price": 1390
+	        }, {
+	            "name": "Steakbur.",
+	            "price": 1390
+	        }],
+	        "options": [{
+	            "name": "Hús",
+	            "list": ["panko morzsás sertés", "csirke"]
+	        }]
+	    }, {
+	        "categoryId": "salatak",
+	        "id": "hawaii-jerce-salata",
+	        "category": "Saláták",
+	        "name": "Hawaii Jérce saláta",
+	        "description": "roston sült csirkemell, ananász, friss zsenge jégsaláta, joghurtos tartár, pizzakenyér-szeletekkel tálalva",
+	        "imageName": "hawaii-jerce-salata",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "salatak",
+	        "id": "miami-salata",
+	        "category": "Saláták",
+	        "name": "Miami saláta",
+	        "description": "grillezett tejszínes csirkemellcsíkok, parmezán, friss zsenge jégsaláta, paradicsom, uborka, pizzakenyér-szeletekkel tálalva",
+	        "imageName": "miami-salata",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "salatak",
+	        "id": "miami-2-salata",
+	        "category": "Saláták",
+	        "name": "Miami 2 saláta",
+	        "description": "mézes-mustáros tejszínes csirkemell, friss zsenge jégsaláta, paradicsom, uborka, pizzakenyér-szeletekkel tálalva",
+	        "imageName": "miami-2-salata",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "salatak",
+	        "id": "mozarella-salata",
+	        "category": "Saláták",
+	        "name": "Mozarella saláta",
+	        "description": "mozarella golyók, paradicsomkarikák, olívaolajos bazsalikommal és oregánóval, pizzakenyér szeletekkel tálalva",
+	        "imageName": "mozarella-salata",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "salatak",
+	        "id": "tonhal-salata",
+	        "category": "Saláták",
+	        "name": "Tonhal saláta",
+	        "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, tonhaltörzs, sajtkocka, pizzakenyér szeletekkel tálalva",
+	        "imageName": "tonhal-salata",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "salatak",
+	        "id": "cezar-salata",
+	        "category": "Saláták",
+	        "name": "Cézár saláta",
+	        "description": "friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, grillezett fűszeres csirkemell, parmezán, pizzakenyér szeletekkel tálalva",
+	        "imageName": "cezar-salata",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 1090
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "edessegek",
+	        "id": "profiterol",
+	        "category": "Édességek",
+	        "name": "Profiterol",
+	        "description": "Profiterol golyók fehér- és tejcsokoládé bevonattal, tejszínhab koronával",
+	        "imageName": "profiterol",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 600
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "edessegek",
+	        "id": "panna-cotta",
+	        "category": "Édességek",
+	        "name": "Panna Cotta",
+	        "description": "tejszínes desszert, gyümölcsszósszal",
+	        "imageName": "panna-cotta",
+	        "type": "none",
+	        "variants": [{
+	            "name": "",
+	            "price": 600
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "pepsi",
+	        "category": "Üdítők",
+	        "name": "Pepsi",
+	        "description": "",
+	        "imageName": "pepsi",
+	        "type": "none",
+	        "variants": [{
+	            "name": "0,33 liter",
+	            "price": 190
+	        }, {
+	            "name": "1 liter",
+	            "price": 350
+	        }, {
+	            "name": "1,75 liter",
+	            "price": 480
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "pepsi-max",
+	        "category": "Üdítők",
+	        "name": "Pepsi Max",
+	        "description": "",
+	        "imageName": "pepsi-max",
+	        "type": "none",
+	        "variants": [{
+	            "name": "0,33 liter",
+	            "price": 190
+	        }, {
+	            "name": "1 liter",
+	            "price": 350
+	        }, {
+	            "name": "1,75 liter",
+	            "price": 480
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "mirinda",
+	        "category": "Üdítők",
+	        "name": "Mirinda",
+	        "description": "",
+	        "imageName": "mirinda",
+	        "type": "none",
+	        "variants": [{
+	            "name": "0,33 liter",
+	            "price": 190
+	        }, {
+	            "name": "1 liter",
+	            "price": 350
+	        }, {
+	            "name": "1,75 liter",
+	            "price": 480
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "canada-dry",
+	        "category": "Üdítők",
+	        "name": "Canada Dry",
+	        "description": "",
+	        "imageName": "canada-dry",
+	        "type": "none",
+	        "variants": [{
+	            "name": "0,33 liter",
+	            "price": 190
+	        }, {
+	            "name": "1 liter",
+	            "price": 350
+	        }, {
+	            "name": "1,75 liter",
+	            "price": 480
+	        }],
+	        "options": []
+	    }, {
+	        "categoryId": "uditok",
+	        "id": "lipton-ice-tea",
+	        "category": "Üdítők",
+	        "name": "Lipton Ice Tea",
+	        "description": "",
+	        "imageName": "lipton-ice-tea",
+	        "type": "none",
+	        "variants": [{
+	            "name": "0,33 liter",
+	            "price": 190
+	        }],
+	        "options": []
+	    }],
+	    "pizzaExtras": [{
+	        "name": "Húsok",
+	        "price": 250,
+	        "list": ["sonka", "tarja", "bacon", "szalámi", "csirkemell"]
+	    }, {
+	        "name": "Halféleségek",
+	        "price": 300,
+	        "list": ["tengergyümölcsei", "tonhal"]
+	    }, {
+	        "name": "Prémium sonkák",
+	        "price": 450,
+	        "list": ["pármai", "serrano", "mangalica"]
+	    }, {
+	        "name": "Tejes készítmények, sajtok",
+	        "price": 250,
+	        "list": ["tejföl", "juhtúró", "sajt", "füstölt sajt"]
+	    }, {
+	        "name": "Prémium sajtok",
+	        "price": 300,
+	        "list": ["gorgonzola sajt", "parmezán sajt", "mozzarella golyó", "feta sajt"]
+	    }, {
+	        "name": "Zöldségek",
+	        "price": 150,
+	        "list": ["kukorica", "gomba", "fokhagyma", "hagyma", "póréhagyma", "capribogyó", "fehér és vörös óriásbab", "édes pepperóni", "erős cseresznyepaprika", "jalapeno paprika", "padlizsán", "cukkini", "répa", "pritamin paprika", "magozott zöld és fekete olívabogyó", "ruccola", "paradicsom", "brokkoli"]
+	    }, {
+	        "name": "Gyümölcsök",
+	        "price": 150,
+	        "list": ["ananász", "citrom"]
+	    }],
+	    "hamburgerExtras": [{
+	        "name": "Zöldségek",
+	        "price": 100,
+	        "list": ["jégsaláta", "paradicsom", "uborka"]
+	    }, {
+	        "name": "Húsok",
+	        "price": 300,
+	        "list": ["Húspogácsa"]
+	    }, {
+	        "name": "Sajtok",
+	        "price": 150,
+	        "list": ["parmezán", "gorgonzola", "cheddar"]
+	    }],
+	    "deliveryFees": {
+	        "Gyöngyös": {
+	            "min": 1000
+	        },
+	        "Abasár": {
+	            "fix": 800
+	        },
+	        "Detk": {
+	            "fix": 800
+	        },
+	        "Gyöngyöshalász": {
+	            "fix": 800
+	        },
+	        "Gyöngyössolymos": {
+	            "fix": 800
+	        },
+	        "Gyöngyöstarján": {
+	            "fix": 800
+	        },
+	        "Mátrafüred": {
+	            "fix": 800
+	        },
+	        "Nagyréde": {
+	            "fix": 800
+	        },
+	        "Pálosvörösmart": {
+	            "fix": 800
+	        },
+	        "Visonta": {
+	            "fix": 1000
+	        }
+	    },
+	    "version": "41884ba888dc34dbd2bb3444e5105c08"
+	};
+
+/***/ },
+/* 120 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var H = __webpack_require__(121);
+	module.exports = function() { var T = new H.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");if(t.s(t.f("isEmpty",c,p,1),c,p,0,12,149,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<p class=\"default-content\">\r");t.b("\n" + i);t.b("    A kosár még üres.\r");t.b("\n" + i);t.b("    Az ételeket a \"Kosárba\" gomb megnyomásával adhatod hozzá a rendeléshez.\r");t.b("\n" + i);t.b("</p>\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(t.s(t.f("lines",c,p,1),c,p,0,175,597,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("    <div class=\"line\">\r");t.b("\n" + i);t.b("        <div class=\"name\">");t.b(t.v(t.f("name",c,p,0)));t.b("</div>\r");t.b("\n" + i);t.b("        <div class=\"price\">");t.b(t.v(t.f("price",c,p,0)));t.b(" Ft</div>\r");t.b("\n" + i);t.b("        <div class=\"actions\">\r");t.b("\n" + i);t.b("            <button data-duplicate-order-item=\"");t.b(t.v(t.f("id",c,p,0)));t.b("\"><svg><use xlink:href=\"#icon-plus\"></use></svg> Még</button>\r");t.b("\n" + i);t.b("            <button data-remove-order-item=\"");t.b(t.v(t.f("id",c,p,0)));t.b("\"><svg><use xlink:href=\"#icon-minus\"></use></svg> Ki a kosárból</button>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("    </div>\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(t.s(t.f("deliveryFee",c,p,1),c,p,0,627,735,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<div class=\"delivery-fee\">\r");t.b("\n" + i);t.b("    <div>Kiszállítási díj</div>\r");t.b("\n" + i);t.b("    <div>");t.b(t.v(t.f("deliveryFee",c,p,0)));t.b(" Ft</div>\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(t.s(t.f("total",c,p,1),c,p,0,765,816,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<div>Végösszeg</div>\r");t.b("\n" + i);t.b("<div>");t.b(t.v(t.f("total",c,p,0)));t.b(" Ft</div>\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(t.s(t.f("showMinForFreeDeliveryMessage",c,p,1),c,p,0,864,950,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<p>A minimális ");t.b(t.v(t.f("minForFreeDelivery",c,p,0)));t.b(" Ft rendelési értéket még nem érted el.</p>\r");t.b("\n" + i);});c.pop();}return t.fl(); },partials: {}, subs: {  }}, "{{#isEmpty}}\r\n<p class=\"default-content\">\r\n    A kosár még üres.\r\n    Az ételeket a \"Kosárba\" gomb megnyomásával adhatod hozzá a rendeléshez.\r\n</p>\r\n{{/isEmpty}}\r\n\r\n{{#lines}}\r\n    <div class=\"line\">\r\n        <div class=\"name\">{{ name }}</div>\r\n        <div class=\"price\">{{ price }} Ft</div>\r\n        <div class=\"actions\">\r\n            <button data-duplicate-order-item=\"{{ id }}\"><svg><use xlink:href=\"#icon-plus\"></use></svg> Még</button>\r\n            <button data-remove-order-item=\"{{ id }}\"><svg><use xlink:href=\"#icon-minus\"></use></svg> Ki a kosárból</button>\r\n        </div>\r\n    </div>\r\n{{/lines}}\r\n\r\n{{#deliveryFee}}\r\n<div class=\"delivery-fee\">\r\n    <div>Kiszállítási díj</div>\r\n    <div>{{ deliveryFee }} Ft</div>\r\n</div>\r\n{{/deliveryFee}}\r\n\r\n{{#total}}\r\n<div>Végösszeg</div>\r\n<div>{{ total }} Ft</div>\r\n{{/total}}\r\n\r\n{{#showMinForFreeDeliveryMessage}}\r\n<p>A minimális {{ minForFreeDelivery }} Ft rendelési értéket még nem érted el.</p>\r\n{{/showMinForFreeDeliveryMessage}}\r\n", H);return T.render.apply(T, arguments); };
+
+/***/ },
+/* 121 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	 *  Copyright 2011 Twitter, Inc.
+	 *  Licensed under the Apache License, Version 2.0 (the "License");
+	 *  you may not use this file except in compliance with the License.
+	 *  You may obtain a copy of the License at
+	 *
+	 *  http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 *  Unless required by applicable law or agreed to in writing, software
+	 *  distributed under the License is distributed on an "AS IS" BASIS,
+	 *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 *  See the License for the specific language governing permissions and
+	 *  limitations under the License.
+	 */
+	
+	// This file is for use with Node.js. See dist/ for browser files.
+	
+	var Hogan = __webpack_require__(122);
+	Hogan.Template = __webpack_require__(123).Template;
+	Hogan.template = Hogan.Template;
+	module.exports = Hogan;
+
+
+/***/ },
+/* 122 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	 *  Copyright 2011 Twitter, Inc.
+	 *  Licensed under the Apache License, Version 2.0 (the "License");
+	 *  you may not use this file except in compliance with the License.
+	 *  You may obtain a copy of the License at
+	 *
+	 *  http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 *  Unless required by applicable law or agreed to in writing, software
+	 *  distributed under the License is distributed on an "AS IS" BASIS,
+	 *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 *  See the License for the specific language governing permissions and
+	 *  limitations under the License.
+	 */
+	
+	(function (Hogan) {
+	  // Setup regex  assignments
+	  // remove whitespace according to Mustache spec
+	  var rIsWhitespace = /\S/,
+	      rQuot = /\"/g,
+	      rNewline =  /\n/g,
+	      rCr = /\r/g,
+	      rSlash = /\\/g,
+	      rLineSep = /\u2028/,
+	      rParagraphSep = /\u2029/;
+	
+	  Hogan.tags = {
+	    '#': 1, '^': 2, '<': 3, '$': 4,
+	    '/': 5, '!': 6, '>': 7, '=': 8, '_v': 9,
+	    '{': 10, '&': 11, '_t': 12
+	  };
+	
+	  Hogan.scan = function scan(text, delimiters) {
+	    var len = text.length,
+	        IN_TEXT = 0,
+	        IN_TAG_TYPE = 1,
+	        IN_TAG = 2,
+	        state = IN_TEXT,
+	        tagType = null,
+	        tag = null,
+	        buf = '',
+	        tokens = [],
+	        seenTag = false,
+	        i = 0,
+	        lineStart = 0,
+	        otag = '{{',
+	        ctag = '}}';
+	
+	    function addBuf() {
+	      if (buf.length > 0) {
+	        tokens.push({tag: '_t', text: new String(buf)});
+	        buf = '';
+	      }
+	    }
+	
+	    function lineIsWhitespace() {
+	      var isAllWhitespace = true;
+	      for (var j = lineStart; j < tokens.length; j++) {
+	        isAllWhitespace =
+	          (Hogan.tags[tokens[j].tag] < Hogan.tags['_v']) ||
+	          (tokens[j].tag == '_t' && tokens[j].text.match(rIsWhitespace) === null);
+	        if (!isAllWhitespace) {
+	          return false;
+	        }
+	      }
+	
+	      return isAllWhitespace;
+	    }
+	
+	    function filterLine(haveSeenTag, noNewLine) {
+	      addBuf();
+	
+	      if (haveSeenTag && lineIsWhitespace()) {
+	        for (var j = lineStart, next; j < tokens.length; j++) {
+	          if (tokens[j].text) {
+	            if ((next = tokens[j+1]) && next.tag == '>') {
+	              // set indent to token value
+	              next.indent = tokens[j].text.toString()
+	            }
+	            tokens.splice(j, 1);
+	          }
+	        }
+	      } else if (!noNewLine) {
+	        tokens.push({tag:'\n'});
+	      }
+	
+	      seenTag = false;
+	      lineStart = tokens.length;
+	    }
+	
+	    function changeDelimiters(text, index) {
+	      var close = '=' + ctag,
+	          closeIndex = text.indexOf(close, index),
+	          delimiters = trim(
+	            text.substring(text.indexOf('=', index) + 1, closeIndex)
+	          ).split(' ');
+	
+	      otag = delimiters[0];
+	      ctag = delimiters[delimiters.length - 1];
+	
+	      return closeIndex + close.length - 1;
+	    }
+	
+	    if (delimiters) {
+	      delimiters = delimiters.split(' ');
+	      otag = delimiters[0];
+	      ctag = delimiters[1];
+	    }
+	
+	    for (i = 0; i < len; i++) {
+	      if (state == IN_TEXT) {
+	        if (tagChange(otag, text, i)) {
+	          --i;
+	          addBuf();
+	          state = IN_TAG_TYPE;
+	        } else {
+	          if (text.charAt(i) == '\n') {
+	            filterLine(seenTag);
+	          } else {
+	            buf += text.charAt(i);
+	          }
+	        }
+	      } else if (state == IN_TAG_TYPE) {
+	        i += otag.length - 1;
+	        tag = Hogan.tags[text.charAt(i + 1)];
+	        tagType = tag ? text.charAt(i + 1) : '_v';
+	        if (tagType == '=') {
+	          i = changeDelimiters(text, i);
+	          state = IN_TEXT;
+	        } else {
+	          if (tag) {
+	            i++;
+	          }
+	          state = IN_TAG;
+	        }
+	        seenTag = i;
+	      } else {
+	        if (tagChange(ctag, text, i)) {
+	          tokens.push({tag: tagType, n: trim(buf), otag: otag, ctag: ctag,
+	                       i: (tagType == '/') ? seenTag - otag.length : i + ctag.length});
+	          buf = '';
+	          i += ctag.length - 1;
+	          state = IN_TEXT;
+	          if (tagType == '{') {
+	            if (ctag == '}}') {
+	              i++;
+	            } else {
+	              cleanTripleStache(tokens[tokens.length - 1]);
+	            }
+	          }
+	        } else {
+	          buf += text.charAt(i);
+	        }
+	      }
+	    }
+	
+	    filterLine(seenTag, true);
+	
+	    return tokens;
+	  }
+	
+	  function cleanTripleStache(token) {
+	    if (token.n.substr(token.n.length - 1) === '}') {
+	      token.n = token.n.substring(0, token.n.length - 1);
+	    }
+	  }
+	
+	  function trim(s) {
+	    if (s.trim) {
+	      return s.trim();
+	    }
+	
+	    return s.replace(/^\s*|\s*$/g, '');
+	  }
+	
+	  function tagChange(tag, text, index) {
+	    if (text.charAt(index) != tag.charAt(0)) {
+	      return false;
+	    }
+	
+	    for (var i = 1, l = tag.length; i < l; i++) {
+	      if (text.charAt(index + i) != tag.charAt(i)) {
+	        return false;
+	      }
+	    }
+	
+	    return true;
+	  }
+	
+	  // the tags allowed inside super templates
+	  var allowedInSuper = {'_t': true, '\n': true, '$': true, '/': true};
+	
+	  function buildTree(tokens, kind, stack, customTags) {
+	    var instructions = [],
+	        opener = null,
+	        tail = null,
+	        token = null;
+	
+	    tail = stack[stack.length - 1];
+	
+	    while (tokens.length > 0) {
+	      token = tokens.shift();
+	
+	      if (tail && tail.tag == '<' && !(token.tag in allowedInSuper)) {
+	        throw new Error('Illegal content in < super tag.');
+	      }
+	
+	      if (Hogan.tags[token.tag] <= Hogan.tags['$'] || isOpener(token, customTags)) {
+	        stack.push(token);
+	        token.nodes = buildTree(tokens, token.tag, stack, customTags);
+	      } else if (token.tag == '/') {
+	        if (stack.length === 0) {
+	          throw new Error('Closing tag without opener: /' + token.n);
+	        }
+	        opener = stack.pop();
+	        if (token.n != opener.n && !isCloser(token.n, opener.n, customTags)) {
+	          throw new Error('Nesting error: ' + opener.n + ' vs. ' + token.n);
+	        }
+	        opener.end = token.i;
+	        return instructions;
+	      } else if (token.tag == '\n') {
+	        token.last = (tokens.length == 0) || (tokens[0].tag == '\n');
+	      }
+	
+	      instructions.push(token);
+	    }
+	
+	    if (stack.length > 0) {
+	      throw new Error('missing closing tag: ' + stack.pop().n);
+	    }
+	
+	    return instructions;
+	  }
+	
+	  function isOpener(token, tags) {
+	    for (var i = 0, l = tags.length; i < l; i++) {
+	      if (tags[i].o == token.n) {
+	        token.tag = '#';
+	        return true;
+	      }
+	    }
+	  }
+	
+	  function isCloser(close, open, tags) {
+	    for (var i = 0, l = tags.length; i < l; i++) {
+	      if (tags[i].c == close && tags[i].o == open) {
+	        return true;
+	      }
+	    }
+	  }
+	
+	  function stringifySubstitutions(obj) {
+	    var items = [];
+	    for (var key in obj) {
+	      items.push('"' + esc(key) + '": function(c,p,t,i) {' + obj[key] + '}');
+	    }
+	    return "{ " + items.join(",") + " }";
+	  }
+	
+	  function stringifyPartials(codeObj) {
+	    var partials = [];
+	    for (var key in codeObj.partials) {
+	      partials.push('"' + esc(key) + '":{name:"' + esc(codeObj.partials[key].name) + '", ' + stringifyPartials(codeObj.partials[key]) + "}");
+	    }
+	    return "partials: {" + partials.join(",") + "}, subs: " + stringifySubstitutions(codeObj.subs);
+	  }
+	
+	  Hogan.stringify = function(codeObj, text, options) {
+	    return "{code: function (c,p,i) { " + Hogan.wrapMain(codeObj.code) + " }," + stringifyPartials(codeObj) +  "}";
+	  }
+	
+	  var serialNo = 0;
+	  Hogan.generate = function(tree, text, options) {
+	    serialNo = 0;
+	    var context = { code: '', subs: {}, partials: {} };
+	    Hogan.walk(tree, context);
+	
+	    if (options.asString) {
+	      return this.stringify(context, text, options);
+	    }
+	
+	    return this.makeTemplate(context, text, options);
+	  }
+	
+	  Hogan.wrapMain = function(code) {
+	    return 'var t=this;t.b(i=i||"");' + code + 'return t.fl();';
+	  }
+	
+	  Hogan.template = Hogan.Template;
+	
+	  Hogan.makeTemplate = function(codeObj, text, options) {
+	    var template = this.makePartials(codeObj);
+	    template.code = new Function('c', 'p', 'i', this.wrapMain(codeObj.code));
+	    return new this.template(template, text, this, options);
+	  }
+	
+	  Hogan.makePartials = function(codeObj) {
+	    var key, template = {subs: {}, partials: codeObj.partials, name: codeObj.name};
+	    for (key in template.partials) {
+	      template.partials[key] = this.makePartials(template.partials[key]);
+	    }
+	    for (key in codeObj.subs) {
+	      template.subs[key] = new Function('c', 'p', 't', 'i', codeObj.subs[key]);
+	    }
+	    return template;
+	  }
+	
+	  function esc(s) {
+	    return s.replace(rSlash, '\\\\')
+	            .replace(rQuot, '\\\"')
+	            .replace(rNewline, '\\n')
+	            .replace(rCr, '\\r')
+	            .replace(rLineSep, '\\u2028')
+	            .replace(rParagraphSep, '\\u2029');
+	  }
+	
+	  function chooseMethod(s) {
+	    return (~s.indexOf('.')) ? 'd' : 'f';
+	  }
+	
+	  function createPartial(node, context) {
+	    var prefix = "<" + (context.prefix || "");
+	    var sym = prefix + node.n + serialNo++;
+	    context.partials[sym] = {name: node.n, partials: {}};
+	    context.code += 't.b(t.rp("' +  esc(sym) + '",c,p,"' + (node.indent || '') + '"));';
+	    return sym;
+	  }
+	
+	  Hogan.codegen = {
+	    '#': function(node, context) {
+	      context.code += 'if(t.s(t.' + chooseMethod(node.n) + '("' + esc(node.n) + '",c,p,1),' +
+	                      'c,p,0,' + node.i + ',' + node.end + ',"' + node.otag + " " + node.ctag + '")){' +
+	                      't.rs(c,p,' + 'function(c,p,t){';
+	      Hogan.walk(node.nodes, context);
+	      context.code += '});c.pop();}';
+	    },
+	
+	    '^': function(node, context) {
+	      context.code += 'if(!t.s(t.' + chooseMethod(node.n) + '("' + esc(node.n) + '",c,p,1),c,p,1,0,0,"")){';
+	      Hogan.walk(node.nodes, context);
+	      context.code += '};';
+	    },
+	
+	    '>': createPartial,
+	    '<': function(node, context) {
+	      var ctx = {partials: {}, code: '', subs: {}, inPartial: true};
+	      Hogan.walk(node.nodes, ctx);
+	      var template = context.partials[createPartial(node, context)];
+	      template.subs = ctx.subs;
+	      template.partials = ctx.partials;
+	    },
+	
+	    '$': function(node, context) {
+	      var ctx = {subs: {}, code: '', partials: context.partials, prefix: node.n};
+	      Hogan.walk(node.nodes, ctx);
+	      context.subs[node.n] = ctx.code;
+	      if (!context.inPartial) {
+	        context.code += 't.sub("' + esc(node.n) + '",c,p,i);';
+	      }
+	    },
+	
+	    '\n': function(node, context) {
+	      context.code += write('"\\n"' + (node.last ? '' : ' + i'));
+	    },
+	
+	    '_v': function(node, context) {
+	      context.code += 't.b(t.v(t.' + chooseMethod(node.n) + '("' + esc(node.n) + '",c,p,0)));';
+	    },
+	
+	    '_t': function(node, context) {
+	      context.code += write('"' + esc(node.text) + '"');
+	    },
+	
+	    '{': tripleStache,
+	
+	    '&': tripleStache
+	  }
+	
+	  function tripleStache(node, context) {
+	    context.code += 't.b(t.t(t.' + chooseMethod(node.n) + '("' + esc(node.n) + '",c,p,0)));';
+	  }
+	
+	  function write(s) {
+	    return 't.b(' + s + ');';
+	  }
+	
+	  Hogan.walk = function(nodelist, context) {
+	    var func;
+	    for (var i = 0, l = nodelist.length; i < l; i++) {
+	      func = Hogan.codegen[nodelist[i].tag];
+	      func && func(nodelist[i], context);
+	    }
+	    return context;
+	  }
+	
+	  Hogan.parse = function(tokens, text, options) {
+	    options = options || {};
+	    return buildTree(tokens, '', [], options.sectionTags || []);
+	  }
+	
+	  Hogan.cache = {};
+	
+	  Hogan.cacheKey = function(text, options) {
+	    return [text, !!options.asString, !!options.disableLambda, options.delimiters, !!options.modelGet].join('||');
+	  }
+	
+	  Hogan.compile = function(text, options) {
+	    options = options || {};
+	    var key = Hogan.cacheKey(text, options);
+	    var template = this.cache[key];
+	
+	    if (template) {
+	      var partials = template.partials;
+	      for (var name in partials) {
+	        delete partials[name].instance;
+	      }
+	      return template;
+	    }
+	
+	    template = this.generate(this.parse(this.scan(text, options.delimiters), text, options), text, options);
+	    return this.cache[key] = template;
+	  }
+	})( true ? exports : Hogan);
+
+
+/***/ },
+/* 123 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	 *  Copyright 2011 Twitter, Inc.
+	 *  Licensed under the Apache License, Version 2.0 (the "License");
+	 *  you may not use this file except in compliance with the License.
+	 *  You may obtain a copy of the License at
+	 *
+	 *  http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 *  Unless required by applicable law or agreed to in writing, software
+	 *  distributed under the License is distributed on an "AS IS" BASIS,
+	 *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 *  See the License for the specific language governing permissions and
+	 *  limitations under the License.
+	 */
+	
+	var Hogan = {};
+	
+	(function (Hogan) {
+	  Hogan.Template = function (codeObj, text, compiler, options) {
+	    codeObj = codeObj || {};
+	    this.r = codeObj.code || this.r;
+	    this.c = compiler;
+	    this.options = options || {};
+	    this.text = text || '';
+	    this.partials = codeObj.partials || {};
+	    this.subs = codeObj.subs || {};
+	    this.buf = '';
+	  }
+	
+	  Hogan.Template.prototype = {
+	    // render: replaced by generated code.
+	    r: function (context, partials, indent) { return ''; },
+	
+	    // variable escaping
+	    v: hoganEscape,
+	
+	    // triple stache
+	    t: coerceToString,
+	
+	    render: function render(context, partials, indent) {
+	      return this.ri([context], partials || {}, indent);
+	    },
+	
+	    // render internal -- a hook for overrides that catches partials too
+	    ri: function (context, partials, indent) {
+	      return this.r(context, partials, indent);
+	    },
+	
+	    // ensurePartial
+	    ep: function(symbol, partials) {
+	      var partial = this.partials[symbol];
+	
+	      // check to see that if we've instantiated this partial before
+	      var template = partials[partial.name];
+	      if (partial.instance && partial.base == template) {
+	        return partial.instance;
+	      }
+	
+	      if (typeof template == 'string') {
+	        if (!this.c) {
+	          throw new Error("No compiler available.");
+	        }
+	        template = this.c.compile(template, this.options);
+	      }
+	
+	      if (!template) {
+	        return null;
+	      }
+	
+	      // We use this to check whether the partials dictionary has changed
+	      this.partials[symbol].base = template;
+	
+	      if (partial.subs) {
+	        // Make sure we consider parent template now
+	        if (!partials.stackText) partials.stackText = {};
+	        for (key in partial.subs) {
+	          if (!partials.stackText[key]) {
+	            partials.stackText[key] = (this.activeSub !== undefined && partials.stackText[this.activeSub]) ? partials.stackText[this.activeSub] : this.text;
+	          }
+	        }
+	        template = createSpecializedPartial(template, partial.subs, partial.partials,
+	          this.stackSubs, this.stackPartials, partials.stackText);
+	      }
+	      this.partials[symbol].instance = template;
+	
+	      return template;
+	    },
+	
+	    // tries to find a partial in the current scope and render it
+	    rp: function(symbol, context, partials, indent) {
+	      var partial = this.ep(symbol, partials);
+	      if (!partial) {
+	        return '';
+	      }
+	
+	      return partial.ri(context, partials, indent);
+	    },
+	
+	    // render a section
+	    rs: function(context, partials, section) {
+	      var tail = context[context.length - 1];
+	
+	      if (!isArray(tail)) {
+	        section(context, partials, this);
+	        return;
+	      }
+	
+	      for (var i = 0; i < tail.length; i++) {
+	        context.push(tail[i]);
+	        section(context, partials, this);
+	        context.pop();
+	      }
+	    },
+	
+	    // maybe start a section
+	    s: function(val, ctx, partials, inverted, start, end, tags) {
+	      var pass;
+	
+	      if (isArray(val) && val.length === 0) {
+	        return false;
+	      }
+	
+	      if (typeof val == 'function') {
+	        val = this.ms(val, ctx, partials, inverted, start, end, tags);
+	      }
+	
+	      pass = !!val;
+	
+	      if (!inverted && pass && ctx) {
+	        ctx.push((typeof val == 'object') ? val : ctx[ctx.length - 1]);
+	      }
+	
+	      return pass;
+	    },
+	
+	    // find values with dotted names
+	    d: function(key, ctx, partials, returnFound) {
+	      var found,
+	          names = key.split('.'),
+	          val = this.f(names[0], ctx, partials, returnFound),
+	          doModelGet = this.options.modelGet,
+	          cx = null;
+	
+	      if (key === '.' && isArray(ctx[ctx.length - 2])) {
+	        val = ctx[ctx.length - 1];
+	      } else {
+	        for (var i = 1; i < names.length; i++) {
+	          found = findInScope(names[i], val, doModelGet);
+	          if (found !== undefined) {
+	            cx = val;
+	            val = found;
+	          } else {
+	            val = '';
+	          }
+	        }
+	      }
+	
+	      if (returnFound && !val) {
+	        return false;
+	      }
+	
+	      if (!returnFound && typeof val == 'function') {
+	        ctx.push(cx);
+	        val = this.mv(val, ctx, partials);
+	        ctx.pop();
+	      }
+	
+	      return val;
+	    },
+	
+	    // find values with normal names
+	    f: function(key, ctx, partials, returnFound) {
+	      var val = false,
+	          v = null,
+	          found = false,
+	          doModelGet = this.options.modelGet;
+	
+	      for (var i = ctx.length - 1; i >= 0; i--) {
+	        v = ctx[i];
+	        val = findInScope(key, v, doModelGet);
+	        if (val !== undefined) {
+	          found = true;
+	          break;
+	        }
+	      }
+	
+	      if (!found) {
+	        return (returnFound) ? false : "";
+	      }
+	
+	      if (!returnFound && typeof val == 'function') {
+	        val = this.mv(val, ctx, partials);
+	      }
+	
+	      return val;
+	    },
+	
+	    // higher order templates
+	    ls: function(func, cx, partials, text, tags) {
+	      var oldTags = this.options.delimiters;
+	
+	      this.options.delimiters = tags;
+	      this.b(this.ct(coerceToString(func.call(cx, text)), cx, partials));
+	      this.options.delimiters = oldTags;
+	
+	      return false;
+	    },
+	
+	    // compile text
+	    ct: function(text, cx, partials) {
+	      if (this.options.disableLambda) {
+	        throw new Error('Lambda features disabled.');
+	      }
+	      return this.c.compile(text, this.options).render(cx, partials);
+	    },
+	
+	    // template result buffering
+	    b: function(s) { this.buf += s; },
+	
+	    fl: function() { var r = this.buf; this.buf = ''; return r; },
+	
+	    // method replace section
+	    ms: function(func, ctx, partials, inverted, start, end, tags) {
+	      var textSource,
+	          cx = ctx[ctx.length - 1],
+	          result = func.call(cx);
+	
+	      if (typeof result == 'function') {
+	        if (inverted) {
+	          return true;
+	        } else {
+	          textSource = (this.activeSub && this.subsText && this.subsText[this.activeSub]) ? this.subsText[this.activeSub] : this.text;
+	          return this.ls(result, cx, partials, textSource.substring(start, end), tags);
+	        }
+	      }
+	
+	      return result;
+	    },
+	
+	    // method replace variable
+	    mv: function(func, ctx, partials) {
+	      var cx = ctx[ctx.length - 1];
+	      var result = func.call(cx);
+	
+	      if (typeof result == 'function') {
+	        return this.ct(coerceToString(result.call(cx)), cx, partials);
+	      }
+	
+	      return result;
+	    },
+	
+	    sub: function(name, context, partials, indent) {
+	      var f = this.subs[name];
+	      if (f) {
+	        this.activeSub = name;
+	        f(context, partials, this, indent);
+	        this.activeSub = false;
+	      }
+	    }
+	
+	  };
+	
+	  //Find a key in an object
+	  function findInScope(key, scope, doModelGet) {
+	    var val;
+	
+	    if (scope && typeof scope == 'object') {
+	
+	      if (scope[key] !== undefined) {
+	        val = scope[key];
+	
+	      // try lookup with get for backbone or similar model data
+	      } else if (doModelGet && scope.get && typeof scope.get == 'function') {
+	        val = scope.get(key);
+	      }
+	    }
+	
+	    return val;
+	  }
+	
+	  function createSpecializedPartial(instance, subs, partials, stackSubs, stackPartials, stackText) {
+	    function PartialTemplate() {};
+	    PartialTemplate.prototype = instance;
+	    function Substitutions() {};
+	    Substitutions.prototype = instance.subs;
+	    var key;
+	    var partial = new PartialTemplate();
+	    partial.subs = new Substitutions();
+	    partial.subsText = {};  //hehe. substext.
+	    partial.buf = '';
+	
+	    stackSubs = stackSubs || {};
+	    partial.stackSubs = stackSubs;
+	    partial.subsText = stackText;
+	    for (key in subs) {
+	      if (!stackSubs[key]) stackSubs[key] = subs[key];
+	    }
+	    for (key in stackSubs) {
+	      partial.subs[key] = stackSubs[key];
+	    }
+	
+	    stackPartials = stackPartials || {};
+	    partial.stackPartials = stackPartials;
+	    for (key in partials) {
+	      if (!stackPartials[key]) stackPartials[key] = partials[key];
+	    }
+	    for (key in stackPartials) {
+	      partial.partials[key] = stackPartials[key];
+	    }
+	
+	    return partial;
+	  }
+	
+	  var rAmp = /&/g,
+	      rLt = /</g,
+	      rGt = />/g,
+	      rApos = /\'/g,
+	      rQuot = /\"/g,
+	      hChars = /[&<>\"\']/;
+	
+	  function coerceToString(val) {
+	    return String((val === null || val === undefined) ? '' : val);
+	  }
+	
+	  function hoganEscape(str) {
+	    str = coerceToString(str);
+	    return hChars.test(str) ?
+	      str
+	        .replace(rAmp, '&amp;')
+	        .replace(rLt, '&lt;')
+	        .replace(rGt, '&gt;')
+	        .replace(rApos, '&#39;')
+	        .replace(rQuot, '&quot;') :
+	      str;
+	  }
+	
+	  var isArray = Array.isArray || function(a) {
+	    return Object.prototype.toString.call(a) === '[object Array]';
+	  };
+	
+	})( true ? exports : Hogan);
+
+
+/***/ },
 /* 124 */
+/***/ function(module, exports) {
+
+	module.exports = "<section id=\"shcart\" class=\"card\">\r\n    <h2 class=\"card-title\">Shopping Cart</h2>\r\n\r\n    <div class=\"card-content\">\r\n        <form class=\"order-form\" @submit.prevent=\"submitOrder\">\r\n            <p v-if=\"items.length === 0\">A kosár még üres. Az ételeket a \"Kosárba\" gomb megnyomásával adhatod hozzá a rendeléshez. </p>\r\n\r\n\r\n            <div>\r\n                <div v-for=\"item in visibleItems\">\r\n                    <div class=\"item-title\">{{ item.dish.name }} <span v-if=\"item.variant\">({{ item.variant }})</span></div>\r\n                    <div class=\"item-price\">{{ item.price }} Ft</div>\r\n                    <div class=\"item-extras\" v-if=\"item.extras && item.extras.length > 0\">\r\n                        <div class=\"item-extra\" v-for=\"extra in item.extras\">\r\n                            <div class=\"item-extra-name\">+ {{ extra.name }}</div>\r\n                            <div class=\"item-extra-price\">{{ extra.price }} Ft</div>\r\n                        </div>\r\n                    </div>\r\n\r\n                    <div class=\"actions\">\r\n                        <button @click=\"duplicateOrderItem(item.timestamp)\">+</button>\r\n                        <button @click=\"removeOrder(item.timestamp)\">-</button>\r\n                        <button @click=\"editOrder(item.timestamp)\">Szerkesztés</button>\r\n                    </div>\r\n                </div>\r\n                <div v-if=\"deliveryFee\">\r\n                    <div class=\"item-title\">Kiszállítási díj</div>\r\n                    <div class=\"item-price\">{{ deliveryFee }} Ft</div>\r\n                </div>\r\n\r\n                <div v-if=\"totalPrice > 0\">\r\n                    <div class=\"item-title\">Végösszeg</div>\r\n                    <div class=\"item-price\">{{ totalPrice }} Ft</div>\r\n                </div>\r\n            </div>\r\n\r\n            <label for=\"city\">Város</label>\r\n            <select id=\"city\" name=\"city\" v-model=\"address.city\">\r\n                <option value=\"\">Válaszd ki a városod</option>\r\n                <option v-for=\"city in availableCities\">{{ city }}</option>\r\n            </select>\r\n\r\n            <label for=\"name\">Neved</label>\r\n            <input type=\"text\" name=\"name\" id=\"name\" v-model=\"address.name\">\r\n\r\n            <label for=\"street\">Utca, házszám</label>\r\n            <input type=\"text\" name=\"street\" id=\"street\" v-model=\"address.street\">\r\n\r\n            <label for=\"phone\">Telefonszámod</label>\r\n            <input type=\"text\" name=\"phone\" id=\"phone\" v-model=\"address.phone\">\r\n\r\n            <label for=\"notes\">Megjegyzések</label>\r\n            <textarea rows=\"3\" name=\"notes\" id=\"notes\" placeholder=\"Egyéb megjegyzés, pl. pontos helszín (belső udvar, emelet) stb.\" v-model=\"notes\"></textarea>\r\n\r\n            <button type=\"submit\">Megrendelés</button>\r\n        </form>\r\n    </div>\r\n</section>\r\n";
+
+/***/ },
+/* 125 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"pizza-modal\">\r\n    <button class=\"close-modal\" @click=\"cancel\">&times;</button>\r\n    <div class=\"modal-content\">\r\n        <section class=\"pizza-modal-group\">\r\n            <h1 class=\"modal-title\">\r\n                {{ dish.name }}\r\n                <span v-if=\"order.variant\">({{ order.variant }})</span>\r\n            </h1>\r\n            <!-- <p>{{ dish.description }}</p> -->\r\n\r\n            <!-- <p class=\"radio-toggle\" v-if=\"dish.variants.length > 1\" style=\"margin-bottom: 12px;\">\r\n                <template v-for=\"(index, variant) in dish.variants\">\r\n                    <input id=\"modal-extra-variant-{{ index }}\" type=\"radio\" name=\"variants\" v-model=\"order.variant\" value=\"{{ variant.name }}\">\r\n                    <label for=\"modal-extra-variant-{{ index }}\">{{ variant.name }} - {{ variant.price }} Ft</label>\r\n                </template>\r\n            </p> -->\r\n\r\n            <p class=\"radio-group\" v-if=\"dish.options\" v-for=\"(idx, option) in dish.options\" style=\"margin-bottom: 12px;\">\r\n                <b style=\"margin-right: 4px;\">{{ option.name }}:</b>\r\n                <template v-for=\"(index, name) in option.list\">\r\n                    <br><input id=\"modal-extra-variant-{{ idx }}-{{ index }}\" type=\"radio\" name=\"option-{{ idx }}\" v-model=\"selectedOptions[idx]\"  value=\"{{ name }}\"><label for=\"modal-extra-variant-{{ idx }}-{{ index }}\">{{ name }}</label>\r\n                </template>\r\n            </p>\r\n        </section>\r\n\r\n        <div class=\"pizza-modal-group\" v-if=\"availableExtras && availableExtras.length\">\r\n            <h4>Kiválasztott extrák</h4>\r\n            <span v-if=\"order.extras.length === 0\">Még nem választottál extrát.</span>\r\n            <a class=\"selected-extra\" href=\"#\" v-for=\"extra in order.extras\" @click.prevent=\"removeExtra(extra)\">{{ extra.name }}&nbsp;({{ extra.price }}&nbsp;Ft)</a>\r\n        </div>\r\n\r\n        <section class=\"actions\">\r\n            <span class=\"total-price\"><b>{{ totalPrice }} Ft</b></span>\r\n            <button class=\"btn-primary\" @click=\"addToCart\"><svg class=\"icon-cart\"><use xlink:href=\"#icon-cart\"></use></svg> Kosárba</button>\r\n        </section>\r\n    </div>\r\n\r\n    <div class=\"modal-content\" style=\"background-color: #f1f1f1;\" v-if=\"availableExtras && availableExtras.length\">\r\n        <section v-if=\"availableExtras && availableExtras.length\">\r\n            <h3 style=\"margin-top: 12px; margin-bottom: 12px;\">Választható extrák</h3>\r\n            <div class=\"pizza-modal-group\" v-for=\"extra in availableExtras\">\r\n                <h4>{{ extra.name }}&nbsp;({{ extra.price }}&nbsp;Ft):</h4>\r\n                <a class=\"available-extra\" v-for=\"item in extra.list\" @click.prevent=\"addExtra(extra.name, item, extra.price)\" href=\"#\">{{ item }}</a>\r\n            </div>\r\n        </section>\r\n    </div>\r\n</div>\r\n";
 
 /***/ },
-/* 125 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
