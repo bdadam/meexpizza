@@ -35,7 +35,7 @@
         </section>
     </div>
 
-    <div class="modal-content" style="background-color: #f1f1f1;">
+    <div class="modal-content" style="background-color: #f1f1f1;" v-if="availableExtras && availableExtras.length">
         <section v-if="availableExtras && availableExtras.length">
             <h3 style="margin-top: 12px; margin-bottom: 12px;">Választható extrák</h3>
             <div class="pizza-modal-group" v-for="extra in availableExtras">

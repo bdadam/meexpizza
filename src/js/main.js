@@ -108,12 +108,16 @@ shoppingCart.subscribe(() => {
         $('#side-cart button.order').attr('disabled', false);
     }
 
+    console.log(state.inCart);
+
     const viewModel = {
         showEmptyMessage: state.inCart.length === 0,
         isEmpty: state.inCart.length === 0,
         lines: state.inCart.map(item => {
             const dishFromCard = find(menucard.dishes, dish => dish.id === item.dishId);
-            return { id: item.timestamp, name: `${dishFromCard.name} (${item.variant})`, price: find(dishFromCard.variants, v => v.name === item.variant).price }
+            if (dishFromCard) {
+                return { id: item.timestamp, name: `${dishFromCard.name} (${item.variant})`, price: find(dishFromCard.variants, v => v.name === item.variant).price };
+            }
         }),
         deliveryFee: menucard.deliveryFees[state.address.city].fix || 0,
         minForFreeDelivery: menucard.deliveryFees[state.address.city].min || 0
@@ -253,8 +257,8 @@ const showDishOptionsModal = order => {
                 model.$destroy();
             },
             addToCart: () => {
-                console.log(model.selecedOptions);
-                shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', order: order });
+                console.log(model.order);
+                shoppingCart.dispatch({ type: 'ADD_ORDER_ITEM', order: model.order });
                 modal.hide();
                 model.$destroy();
             }
