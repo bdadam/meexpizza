@@ -15,7 +15,14 @@ module.exports = {
 	module: {
 		loaders: [
 			{ test: /\.js$/, exclude: /(node_modules|bower_components)/, loader: 'babel', query: { presets: ['es2015'] }, cacheDirectory: true },
+			// { test: /\.html$/, exclude: /(node_modules|bower_components)/, loader: 'html', query: { } },
+			{ test: /\.html$/, exclude: /(node_modules|bower_components)/, loader: 'raw!html-minify' }
 		]
+	},
+	htmlLoader: {
+		ignoreCustomFragments: [/\{\{.*?}}/]
+	},
+	'html-minify-loader': {
 	},
 	plugins: [
 		new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"production"' }),

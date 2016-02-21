@@ -58,11 +58,13 @@ $(document).on('click', 'button[data-add-to-cart]', function (e) {
     const id = el.data('id');
     const variant = el.data('variant');
     const dish = find(menucard.dishes, d => d.id === id);
+    const type = dish.type;
 
     const orderItem = {
         dishId: id,
         variant,
         extras: [],
+        type,
         timestamp: +new Date()
     };
 
@@ -81,9 +83,12 @@ const LocalStorage = require('./localStorage');
 const savedItems = LocalStorage.readJson('items');
 shoppingCartStore.dispatch({ type: 'RESTORE', items: savedItems });
 
+
+const shoppingCartTemplate = require('./templates/shop-cart.html');
+
 const shoppingCartModel = new Vue({
     el: '#shopping-cart-placeholder',
-    template: require('./templates/shop-cart.html'),
+    template: shoppingCartTemplate,
     data: {
         availableCities: Object.keys(menucard.deliveryFees),
         items: shoppingCartStore.getState().items,
@@ -140,6 +145,25 @@ const shoppingCartModel = new Vue({
         },
         minOrderValue: function() {
             return menucard.deliveryFees[this.address.city].min || 0;
+        },
+
+        orderToSubmit: function() {
+            const address = this.address;
+            const deliveryFee = this.deliveryFee;
+            const totalPrice = this.totalPrice;
+
+            debugger;
+
+            const items = this.visibleItems.map(item => ({
+                name: item.dish.name,
+                variant: item.variant,
+                price: item.price,
+                extras: item.extras.map(extra => ({ name: extra.name, price: extra.price }))
+            }));
+
+            console.log(items);
+
+            return { address, deliveryFee, totalPrice, items };
         }
     },
 
@@ -158,8 +182,30 @@ const shoppingCartModel = new Vue({
         },
 
         submitOrder: _ => {
-            console.log(shoppingCartModel.address);
-            console.log(shoppingCartModel.items);
+            // console.log(shoppingCartModel.$data.address);
+            // console.log(shoppingCartModel.$data.items);
+
+            $.ajax({
+                url: 'https://meexpizza.firebaseio.com/orders.json',
+                type: 'POST',
+                accept: 'application/json',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(shoppingCartModel.orderToSubmit),
+                // data: JSON.stringify({
+                //     address: shoppingCartModel.address,
+                //     items: shoppingCartModel.visibleItems,
+                //     deliveryFee: shoppingCartModel.deliveryFee,
+                //     totalPrice: shoppingCartModel.totalPrice
+                // }),
+                success: (d) => {
+                    console.log('SUCC', d);
+                },
+                error: x => {
+                    console.log('ERR', x);
+                }
+            });
+
         }
     }
 });
