@@ -25,10 +25,19 @@ const menucard = require('../../data/menucard2.generated');
 const defaultState = { items: [] };
 
 const shoppingCartStore = redux.createStore((state = defaultState, action) => {
-
     switch(action.type) {
         case 'ADD':
-            return Object.assign({}, state, { items: [...state.items, Object.assign({}, action.item)] });
+            const q = Object.assign({}, action.item);
+            // console.log([...state.items]);
+            // console.log([...state.items, Object.assign({}, action.item)]);
+            // const newItems = state.items.slice(0);
+            // newItems.push(Object.assign({}, action.item));
+            //
+            // const x = Object.assign({}, state, { items: newItems });
+            // console.log(x);
+
+            const x = Object.assign({}, state, { items: [...state.items, Object.assign({}, action.item)] });
+            return x;
         case 'REMOVE':
             return Object.assign({}, state, { items: state.items.filter(i => i.timestamp !== action.timestamp) });
         case 'DUPLICATE':
@@ -40,11 +49,10 @@ const shoppingCartStore = redux.createStore((state = defaultState, action) => {
                                     })
                                 });
         case 'RESTORE':
-            return Object.assign({}, state, { items: action.items });
+            return Object.assign({}, state, { items: action.items || [] });
         // case 'REPLACE':
-
         case 'CLEAR':
-        // case 'ORDER_SUCCEEDED':
+        case 'ORDER_SUCCESS':
             return defaultState;
         default:
             return state;
@@ -151,17 +159,12 @@ const shoppingCartModel = new Vue({
             const address = this.address;
             const deliveryFee = this.deliveryFee;
             const totalPrice = this.totalPrice;
-
-            debugger;
-
             const items = this.visibleItems.map(item => ({
                 name: item.dish.name,
                 variant: item.variant,
                 price: item.price,
                 extras: item.extras.map(extra => ({ name: extra.name, price: extra.price }))
             }));
-
-            console.log(items);
 
             return { address, deliveryFee, totalPrice, items };
         }
@@ -182,8 +185,35 @@ const shoppingCartModel = new Vue({
         },
 
         submitOrder: _ => {
-            // console.log(shoppingCartModel.$data.address);
-            // console.log(shoppingCartModel.$data.items);
+            var orderModalHtml = require('./templates/order-modal.html');
+            const m = modal.show(orderModalHtml);
+            const model = new Vue({
+                el: m.el,
+                data: {
+                    orderPending: true,
+                    orderSuccess: false,
+                    orderError: false
+                },
+                methods: {
+                    succeed: () => {
+                        model.orderSuccess = true;
+                        model.orderPending = false;
+                        model.orderError = false;
+                    },
+                    error: () => {
+                        model.orderError = true;
+                        model.orderPending = false;
+                        model.orderSuccess = false;
+                    },
+                    close: () => {
+                        modal.hide();
+                        model.$destroy();
+                    }
+                }
+            });
+
+            const data = shoppingCartModel.orderToSubmit;
+            data.timestamp = { '.sv': 'timestamp' };
 
             $.ajax({
                 url: 'https://meexpizza.firebaseio.com/orders.json',
@@ -191,18 +221,14 @@ const shoppingCartModel = new Vue({
                 accept: 'application/json',
                 contentType: 'application/json',
                 dataType: 'json',
-                data: JSON.stringify(shoppingCartModel.orderToSubmit),
-                // data: JSON.stringify({
-                //     address: shoppingCartModel.address,
-                //     items: shoppingCartModel.visibleItems,
-                //     deliveryFee: shoppingCartModel.deliveryFee,
-                //     totalPrice: shoppingCartModel.totalPrice
-                // }),
+                data: JSON.stringify(data),
                 success: (d) => {
-                    console.log('SUCC', d);
+                    model.succeed();
+                    shoppingCartStore.dispatch({ type: 'ORDER_SUCCESS' });
                 },
                 error: x => {
-                    console.log('ERR', x);
+                    model.error();
+                    shoppingCartStore.dispatch({ type: 'ORDER_ERROR' });
                 }
             });
 

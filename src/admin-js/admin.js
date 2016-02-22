@@ -9,28 +9,25 @@ const query = fb.orderByChild('timestamp').limitToLast(50);
 moment.locale('hu');
 
 const createOrder = (id, obj) => {
+    obj.items = obj.items.map(item => {
+        item.extras = item.extras || [];
+        item.variant = item.variant || '';
+        return item;
+    });
+
     return {
         id: ko.observable(id),
-        name: ko.observable(obj.name),
-        city: ko.observable(obj.city),
-        street: ko.observable(obj.street),
-        phone: ko.observable(obj.phone),
+        address: ko.observable(obj.address),
         deliveryFee: ko.observable(obj.deliveryFee),
-        lines: ko.observableArray(obj.lines),
-
+        totalPrice: ko.observable(obj.totalPrice),
+        items: ko.observableArray(obj.items),
         formattedTime: ko.computed(function() {
             return moment(obj.timestamp).format('LLL');
         }),
 
         deliver: () => {
-            console.log('DELIVER', id);
-        },
-
-        // total: ko.computed(function() {
-        //     return obj.lines.reduce((curr, prevValue) => {
-        //         return prevValue + curr.sum;
-        //     }, 0);
-        // })
+            // console.log('DELIVER', id);
+        }
     };
 };
 
@@ -159,35 +156,36 @@ try {
 
 $('[data-loading]').attr('data-loading', 'false');
 
-query.once('value', snapshot => {
+query.on('child_added', (snapshot, key) => {
+    if (!key) { return; }
+
     const ordersnapshot = snapshot.val();
-    const orders = [];
-
-    for (let key in ordersnapshot) {
-        const order = createOrder(key, ordersnapshot[key]);
-        order.city('Gyöngyös');
-        order.street('Hosszu utca 123.');
-        order.name('Ez egy hosszú név');
-        order.phone('+36-30-123-4567');
-        order.deliveryFee(800);
-
-        order.lines([
-            { name: 'Pizza Margarita', price: 1300, variant: '40cm', extras: [] },
-            { name: 'Pizza Blah Bluh', price: 1100, variant: '50cm', extras: [] },
-            { name: 'Pizza Blip Blopp', price: 1690, variant: '30cm', extras: [] },
-        ]);
-
-        orders.push(order);
-    }
-
-    orders.reverse();
-    appViewModel.orders(orders);
-
-    setTimeout(() => {
-        query.on('child_added', (x) => {
-            console.log('ADDED');
-            console.log(x.val());
-            // document.querySelector('#ping-sound').play();
-        });
-    });
+    const order = createOrder(key, ordersnapshot);
+    appViewModel.orders.unshift(order);
+    document.querySelector('#ping-sound').play();
 });
+
+//
+// query.on('value', snapshot => {
+//     const ordersnapshot = snapshot.val();
+//     const orders = [];
+//
+//     for (let key in ordersnapshot) {
+//         const order = createOrder(key, ordersnapshot[key]);
+//         orders.push(order);
+//     }
+//
+//     orders.reverse();
+//
+//     appViewModel.orders(orders);
+//     // document.querySelector('#ping-sound').play();
+//
+//     // setTimeout(() => {
+//     //     query.on('child_added', (x) => {
+//     //         console.log('ADDED');
+//     //         console.log(x.val());
+//     //         orders.unshift(x.val())
+//     //         document.querySelector('#ping-sound').play();
+//     //     });
+//     // });
+// });

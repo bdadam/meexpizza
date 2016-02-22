@@ -1,0 +1,19 @@
+<header class="modal-header">
+    <h3>{{ title }}</h3>
+</header>
+<div class="modal-content">
+    <div v-if="orderPending">
+        <img src="ring-alt.svg">
+    </div>
+    <div v-if="orderSuccess">
+        A rendelésed sikeresen megérkezett a Meexpizza csapatához.
+        Gondoskodunk róla, hogy minél hamarabb kiérjünk vele Hozzád!
+    </div>
+    <div v-if="orderError">
+        A rendelésedet nem sikerült fogadnunk.
+        Kérjük, próbáld meg később!
+    </div>
+</div>
+<footer class="modal-footer" v-if="!orderPending">
+    <button @click="close">OK</button>
+</footer>

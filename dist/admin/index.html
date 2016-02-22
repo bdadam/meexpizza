@@ -66,43 +66,48 @@
                     <li class="order-item">
                         <p>
                             id: <span data-bind="text: id"></span>
-                            <button data-bind="click: deliver">Kiszállítás</button>
+                            <!-- <button data-bind="click: deliver">Kiszállítás</button> -->
                         </p>
 
-                        <p data-bind="text: formattedTime"></p>
+                        <p>Idő: <span data-bind="text: formattedTime"></span></p>
                         <address>
-                            <p><span data-bind="text: name"></span></p>
-                            <p><span data-bind="text: phone"></span></p>
-                            <p><span data-bind="text: city"></span>, <span data-bind="text: street"></span></p>
+                            <p>Név: <span data-bind="text: address().name"></span></p>
+                            <p>Cím: <span data-bind="text: address().city"></span>, <span data-bind="text: address().street"></span></p>
+                            <p>Telefonszám: <span data-bind="text: address().phone"></span></p>
                         </address>
-                        <ol data-bind="foreach: lines">
+                        <ol data-bind="foreach: items">
                             <p>
                                 <span data-bind="text: name"></span> (<span data-bind="text: variant"></span>)
                                 <span data-bind="text: price"></span> Ft
                             </p>
+                            <div data-bind="foreach: extras">
+                                <p>+ <span data-bind="text: name"></span> <span data-bind="text: price"></span></p>
+                            </div>
                         </ol>
                         <p>Kiszállítási díj: <span data-bind="text: deliveryFee"></span> Ft
+                        <p>Végösszeg: <span data-bind="text: totalPrice"></span> Ft
                     </li>
                 </ul>
 
-                <h2>Már feldolgozott rendelések</h2>
+                <!-- <h2>Már feldolgozott rendelések</h2>
                 <ul data-bind="foreach: pastOrders">
                     <li class="order-item">
                         <p data-bind="text: formattedTime"></p>
                         <address>
-                            <p><span data-bind="text: name"></span></p>
-                            <p><span data-bind="text: phone"></span></p>
-                            <p><span data-bind="text: city"></span>, <span data-bind="text: street"></span></p>
+                            <p><span data-bind="text: address().name"></span></p>
+                            <p><span data-bind="text: address().phone"></span></p>
+                            <p><span data-bind="text: address().city"></span>, <span data-bind="text: address().street"></span></p>
                         </address>
-                        <ol data-bind="foreach: lines">
+                        <ol data-bind="foreach: items">
                             <p>
                                 <span data-bind="text: name"></span> (<span data-bind="text: variant"></span>)
                                 <span data-bind="text: price"></span> Ft
                             </p>
                         </ol>
                         <p>Kiszállítási díj: <span data-bind="text: deliveryFee"></span> Ft
+                        <p>Kiszállítási díj: <span data-bind="text: deliveryFee"></span> Ft
                     </li>
-                </ul>
+                </ul> -->
             </div>
         </div>
     </div>
