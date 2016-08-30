@@ -1,31 +1,36 @@
-var gulp = require('gulp');
+const gulp = require('gulp');
 
-require('./gulptasks/sass')(gulp); // sass, sass:watch
-require('./gulptasks/webpack')(gulp); // webpack
+const options = {
+    production: true
+};
+
+gulp.task('set-dev', () => {
+    options.production = false;
+});
+
+require('./gulptasks/sass')(gulp, options); // sass, sass:watch
 require('./gulptasks/html')(gulp); // html, html:watch
+require('./gulptasks/rollup')(gulp, options);
 
-gulp.task('webserver', function() {
-    // const spawn = require('child_process').spawn;
-    // spawn('php', ['-S', 'localhost:3000', '-t', 'dist']);
-    var webserver = require('gulp-webserver');
-    gulp.src('./dist')
-        .pipe(webserver({
-            livereload: true,
-            port: 3000,
-            host: '0.0.0.0'
-        }));
-});
+gulp.task('browser-sync', () => {
+    const browserSync = require('browser-sync').create();
 
-gulp.task('watch', ['watchwithoutwebserver', 'webserver'], () => {
-    var spawn = require('child_process').spawn;
-    var proc;
-    gulp.watch(['gulpfile.js', 'gulptasks/**/*.js'], () => {
-        if (proc) { proc.kill(); }
-        proc = spawn('gulp.cmd', ['build', 'watchwithoutwebserver'], { stdio: 'inherit' });
+    browserSync.init({
+        open: false,
+        server: './dist'
     });
+
+    gulp.watch("dist/*").on('change', browserSync.reload);
 });
 
-// gulp.task('watch', ['sass:watch', 'html:watch', 'webserver']);
+// gulp.task('watch', ['watchwithoutwebserver', 'webserver'], () => {
+//     var spawn = require('child_process').spawn;
+//     var proc;
+//     gulp.watch(['gulpfile.js', 'gulptasks/**/*.js'], () => {
+//         if (proc) { proc.kill(); }
+//         proc = spawn('gulp.cmd', ['build', 'watchwithoutwebserver'], { stdio: 'inherit' });
+//     });
+// });
 
 gulp.task('images', () => {
     var imageResize = require('gulp-image-resize');
@@ -71,6 +76,6 @@ gulp.task('sprite', function () {
         .pipe(gulp.dest('dist/food-images/sprites'));
 });
 
-gulp.task('build', ['webpack', 'sass', 'html']);
-gulp.task('watchwithoutwebserver', ['sass:watch', 'html:watch'])
-gulp.task('default', ['build', 'watch']);
+gulp.task('build', ['js', 'sass', 'html']);
+gulp.task('default', ['dev']);
+gulp.task('dev', ['set-dev', 'build', 'browser-sync', 'sass:watch', 'html:watch', 'js:watch']);

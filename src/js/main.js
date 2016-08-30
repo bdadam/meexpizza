@@ -1,5 +1,21 @@
-require('es6-object-assign').polyfill();
+// import default as qwe from '../../data/pizza-feltetek.yml';
+// import asdf as qwe from '../../data/pizza-feltetek.yml';
+
+
+const yml = require('../../data/pizza-feltetek.yml');
+console.log(yml);
+
+// import { Asdf as qwe } from '../../data/test.yaml';
+// import qwe from '../../data/menucard2.generated';
+// console.log(qwe);
+
+// import store from './store';
+//
+// console.log(store);
+
 // require('lazysizes/lazysizes');
+
+require('es6-object-assign').polyfill();
 require('document-register-element');
 
 require('./navi').init();
@@ -93,6 +109,10 @@ shoppingCartStore.dispatch({ type: 'RESTORE', items: savedItems });
 
 
 const shoppingCartTemplate = require('./templates/shop-cart.html');
+// import shoppingCartTemplate from './templates/shop-cart.html';
+
+const orderModalHtml = require('./templates/order-modal.html')
+// import orderModalHtml from './templates/order-modal.html';
 
 const shoppingCartModel = new Vue({
     el: '#shopping-cart-placeholder',
@@ -185,7 +205,8 @@ const shoppingCartModel = new Vue({
         },
 
         submitOrder: _ => {
-            var orderModalHtml = require('./templates/order-modal.html');
+            // var orderModalHtml = require('./templates/order-modal.html');
+            // var orderModalHtml = require('./templates/order-modal.html');
             const m = modal.show(orderModalHtml);
             const model = new Vue({
                 el: m.el,
@@ -242,6 +263,7 @@ shoppingCartStore.subscribe(_ => {
 });
 
 const dishOptionsModalHtml = require('./templates/dish-options-modal.html');
+// import dishOptionsModalHtml from './templates/dish-options-modal.html';
 const modal = require('./modal');
 
 const showDishOptionsModal = order => {
@@ -297,34 +319,49 @@ const showDishOptionsModal = order => {
 };
 
 
-const dayOfWeek = new Date().getDay() || 7;
-$(`.opening-hours dd:nth-of-type(${dayOfWeek}), .opening-hours dt:nth-of-type(${dayOfWeek})`).css({ fontWeight: 700 });
 
-const isDeliveryClosedNow = (now = new Date()) => {
-    const day = now.getDay();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
+//
+// const dayOfWeek = new Date().getDay() || 7;
+// $(`.opening-hours dd:nth-of-type(${dayOfWeek}), .opening-hours dt:nth-of-type(${dayOfWeek})`).css({ fontWeight: 700 });
+//
+// const isDeliveryClosedNow = (now = new Date()) => {
+//     const day = now.getDay();
+//     const hours = now.getHours();
+//     const minutes = now.getMinutes();
+//
+//     const openingHours = [
+//         [1030, 2030], // Sunday
+//         [11030, 12130], // Monday
+//         [21030, 22130],
+//         [31030, 32130],
+//         [41030, 42130],
+//         [51030, 52230],
+//         [61030, 62230]
+//     ];
+//
+//     const num = day * 10000 + hours * 100 + minutes;
+//
+//     for (let day of openingHours) {
+//         if (num >= day[0] && num <= day[1]) {
+//             return false;
+//         }
+//     }
+//
+//     return true;
+// };
+//
 
-    const openingHours = [
-        [1030, 2030], // Sunday
-        [11030, 12130], // Monday
-        [21030, 22130],
-        [31030, 32130],
-        [41030, 42130],
-        [51030, 52230],
-        [61030, 62230]
-    ];
+const newStore = require('./store');
 
-    const num = day * 10000 + hours * 100 + minutes;
+// newStore.subscribe(() => {
+//     const state = newStore.getState();
+//     console.log(state.openingHours.isOpen);
+// });
 
-    for (let day of openingHours) {
-        if (num >= day[0] && num <= day[1]) {
-            return false;
-        }
-    }
-
-    return true;
-};
+setInterval(() => {
+    newStore.dispatch({ type: 'set-current-date', date: new Date() });
+}, 10000);
+newStore.dispatch({ type: 'set-current-date', date: new Date() });
 
 /*
 3-kívánság pizza:
