@@ -18,7 +18,10 @@
     </label>
 </div>
 
-<div style="border-top: 1px solid #ddd; padding: 12px;">
-    <button @click="cancel">Back</button>
-    <button @click="add">{{ total }} Ft - Kosárba</button>
+<div style="border-top: 1px solid #ddd; padding: 12px; text-align: right;">
+    <button @click="cancel">Mégsem</button>
+    <button @click="add" class="add-to-cart">
+        <svg class="icon-cart" style="fill: white;"><use xlink:href="#icon-cart"></use></svg>
+        {{ total }} Ft - Kosárba
+    </button>
 </div>

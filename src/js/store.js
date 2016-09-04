@@ -51,16 +51,6 @@ const openingHours = (state = { isOpen: false }, action) => {
     return { isOpen };
 };
 
-// class Product {
-//     constructor(id, data) {}
-// }
-//
-// class ProductManager {
-//     constructor(products, extras) {}
-//
-//     getProductById(id) {}
-// }
-
 const menu = (state = {}, action) => {
     switch (action.type) {
         case 'full-menu-loaded':
@@ -93,5 +83,11 @@ const store = createStore(combineReducers({
     openingHours,
     menu
 }));
+
+setInterval(() => {
+    store.dispatch({ type: 'set-current-date', date: new Date })
+}, 1000);
+
+store.dispatch({ type: 'set-current-date', date: new Date })
 
 export default store;

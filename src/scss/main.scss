@@ -608,7 +608,7 @@
     padding-top: 4px;
     max-height: 80px;
     text-align: center;
-    
+
     img {
       max-width: 100%;
       max-height: 80px;
@@ -636,14 +636,40 @@
 
     button {
       margin-left: 12px;
-      // background-color: #292;
-      // background-color: #44f;
-      // background-color: material-color('green', '700');
       background-color: material-color('teal', '600');
       border: 1px solid material-color('teal', '600');
       color: #fff;
       font-weight: 600;
       padding: 8px 20px;
     }
+  }
+}
+
+button.add-to-cart {
+  margin-left: 12px;
+  background-color: material-color('teal', '600');
+  border: 1px solid material-color('teal', '600');
+  color: #fff;
+  font-weight: 600;
+  padding: 8px 20px;
+}
+
+closed-message {
+  display: block;
+}
+
+closed-message > div {
+  padding: 8px 0;
+  color: material-color('red', '900');
+  background-color: material-color('red', '100');
+  font-weight: bold;
+  text-align: center;
+
+  .dismiss {
+    border: 0;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 1;
   }
 }
