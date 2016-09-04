@@ -1,3 +1,119 @@
-Asdf:
-  - qwe
-  - wert
+Étlap:
+  Pizzák:
+    Margarita pizza:
+        Összetevők: blah blah
+        Árak:
+          30cm: 1070
+          40cm: 2070
+          50cm: 2970
+        Választható:
+          - Pizzafeltétek
+    Sonkás pizza:
+        Összetevők: blah blah
+        Árak:
+          30cm: 1070
+          40cm: 2070
+          50cm: 2970
+        Választható:
+          - Pizzafeltétek
+
+  Extra pizzák:
+    Három kívánság pizza:
+        Összetevők: blah blah
+        Árak:
+          30cm: 1190
+          40cm: 2450
+          50cm: 3540
+        Választható:
+          - Pizzaalapok
+          - 3K-Pizzafeltétek
+
+Extrák:
+  Pizzaalapok:
+    - paradicsomos
+    - tejfölös
+    - mézes mutáros
+    - mustáros
+    - fokhagymás tejfölös
+    - fokhagymás mustáros tejfölös
+    - fokhagymás paradicsomos
+
+  Pizzafeltétek:
+    Húsok:
+        Ár: 250
+        Választék:
+            - sonka
+            - tarja
+            - bacon
+            - szalámi
+            - csirkemell
+    Halféleségek:
+        Ár: 300
+        Választék:
+            - tengergyümölcsei
+            - tonhal
+    Prémium sonkák:
+        Ár: 450
+        Választék:
+            - pármai
+            - serrano
+            - mangalica
+    Tejes készítmények, sajtok:
+        Ár: 250
+        Választék:
+            - tejföl
+            - juhtúró
+            - sajt
+            - füstölt sajt
+    Prémium sajtok:
+        Ár: 300
+        Választék:
+            - gorgonzola sajt
+            - parmezán sajt
+            - mozzarella golyó
+            - feta sajt
+    Zöldségek:
+        Ár: 150
+        Választék:
+            - kukorica
+            - gomba
+            - fokhagyma
+            - hagyma
+            - póréhagyma
+            - capribogyó
+            - fehér és vörös óriásbab
+            - édes pepperóni
+            - erős cseresznyepaprika
+            - jalapeno paprika
+            - padlizsán
+            - cukkini
+            - répa
+            - pritamin paprika
+            - magozott zöld és fekete olívabogyó
+            - ruccola
+            - paradicsom
+            - brokkoli
+    Gyümölcsök:
+        Ár: 150
+        Választék:
+            - ananász
+            - citrom
+
+  Hamburgerfeltétek:
+    Zöldségek:
+        Ár: 100
+        Választék:
+            - jégsaláta
+            - paradicsom
+            - uborka
+    Húsok:
+        Ár: 300
+        Választék:
+            - Húspogácsa
+
+    Sajtok:
+        Ár: 150
+        Választék:
+            - parmezán
+            - gorgonzola
+            - cheddar

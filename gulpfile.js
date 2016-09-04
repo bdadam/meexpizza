@@ -23,15 +23,6 @@ gulp.task('browser-sync', () => {
     gulp.watch("dist/*").on('change', browserSync.reload);
 });
 
-// gulp.task('watch', ['watchwithoutwebserver', 'webserver'], () => {
-//     var spawn = require('child_process').spawn;
-//     var proc;
-//     gulp.watch(['gulpfile.js', 'gulptasks/**/*.js'], () => {
-//         if (proc) { proc.kill(); }
-//         proc = spawn('gulp.cmd', ['build', 'watchwithoutwebserver'], { stdio: 'inherit' });
-//     });
-// });
-
 gulp.task('images', () => {
     var imageResize = require('gulp-image-resize');
     gulp.src('food-images/**/*')

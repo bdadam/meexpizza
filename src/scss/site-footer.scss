@@ -1,34 +1,21 @@
 #site-footer {
-    background-color: #091F44;
-    color: #fff;
-    padding: 32px 20px 80px;
-    text-align: center;
+  background-color: #091F44;
+  color: #fff;
+  padding: 16px 0;
+  text-align: center;
 
-    a {
-        text-decoration: none;
+  span {
+    display: block;
+
+    @media screen and (min-width: 1024px) {
+      &:not(:last-of-type):after {
+        content: '•';
+        display: inline-block;
         color: #fff;
+        margin: 0 20px;
+      }
 
-        &:hover, &:active {
-            text-decoration: underline;
-        }
+      display: inline;
     }
-
-    span {
-        display: block;
-
-        @media screen and (min-width: 1024px) {
-            &:after {
-                content: '•';
-                display: inline-block;
-                color: #fff;
-                margin: 0 20px;
-            }
-
-            &:last-of-type:after {
-                display: none;
-            }
-
-            display: inline;
-        }
-    }
+  }
 }

@@ -1,9 +1,22 @@
 // import default as qwe from '../../data/pizza-feltetek.yml';
 // import asdf as qwe from '../../data/pizza-feltetek.yml';
 
+const Vue = require('vue');
 
-const yml = require('../../data/pizza-feltetek.yml');
+const yml = require('../../data/test.yaml');
 console.log(yml);
+
+window.yml = yml;
+
+const vm = new Vue({
+    el: document.body,
+
+    methods: {
+        add(a, b, c) {
+            console.log('ADD', a, b, c);
+        }
+    }
+})
 
 // import { Asdf as qwe } from '../../data/test.yaml';
 // import qwe from '../../data/menucard2.generated';
@@ -22,7 +35,6 @@ require('./navi').init();
 require('./social');
 require('./google-map');
 
-const Vue = require('vue');
 const page = require('page');
 const redux = require('redux');
 const flatMap = require('lodash/flatMap');

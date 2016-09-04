@@ -6,6 +6,7 @@ const suspend = require('suspend');
 const resume = suspend.resume;
 const nunjucks = require('nunjucks');
 const _ = require('lodash');
+const jade = require('jade');
 
 nunjucks.configure('src/content/', { autoescape: true, noCache: true });
 
@@ -25,41 +26,59 @@ const generateData = suspend(function*() {
 });
 
 module.exports = (gulp) => {
-    gulp.task('html', (done) => {
+    gulp.task('html', () => {
+        const YAML = require('yamljs');
+        const menu = YAML.load('data/test.yaml');
+        const getSlug = text => require('speakingurl')(text, { lang: 'hu' });
 
-        // delete require.cache[require.resolve('../menu')];
-        // var menucard = require('../menu');
+        const html = jade.renderFile('src/jade/layout.jade', {
+            cssPath: 'main.css?v3',
+            jsPath: 'main.js?v3',
+            pretty: true,
+            getSlug,
+            menu
+        });
+
+        fs.writeFileSync('dist/index2.html', html);
+        // done();
+        // const fn = jade.compile('a(href=href) button(@click="asdf(\'#{id}\', \'#{name}\')")');
+        // console.log(fn({ id: 123, name: 'name', href: 'HREF' }));
+
+
+        // // delete require.cache[require.resolve('../menu')];
+        // // var menucard = require('../menu');
+        // //
+        // delete require.cache[require.resolve('../data/index')];
+        // var menu = require('../data/index');
         //
-        delete require.cache[require.resolve('../data/index')];
-        var menu = require('../data/index');
-
-        delete require.cache[require.resolve('../data/menucard2.generated')];
-        const menucard = require('../data/menucard2.generated');
-        const viewModel = {
-            categories: menucard.categories.map(cat => {
-                return {
-                    id: cat.id,
-                    name: cat.name,
-                    dishes: menucard.dishes.filter(dish => dish.category === cat.name)
-                };
-            })
-        };
-
-        const html = nunjucks.render('index.html', {
-            viewModel,
-            menucard,
-            menu,
-        });
-
-        const minhtml = htmlmin.minify(html, {
-            collapseWhitespace: true,
-            preserveLineBreaks: true
-        });
-
-        fs.writeFile('./dist/index.html', minhtml, done);
+        // delete require.cache[require.resolve('../data/menucard2.generated')];
+        // const menucard = require('../data/menucard2.generated');
+        // const viewModel = {
+        //     categories: menucard.categories.map(cat => {
+        //         return {
+        //             id: cat.id,
+        //             name: cat.name,
+        //             dishes: menucard.dishes.filter(dish => dish.category === cat.name)
+        //         };
+        //     })
+        // };
+        //
+        // const html = nunjucks.render('index.html', {
+        //     viewModel,
+        //     menucard,
+        //     menu,
+        // });
+        //
+        // const minhtml = htmlmin.minify(html, {
+        //     collapseWhitespace: true,
+        //     preserveLineBreaks: true
+        // });
+        //
+        // fs.writeFile('./dist/index.html', minhtml, done);
     });
 
     gulp.task('html:watch', () => {
-        gulp.watch('src/content/**/*', ['html']);
+        // gulp.watch('src/content/**/*.html', ['html']);
+        gulp.watch('src/jade/**/*.jade', ['html']);
     });
 };

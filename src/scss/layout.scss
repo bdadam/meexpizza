@@ -1,0 +1,84 @@
+body, html, #app-root {
+  width: 100%;
+  height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+#site-header {
+  flex: 0 0 80px;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#app-root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  width: 65%;
+}
+
+aside {
+  width: 35%;
+  padding-left: 12px;
+
+  iframe {
+    width: 100%;
+  }
+}
+
+.app-page {
+  max-width: 1100px;
+  background-color: #fff;
+  margin: 0 auto;
+  padding: 32px;
+  display: flex;
+}
+
+.show-second-page-transition {
+  // transition: transform 0.35s ease-in-out;
+  transform: translateX(-100%);
+
+}
+
+.show-second-page-enter {
+  // transform: translateX(-100%);
+  transform: translateX(0);
+}
+
+.show-second-page-leave {
+  transform: translateX(-100%);
+  // transform: translateX(0);
+}
+
+.second-page {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+  // transition: transform 0.25s ease-in-out;
+  // display: flex;
+  // justify-content: flex-end;
+  // flex-direction: row;
+}
+
+.second-page-content {
+  background-color: #fff;
+  width: 70%;
+  // flex: 1;
+}

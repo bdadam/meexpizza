@@ -1,0 +1,23 @@
+.mini-shopping-cart {
+  @media (min-width: 1024px) {
+    display: none;
+  }
+
+  font-size: 1rem;
+  display: flex;
+  flex-direction: row;
+  border-top: 1px solid green;
+
+  & > * {
+    flex: 1;
+    line-height: 32px;
+  }
+
+  .btn-to-cart {
+    display: block;
+    border: 0;
+    background-color: green;
+    color: #fff;
+    border-radius: 0;
+  }
+}

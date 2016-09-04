@@ -1,4 +1,4 @@
-const redux = require('redux');
+import { createStore, combineReducers } from 'redux';
 
 const address = (state = {}, action) => {
     switch (action.type) {
@@ -51,14 +51,21 @@ const openingHours = (state = { isOpen: false }, action) => {
     return { isOpen };
 };
 
-const store = redux.createStore(redux.combineReducers({
+const menu = (state = {}, action) => {
+    switch (action.type) {
+        case 'full-menu-loaded':
+            return Object.assign({}, action.fullMenu['Étlap']);
+        default:
+            return state;
+
+    }
+};
+
+const store = createStore(combineReducers({
     cart,
     address,
-    openingHours
+    openingHours,
+    menu
 }));
 
-// export default store;
-
-module.exports = store;
-
-// export default store;
+export default store;

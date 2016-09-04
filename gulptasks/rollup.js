@@ -16,7 +16,7 @@ module.exports = (gulp, options) => {
         const yaml = require('rollup-plugin-yaml');
 
         const config = {
-            entry: 'src/js/main.js',
+            entry: 'src/js/main2.js',
             cache,
             plugins: [
                 nodeResolve({ jsnext: true, main: true }),
@@ -52,5 +52,6 @@ module.exports = (gulp, options) => {
 
     gulp.task('js:watch', function () {
         gulp.watch('src/**/*.js', ['js']);
+        gulp.watch(['data/**/*.yaml', 'data/**/*.yaml'], ['js']);
     });
 };

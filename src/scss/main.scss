@@ -1,11 +1,15 @@
-@import "../../node_modules/jeet/scss/jeet/index";
+@import "../../node_modules/jeet/scss/jeet/index.scss";
+// @import "jeet/scss/jeet/index.scss";
 @import "../../node_modules/normalize.css/normalize";
+
+// @import 'minireset.css/minireset.min.css';
 
 @import 'defaults';
 @import 'modal';
-@import 'site-header';
+@import './site-header';
 @import 'site-footer';
 @import 'shopping-cart';
+@import 'mini-shopping-cart';
 
 @import '../../dist/food-images/sprites/food-sprite-100';
 
@@ -22,9 +26,11 @@
         background-repeat: repeat, no-repeat;
         background-repeat: repeat, repeat-y;
         background-position: center top, center top;
-        background-size: auto, contain;
+        background-size: auto, cover;
     }
 }
+
+@import 'layout';
 
 // .icon-crt {
 //     background-image: url('data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48c3ltYm9sIGlkPSJhIiB2aWV3Qm94PSIwIDAgMTAyNCAxMDI0Ij48cGF0aCBjbGFzcz0icGF0aDEiIGQ9Ik0zODQgOTI4YzAgNTMuMDItNDIuOTggOTYtOTYgOTZzLTk2LTQyLjk4LTk2LTk2IDQyLjk4LTk2IDk2LTk2IDk2IDQyLjk4IDk2IDk2eiIvPjxwYXRoIGNsYXNzPSJwYXRoMiIgZD0iTTEwMjQgOTI4YzAgNTMuMDItNDIuOTggOTYtOTYgOTZzLTk2LTQyLjk4LTk2LTk2IDQyLjk4LTk2IDk2LTk2IDk2IDQyLjk4IDk2IDk2eiIvPjxwYXRoIGNsYXNzPSJwYXRoMyIgZD0iTTEwMjQgNTEyVjEyOEgyNTZjMC0zNS4zNDYtMjguNjU0LTY0LTY0LTY0SDB2NjRoMTI4bDQ4LjA3NCA0MTIuMDU0QzE0Ni43OCA1NjMuNTEyIDEyOCA1OTkuNTU0IDEyOCA2NDBjMCA3MC42OTYgNTcuMzA4IDEyOCAxMjggMTI4aDc2OHYtNjRIMjU2Yy0zNS4zNDYgMC02NC0yOC42NTQtNjQtNjQgMC0uMjE4LjAxNC0uNDM2LjAxNi0uNjU2TDEwMjQgNTEyeiIvPjwvc3ltYm9sPjx1c2UgeGxpbms6aHJlZj0iI2EiLz48L3N2Zz4=');
@@ -59,7 +65,8 @@
     border-radius: 3px;
     overflow: hidden;
     margin-bottom: 28px;
-    box-shadow: 0 0 6px rgba(0, 0, 0, .3);
+    // box-shadow: 0 0 6px rgba(0, 0, 0, .3);
+    border: 1px solid #ddd;
 }
 
 .card-title {
@@ -87,15 +94,14 @@
         list-style-type: none;
     }
     ul li {
-        list-style-type: none;
         @include cf();
     }
 
     .item {
         background-color: #fff;
-        background-image: linear-gradient(to bottom, #fff 0%, #f1f1f1 50%, #f7f7f7 100%);
-        background-image: linear-gradient(to bottom, #fff 0%, #e3e3e3 50%, #f1f1f1 100%);
-        border-bottom: 1px solid #ddd;
+        // background-image: linear-gradient(to bottom, #fff 0%, #f1f1f1 50%, #f7f7f7 100%);
+        // background-image: linear-gradient(to bottom, #fff 0%, #e3e3e3 50%, #f1f1f1 100%);
+        // border-bottom: 1px solid #ddd;
         border-bottom: 5px solid #dedede;
     }
 
@@ -332,16 +338,16 @@
         }
     }
 }
-
-@media screen and (min-width: 1024px) {
-    main {
-        @include col (2/3);
-    }
-
-    aside {
-        @include col(1/3);
-    }
-}
+//
+// @media screen and (min-width: 1024px) {
+//     main {
+//         @include col (2/3);
+//     }
+//
+//     aside {
+//         @include col(1/3);
+//     }
+// }
 
 .sticky-button-container {
     width: 100%;
@@ -432,6 +438,12 @@ dt {
     border-radius: 3px;
 
     width: 86%;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
     @media screen and (min-width: 1024px) {
         max-width: 960px;

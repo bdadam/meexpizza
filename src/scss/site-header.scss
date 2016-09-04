@@ -1,28 +1,30 @@
 $menu-height: 60px;
-
-body {
-    padding-top: $menu-height;
-}
-
-@media screen and (min-width: 1024px) {
-    body {
-        padding-top: $menu-height + 36px;
-    }
-}
+//
+// body {
+//     padding-top: $menu-height;
+// }
+//
+// @media screen and (min-width: 1024px) {
+//     body {
+//         padding-top: $menu-height + 36px;
+//     }
+// }
 
 #site-header {
     background-color: #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    margin-bottom: 32px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    // margin-bottom: 32px;
+    // margin-bottom: 12px;
     font-size: 0;
     z-index: 1;
 
-    position: fixed;
+    // position: fixed;
     width: 100%;
-    backface-visibility: hidden;
-    top: 0;
-    left: 0;
-    z-index: 2;
+    // backface-visibility: hidden;
+    // top: 0;
+    // left: 0;
+    // z-index: 2;
 
     .menu-toggle {
         display: block;

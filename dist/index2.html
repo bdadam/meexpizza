@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="hu">
+  <head>
+    <meta charset="utf-8">
+    <title>Meexpizza Gyöngyös</title>
+    <meta name="description" content="Pizza házhozszállítás a hét minden napján - Gyöngyösön és környékén. Harapj bele Amerikába!">
+    <link rel="canonical" href="http://www.meexpizza.hu/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Russo+One&amp;subset=latin,latin-ext">
+    <link rel="stylesheet" href="main.css?v3">
+  </head>
+  <body>
+    <div style="display: none;">
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="icon-cart" viewbox="0 0 1024 1024">
+          <path d="M384 928c0 53.019-42.981 96-96 96s-96-42.981-96-96c0-53.019 42.981-96 96-96s96 42.981 96 96z" class="path1"></path>
+          <path d="M1024 928c0 53.019-42.981 96-96 96s-96-42.981-96-96c0-53.019 42.981-96 96-96s96 42.981 96 96z" class="path2"></path>
+          <path d="M1024 512v-384h-768c0-35.346-28.654-64-64-64h-192v64h128l48.074 412.054c-29.294 23.458-48.074 59.5-48.074 99.946 0 70.696 57.308 128 128 128h768v-64h-768c-35.346 0-64-28.654-64-64 0-0.218 0.014-0.436 0.016-0.656l831.984-127.344z" class="path3"></path>
+        </symbol>
+        <symbol id="icon-plus" viewbox="0 0 16 16">
+          <path d="M15.5 6h-5.5v-5.5c0-0.276-0.224-0.5-0.5-0.5h-3c-0.276 0-0.5 0.224-0.5 0.5v5.5h-5.5c-0.276 0-0.5 0.224-0.5 0.5v3c0 0.276 0.224 0.5 0.5 0.5h5.5v5.5c0 0.276 0.224 0.5 0.5 0.5h3c0.276 0 0.5-0.224 0.5-0.5v-5.5h5.5c0.276 0 0.5-0.224 0.5-0.5v-3c0-0.276-0.224-0.5-0.5-0.5z"></path>
+        </symbol>
+        <symbol id="icon-minus" viewbox="0 0 16 16">
+          <path d="M0 6.5v3c0 0.276 0.224 0.5 0.5 0.5h15c0.276 0 0.5-0.224 0.5-0.5v-3c0-0.276-0.224-0.5-0.5-0.5h-15c-0.276 0-0.5 0.224-0.5 0.5z"></path>
+        </symbol>
+      </svg>
+    </div>
+    <div id="app-root">
+      <header id="site-header">
+        <div class="container">
+          <div class="brand"><a href="/" title="Meexpizza - Gyöngyös">Meexpizza</a></div>
+          <button class="menu-toggle"><span></span></button>
+          <nav id="site-navigation"><a href="#klasszikus-pizzak">Pizza</a><a href="#tesztak">Tészta</a><a href="#hamburgerek">Hamburger</a><a href="#salatak">Saláta</a><a href="#edessegek">Édesség</a><a href="#uditok">Üdítő</a></nav>
+        </div>
+      </header>
+      <div style="width: 100%; overflow: hidden;" class="main">
+        <div style="display: flex; flex-direction: row; width: 100%; height: 100%; transition: transform 0.35s ease-in-out;" x-tXXransition="pageTransition">
+          <div style="height: 100%; overflow-y: scroll; overflow-x: hidden; width: 100%; flex-shrink: 0;">
+            <div style="max-width: 1100px; background-color: #fff; margin: 0 auto; padding: 32px; display: flex;" class="page-container app-page">
+              <main>
+                <h2>Pizzák</h2>
+                <ul>
+                  <li><img data-src="/food-images/100/margarita-pizza.jpeg" alt="Margarita pizza" class="lazyload">
+                    <h3>Margarita pizza</h3>
+                    <p>blah blah</p>
+                    <add-cart :prices="{&quot;30cm&quot;:1070,&quot;40cm&quot;:2070,&quot;50cm&quot;:2970}" category="Pizzák" name="Margarita pizza" @add-to-cart="addToCart"></add-cart>
+                  </li>
+                  <li><img data-src="/food-images/100/sonkas-pizza.jpeg" alt="Sonkás pizza" class="lazyload">
+                    <h3>Sonkás pizza</h3>
+                    <p>blah blah</p>
+                    <add-cart :prices="{&quot;30cm&quot;:1070,&quot;40cm&quot;:2070,&quot;50cm&quot;:2970}" category="Pizzák" name="Sonkás pizza" @add-to-cart="addToCart"></add-cart>
+                  </li>
+                </ul>
+                <h2>Extra pizzák</h2>
+                <ul>
+                  <li><img data-src="/food-images/100/harom-kivansag-pizza.jpeg" alt="Három kívánság pizza" class="lazyload">
+                    <h3>Három kívánság pizza</h3>
+                    <p>blah blah</p>
+                    <add-cart :prices="{&quot;30cm&quot;:1190,&quot;40cm&quot;:2450,&quot;50cm&quot;:3540}" category="Extra pizzák" name="Három kívánság pizza" @add-to-cart="addToCart"></add-cart>
+                  </li>
+                </ul>
+              </main>
+              <aside id="side-cart-container">
+                <section class="card">
+                  <h2 class="card-title">Kapcsolat</h2>
+                  <div class="card-content">
+                    <address class="meex-address">
+                      <p class="phone">+36 30 211 12 12</p><img src="images/logo_opt.jpg" class="logo">
+                      <p><b>Meex Pizza & Food</b><br>                3200 Gyöngyös, Orczy út 1.<br><a href="mailto:info@meexpizza.hu">info@meexpizza.hu</a><br><a href="http://www.meexpizza.hu">www.meexpizza.hu</a></p>
+                      <google-map title="Meexpizza a térképen" href="https://maps.google.com/?q=47.785625,19.932675"></google-map>
+                    </address>
+                  </div>
+                </section>
+                <fb-box page="MeexPizza" height="500"></fb-box>
+              </aside>
+            </div>
+            <footer id="site-footer"><span>Meex Pizza & Food</span><span>3200 Gyöngyös, Orczy út 1.</span><span>Minden jog fenntartva © 2016</span><span><a href="https://bdadam.com/" target="_blank">made by bdadam.com</a></span></footer>
+          </div>
+          <div v-if="secondPage" :transition="pageTransition" class="second-page">
+            <div :is="secondPage" @done="secondPage = null" :dish="currentDish" class="second-page-content"></div>
+          </div>
+        </div>
+      </div>
+      <div class="mini-shopping-cart">
+        <div class="cart">2x</div>
+        <div class="total">4600 Ft</div>
+        <button class="btn-to-cart">Rendelés</button>
+      </div>
+    </div>
+    <script src="main.js?v3" async=""></script>
+  </body>
+</html>
