@@ -454,6 +454,85 @@
         Árak:
             '': 1390
 
+  Fúziós ételek:
+      Akay - török pizza:
+          Összetevők: fűszeres paradicsomos alap, sajt, sonka
+          Árak:
+              '': 490
+      Banu - török pizza:
+          Összetevők: tejfölös alap, sajt, tarja, pirított fokhagyma
+          Árak:
+              '': 490
+      Cahil - török pizza:
+          Összetevők: bbq alap, sajt, ropogós bacon
+          Árak:
+              '': 490
+
+  Saláták:
+      Hawaii jérce saláta:
+          Összetevők: roston sült csirkemell, ananász, friss zsenge jégsaláta, joghurtos tartár, pizzakenyér-szeletekkel tálalva
+          Árak:
+              '': 1090
+      Miami saláta:
+          Összetevők: grillezett tejszínes csirkemellcsíkok, parmezán, friss zsenge jégsaláta, paradicsom, uborka, pizzakenyér-szeletekkel tálalva
+          Árak:
+              '': 1090
+      Vegas saláta:
+          Összetevők: mézes-mustáros tejszínes csirkemell, friss zsenge jégsaláta, paradicsom, uborka, pizzakenyér-szeletekkel tálalva
+          Árak:
+              '': 1090
+      Mozarella saláta:
+          Összetevők: mozarella golyók, paradicsomkarikák, olívaolajos bazsalikommal és oregánóval, pizzakenyér szeletekkel tálalva
+          Árak:
+              '': 1090
+      Tonhal saláta:
+          Összetevők: friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, tonhaltörzs, sajtkocka, pizzakenyér szeletekkel tálalva
+          Árak:
+              '': 1090
+      Cézár saláta:
+          Összetevők: friss zsenge jégsaláta, karikára vágott paradicsom, uborka, paprika, ruccola, grillezett fűszeres csirkemell, parmezán, pizzakenyér szeletekkel tálalva
+          Árak:
+              '': 1090
+      Tenger gyümölcsei saláta:
+          Összetevők: pácolt tengergyümölcsei, jégsaláta, paradicsom, uborka, olívabogyó, citrom, olívaolaj, pizzakenyér szeletekkel tálalva
+          Árak:
+              '': 1490
+      Amerikai káposztasaláta:
+          Összetevők: házi majonézes káposztasaláta
+          Árak:
+              '': 450
+
+  Édességek:
+      Profiterol:
+          Összetevők: Profiterol golyók fehér- és tejcsokoládé bevonattal, tejszínhab koronával
+          Árak:
+              '': 600
+      Panna Cotta:
+          Összetevők: tejszínes desszert, gyümölcsszósszal
+          Árak:
+              '': 600
+      Fagylaltkehely:
+          Összetevők: fagylalt, gyümölcs, öntet, tejszínhab
+          Árak:
+              '': 890
+  Üdítők:
+      Pepsi:
+          Árak:
+            1,75l: 480
+            1l: 350
+            dobozos (0,33l): 190
+      Schweppes narancs:
+          Árak:
+            1,75l: 480
+            1l: 350
+      Canada Dry:
+          Árak:
+            1,75l: 480
+            1l: 350
+
+      Lipton Ice Tea:
+          Árak:
+            dobozos (0,33l): 190
 
 Extrák:
   Pizzaalapok:
