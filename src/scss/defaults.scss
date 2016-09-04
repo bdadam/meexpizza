@@ -62,6 +62,10 @@ ul {
     list-style-type: none;
 }
 
+select, button {
+  cursor: pointer;
+}
+
 select, button, input, textarea {
     font-size: inherit;
     font-family: inherit;
@@ -69,8 +73,8 @@ select, button, input, textarea {
     background: none;
     border: 0;
     border-radius: 4px;
-    padding: 2px 4px;
-    border: 1px solid #ccc;
+    padding: 8px 8px;
+    border: 1px solid #ddd;
 }
 
 button[disabled] {

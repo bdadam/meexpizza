@@ -20,12 +20,14 @@ store.dispatch({
 });
 
 const AddToCart = Vue.component('add-cart', {
-    props: ['prices', 'category', 'name'],
+    props: ['prices', 'category', 'name', 'productid'],
     replace: false,
-    template: '<select v-model="selectedVariant" v-if="hasMultiVariants"><option v-for="(variant, price) in prices" :value="variant">{{ variant }} - {{ price }} Ft</option></select><span v-if="!hasMultiVariants">{{ singlePrice }} Ft</span><button @click.prevent="addToCart">Kosárba vele</button>',
+    template: '<select class="variant-selector" v-model="selectedVariant" v-if="hasMultiVariants"><option v-for="(variant, price) in prices" :value="variant">{{ variant }} - {{ price }} Ft</option></select><span v-if="!hasMultiVariants">{{ singlePrice }} Ft</span><button @click.prevent="addToCart"><svg class="icon-cart" style="fill: white;"><use xlink:href="#icon-cart"></use></svg> Kosárba vele</button>',
     created() {
         this.selectedVariant = Object.keys(this.prices)[0];
         this.singlePrice = this.prices[this.selectedVariant];
+
+        // console.log(this.productid);
     },
     computed: {
         hasMultiVariants() {
@@ -61,6 +63,9 @@ const vm = new Vue({
 
             this.secondPage = 'choose-details';
             this.pageTransition = 'show-second-page';
+        },
+        productCustomized(product) {
+            console.log('cust', product);
         },
         back() {
             // this.secondPage = null;

@@ -13,32 +13,34 @@ html(lang='hu')
     include icons.jade
     
     div#app-root
-      header#site-header
+      header.site-header
         include ./site-header.jade
       
-      .main(style="width: 100%; overflow: hidden;")
+      .main
         div(style='display: flex; flex-direction: row; width: 100%; height: 100%; transition: transform 0.35s ease-in-out;', x-tXXransition='pageTransition')
           div(style='height: 100%; overflow-y: scroll; overflow-x: hidden; width: 100%; flex-shrink: 0;')
             div.page-container.app-page(style='max-width: 1100px; background-color: #fff; margin: 0 auto; padding: 32px; display: flex;')
               main
                 each dishes, category in menu['Étlap']
-                  h2= category
-                  ul
+                  h2.category-title= category
+                  ul.product-list
                     each dish, name in dishes
-                      li
-                        img.lazyload(data-src='/food-images/100/#{getSlug(name)}.jpeg', alt='#{name}')
-                        h3= name
-                        p= dish['Összetevők']
-                        add-cart(:prices=JSON.stringify(dish['Árak']), category=category, name=name, @add-to-cart="addToCart")
-
+                      li.product-item
+                        .image
+                          img.lazyload(data-src='/food-images/100/#{dish.image || getSlug(name)}.jpeg', alt='#{name}')
+                        .details
+                          h3.title= name
+                          p.description= dish['Összetevők']
+                          add-cart(:prices=JSON.stringify(dish['Árak']), category=category, name=name, productid='#{category}/#{name}', @add-to-cart="addToCart")
+        
               aside#side-cart-container
                 include aside.jade
-
+        
             footer#site-footer
               include site-footer.jade
-
+        
           div.second-page(v-if='secondPage', :transition='pageTransition')
-            div.second-page-content(:is='secondPage', @done='secondPage = null', :dish='currentDish')
+            div.second-page-content(:is='secondPage', @done='secondPage = null', @product-customized='productCustomized', :dish='currentDish')
           
       .mini-shopping-cart
         .cart 2x

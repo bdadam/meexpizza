@@ -80,5 +80,6 @@ module.exports = (gulp) => {
     gulp.task('html:watch', () => {
         // gulp.watch('src/content/**/*.html', ['html']);
         gulp.watch('src/jade/**/*.jade', ['html']);
+        gulp.watch('data/**/*', ['html']);
     });
 };

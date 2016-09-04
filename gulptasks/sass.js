@@ -5,7 +5,7 @@ module.exports = (gulp) => {
     gulp.task('sass', function () {
         gulp.src('src/scss/main.scss')
             .pipe(sass({
-                // importer: require('node-sass-import')
+                importer: require('node-sass-import')
             })
             .on('error', sass.logError))
             .pipe(pleeease())

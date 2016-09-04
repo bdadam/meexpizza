@@ -51,11 +51,36 @@ const openingHours = (state = { isOpen: false }, action) => {
     return { isOpen };
 };
 
+// class Product {
+//     constructor(id, data) {}
+// }
+//
+// class ProductManager {
+//     constructor(products, extras) {}
+//
+//     getProductById(id) {}
+// }
+
 const menu = (state = {}, action) => {
     switch (action.type) {
         case 'full-menu-loaded':
-            return Object.assign({}, { dishes: action.fullMenu['Étlap'], extras: action.fullMenu['Extrák'] });
-            // return Object.assign({}, action.fullMenu['Étlap'], { extras: action.fullMenu });
+
+            const extraPriceById = {};
+            for(let category in action.fullMenu['Extrák']) {
+                if (action.fullMenu['Extrák'][category].single) {
+                    action.fullMenu['Extrák'][category].single.forEach(name => {
+                        extraPriceById[`${category}|${name}`] = action.fullMenu['Extrák'][category].price;
+                    });
+                }
+
+                if (action.fullMenu['Extrák'][category].multi) {
+                    action.fullMenu['Extrák'][category].multi.forEach(name => {
+                        extraPriceById[`${category}|${name}`] =     action.fullMenu['Extrák'][category].price;
+                    });
+                }
+            }
+
+            return Object.assign({}, { dishes: action.fullMenu['Étlap'], extras: action.fullMenu['Extrák'], extraPriceById });
         default:
             return state;
 

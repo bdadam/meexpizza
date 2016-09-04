@@ -26,45 +26,348 @@
       </svg>
     </div>
     <div id="app-root">
-      <header id="site-header">
-        <div class="container">
+      <header class="site-header">
+        <div class="page-container">
           <div class="brand"><a href="/" title="Meexpizza - Gyöngyös">Meexpizza</a></div>
-          <button class="menu-toggle"><span></span></button>
-          <nav id="site-navigation"><a href="#klasszikus-pizzak">Pizza</a><a href="#tesztak">Tészta</a><a href="#hamburgerek">Hamburger</a><a href="#salatak">Saláta</a><a href="#edessegek">Édesség</a><a href="#uditok">Üdítő</a></nav>
+          <div class="navigation">
+            <div class="overflow-arrow"></div>
+            <nav class="site-navigation"><a href="#klasszikus-pizzak">Pizza</a><a href="#tesztak">Tészta</a><a href="#hamburgerek">Hamburger</a><a href="#salatak">Saláta</a><a href="#edessegek">Édesség</a><a href="#uditok">Üdítő</a></nav>
+          </div>
         </div>
       </header>
-      <div style="width: 100%; overflow: hidden;" class="main">
+      <div class="main">
         <div style="display: flex; flex-direction: row; width: 100%; height: 100%; transition: transform 0.35s ease-in-out;" x-tXXransition="pageTransition">
           <div style="height: 100%; overflow-y: scroll; overflow-x: hidden; width: 100%; flex-shrink: 0;">
             <div style="max-width: 1100px; background-color: #fff; margin: 0 auto; padding: 32px; display: flex;" class="page-container app-page">
               <main>
-                <h2>Pizzák</h2>
-                <ul>
-                  <li><img data-src="/food-images/100/margarita-pizza.jpeg" alt="Margarita pizza" class="lazyload">
-                    <h3>Margarita pizza</h3>
-                    <p>blah blah</p>
-                    <add-cart :prices="{&quot;30cm&quot;:1070,&quot;40cm&quot;:2070,&quot;50cm&quot;:2970}" category="Pizzák" name="Margarita pizza" @add-to-cart="addToCart"></add-cart>
+                <h2 class="category-title">Klasszikus Pizzák</h2>
+                <ul class="product-list">
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/margarita-pizza.jpeg" alt="Margarita pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Margarita pizza</h3>
+                      <p class="description">fűszeres paradicsomszósz, sajt</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1070,&quot;40cm&quot;:2070,&quot;50cm&quot;:2920}" category="Klasszikus Pizzák" name="Margarita pizza" productid="Klasszikus Pizzák/Margarita pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
                   </li>
-                  <li><img data-src="/food-images/100/sonkas-pizza.jpeg" alt="Sonkás pizza" class="lazyload">
-                    <h3>Sonkás pizza</h3>
-                    <p>blah blah</p>
-                    <add-cart :prices="{&quot;30cm&quot;:1070,&quot;40cm&quot;:2070,&quot;50cm&quot;:2970}" category="Pizzák" name="Sonkás pizza" @add-to-cart="addToCart"></add-cart>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/sonkas-pizza.jpeg" alt="Sonkás pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Sonkás pizza</h3>
+                      <p class="description">fűszeres paradicsomszósz, sajt, sonka</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1070,&quot;40cm&quot;:2070,&quot;50cm&quot;:2920}" category="Klasszikus Pizzák" name="Sonkás pizza" productid="Klasszikus Pizzák/Sonkás pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/szalamis-pizza.jpeg" alt="Szalámis pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Szalámis pizza</h3>
+                      <p class="description">fűszeres paradicsomszósz, sajt, paprikás szalámi</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1070,&quot;40cm&quot;:2070,&quot;50cm&quot;:2920}" category="Klasszikus Pizzák" name="Szalámis pizza" productid="Klasszikus Pizzák/Szalámis pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/sonka-ku-pizza.jpeg" alt="Sonka-ku pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Sonka-ku pizza</h3>
+                      <p class="description">fűszeres paradicsomszósz, sajt, sonka, kukorica</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1070,&quot;40cm&quot;:2070,&quot;50cm&quot;:2920}" category="Klasszikus Pizzák" name="Sonka-ku pizza" productid="Klasszikus Pizzák/Sonka-ku pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/bacon-pizza.jpeg" alt="Bacon pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Bacon pizza</h3>
+                      <p class="description">fűszeres paradicsomszósz, sajt, pirított bacon</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1070,&quot;40cm&quot;:2070,&quot;50cm&quot;:2920}" category="Klasszikus Pizzák" name="Bacon pizza" productid="Klasszikus Pizzák/Bacon pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/hawaii-pizza.jpeg" alt="Hawaii pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Hawaii pizza</h3>
+                      <p class="description">fűszeres paradicsomszósz vagy fűszeres tejfölös szósz, sajt, sonka, ananász, füstölt sajt</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1070,&quot;40cm&quot;:2070,&quot;50cm&quot;:2920}" category="Klasszikus Pizzák" name="Hawaii pizza" productid="Klasszikus Pizzák/Hawaii pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
                   </li>
                 </ul>
-                <h2>Extra pizzák</h2>
-                <ul>
-                  <li><img data-src="/food-images/100/harom-kivansag-pizza.jpeg" alt="Három kívánság pizza" class="lazyload">
-                    <h3>Három kívánság pizza</h3>
-                    <p>blah blah</p>
-                    <add-cart :prices="{&quot;30cm&quot;:1190,&quot;40cm&quot;:2450,&quot;50cm&quot;:3540}" category="Extra pizzák" name="Három kívánság pizza" @add-to-cart="addToCart"></add-cart>
+                <h2 class="category-title">Extra pizzák</h2>
+                <ul class="product-list">
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/tonhalas-pizza.jpeg" alt="Tonhalas pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Tonhalas pizza</h3>
+                      <p class="description">fűszeres paradicsomszósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1190,&quot;40cm&quot;:2450,&quot;50cm&quot;:3540}" category="Extra pizzák" name="Tonhalas pizza" productid="Extra pizzák/Tonhalas pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/piedone-pizza.jpeg" alt="Piedone pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Piedone pizza</h3>
+                      <p class="description">fűszeres paradicsomszósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1190,&quot;40cm&quot;:2450,&quot;50cm&quot;:3540}" category="Extra pizzák" name="Piedone pizza" productid="Extra pizzák/Piedone pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/joasszony-pizza.jpeg" alt="Jóasszony pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Jóasszony pizza</h3>
+                      <p class="description">fűszeres paradicsomszósz alap, sajt, paprikás szalámi, csípős cseresznyepaprika, csiperke gomba, hagyma</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1190,&quot;40cm&quot;:2450,&quot;50cm&quot;:3540}" category="Extra pizzák" name="Jóasszony pizza" productid="Extra pizzák/Jóasszony pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/harom-kivansag-pizza.jpeg" alt="Három kívánság pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Három kívánság pizza</h3>
+                      <p class="description">blah blah</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1190,&quot;40cm&quot;:2450,&quot;50cm&quot;:3540}" category="Extra pizzák" name="Három kívánság pizza" productid="Extra pizzák/Három kívánság pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/chuck-norris-pizza.jpeg" alt="Chuck Norris pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Chuck Norris pizza</h3>
+                      <p class="description">extra erős chilipaszta, sajt, grillezett csirkemell, paradicsomkarika, szeletekre vágott lilahagyma</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1190,&quot;40cm&quot;:2450,&quot;50cm&quot;:3540}" category="Extra pizzák" name="Chuck Norris pizza" productid="Extra pizzák/Chuck Norris pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/bolognai-pizza.jpeg" alt="Bolognai pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Bolognai pizza</h3>
+                      <p class="description">fokhagymás-paradicsomos alap, bolognai ragu</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1190,&quot;40cm&quot;:2450,&quot;50cm&quot;:3540}" category="Extra pizzák" name="Bolognai pizza" productid="Extra pizzák/Bolognai pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/brooklyn-pizza.jpeg" alt="Brooklyn pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Brooklyn pizza</h3>
+                      <p class="description">fokhagymás-paradicsomos alap, tarja, brokkoli, tükörtojás</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1190,&quot;40cm&quot;:2450,&quot;50cm&quot;:3540}" category="Extra pizzák" name="Brooklyn pizza" productid="Extra pizzák/Brooklyn pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/negysajtos-pizza.jpeg" alt="Négysajtos pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Négysajtos pizza</h3>
+                      <p class="description">fűszeres paradicsomszósz, sajt, parmezán, gorgonzola, füstölt sajt</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1070,&quot;40cm&quot;:2070,&quot;50cm&quot;:2920}" category="Extra pizzák" name="Négysajtos pizza" productid="Extra pizzák/Négysajtos pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
                   </li>
                 </ul>
-                <h2>Tészták</h2>
-                <ul>
-                  <li><img data-src="/food-images/100/carbonara.jpeg" alt="Carbonara" class="lazyload">
-                    <h3>Carbonara</h3>
-                    <p>bacon, sonka, tojás, tejszín, parmezán sajt, spagetti</p>
-                    <add-cart :prices="{&quot;&quot;:1090}" category="Tészták" name="Carbonara" @add-to-cart="addToCart"></add-cart>
+                <h2 class="category-title">Full a fullban pizzák</h2>
+                <ul class="product-list">
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/szex-es-new-york-pizza.jpeg" alt="Szex &amp; New York pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Szex &amp; New York pizza</h3>
+                      <p class="description">választható alap, bacon, kukorica, brokkoli, camambert, tükörtojás</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1450,&quot;40cm&quot;:3100,&quot;50cm&quot;:3950}" category="Full a fullban pizzák" name="Szex &amp; New York pizza" productid="Full a fullban pizzák/Szex &amp; New York pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/victorio-pizza.jpeg" alt="Victorio pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Victorio pizza</h3>
+                      <p class="description">fokhagymás tejfölös alap, sajt, póréhagyma, mozzarella golyó, pirított bacon, juhturó</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1450,&quot;40cm&quot;:3100,&quot;50cm&quot;:3950}" category="Full a fullban pizzák" name="Victorio pizza" productid="Full a fullban pizzák/Victorio pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/hus-zabalo-pizza.jpeg" alt="Hús-zabáló pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Hús-zabáló pizza</h3>
+                      <p class="description">fűszeres paradicsomszósz, sajt, csirkemell, sült tarja, sonka, bacon</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1450,&quot;40cm&quot;:3100,&quot;50cm&quot;:3950}" category="Full a fullban pizzák" name="Hús-zabáló pizza" productid="Full a fullban pizzák/Hús-zabáló pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/master-pizza.jpeg" alt="Master pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Master pizza</h3>
+                      <p class="description">tejfölös mustáros tárkonyos ízvilág, sajt, sonka, kukorica, pirított bacon, csiperke gomba</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1450,&quot;40cm&quot;:3100,&quot;50cm&quot;:3950}" category="Full a fullban pizzák" name="Master pizza" productid="Full a fullban pizzák/Master pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/barbeque-pizza.jpeg" alt="Barbeque pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Barbeque pizza</h3>
+                      <p class="description">bbq alap szósz, sajt, bacon vagy csirkemell, vöröshagyma, pritamin paprika szeletek</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1450,&quot;40cm&quot;:3100,&quot;50cm&quot;:3950}" category="Full a fullban pizzák" name="Barbeque pizza" productid="Full a fullban pizzák/Barbeque pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/jalapeno-barbeque-pizza.jpeg" alt="Jalapeno Barbeque pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Jalapeno Barbeque pizza</h3>
+                      <p class="description">fokhagymás bbq szósz, sajt, csirkemell, pirított póréhagyma, paradicsomkarika , jalapeno</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1450,&quot;40cm&quot;:3100,&quot;50cm&quot;:3950}" category="Full a fullban pizzák" name="Jalapeno Barbeque pizza" productid="Full a fullban pizzák/Jalapeno Barbeque pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/tenger-kincsei-pizza.jpeg" alt="Tenger kincsei pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Tenger kincsei pizza</h3>
+                      <p class="description">fűszeres paradicsomszósz, sajt, pácban érlelt tenger gyümölcsei, vegyes magozott olíva bogyó</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1450,&quot;40cm&quot;:3100,&quot;50cm&quot;:3950}" category="Full a fullban pizzák" name="Tenger kincsei pizza" productid="Full a fullban pizzák/Tenger kincsei pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/dani-pizza.jpeg" alt="Dani pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Dani pizza</h3>
+                      <p class="description">tejfölös fokhagymás alap, sajt, főtt tarja, lila hagyma, bacon, szeletekre vágott jalapeno paprika</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1450,&quot;40cm&quot;:3100,&quot;50cm&quot;:3950}" category="Full a fullban pizzák" name="Dani pizza" productid="Full a fullban pizzák/Dani pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/florida-pizza.jpeg" alt="Florida pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Florida pizza</h3>
+                      <p class="description">tejfölös fokhagymás alap, camambert, bacon, pepperoni</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1450,&quot;40cm&quot;:3100,&quot;50cm&quot;:3950}" category="Full a fullban pizzák" name="Florida pizza" productid="Full a fullban pizzák/Florida pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/washington-pizza.jpeg" alt="Washington pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Washington pizza</h3>
+                      <p class="description">paradicsomos alap, sajt, szalámi, pepperoni, füstölt sajt</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1450,&quot;40cm&quot;:3100,&quot;50cm&quot;:3950}" category="Full a fullban pizzák" name="Washington pizza" productid="Full a fullban pizzák/Washington pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/meex-toltott-pizza.jpeg" alt="Meex töltött pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Meex töltött pizza</h3>
+                      <p class="description">tejfölös alap, paprikás szalámi, ruccola, ízletes cheddar sajt, jalapeno paprika</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1450}" category="Full a fullban pizzák" name="Meex töltött pizza" productid="Full a fullban pizzák/Meex töltött pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/bossy-pizza.jpeg" alt="Bossy pizza" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Bossy pizza</h3>
+                      <p class="description">fűszeres paradicsomszósz, sajt, pármai sonka, frissen vágott ruccola, koktél paradicsom</p>
+                      <add-cart :prices="{&quot;30cm&quot;:1550}" category="Full a fullban pizzák" name="Bossy pizza" productid="Full a fullban pizzák/Bossy pizza" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                </ul>
+                <h2 class="category-title">Hamburgerek</h2>
+                <ul class="product-list">
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/meex-burger.jpeg" alt="Meex burger" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Meex burger</h3>
+                      <p class="description">friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, opcionálisan hasáb- vagy steakburgonyával</p>
+                      <add-cart :prices="{&quot;Szendvics&quot;:850,&quot;Szendvics + hasábburgonya&quot;:1090,&quot;Szendvics + steakburgonya&quot;:1090,&quot;Szendvics + burgonyachips&quot;:1090}" category="Hamburgerek" name="Meex burger" productid="Hamburgerek/Meex burger" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/meex-burger.jpeg" alt="Meex sajtburger" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Meex sajtburger</h3>
+                      <p class="description">friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával</p>
+                      <add-cart :prices="{&quot;Szendvics&quot;:950,&quot;Szendvics + hasábburgonya&quot;:1190,&quot;Szendvics + steakburgonya&quot;:1190,&quot;Szendvics + burgonyachips&quot;:1190}" category="Hamburgerek" name="Meex sajtburger" productid="Hamburgerek/Meex sajtburger" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                </ul>
+                <h2 class="category-title">Levesek</h2>
+                <ul class="product-list">
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/leves.jpeg" alt="Fokhagymakrémleves" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Fokhagymakrémleves</h3>
+                      <p class="description"></p>
+                      <add-cart :prices="{&quot;&quot;:550}" category="Levesek" name="Fokhagymakrémleves" productid="Levesek/Fokhagymakrémleves" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/leves.jpeg" alt="Szezonális gyümölcsleves" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Szezonális gyümölcsleves</h3>
+                      <p class="description"></p>
+                      <add-cart :prices="{&quot;&quot;:550}" category="Levesek" name="Szezonális gyümölcsleves" productid="Levesek/Szezonális gyümölcsleves" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                </ul>
+                <h2 class="category-title">Tészták</h2>
+                <ul class="product-list">
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/carbonara.jpeg" alt="Carbonara" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Carbonara</h3>
+                      <p class="description">bacon, sonka, tojás, tejszín, parmezán sajt, spagetti</p>
+                      <add-cart :prices="{&quot;&quot;:1090}" category="Tészták" name="Carbonara" productid="Tészták/Carbonara" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/milanoi.jpeg" alt="Milánói" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Milánói</h3>
+                      <p class="description">paradicsom, hagyma, sonka, spagetti</p>
+                      <add-cart :prices="{&quot;&quot;:1090}" category="Tészták" name="Milánói" productid="Tészták/Milánói" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/negysajtos-penne.jpeg" alt="Négysajtos penne" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Négysajtos penne</h3>
+                      <p class="description">tejszínes szósz, sajt, gorgonzola, parmezán, füstölt sajt</p>
+                      <add-cart :prices="{&quot;&quot;:1190}" category="Tészták" name="Négysajtos penne" productid="Tészták/Négysajtos penne" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/meex.jpeg" alt="Meex" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Meex</h3>
+                      <p class="description">csirkemell, gomba, fokhagyma, fűszeres tejszínes szósz, parmezán, spagetti</p>
+                      <add-cart :prices="{&quot;&quot;:1190}" category="Tészták" name="Meex" productid="Tészták/Meex" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/sziciliai.jpeg" alt="Szicíliai" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Szicíliai</h3>
+                      <p class="description">csirkemell, fokhagyma, fűszeres tejszínes szósz, brokkoli, kukorica, parmezán, penne tészta</p>
+                      <add-cart :prices="{&quot;&quot;:1190}" category="Tészták" name="Szicíliai" productid="Tészták/Szicíliai" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/bolognai.jpeg" alt="Bolognai" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Bolognai</h3>
+                      <p class="description">paradicsomos alap, hagyma, darált sertés, fűszerek, spagetti</p>
+                      <add-cart :prices="{&quot;&quot;:1190}" category="Tészták" name="Bolognai" productid="Tészták/Bolognai" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/peperoncino-hideg-salataagyon.jpeg" alt="Peperoncino hideg salátaágyon" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Peperoncino hideg salátaágyon</h3>
+                      <p class="description">peperoncino, spagetti, hideg jégsaláta, mozzarella, koktélparadicsom</p>
+                      <add-cart :prices="{&quot;&quot;:1390}" category="Tészták" name="Peperoncino hideg salátaágyon" productid="Tészták/Peperoncino hideg salátaágyon" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/tenger-gyumolcsei.jpeg" alt="Tenger gyümölcsei" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Tenger gyümölcsei</h3>
+                      <p class="description">paradicsomos tejszínes szósz</p>
+                      <add-cart :prices="{&quot;&quot;:1490}" category="Tészták" name="Tenger gyümölcsei" productid="Tészták/Tenger gyümölcsei" @add-to-cart="addToCart"></add-cart>
+                    </div>
+                  </li>
+                  <li class="product-item">
+                    <div class="image"><img data-src="/food-images/100/milanoi-sertesborda.jpeg" alt="Milánói sertésborda" class="lazyload"></div>
+                    <div class="details">
+                      <h3 class="title">Milánói sertésborda</h3>
+                      <p class="description">paradicsomszósz, sonka, gomba, trappista sajt, spagetti</p>
+                      <add-cart :prices="{&quot;&quot;:1590}" category="Tészták" name="Milánói sertésborda" productid="Tészták/Milánói sertésborda" @add-to-cart="addToCart"></add-cart>
+                    </div>
                   </li>
                 </ul>
               </main>
@@ -88,7 +391,7 @@
             <footer id="site-footer"><span>Meex Pizza & Food</span><span>3200 Gyöngyös, Orczy út 1.</span><span>Minden jog fenntartva © 2016</span><span><a href="https://bdadam.com/" target="_blank">made by bdadam.com</a></span></footer>
           </div>
           <div v-if="secondPage" :transition="pageTransition" class="second-page">
-            <div :is="secondPage" @done="secondPage = null" :dish="currentDish" class="second-page-content"></div>
+            <div :is="secondPage" @done="secondPage = null" @product-customized="productCustomized" :dish="currentDish" class="second-page-content"></div>
           </div>
         </div>
       </div>

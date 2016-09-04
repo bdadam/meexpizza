@@ -55,6 +55,7 @@ module.exports = (gulp, options) => {
 
     gulp.task('js:watch', function () {
         gulp.watch('src/js/**/*', ['js']);
+        gulp.watch('data/**/*', ['js']);
         // gulp.watch(['data/**/*.yaml', 'data/**/*.yaml'], ['js']);
     });
 };

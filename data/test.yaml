@@ -1,23 +1,80 @@
 Étlap:
-  Pizzák:
+  Klasszikus Pizzák:
     Margarita pizza:
-        Összetevők: blah blah
+        Összetevők: fűszeres paradicsomszósz, sajt
         Árak:
           30cm: 1070
           40cm: 2070
-          50cm: 2970
+          50cm: 2920
         Választható:
           - Pizzafeltétek
     Sonkás pizza:
-        Összetevők: blah blah
+        Összetevők: fűszeres paradicsomszósz, sajt, sonka
         Árak:
           30cm: 1070
           40cm: 2070
-          50cm: 2970
+          50cm: 2920
         Választható:
+          - Pizzafeltétek
+    Szalámis pizza:
+        Összetevők: fűszeres paradicsomszósz, sajt, paprikás szalámi
+        Árak:
+            30cm: 1070
+            40cm: 2070
+            50cm: 2920
+        Választható:
+          - Pizzafeltétek
+    Sonka-ku pizza:
+        Összetevők: fűszeres paradicsomszósz, sajt, sonka, kukorica
+        Árak:
+            30cm: 1070
+            40cm: 2070
+            50cm: 2920
+        Választható:
+          - Pizzafeltétek
+    Bacon pizza:
+        Összetevők: fűszeres paradicsomszósz, sajt, pirított bacon
+        Árak:
+            30cm: 1070
+            40cm: 2070
+            50cm: 2920
+        Választható:
+          - Pizzafeltétek
+    Hawaii pizza:
+        Összetevők: fűszeres paradicsomszósz vagy fűszeres tejfölös szósz, sajt, sonka, ananász, füstölt sajt
+        Árak:
+            30cm: 1070
+            40cm: 2070
+            50cm: 2920
+        Választható:
+          - Pizzaalapok-Hawaii
           - Pizzafeltétek
 
   Extra pizzák:
+    Tonhalas pizza:
+        Összetevők: fűszeres paradicsomszósz, sajt, vöröshagyma, citrom, capribogyó, toszkánai tonhalgerezdek
+        Árak:
+            30cm: 1190
+            40cm: 2450
+            50cm: 3540
+        Választható:
+          - Pizzafeltétek
+    Piedone pizza:
+        Összetevők: fűszeres paradicsomszósz, sajt, hagyma, fehér és vörös óriásbab, pirított bacon, csípős cseresznyepaprika
+        Árak:
+            30cm: 1190
+            40cm: 2450
+            50cm: 3540
+        Választható:
+          - Pizzafeltétek
+    Jóasszony pizza:
+        Összetevők: fűszeres paradicsomszósz alap, sajt, paprikás szalámi, csípős cseresznyepaprika, csiperke gomba, hagyma
+        Árak:
+            30cm: 1190
+            40cm: 2450
+            50cm: 3540
+        Választható:
+          - Pizzafeltétek
     Három kívánság pizza:
         Összetevők: blah blah
         Árak:
@@ -27,11 +84,273 @@
         Választható:
           - Pizzaalapok
           - Pizzafeltétek
+    Chuck Norris pizza:
+        Összetevők: extra erős chilipaszta, sajt, grillezett csirkemell, paradicsomkarika, szeletekre vágott lilahagyma
+        Árak:
+            30cm: 1190
+            40cm: 2450
+            50cm: 3540
+        Választható:
+          - Pizzafeltétek
+    Bolognai pizza:
+        Összetevők: fokhagymás-paradicsomos alap, bolognai ragu
+        Árak:
+            30cm: 1190
+            40cm: 2450
+            50cm: 3540
+        Választható:
+          - Pizzafeltétek
+    Brooklyn pizza:
+        Összetevők: fokhagymás-paradicsomos alap, tarja, brokkoli, tükörtojás
+        Árak:
+            30cm: 1190
+            40cm: 2450
+            50cm: 3540
+        Választható:
+          - Pizzafeltétek
+    Négysajtos pizza:
+        Összetevők: fűszeres paradicsomszósz, sajt, parmezán, gorgonzola, füstölt sajt
+        Árak:
+            30cm: 1070
+            40cm: 2070
+            50cm: 2920
+        Választható:
+          - Pizzafeltétek
+  Full a fullban pizzák:
+    Szex & New York pizza:
+        Összetevők: választható alap, bacon, kukorica, brokkoli, camambert, tükörtojás
+        Árak:
+            30cm: 1450
+            40cm: 3100
+            50cm: 3950
+        Választható:
+          - Pizzaalapok
+          - Pizzafeltétek
+    Victorio pizza:
+        Összetevők: fokhagymás tejfölös alap, sajt, póréhagyma, mozzarella golyó, pirított bacon, juhturó
+        Árak:
+            30cm: 1450
+            40cm: 3100
+            50cm: 3950
+        Választható:
+          - Pizzafeltétek
+    Hús-zabáló pizza:
+        Összetevők: fűszeres paradicsomszósz, sajt, csirkemell, sült tarja, sonka, bacon
+        Árak:
+            30cm: 1450
+            40cm: 3100
+            50cm: 3950
+        Választható:
+          - Pizzafeltétek
+    Master pizza:
+        Összetevők: tejfölös mustáros tárkonyos ízvilág, sajt, sonka, kukorica, pirított bacon, csiperke gomba
+        Árak:
+            30cm: 1450
+            40cm: 3100
+            50cm: 3950
+        Választható:
+          - Pizzafeltétek
+    Barbeque pizza:
+        Összetevők: bbq alap szósz, sajt, bacon vagy csirkemell, vöröshagyma, pritamin paprika szeletek
+        Árak:
+            30cm: 1450
+            40cm: 3100
+            50cm: 3950
+        Választható:
+          - Pizzafeltétek
+    Jalapeno Barbeque pizza:
+        Összetevők: fokhagymás bbq szósz, sajt, csirkemell, pirított póréhagyma, paradicsomkarika , jalapeno
+        Árak:
+            30cm: 1450
+            40cm: 3100
+            50cm: 3950
+        Választható:
+          - Pizzafeltétek
+    Tenger kincsei pizza:
+        Összetevők: fűszeres paradicsomszósz, sajt, pácban érlelt tenger gyümölcsei, vegyes magozott olíva bogyó
+        Árak:
+            30cm: 1450
+            40cm: 3100
+            50cm: 3950
+        Választható:
+          - Pizzafeltétek
+    Dani pizza:
+        Összetevők: tejfölös fokhagymás alap, sajt, főtt tarja, lila hagyma, bacon, szeletekre vágott jalapeno paprika
+        Árak:
+            30cm: 1450
+            40cm: 3100
+            50cm: 3950
+        Választható:
+          - Pizzafeltétek
+    Florida pizza:
+        Összetevők: tejfölös fokhagymás alap, camambert, bacon, pepperoni
+        Árak:
+            30cm: 1450
+            40cm: 3100
+            50cm: 3950
+        Választható:
+          - Pizzafeltétek
+    Washington pizza:
+        Összetevők: paradicsomos alap, sajt, szalámi, pepperoni, füstölt sajt
+        Árak:
+            30cm: 1450
+            40cm: 3100
+            50cm: 3950
+        Választható:
+          - Pizzafeltétek
+    Meex töltött pizza:
+        Összetevők: tejfölös alap, paprikás szalámi, ruccola, ízletes cheddar sajt, jalapeno paprika
+        Árak:
+            30cm: 1450
+        Választható:
+          - Pizzafeltétek
+    Bossy pizza:
+        Összetevők: fűszeres paradicsomszósz, sajt, pármai sonka, frissen vágott ruccola, koktél paradicsom
+        Árak:
+            30cm: 1550
+        Választható:
+          - Pizzafeltétek
+
+  Hamburgerek:
+    Meex burger:
+      image: meex-burger
+      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, opcionálisan hasáb- vagy steakburgonyával
+      Árak:
+          Szendvics: 850
+          Szendvics + hasábburgonya: 1090
+          Szendvics + steakburgonya: 1090
+          Szendvics + burgonyachips: 1090
+      Választható:
+        - Hamburgerszószok
+        - Hamburgerextrák
+        - Hamburgerfeltétek - Zöldségek
+        - Hamburgerfeltétek - Húsok
+        - Hamburgerfeltétek - Sajtok
+    Meex sajtburger:
+      image: meex-burger
+      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával
+      Árak:
+          Szendvics: 950
+          Szendvics + hasábburgonya: 1190
+          Szendvics + steakburgonya: 1190
+          Szendvics + burgonyachips: 1190
+      Választható:
+        - Hamburgerszószok
+        - Hamburgerextrák
+        - Hamburgerfeltétek - Zöldségek
+        - Hamburgerfeltétek - Húsok
+        - Hamburgerfeltétek - Sajtok
+    # Dupla Meex burger:
+    #   image: meex-burger
+    #   Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, opcionálisan hasáb- vagy steakburgonyával
+    #   Árak:
+    #       Szendvics: 1250
+    #   Választható:
+    #     - Hamburgerszószok
+    #     - Hamburgerextrák
+    #     - Hamburgerfeltétek - Zöldségek
+    #     - Hamburgerfeltétek - Húsok
+    #     - Hamburgerfeltétek - Sajtok
+    # Dupla Meex sajtburger:
+    #   image: meex-burger
+    #   Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával
+    #   Árak:
+    #     Szendvics: 1450
+    #   Választható:
+    #     - Hamburgerszószok
+    #     - Hamburgerextrák
+    #     - Hamburgerfeltétek - Zöldségek
+    #     - Hamburgerfeltétek - Húsok
+    #     - Hamburgerfeltétek - Sajtok
+    # Cheese Lovers Burger:
+    #   image: meex-burger
+    #   Összetevők: alap + választható sajt, opcionálisan hasáb- vagy steakburgonyával
+    #   Opciók:
+    #       Sajt:
+    #           - rostonsült mozzarella
+    #           - rántott trappista
+    #           - rántott camabert
+    #     Árak:
+    #         Szendvics: 890
+    #         "Hasább.": 1190
+    #         "Steakbur.": 1190
+    # Texasi Tüzes Burger:
+    #     type: hamburger
+    #     image: meex-burger
+    #     Összetevők: alap + 100% marhahús, jalapeno, cheddar sajt, opcionálisan hasáb- vagy steakburgonyával
+    #     Árak:
+    #         Szendvics: 990
+    #         "Hasább.": 1390
+    #         "Steakbur.": 1390
+    # New York Burger:
+    #     type: hamburger
+    #     image: meex-burger
+    #     Összetevők: alap + rostonsült csirke, füstölt sajt, tükörtojás, opcionálisan hasáb- vagy steakburgonyával
+    #     Árak:
+    #         Szendvics: 990
+    #         "Hasább.": 1390
+    #         "Steakbur.": 1390
+    # Hungarian Burger:
+    #     type: hamburger
+    #     image: meex-burger
+    #     Összetevők: alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt, opcionálisan hasáb- vagy steakburgonyával
+    #     Opciók:
+    #         Hús:
+    #             - panko morzsás sertés
+    #             - csirke
+    #     Árak:
+    #         Szendvics: 990
+    #         "Hasább.": 1390
+    #         "Steakbur.": 1390
+
+  Levesek:
+    Fokhagymakrémleves:
+      image: leves
+      Árak:
+        '': 550
+    Szezonális gyümölcsleves:
+      image: leves
+      Árak:
+        '': 550
+
   Tészták:
     Carbonara:
       Összetevők: bacon, sonka, tojás, tejszín, parmezán sajt, spagetti
       Árak:
           '': 1090
+    Milánói:
+        Összetevők: paradicsom, hagyma, sonka, spagetti
+        Árak:
+            '': 1090
+    Négysajtos penne:
+        Összetevők: tejszínes szósz, sajt, gorgonzola, parmezán, füstölt sajt
+        Árak:
+            '': 1190
+    Meex:
+      Összetevők: csirkemell, gomba, fokhagyma, fűszeres tejszínes szósz, parmezán, spagetti
+      Árak:
+        '': 1190
+    Szicíliai:
+      Összetevők: csirkemell, fokhagyma, fűszeres tejszínes szósz, brokkoli, kukorica, parmezán, penne tészta
+      Árak:
+        '': 1190
+    Bolognai:
+        Összetevők: paradicsomos alap, hagyma, darált sertés, fűszerek, spagetti
+        Árak:
+            '': 1190
+    Peperoncino hideg salátaágyon:
+        Összetevők: peperoncino, spagetti, hideg jégsaláta, mozzarella, koktélparadicsom
+        Árak:
+            '': 1390
+    Tenger gyümölcsei:
+        Összetevők: paradicsomos tejszínes szósz
+        Árak:
+            '': 1490
+    Milánói sertésborda:
+        Összetevők: paradicsomszósz, sonka, gomba, trappista sajt, spagetti
+        Árak:
+            '': 1590
+
 
 Extrák:
   Pizzaalapok:
@@ -45,6 +364,11 @@ Extrák:
       - fokhagymás mustáros tejfölös
       - fokhagymás paradicsomos
 
+  Pizzaalapok-Hawaii:
+    price: 0
+    single:
+      - fűszeres paradicsomos szósz
+      - fűszeres tejfölös szósz
 
   Pizzafeltétek - Húsok:
     price: 250
@@ -59,6 +383,52 @@ Extrák:
     multi:
       - tengergyümölcsei
       - tonhal
+  Pizzafeltétek - Prémium sonkák:
+    price: 450
+    multi:
+      - pármai
+      - serrano
+      - mangalica
+  Pizzafeltétek - Tejes készítmények, sajtok:
+    price: 250
+    multi:
+      - tejföl
+      - juhtúró
+      - sajt
+      - füstölt sajt
+  Pizzafeltétek - Prémium sajtok:
+    price: 300
+    multi:
+      - gorgonzola sajt
+      - parmezán sajt
+      - mozzarella golyó
+      - feta sajt
+  Pizzafeltétek - Zöldségek:
+    price: 150
+    multi:
+      - kukorica
+      - gomba
+      - fokhagyma
+      - hagyma
+      - póréhagyma
+      - capribogyó
+      - fehér és vörös óriásbab
+      - édes pepperóni
+      - erős cseresznyepaprika
+      - jalapeno paprika
+      - padlizsán
+      - cukkini
+      - répa
+      - pritamin paprika
+      - magozott zöld és fekete olívabogyó
+      - ruccola
+      - paradicsom
+      - brokkoli
+  Pizzafeltétek - Gyümölcsök:
+    price: 150
+    multi:
+      - ananász
+      - citrom
 
   Hamburgerfeltétek - Zöldségek:
     price: 100
@@ -79,83 +449,19 @@ Extrák:
       - gorgonzola
       - cheddar
 
-  #
-  # Pizzafeltétek:
-  #   Húsok:
-  #       price: 250
-  #       Választék:
-  #           - sonka
-  #           - tarja
-  #           - bacon
-  #           - szalámi
-  #           - csirkemell
-  #   Halféleségek:
-  #       Ár: 300
-  #       Választék:
-  #           - tengergyümölcsei
-  #           - tonhal
-  #   Prémium sonkák:
-  #       Ár: 450
-  #       Választék:
-  #           - pármai
-  #           - serrano
-  #           - mangalica
-  #   Tejes készítmények, sajtok:
-  #       Ár: 250
-  #       Választék:
-  #           - tejföl
-  #           - juhtúró
-  #           - sajt
-  #           - füstölt sajt
-  #   Prémium sajtok:
-  #       Ár: 300
-  #       Választék:
-  #           - gorgonzola sajt
-  #           - parmezán sajt
-  #           - mozzarella golyó
-  #           - feta sajt
-  #   Zöldségek:
-  #       Ár: 150
-  #       Választék:
-  #           - kukorica
-  #           - gomba
-  #           - fokhagyma
-  #           - hagyma
-  #           - póréhagyma
-  #           - capribogyó
-  #           - fehér és vörös óriásbab
-  #           - édes pepperóni
-  #           - erős cseresznyepaprika
-  #           - jalapeno paprika
-  #           - padlizsán
-  #           - cukkini
-  #           - répa
-  #           - pritamin paprika
-  #           - magozott zöld és fekete olívabogyó
-  #           - ruccola
-  #           - paradicsom
-  #           - brokkoli
-  #   Gyümölcsök:
-  #       Ár: 150
-  #       Választék:
-  #           - ananász
-  #           - citrom
-  #
-  # Hamburgerfeltétek:
-  #   Zöldségek:
-  #       Ár: 100
-  #       Választék:
-  #           - jégsaláta
-  #           - paradicsom
-  #           - uborka
-  #   Húsok:
-  #       Ár: 300
-  #       Választék:
-  #           - Húspogácsa
-  #
-  #   Sajtok:
-  #       Ár: 150
-  #       Választék:
-  #           - parmezán
-  #           - gorgonzola
-  #           - cheddar
+  Hamburgerszószok:
+    price: 150
+    multi:
+      - hamburger szósz
+      - tartármártás
+      - chili szósz
+      - BBQ szósz
+      - gyümölcsszósz
+      - cézár öntet
+      - sajtos-mártogatós
+
+  Hamburgerextrák:
+    price: 150
+    multi:
+      - hagymalekvár
+      - jalapeno paprika
