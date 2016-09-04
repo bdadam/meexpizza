@@ -240,68 +240,92 @@
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
         - Hamburgerfeltétek - Sajtok
-    # Dupla Meex burger:
-    #   image: meex-burger
-    #   Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, opcionálisan hasáb- vagy steakburgonyával
-    #   Árak:
-    #       Szendvics: 1250
-    #   Választható:
-    #     - Hamburgerszószok
-    #     - Hamburgerextrák
-    #     - Hamburgerfeltétek - Zöldségek
-    #     - Hamburgerfeltétek - Húsok
-    #     - Hamburgerfeltétek - Sajtok
-    # Dupla Meex sajtburger:
-    #   image: meex-burger
-    #   Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával
-    #   Árak:
-    #     Szendvics: 1450
-    #   Választható:
-    #     - Hamburgerszószok
-    #     - Hamburgerextrák
-    #     - Hamburgerfeltétek - Zöldségek
-    #     - Hamburgerfeltétek - Húsok
-    #     - Hamburgerfeltétek - Sajtok
-    # Cheese Lovers Burger:
-    #   image: meex-burger
-    #   Összetevők: alap + választható sajt, opcionálisan hasáb- vagy steakburgonyával
-    #   Opciók:
-    #       Sajt:
-    #           - rostonsült mozzarella
-    #           - rántott trappista
-    #           - rántott camabert
-    #     Árak:
-    #         Szendvics: 890
-    #         "Hasább.": 1190
-    #         "Steakbur.": 1190
-    # Texasi Tüzes Burger:
-    #     type: hamburger
-    #     image: meex-burger
-    #     Összetevők: alap + 100% marhahús, jalapeno, cheddar sajt, opcionálisan hasáb- vagy steakburgonyával
-    #     Árak:
-    #         Szendvics: 990
-    #         "Hasább.": 1390
-    #         "Steakbur.": 1390
-    # New York Burger:
-    #     type: hamburger
-    #     image: meex-burger
-    #     Összetevők: alap + rostonsült csirke, füstölt sajt, tükörtojás, opcionálisan hasáb- vagy steakburgonyával
-    #     Árak:
-    #         Szendvics: 990
-    #         "Hasább.": 1390
-    #         "Steakbur.": 1390
-    # Hungarian Burger:
-    #     type: hamburger
-    #     image: meex-burger
-    #     Összetevők: alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt, opcionálisan hasáb- vagy steakburgonyával
-    #     Opciók:
-    #         Hús:
-    #             - panko morzsás sertés
-    #             - csirke
-    #     Árak:
-    #         Szendvics: 990
-    #         "Hasább.": 1390
-    #         "Steakbur.": 1390
+    Dupla Meex burger:
+      image: meex-burger
+      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, opcionálisan hasáb- vagy steakburgonyával
+      Árak:
+          Szendvics: 1250
+          Szendvics + hasábburgonya: 1490
+          Szendvics + steakburgonya: 1490
+          Szendvics + burgonyachips: 1490
+      Választható:
+        - Hamburgerszószok
+        - Hamburgerextrák
+        - Hamburgerfeltétek - Zöldségek
+        - Hamburgerfeltétek - Húsok
+        - Hamburgerfeltétek - Sajtok
+    Dupla Meex sajtburger:
+      image: meex-burger
+      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával
+      Árak:
+          Szendvics: 1450
+          Szendvics + hasábburgonya: 1590
+          Szendvics + steakburgonya: 1590
+          Szendvics + burgonyachips: 1590
+      Választható:
+        - Hamburgerszószok
+        - Hamburgerextrák
+        - Hamburgerfeltétek - Zöldségek
+        - Hamburgerfeltétek - Húsok
+        - Hamburgerfeltétek - Sajtok
+    Cheese Lovers Burger:
+      image: meex-burger
+      Összetevők: alap + választható sajt, opcionálisan hasáb- vagy steakburgonyával
+      Választható:
+        - Cheese Lovers sajt
+        - Hamburgerszószok
+        - Hamburgerextrák
+        - Hamburgerfeltétek - Zöldségek
+        - Hamburgerfeltétek - Húsok
+        - Hamburgerfeltétek - Sajtok
+      Árak:
+          Szendvics: 890
+          Szendvics + hasábburgonya: 1190
+          Szendvics + steakburgonya: 1190
+          Szendvics + burgonyachips: 1190
+    Texasi Tüzes Burger:
+      image: meex-burger
+      Összetevők: alap + 100% marhahús, jalapeno, cheddar sajt, opcionálisan hasáb- vagy steakburgonyával
+      Árak:
+          Szendvics: 990
+          Szendvics + hasábburgonya: 1390
+          Szendvics + steakburgonya: 1390
+          Szendvics + burgonyachips: 1390
+      Választható:
+        - Hamburgerszószok
+        - Hamburgerextrák
+        - Hamburgerfeltétek - Zöldségek
+        - Hamburgerfeltétek - Húsok
+        - Hamburgerfeltétek - Sajtok
+    New York Burger:
+      image: meex-burger
+      Összetevők: alap + rostonsült csirke, füstölt sajt, tükörtojás, opcionálisan hasáb- vagy steakburgonyával
+      Árak:
+          Szendvics: 990
+          Szendvics + hasábburgonya: 1390
+          Szendvics + steakburgonya: 1390
+          Szendvics + burgonyachips: 1390
+      Választható:
+        - Hamburgerszószok
+        - Hamburgerextrák
+        - Hamburgerfeltétek - Zöldségek
+        - Hamburgerfeltétek - Húsok
+        - Hamburgerfeltétek - Sajtok
+    Hungarian Burger:
+        image: meex-burger
+        Összetevők: alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt, opcionálisan hasáb- vagy steakburgonyával
+        Választható:
+          - Sertés vagy csirke
+          - Hamburgerszószok
+          - Hamburgerextrák
+          - Hamburgerfeltétek - Zöldségek
+          - Hamburgerfeltétek - Húsok
+          - Hamburgerfeltétek - Sajtok
+        Árak:
+            Szendvics: 990
+            Szendvics + hasábburgonya: 1390
+            Szendvics + steakburgonya: 1390
+            Szendvics + burgonyachips: 1390
 
   Levesek:
     Fokhagymakrémleves:
@@ -350,6 +374,85 @@
         Összetevők: paradicsomszósz, sonka, gomba, trappista sajt, spagetti
         Árak:
             '': 1590
+
+  Rántott sajtok és frissensültek:
+    Ízletes cheddar sajtfalatkák:
+        image: rantottsajt-cheddar
+        Összetevők: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
+        Választható:
+          - Burgonya
+          - Szószok
+        Árak:
+            '': 1290
+    Camembert sajt:
+        image: rantottsajt-camambert
+        Összetevők: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
+        Választható:
+          - Burgonya
+          - Szószok
+        Árak:
+            '': 1190
+    Trappista sajt:
+        image: rantottsajt-trappista
+        Összetevők: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
+        Választható:
+          - Burgonya
+          - Szószok
+        Árak:
+            '': 1290
+    Buffalo csirkeszárnyak:
+        image: buffalo-csirkeszarnyak
+        Összetevők: ''
+        Árak:
+            6 darab: 780
+            12 darab: 1090
+    Buffalo csirkeszárnyak menüben:
+        image: buffalo-csirkeszarnyak
+        Összetevők: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
+        Választható:
+          - Burgonya
+          - Szószok
+        Árak:
+            6 darab: 1090
+            12 darab: 1350
+    Fitneszcsirke:
+        Összetevők: roston sült csirkemellszelet, friss saláta vagy párold zöldköret vagy párolt gyümölcs
+        Választható:
+          - Zöldköret
+        Árak:
+            '': 990
+    Dupla Fitneszcsirke:
+        Összetevők: roston sült csirkemellszelet, friss saláta vagy párold zöldköret vagy párolt gyümölcs
+        Választható:
+          - Zöldköret
+        Árak:
+          '': 1390
+    Rántott csirke:
+        Összetevők: hasábburgonyával, steakburgonyával vagy burgonyachips-szel
+        Választható:
+          - Burgonya
+          - Szószok
+        Árak:
+            '': 1390
+    Rántott sertéskaraj:
+        Összetevők: hasábburgonyával, steakburgonyával vagy burgonyachips-szel
+        Választható:
+          - Burgonya
+          - Szószok
+        Árak:
+            '': 1390
+    Szűzérme grillzöldséggel:
+        Összetevők: szűzérme roston, grill zöldségek, hasábburgonyával, steakburgonyával vagy burgonyachips-szel
+        Választható:
+          - Burgonya
+        Árak:
+            '': 1390
+    Grillezett csirkemell:
+        Összetevők: bacon chips, tükörtojás, káposztasaláta, hasábburgonyával, steakburgonyával vagy burgonyachips-szel
+        Választható:
+          - Burgonya
+        Árak:
+            '': 1390
 
 
 Extrák:
@@ -465,3 +568,36 @@ Extrák:
     multi:
       - hagymalekvár
       - jalapeno paprika
+
+  Cheese Lovers sajt:
+    price: 0
+    single:
+      - rostonsült mozzarella
+      - rántott trappista
+      - rántott camabert
+
+  Sertés vagy csirke:
+    price: 0
+    single:
+      - sertéshús
+      - csirkehús
+
+  Burgonya:
+    price: 0
+    single:
+      - hasábburgonya
+      - steakburgonya
+      - burgonyachips
+
+  Szószok:
+    price: 0
+    single:
+      - házi tartármártás
+      - helyben készített gyümölcsszósz
+      - chilis szósz
+
+  Zöldköret:
+    price: 0
+    single:
+      - friss saláta
+      - párolt zöldköret

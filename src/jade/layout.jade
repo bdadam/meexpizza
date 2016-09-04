@@ -27,7 +27,7 @@ html(lang='hu')
                     each dish, name in dishes
                       li.product-item
                         .image
-                          img.lazyload(data-src='/food-images/100/#{dish.image || getSlug(name)}.jpeg', alt='#{name}')
+                          img.lazyload(data-src='/food-images/100/#{dish.image || getSlug(name)}.jpeg', alt='#{name}', onerror='this.src="https://placeholdit.imgix.net/~text?txtsize=24&txt=&w=160&h=80"')
                         .details
                           h3.title= name
                           p.description= dish['Összetevők']
