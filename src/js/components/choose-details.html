@@ -1,0 +1,24 @@
+<h1>{{ dish.name }}</h1>
+<!-- <h1>{{ dish.name }} {{ dish.category }} {{ dish.variant }}</h1> -->
+
+<select v-model="selectedDish.variant">
+    <option v-for="(name, price) in variants" value="{{ name }}" :selected="dish.variant === name">{{ name }} - {{ price }} Ft</option>
+</select>
+
+
+<div v-for="(name, extra) in extras">
+    <h3>{{ name.replace('Pizzafeltétek - ', '').replace('Hamburgerfeltétek - ', '') }}<span v-if="extra.price"> - {{ extra.price }} Ft</span></h3>
+
+    <label v-for="ex in extra.multi">
+        <input type="checkbox" v-model="selectedDish.extras[name][ex].selected"> {{ ex }}
+    </label>
+
+    <label v-for="ex in extra.single">
+        <input type="radio" name="name" v-model="selectedDish.extras[name]" value="{{ ex }}"> {{ ex }}
+    </label>
+</div>
+
+<div style="border-top: 1px solid #ddd; padding: 12px;">
+    <button @click="cancel">Back</button>
+    <button @click="add">Kosárba</button>
+</div>
