@@ -59,8 +59,19 @@
                     <add-cart :prices="{&quot;30cm&quot;:1190,&quot;40cm&quot;:2450,&quot;50cm&quot;:3540}" category="Extra pizzák" name="Három kívánság pizza" @add-to-cart="addToCart"></add-cart>
                   </li>
                 </ul>
+                <h2>Tészták</h2>
+                <ul>
+                  <li><img data-src="/food-images/100/carbonara.jpeg" alt="Carbonara" class="lazyload">
+                    <h3>Carbonara</h3>
+                    <p>bacon, sonka, tojás, tejszín, parmezán sajt, spagetti</p>
+                    <add-cart :prices="{&quot;&quot;:1090}" category="Tészták" name="Carbonara" @add-to-cart="addToCart"></add-cart>
+                  </li>
+                </ul>
               </main>
               <aside id="side-cart-container">
+                <section class="card">
+                  <h2 class="card-title">Kosár</h2>
+                </section>
                 <section class="card">
                   <h2 class="card-title">Kapcsolat</h2>
                   <div class="card-content">

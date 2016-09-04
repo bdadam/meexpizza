@@ -54,7 +54,8 @@ const openingHours = (state = { isOpen: false }, action) => {
 const menu = (state = {}, action) => {
     switch (action.type) {
         case 'full-menu-loaded':
-            return Object.assign({}, action.fullMenu['Étlap']);
+            return Object.assign({}, { dishes: action.fullMenu['Étlap'], extras: action.fullMenu['Extrák'] });
+            // return Object.assign({}, action.fullMenu['Étlap'], { extras: action.fullMenu });
         default:
             return state;
 

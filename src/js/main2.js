@@ -8,63 +8,33 @@ import { default as fullMenu } from '../../data/test.yaml';
 
 import { register as registerFbBox } from './components/fb-box';
 import { register as registerGoogleMap } from './components/google-map';
+import { register as registerChooseDetails } from './components/choose-details';
 
 registerFbBox(Vue);
 registerGoogleMap(Vue);
-
-// store.subscribe(() => {
-//     const menu = store.getState().menu;
-//     console.log(menu);
-// });
+registerChooseDetails(Vue);
 
 store.dispatch({
     type: 'full-menu-loaded',
     fullMenu
 });
 
-
-
-
 const AddToCart = Vue.component('add-cart', {
     props: ['prices', 'category', 'name'],
     replace: false,
-    template: '<select v-model="selectedVariant"><option v-for="(variant, price) in prices" :value="variant">{{ variant }} - {{ price }} Ft</option></select><button @click.prevent="addToCart">Kosárba vele</button>',
+    template: '<select v-model="selectedVariant" v-if="hasMultiVariants"><option v-for="(variant, price) in prices" :value="variant">{{ variant }} - {{ price }} Ft</option></select><span v-if="!hasMultiVariants">{{ singlePrice }} Ft</span><button @click.prevent="addToCart">Kosárba vele</button>',
     created() {
         this.selectedVariant = Object.keys(this.prices)[0];
+        this.singlePrice = this.prices[this.selectedVariant];
+    },
+    computed: {
+        hasMultiVariants() {
+            return Object.keys(this.prices).length > 1;
+        }
     },
     methods: {
         addToCart() {
             this.$emit('add-to-cart', { category: this.category, name: this.name, variant: this.selectedVariant });
-        }
-    }
-});
-
-const PizzaDetails = Vue.component('pizza-details', {
-    replace: false,
-    props: ['name', 'category'],
-    template: '<h1>Pizza</h1><button @click="back">Back</button>',
-    methods: {
-        back() {
-            this.$emit('done');
-        }
-    }
-});
-
-const ChooseDetails = Vue.component('choose-details', {
-    replace: false,
-    props: ['dish'],
-    template: '<h1>{{ dish.name }} {{ dish.category }} {{ dish.variant }}</h1><button @click="cancel">Back</button>',
-    ready() {
-        const menu = store.getState().menu;
-        const menuDish = menu[this.dish.category][this.dish.name];
-        const options = menuDish['Választható'];
-
-        console.log(menuDish, options);
-    },
-    methods: {
-        add() {},
-        cancel() {
-            this.$emit('done');
         }
     }
 });
@@ -89,7 +59,6 @@ const vm = new Vue({
             this.currentDish.category = product.category;
             this.currentDish.variant = product.variant;
 
-            console.log('ADD', product);
             this.secondPage = 'choose-details';
             this.pageTransition = 'show-second-page';
         },

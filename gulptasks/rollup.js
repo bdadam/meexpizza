@@ -14,6 +14,7 @@ module.exports = (gulp, options) => {
         const strip = require('rollup-plugin-strip');
         const html = require('rollup-plugin-html');
         const yaml = require('rollup-plugin-yaml');
+        const filesize = require('rollup-plugin-filesize');
 
         const config = {
             entry: 'src/js/main2.js',
@@ -29,7 +30,9 @@ module.exports = (gulp, options) => {
                 replace({
                     'process.env.NODE_ENV': '"production"',
                     'process.env.VUE_ENV': '"browser"'
-                })
+                }),
+                uglify(),
+                filesize()
             ]
         };
 
@@ -51,7 +54,7 @@ module.exports = (gulp, options) => {
     });
 
     gulp.task('js:watch', function () {
-        gulp.watch('src/**/*.js', ['js']);
-        gulp.watch(['data/**/*.yaml', 'data/**/*.yaml'], ['js']);
+        gulp.watch('src/js/**/*', ['js']);
+        // gulp.watch(['data/**/*.yaml', 'data/**/*.yaml'], ['js']);
     });
 };
