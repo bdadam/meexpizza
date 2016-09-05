@@ -6,7 +6,6 @@
   "main": "menu.js",
   "scripts": {
     "generate-data": "node data/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "gulp build",
     "deploy": "firebase deploy"
   },
