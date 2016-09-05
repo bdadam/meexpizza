@@ -673,3 +673,68 @@ closed-message > div {
     line-height: 1;
   }
 }
+
+.second-page-content {
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, .5);
+
+  h1 {
+    font-weight: 600;
+    border-bottom: 1px solid #ddd;
+    padding: 12px 20px;
+    // margin-bottom: 12px;
+    font-size: 1.25rem;
+    padding: 12px 0;
+  }
+
+  h3 {
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-top: 12px;
+  }
+
+  label {
+    display: inline-block;
+    margin-right: 16px;
+  }
+
+  .selections {
+    padding: 12px 20px;
+  }
+
+  .action {
+    border-top: 1px solid #ddd;
+    padding: 12px 20px;
+    text-align: right;
+  }
+}
+
+shopping-cart {
+  
+  h2 {
+    background-color: material-color('blue-grey', '500');
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 4px 4px 0 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  label, input, select, textarea {
+    display: block;
+    width: 100%;
+  }
+
+  label {
+    padding: 4px 0;
+  }
+
+  button {
+    color: #fff;
+    background-color: material-color('deep-orange', '700');
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+}

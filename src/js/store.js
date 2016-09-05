@@ -15,14 +15,16 @@ const address = (state = {}, action) => {
 
 const cart = (state = {}, action) => {
     switch(action.type) {
-        case 'add-item':
-            return state;
-        case 'remove-item':
-            return state;
-        case 'duplicate-item':
-            return state;
-        case 'change-item':
-            return state;
+        // case 'add-item':
+        //     // console.log(action.orderItemId, action.product);
+        //     return Object.assign({}, state, { [action.orderItemId]: action.orderItem });
+        // case 'remove-item':
+        //     return Object.assign({}, )
+        //     return state;
+        // case 'duplicate-item':
+        //     return state;
+        // case 'change-item':
+        //     return state;
         default:
             return state;
     }

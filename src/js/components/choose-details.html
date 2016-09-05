@@ -1,24 +1,44 @@
 <h1>{{ dish.name }}</h1>
-<!-- <h1>{{ dish.name }} {{ dish.category }} {{ dish.variant }}</h1> -->
+<div class="selections">
+    <!-- <h1>{{ dish.name }} {{ dish.category }} {{ dish.variant }}</h1> -->
 
-<select v-model="selectedDish.variant">
-    <option v-for="(name, price) in variants" value="{{ name }}" :selected="dish.variant === name">{{ name }} - {{ price }} Ft</option>
-</select>
+    <!-- <change-variant :category="dish.category" :name="dish.name" :variant="dish.variant"></change-variant>
+    <extra-select v-for="option in options" :group="option"></extra-select> -->
+
+    <!-- <div v-for="name in availableOptions">
+        <div v-for="ex in allExtras[name]">
+            {{ ex |json }}
+            <h3>{{ name.replace('Pizzafeltétek - ', '').replace('Hamburgerfeltétek - ', '') }}<span v-if="ex.price"> ({{ ex.price }} Ft)</span></h3>
+
+            <label v-for="x in ex.single">
+                <input type="radio" name="ex.name" v-model="selected[ex.name]" value="{{ x }}"> {{ x }}
+            </label>
+
+            <label v-for="x in ex.multi">
+                <input type="checkbox" name="ex.name" v-model="selected[ex.name + '|' + x]"> {{ x }}
+            </label>
+        </div>
+    </div>
+     -->
+
+    <select v-model="selectedDish.variant">
+        <option v-for="(name, price) in variants" value="{{ name }}" :selected="dish.variant === name">{{ name }} - {{ price }} Ft</option>
+    </select>
 
 
-<div v-for="(name, extra) in extras">
-    <h3>{{ name.replace('Pizzafeltétek - ', '').replace('Hamburgerfeltétek - ', '') }}<span v-if="extra.price"> - {{ extra.price }} Ft</span></h3>
+    <div v-for="(name, extra) in extras">
+        <h3>{{ name.replace('Pizzafeltétek - ', '').replace('Hamburgerfeltétek - ', '') }}<span v-if="extra.price"> - {{ extra.price }} Ft</span></h3>
 
-    <label v-for="ex in extra.multi">
-        <input type="checkbox" v-model="selectedDish.extras[name][ex].selected"> {{ ex }}
-    </label>
+        <label v-for="ex in extra.multi">
+            <input type="checkbox" v-model="selectedDish.extras[name + '|' + ex]"> {{ ex }}
+        </label>
 
-    <label v-for="ex in extra.single">
-        <input type="radio" name="name" v-model="selectedDish.extras[name]" value="{{ ex }}"> {{ ex }}
-    </label>
+        <label v-for="ex in extra.single">
+            <input type="radio" name="name" v-model="selectedDish.extras[name]" value="{{ ex }}"> {{ ex }}
+        </label>
+    </div>
 </div>
-
-<div style="border-top: 1px solid #ddd; padding: 12px; text-align: right;">
+<div class="action">
     <button @click="cancel">Mégsem</button>
     <button @click="add" class="add-to-cart">
         <svg class="icon-cart" style="fill: white;"><use xlink:href="#icon-cart"></use></svg>

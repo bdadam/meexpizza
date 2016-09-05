@@ -39,7 +39,7 @@ module.exports = (gulp) => {
             menu
         });
 
-        fs.writeFileSync('dist/index2.html', html);
+        fs.writeFileSync('dist/index.html', html);
         // done();
         // const fn = jade.compile('a(href=href) button(@click="asdf(\'#{id}\', \'#{name}\')")');
         // console.log(fn({ id: 123, name: 'name', href: 'HREF' }));

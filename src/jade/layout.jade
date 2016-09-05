@@ -31,7 +31,7 @@ html(lang='hu')
                         .details
                           h3.title= name
                           p.description= dish['Összetevők']
-                          add-cart(:prices=JSON.stringify(dish['Árak']), category=category, name=name, productid='#{category}/#{name}', @add-to-cart="addToCart")
+                          add-cart(:prices=JSON.stringify(dish['Árak']), category=category, name=name, @add-to-cart="addToCart")
         
               aside#side-cart-container
                 include aside.jade
@@ -42,9 +42,6 @@ html(lang='hu')
           div.second-page(v-if='secondPage', :transition='pageTransition')
             div.second-page-content(:is='secondPage', @done='secondPage = null', @product-customized='productCustomized', :dish='currentDish')
           
-      .mini-shopping-cart
-        .cart 2x
-        .total 4600 Ft
-        button.btn-to-cart Rendelés
+      mini-shopping-cart
     
     script(src=jsPath, async='')

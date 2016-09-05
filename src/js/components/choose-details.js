@@ -14,7 +14,7 @@ export const register = Vue => {
         replace: false,
         props: ['dish'],
         data() {
-            return { selectedDish: null, extras: {}, variants: null }
+            return { selectedDish: null, extras: {}, variants: null, availableOptions: [] }
         },
         template: html,
         ready() {
@@ -23,6 +23,8 @@ export const register = Vue => {
             const menuDish = menu.dishes[this.dish.category][this.dish.name];
             // const options = union(menuDish['Választható'], menu.dishes[this.dish.category]['Választható']);
             const options = menuDish['Választható'] || [];
+
+            this.availableOptions = options;
 
             this.selectedDish = Object.assign({}, this.dish, { extras: {} });
             this.extras = {};
@@ -50,6 +52,10 @@ export const register = Vue => {
         },
 
         computed: {
+            allExtras() {
+                console.log(store.getState().menu.extras);
+                return store.getState().menu.extras;
+            },
             // selectedExtras() {
             //     return this.extras
             // },

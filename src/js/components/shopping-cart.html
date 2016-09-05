@@ -1,0 +1,35 @@
+<h2 class="card-title">Kosár</h2>
+
+<p v-if="isEmpty">A kosár még üres. Az ételeket a "Kosárba vele" gomb megnyomásával adhatod hozzá a rendeléshez.</p>
+
+<div v-if="!isEmpty">
+    <form>
+        <label>
+            <select>
+                <option>Gyöngyös</option>
+            </select>
+        </label>
+
+        <label>
+            Név
+            <input type="text">
+        </label>
+
+        <label>
+            Telefonszám
+            <input type="text">
+        </label>
+
+        <label>
+            Cím
+            <input type="text">
+        </label>
+
+        <label>
+            Megjegyzés
+            <textarea rows="3"></textarea>
+        </label>
+
+        <button>Megrendelés</button>
+    </form>
+</div>
