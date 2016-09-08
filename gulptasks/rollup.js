@@ -21,7 +21,9 @@ module.exports = (gulp, options) => {
             cache,
             plugins: [
                 nodeResolve({ jsnext: true, main: true }),
-                commonjs(),
+                commonjs({
+                    exclude: ['node_modules/symbol-observable/es/*']
+                }),
                 yaml(),
                 html(),
                 buble(),
