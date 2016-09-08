@@ -47,7 +47,7 @@
             40cm: 2070
             50cm: 2920
         Választható:
-          - Pizzaalapok-Hawaii
+          - Hawaii Pizzaalap [kötelező]
           - Pizzafeltétek
 
   Extra pizzák:
@@ -76,14 +76,14 @@
         Választható:
           - Pizzafeltétek
     Három kívánság pizza:
-        Összetevők: blah blah
+        Összetevők: szabadon választott alap, sajt és plusz három feltét
         Árak:
           30cm: 1190
           40cm: 2450
           50cm: 3540
         Választható:
-          - Pizzaalapok
-          - Pizzafeltétek
+          - Pizzaalapok [kötelező]
+          - Pizzafeltétek [3 ingyen]
     Chuck Norris pizza:
         Összetevők: extra erős chilipaszta, sajt, grillezett csirkemell, paradicsomkarika, szeletekre vágott lilahagyma
         Árak:
@@ -124,7 +124,7 @@
             40cm: 3100
             50cm: 3950
         Választható:
-          - Pizzaalapok
+          - Pizzaalapok [kötelező]
           - Pizzafeltétek
     Victorio pizza:
         Összetevők: fokhagymás tejfölös alap, sajt, póréhagyma, mozzarella golyó, pirított bacon, juhturó
@@ -221,7 +221,7 @@
           Szendvics + steakburgonya: 1090
           Szendvics + burgonyachips: 1090
       Választható:
-        - Hamburgerszószok
+        - Hamburgerszószok [kötelező]
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
@@ -235,7 +235,7 @@
           Szendvics + steakburgonya: 1190
           Szendvics + burgonyachips: 1190
       Választható:
-        - Hamburgerszószok
+        - Hamburgerszószok [kötelező]
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
@@ -249,7 +249,7 @@
           Szendvics + steakburgonya: 1490
           Szendvics + burgonyachips: 1490
       Választható:
-        - Hamburgerszószok
+        - Hamburgerszószok [kötelező]
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
@@ -263,7 +263,7 @@
           Szendvics + steakburgonya: 1590
           Szendvics + burgonyachips: 1590
       Választható:
-        - Hamburgerszószok
+        - Hamburgerszószok [kötelező]
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
@@ -272,8 +272,8 @@
       image: meex-burger
       Összetevők: alap + választható sajt, opcionálisan hasáb- vagy steakburgonyával
       Választható:
-        - Cheese Lovers sajt
-        - Hamburgerszószok
+        - Cheese Lovers sajt [kötelező]
+        - Hamburgerszószok [kötelező]
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
@@ -292,7 +292,7 @@
           Szendvics + steakburgonya: 1390
           Szendvics + burgonyachips: 1390
       Választható:
-        - Hamburgerszószok
+        - Hamburgerszószok [kötelező]
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
@@ -306,7 +306,7 @@
           Szendvics + steakburgonya: 1390
           Szendvics + burgonyachips: 1390
       Választható:
-        - Hamburgerszószok
+        - Hamburgerszószok [kötelező]
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
@@ -315,8 +315,8 @@
         image: meex-burger
         Összetevők: alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt, opcionálisan hasáb- vagy steakburgonyával
         Választható:
-          - Sertés vagy csirke
-          - Hamburgerszószok
+          - Sertés vagy csirke [kötelező]
+          - Hamburgerszószok [kötelező]
           - Hamburgerextrák
           - Hamburgerfeltétek - Zöldségek
           - Hamburgerfeltétek - Húsok
@@ -380,24 +380,24 @@
         image: rantottsajt-cheddar
         Összetevők: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
         Választható:
-          - Burgonya
-          - Szószok
+          - Burgonya [kötelező]
+          - Szószok [kötelező]
         Árak:
             '': 1290
     Camembert sajt:
         image: rantottsajt-camambert
         Összetevők: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
         Választható:
-          - Burgonya
-          - Szószok
+          - Burgonya [kötelező]
+          - Szószok [kötelező]
         Árak:
             '': 1190
     Trappista sajt:
         image: rantottsajt-trappista
         Összetevők: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
         Választható:
-          - Burgonya
-          - Szószok
+          - Burgonya [kötelező]
+          - Szószok [kötelező]
         Árak:
             '': 1290
     Buffalo csirkeszárnyak:
@@ -410,47 +410,47 @@
         image: buffalo-csirkeszarnyak
         Összetevők: "választható szósszal: házi tartármártás, helyben készített gyümölcs szósz, chilis szósz"
         Választható:
-          - Burgonya
-          - Szószok
+          - Burgonya [kötelező]
+          - Szószok [kötelező]
         Árak:
             6 darab: 1090
             12 darab: 1350
     Fitneszcsirke:
         Összetevők: roston sült csirkemellszelet, friss saláta vagy párold zöldköret vagy párolt gyümölcs
         Választható:
-          - Zöldköret
+          - Zöldköret [kötelező]
         Árak:
             '': 990
     Dupla Fitneszcsirke:
         Összetevők: roston sült csirkemellszelet, friss saláta vagy párold zöldköret vagy párolt gyümölcs
         Választható:
-          - Zöldköret
+          - Zöldköret [kötelező]
         Árak:
           '': 1390
     Rántott csirke:
         Összetevők: hasábburgonyával, steakburgonyával vagy burgonyachips-szel
         Választható:
-          - Burgonya
-          - Szószok
+          - Burgonya [kötelező]
+          - Szószok [kötelező]
         Árak:
             '': 1390
     Rántott sertéskaraj:
         Összetevők: hasábburgonyával, steakburgonyával vagy burgonyachips-szel
         Választható:
-          - Burgonya
-          - Szószok
+          - Burgonya [kötelező]
+          - Szószok [kötelező]
         Árak:
             '': 1390
     Szűzérme grillzöldséggel:
         Összetevők: szűzérme roston, grill zöldségek, hasábburgonyával, steakburgonyával vagy burgonyachips-szel
         Választható:
-          - Burgonya
+          - Burgonya [kötelező]
         Árak:
             '': 1390
     Grillezett csirkemell:
         Összetevők: bacon chips, tükörtojás, káposztasaláta, hasábburgonyával, steakburgonyával vagy burgonyachips-szel
         Választható:
-          - Burgonya
+          - Burgonya [kötelező]
         Árak:
             '': 1390
 
@@ -546,7 +546,7 @@ Extrák:
       - fokhagymás mustáros tejfölös
       - fokhagymás paradicsomos
 
-  Pizzaalapok-Hawaii:
+  Hawaii Pizzaalap:
     price: 0
     single:
       - fűszeres paradicsomos szósz

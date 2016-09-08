@@ -6,7 +6,10 @@ $menu-height: 60px;
     z-index: 1;
     width: 100%;
     position: relative;
-    // background-color: #f1f1f1;
+
+    @media screen and (min-width: 1024px) {
+      padding-right: 16px;
+    }
 
     .brand {
         display: block;

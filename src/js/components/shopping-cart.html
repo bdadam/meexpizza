@@ -2,6 +2,15 @@
 
 <p v-if="isEmpty">A kosár még üres. Az ételeket a "Kosárba vele" gomb megnyomásával adhatod hozzá a rendeléshez.</p>
 
+<ul>
+    <li v-for="item in order.items">
+        <p>{{ item | json }}</p>
+        <p>{{ item.dishName }} {{ item.price }}</p>
+        <button @click="duplicate(item)">+ még egyet</button>
+        <button @click="remove(item)">- nem kérem</button>
+    </li>
+</ul>
+
 <div v-if="!isEmpty">
     <form>
         <label>

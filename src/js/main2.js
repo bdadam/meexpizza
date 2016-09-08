@@ -1,8 +1,6 @@
 import { default as lazysizes } from 'lazysizes/lazysizes';
-
 import Vue from 'vue';
 import store from './store';
-import { default as fullMenu } from '../../data/test.yaml';
 
 import { register as registerFbBox } from './components/fb-box';
 import { register as registerGoogleMap } from './components/google-map';
@@ -11,12 +9,17 @@ import { register as registerClosedMessage } from './components/closed-message';
 import { register as registerAddToCart } from './components/add-to-cart';
 import { register as registerShoppingCarts } from './components/shopping-cart';
 
-store.dispatch({
-    type: 'full-menu-loaded',
-    fullMenu
-});
+import { init as openingHoursInit } from './opening-hours';
+import { findDishByCategoryAndName, findExtrasForDishCategoryAndName, init as menuInit } from './menu';
 
-// console.log(fullMenu);
+menuInit();
+openingHoursInit();
+
+// console.log(findDishByCategoryAndName('Klasszikus Pizzák', 'Margarita pizza'));
+// console.log(findExtrasForDishCategoryAndName('Klasszikus Pizzák', 'Margarita pizza'));
+// const x = findExtrasForDishCategoryAndName('Extra pizzák', 'Három kívánság pizza');
+// const x = findExtrasForDishCategoryAndName('Klasszikus Pizzák', 'Hawaii pizza');
+// console.log(x);
 
 registerFbBox(Vue);
 registerGoogleMap(Vue);
@@ -25,21 +28,20 @@ registerClosedMessage(Vue);
 registerAddToCart(Vue);
 registerShoppingCarts(Vue);
 
-// Vue.component('change-variant', {
-//     replace: false,
-//     props: ['category', 'name', 'variant'],
-//     data() { return { variants: {} }; },
-//     template: 'CHOOSE VARIANT <select v-model="variant"><option v-for="(v, price) in variants" value="v">{{ v }} - {{ price }} Ft</option></select>',
-//     ready() {
-//         // this.variants = store.getState().menu.dishes[this.category][this.name]['Árak'];
-//     }
-// });
 
-const createOrder = (order = {}) => {
-    return {
-        id: order.id || Date.now(),
-    };
-};
+import { addItem as addItemToOrder } from './order';
+
+let oldOrder;
+store.subscribe(() => {
+    const order = store.getState().order;
+    if (order !== oldOrder) {
+        oldOrder = order;
+
+
+
+        console.log(order);
+    }
+});
 
 const vm = new Vue({
     el: '#app-root',
@@ -74,17 +76,29 @@ const vm = new Vue({
         },
 
         addToCart(product) {
+            console.log(product);
+
+            const dish = findDishByCategoryAndName(product.category, product.name);
+
+            if (Object.keys(dish.variants).length === 1) {
+                return addItemToOrder(product);
+            }
+
             this.currentDish.name = product.name;
             this.currentDish.category = product.category;
             this.currentDish.variant = product.variant;
+            this.secondPage = 'choose-details';
+            this.pageTransition = 'show-second-page';
 
-            const dishOnMenu = store.getState().menu.dishes[this.currentDish.category][this.currentDish.name];
-            if (dishOnMenu['Választható'] && dishOnMenu['Választható'].length > 0) {
-                this.secondPage = 'choose-details';
-                this.pageTransition = 'show-second-page';
-            } else {
-                store.dispatch({ type: 'add-item', product: dishOnMenu, id: Date.now() })
-            }
+            return;
+            //
+            // const dishOnMenu = store.getState().menu.dishes[this.currentDish.category][this.currentDish.name];
+            // if (dishOnMenu['Választható'] && dishOnMenu['Választható'].length > 0) {
+            //     this.secondPage = 'choose-details';
+            //     this.pageTransition = 'show-second-page';
+            // } else {
+            //     store.dispatch({ type: 'add-item', product: dishOnMenu, id: Date.now() })
+            // }
         },
         productCustomized(product) {
             store.dispatch({ type: 'add-item', product: product, id: Date.now() });
