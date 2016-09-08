@@ -7,7 +7,7 @@ node_js:
   - "5.3.0"
 
 install:
-  - npm install
+  - npm install -s
 
 script:
   - npm run build
