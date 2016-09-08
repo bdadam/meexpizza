@@ -1,3 +1,5 @@
+import * as polyfills from './polyfills';
+
 import { default as lazysizes } from 'lazysizes/lazysizes';
 import Vue from 'vue';
 import store from './store';
@@ -36,10 +38,6 @@ store.subscribe(() => {
     const order = store.getState().order;
     if (order !== oldOrder) {
         oldOrder = order;
-
-
-
-        console.log(order);
     }
 });
 
@@ -76,8 +74,6 @@ const vm = new Vue({
         },
 
         addToCart(product) {
-            console.log(product);
-
             const dish = findDishByCategoryAndName(product.category, product.name);
 
             if (Object.keys(dish.variants).length === 1) {
@@ -89,16 +85,6 @@ const vm = new Vue({
             this.currentDish.variant = product.variant;
             this.secondPage = 'choose-details';
             this.pageTransition = 'show-second-page';
-
-            return;
-            //
-            // const dishOnMenu = store.getState().menu.dishes[this.currentDish.category][this.currentDish.name];
-            // if (dishOnMenu['Választható'] && dishOnMenu['Választható'].length > 0) {
-            //     this.secondPage = 'choose-details';
-            //     this.pageTransition = 'show-second-page';
-            // } else {
-            //     store.dispatch({ type: 'add-item', product: dishOnMenu, id: Date.now() })
-            // }
         },
         productCustomized(product) {
             store.dispatch({ type: 'add-item', product: product, id: Date.now() });
