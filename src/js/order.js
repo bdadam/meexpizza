@@ -3,59 +3,109 @@ import { findDishByCategoryAndName, findExtrasForDishCategoryAndName } from './m
 
 import findIndex from 'lodash/findIndex';
 
-import { default as deliveryFees } from '../../data/delivery-fees.yml';
-
-console.log(deliveryFees);
 
 // import Immutable from 'immutable';
 // console.log(Immutable);
 
 import merge from 'lodash/merge';
 
-const defaultState = { items: [], address: { city: 'Gyöngyös', name: '', phone: '', street: '', notes: '' } };
+const defaultState = { items: [], address: { city: 'Gyöngyös', name: '', phone: '', street: '', notes: '' }, deliveryFees: {}, minOrderValueReached: false, deliveryFee: 0, total: 0, grandTotal: 0 };
 
 export const orderReducer = (state = defaultState, action) => {
+
+    let newState = state;
+
     switch(action.type) {
+
+        case 'add-delivery-city':
+            newState = Object.assign({}, state, { deliveryFees: Object.assign({}, state.deliveryFees, { [action.city] : { fix: action.fix, min: action.min } }) });
+            break;
+
+        case 'update-address':
+            newState = Object.assign({}, state, { address: action.address });
+            console.log(newState.address);
+            break;
+
         case 'clear-order':
-            return defaultState;
+            newState = defaultState;
+            break;
 
         case 'restore-order':
-            return Object.assign({}, action.order);
+            newState = Object.assign({}, action.order);
+            break;
 
         case 'add-item-to-order':
-            return Object.assign({}, state, { items: [...state.items, merge({}, action.item)] });
+            newState = Object.assign({}, state, { items: [...state.items, merge({}, action.item)] });
+            break;
 
         case 'duplicate-item-in-order':
             const idx = findIndex(state.items, { time: action.itemTime });
             const item = state.items[idx];
             const newItems = [...state.items];
             newItems.splice(idx, 0, Object.assign({}, item));
-            return Object.assign({}, state, { items: newItems });
+            newState = Object.assign({}, state, { items: newItems });
+            break;
 
         case 'remove-item-from-order':
             const idx2 = findIndex(state.items, { time: action.itemTime });
             const newItems2 = [...state.items];
             newItems2.splice(idx2, 1);
-            return Object.assign({}, state, { items: newItems2 });
+            newState = Object.assign({}, state, { items: newItems2 });
+            break;
+
+        default:
+            return state;
     }
 
-    return state;
+    newState.total = 0;
+
+    newState.items.forEach(item => {
+        newState.total += item.price;
+
+        if (item.extras && item.extras.optional) {
+            Object.keys(item.extras.optional).forEach(x => {
+                newState.total += item.extras.optional[x].price * item.extras.optional[x].selection.length;
+            });
+        }
+    });
+
+    newState.minOrderValueReached = newState.deliveryFees && newState.deliveryFees[newState.address.city] && newState.deliveryFees[newState.address.city].min <= newState.total;
+    newState.deliveryFee = newState.deliveryFees[newState.address.city] && newState.deliveryFees[newState.address.city].fix;
+    newState.minOrderValue = newState.deliveryFees[newState.address.city] && newState.deliveryFees[newState.address.city].min;
+
+    newState.grandTotal = newState.total + newState.deliveryFee;
+
+    return newState;
 };
 
 export const clearOrder = () => {
     store.dispatch({ type: 'clear-order' });
 };
 
-// import transform from 'lodash/transform';
-// import omit from 'lodash/omit';
+import { default as deliveryFees } from '../../data/delivery-fees.yml';
+
+export const init = orderToRestore => {
+    Object.keys(deliveryFees.Cities).forEach(city => {
+        store.dispatch({
+            type: 'add-delivery-city',
+            city,
+            min: deliveryFees.Cities[city].min || 0,
+            fix: deliveryFees.Cities[city].fix || 0
+        });
+    });
+
+    if (orderToRestore) {
+
+        console.log(orderToRestore);
+
+        store.dispatch({
+            type: 'restore-order',
+            order: orderToRestore
+        });
+    }
+};
 
 import find from 'lodash/find';
-// import merge from 'lodash/merge';
-// import toPairs from 'lodash/toPairs';
-// import omit from 'lodash/omit';
-// import pickBy from 'lodash/pickBy';
-
-// console.log(omit);
 
 export const addItem = item => {
     const dish = findDishByCategoryAndName(item.category, item.name);
@@ -64,37 +114,6 @@ export const addItem = item => {
         throw new Error('Variant must be provided.');
     }
 
-    // const extras = {};
-    // const allExtras = findExtrasForDishCategoryAndName(item.category, item.name);
-    //
-    // // const allx = pickBy(merge({}, item.extras.required, item.extras.optional), v => (Array.isArray(v) ) || typeof v === 'string');
-    // const allx = pickBy(merge({}, item.extras.required, item.extras.optional), v => v.length > 0);
-    //
-    // // console.log('QQQ', allx);
-    //
-    // if (item.extras.required) {
-    //     Object.keys(item.extras.required).forEach(category => {
-    //         // extras[category] = { price: allExtras.required.find({ category: key }).price };
-    //         const extra = find(allExtras.required, { category: category });
-    //         const ex = item.extras.required[category];
-    //
-    //         // console.log(ex, extra);
-    //
-    //         // const name = item.extras
-    //         // extras[extra] = { price: extra.price, category };
-    //     });
-    // }
-    // //
-    // // if (item.extras.optional) {
-    // //     Object.keys(item.extras.optional).forEach(name => {
-    // //         extras[name] = find(allExtras.optional, { category: name}).price;
-    // //     });
-    // // }
-    //
-    // console.log(allExtras);
-    // console.log(extras);
-    // // console.log(dish.freeExtras);
-
     store.dispatch({
         type: 'add-item-to-order',
         item: {
@@ -102,6 +121,7 @@ export const addItem = item => {
             name: dish.name,
             category: dish.category,
             price: dish.variants[item.variant],
+            variant: item.variant,
             extras: item.extras
         }
     });
@@ -119,4 +139,15 @@ export const duplicateItem = item => {
         type: 'duplicate-item-in-order',
         itemTime: item.time
     });
+};
+
+export const updateAddress = address => {
+    store.dispatch({
+        type: 'update-address',
+        address
+    });
+};
+
+export const validateOrder = order => {
+    return order.minOrderValueReached && order.items.length > 0;
 };

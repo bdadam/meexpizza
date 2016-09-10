@@ -3,7 +3,7 @@ import store from './store';
 const updateDate = () => store.dispatch({ type: 'set-current-date', date: new Date() });
 
 export const init = () => {
-    setInterval(updateDate, 1000);
+    setInterval(updateDate, 60000);
     updateDate();
 };
 

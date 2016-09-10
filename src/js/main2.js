@@ -1,4 +1,7 @@
-import * as polyfills from './polyfills';
+import polyfillPromise from 'es6-promise';
+polyfillPromise.polyfill();
+import './polyfills';
+import 'whatwg-fetch';
 
 import { default as lazysizes } from 'lazysizes/lazysizes';
 import Vue from 'vue';
@@ -13,10 +16,13 @@ import { register as registerShoppingCarts } from './components/shopping-cart';
 
 import { init as openingHoursInit } from './opening-hours';
 import { findDishByCategoryAndName, findExtrasForDishCategoryAndName, init as menuInit } from './menu';
-import { addItem as addItemToCart } from './order';
+import { addItem as addItemToCart, init as orderInit } from './order';
 
 menuInit();
 openingHoursInit();
+
+const orderToRestore = JSON.parse(localStorage.getItem('order'));
+orderInit(orderToRestore);
 
 registerFbBox(Vue);
 registerGoogleMap(Vue);
@@ -24,6 +30,14 @@ registerChooseDetails(Vue);
 registerClosedMessage(Vue);
 registerAddToCart(Vue);
 registerShoppingCarts(Vue);
+
+store.subscribe(() => {
+    try {
+        localStorage.setItem('order', JSON.stringify(store.getState().order));
+    } catch(ex) {
+        console.warn('Order not written to localStorage');
+    }
+});
 
 
 const vm = new Vue({
@@ -72,7 +86,6 @@ const vm = new Vue({
             this.pageTransition = 'show-second-page';
         },
         productSelected(selection) {
-            console.log(selection);
             addItemToCart(selection);
         },
         back() {

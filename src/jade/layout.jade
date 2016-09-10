@@ -15,6 +15,7 @@ html(lang='hu')
     div#app-root
       header.site-header
         include ./site-header.jade
+        mini-shopping-cart
       
       .main
         div(style='display: flex; flex-direction: row; width: 100%; height: 100%; transition: transform 0.35s ease-in-out;', x-tXXransition='pageTransition')
@@ -41,7 +42,5 @@ html(lang='hu')
         
           div.second-page(v-if='secondPage', :transition='pageTransition')
             div.second-page-content(:is='secondPage', @done='secondPage = null', @product-selected='productSelected', :dish='currentDish')
-          
-      mini-shopping-cart
     
     script(src=jsPath, async='')

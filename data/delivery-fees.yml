@@ -1,32 +1,32 @@
 Date: 2016-09-07
 Cities:
-  - Gyöngyös:
+  Gyöngyös:
       min: 1000
       fix: 0
 
-  - Abasár:
+  Abasár:
       fix: 800
 
-  - Detk:
+  Detk:
       fix: 800
 
-  - Gyöngyöshalász:
+  Gyöngyöshalász:
       fix: 800
 
-  - Gyöngyössolymos:
+  Gyöngyössolymos:
       fix: 800
 
-  - Gyöngyöstarján:
+  Gyöngyöstarján:
       fix: 800
 
-  - Mátrafüred:
+  Mátrafüred:
       fix: 800
 
-  - Nagyréde:
+  Nagyréde:
       fix: 800
 
-  - Pálosvörösmart:
+  Pálosvörösmart:
       fix: 800
 
-  - Visonta:
+  Visonta:
       fix: 1000

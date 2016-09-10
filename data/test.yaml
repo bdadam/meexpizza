@@ -329,11 +329,9 @@
 
   Levesek:
     Fokhagymakrémleves:
-      image: leves
       Árak:
         '': 550
     Szezonális gyümölcsleves:
-      image: leves
       Árak:
         '': 550
 
@@ -422,12 +420,13 @@
         Árak:
             '': 990
     Dupla Fitneszcsirke:
+        image: fitneszcsirke
         Összetevők: roston sült csirkemellszelet, friss saláta vagy párold zöldköret vagy párolt gyümölcs
         Választható:
           - Zöldköret [kötelező]
         Árak:
           '': 1390
-    Rántott csirke:
+    Rántott csirkemell:
         Összetevők: hasábburgonyával, steakburgonyával vagy burgonyachips-szel
         Választható:
           - Burgonya [kötelező]
@@ -435,6 +434,7 @@
         Árak:
             '': 1390
     Rántott sertéskaraj:
+        image: rantott-csirkemell
         Összetevők: hasábburgonyával, steakburgonyával vagy burgonyachips-szel
         Választható:
           - Burgonya [kötelező]
@@ -568,9 +568,9 @@ Extrák:
   Pizzafeltétek - Prémium sonkák:
     price: 450
     multi:
-      - pármai
-      - serrano
-      - mangalica
+      - pármai sonka
+      - serrano sonka
+      - mangalica sonka
   Pizzafeltétek - Tejes készítmények, sajtok:
     price: 250
     multi:
