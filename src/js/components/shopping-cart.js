@@ -56,6 +56,8 @@ export const register = Vue => {
                     return console.log('BLEHH');
                 }
 
+                const isTest = location.hostname.indexOf('localhost') >= 0;
+
                 window.fetch('https://meexpizza-admin.firebaseio.com/orders.json', {
                         method: 'POST',
                         mode: 'cors',
@@ -64,7 +66,7 @@ export const register = Vue => {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(this.order)
+                        body: JSON.stringify(Object.assign({}, this.order, { test: isTest }))
                     })
                     .then(response => {
                         console.log(response);
