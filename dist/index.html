@@ -44,7 +44,7 @@
         <div style="display: flex; flex-direction: row; width: 100%; height: 100%; transition: transform 0.35s ease-in-out;" x-tXXransition="pageTransition">
           <div style="height: 100%; overflow-y: scroll; overflow-x: hidden; width: 100%; flex-shrink: 0;">
             <div style="max-width: 1100px; background-color: #fff; margin: 0 auto; padding: 16px; display: flex;" class="page-container app-page">
-              <main>
+              <main><a id="klasszikus-pizzak" class="section-anchor"></a>
                 <h2 class="category-title">Klasszikus Pizzák</h2>
                 <ul class="product-list">
                   <li class="product-item">
@@ -95,7 +95,7 @@
                     </div>
                     <add-cart :prices="{&quot;30cm&quot;:1070,&quot;40cm&quot;:2070,&quot;50cm&quot;:2920}" category="Klasszikus Pizzák" name="Hawaii pizza" @add-to-cart="addToCart"></add-cart>
                   </li>
-                </ul>
+                </ul><a id="extra-pizzak" class="section-anchor"></a>
                 <h2 class="category-title">Extra pizzák</h2>
                 <ul class="product-list">
                   <li class="product-item">
@@ -162,7 +162,7 @@
                     </div>
                     <add-cart :prices="{&quot;30cm&quot;:1070,&quot;40cm&quot;:2070,&quot;50cm&quot;:2920}" category="Extra pizzák" name="Négysajtos pizza" @add-to-cart="addToCart"></add-cart>
                   </li>
-                </ul>
+                </ul><a id="full-a-fullban-pizzak" class="section-anchor"></a>
                 <h2 class="category-title">Full a fullban pizzák</h2>
                 <ul class="product-list">
                   <li class="product-item">
@@ -261,7 +261,7 @@
                     </div>
                     <add-cart :prices="{&quot;30cm&quot;:1550}" category="Full a fullban pizzák" name="Bossy pizza" @add-to-cart="addToCart"></add-cart>
                   </li>
-                </ul>
+                </ul><a id="hamburgerek" class="section-anchor"></a>
                 <h2 class="category-title">Hamburgerek</h2>
                 <ul class="product-list">
                   <li class="product-item">
@@ -328,7 +328,7 @@
                     </div>
                     <add-cart :prices="{&quot;Szendvics&quot;:990,&quot;Szendvics + hasábburgonya&quot;:1390,&quot;Szendvics + steakburgonya&quot;:1390,&quot;Szendvics + burgonyachips&quot;:1390}" category="Hamburgerek" name="Hungarian Burger" @add-to-cart="addToCart"></add-cart>
                   </li>
-                </ul>
+                </ul><a id="levesek" class="section-anchor"></a>
                 <h2 class="category-title">Levesek</h2>
                 <ul class="product-list">
                   <li class="product-item">
@@ -347,7 +347,7 @@
                     </div>
                     <add-cart :prices="{&quot;&quot;:550}" category="Levesek" name="Szezonális gyümölcsleves" @add-to-cart="addToCart"></add-cart>
                   </li>
-                </ul>
+                </ul><a id="tesztak" class="section-anchor"></a>
                 <h2 class="category-title">Tészták</h2>
                 <ul class="product-list">
                   <li class="product-item">
@@ -422,7 +422,7 @@
                     </div>
                     <add-cart :prices="{&quot;&quot;:1590}" category="Tészták" name="Milánói sertésborda" @add-to-cart="addToCart"></add-cart>
                   </li>
-                </ul>
+                </ul><a id="rantott-sajtok-es-frissensultek" class="section-anchor"></a>
                 <h2 class="category-title">Rántott sajtok és frissensültek</h2>
                 <ul class="product-list">
                   <li class="product-item">
@@ -513,7 +513,7 @@
                     </div>
                     <add-cart :prices="{&quot;&quot;:1390}" category="Rántott sajtok és frissensültek" name="Grillezett csirkemell" @add-to-cart="addToCart"></add-cart>
                   </li>
-                </ul>
+                </ul><a id="fuzios-etelek" class="section-anchor"></a>
                 <h2 class="category-title">Fúziós ételek</h2>
                 <ul class="product-list">
                   <li class="product-item">
@@ -540,7 +540,7 @@
                     </div>
                     <add-cart :prices="{&quot;&quot;:490}" category="Fúziós ételek" name="Cahil - török pizza" @add-to-cart="addToCart"></add-cart>
                   </li>
-                </ul>
+                </ul><a id="salatak" class="section-anchor"></a>
                 <h2 class="category-title">Saláták</h2>
                 <ul class="product-list">
                   <li class="product-item">
@@ -607,7 +607,7 @@
                     </div>
                     <add-cart :prices="{&quot;&quot;:450}" category="Saláták" name="Amerikai káposztasaláta" @add-to-cart="addToCart"></add-cart>
                   </li>
-                </ul>
+                </ul><a id="edessegek" class="section-anchor"></a>
                 <h2 class="category-title">Édességek</h2>
                 <ul class="product-list">
                   <li class="product-item">
@@ -634,7 +634,7 @@
                     </div>
                     <add-cart :prices="{&quot;&quot;:890}" category="Édességek" name="Fagylaltkehely" @add-to-cart="addToCart"></add-cart>
                   </li>
-                </ul>
+                </ul><a id="uditok" class="section-anchor"></a>
                 <h2 class="category-title">Üdítők</h2>
                 <ul class="product-list">
                   <li class="product-item">

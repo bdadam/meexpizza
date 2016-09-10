@@ -2,115 +2,83 @@
 <html lang="hu">
 <head>
     <meta charset="utf-8">
-    <title>Meexpizza beérkező megrendelések</title>
+    <title>Meexpizza</title>
+    <meta name="robots" content="noindex,nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="../main.css">
 </head>
-<body data-loading="true">
-    <div id="auth-spinner" data-bind="visible: isAuthPending">
-        <img src="ring-alt.svg">
-    </div>
-
-    <div class="form-container" data-bind="visible: !isAuthPending() && !isAuthenticated()">
-        <form data-bind="submit: login">
-            <p class="auth-error" data-bind="text: authErrorMessage"></p>
-
-            <div class="form-group">
-                <label>E-mail</label>
-                <input name="email" type="text" data-bind="value: email">
-            </div>
-
-            <div class="form-group">
-                <label>Jelszó</label>
-                <input name="password" type="password" data-bind="value: password">
-            </div>
-
-            <div class="form-group">
-                <button class="btn-primary" type="submit">Bejelentkezés</button>
-                <button class="btn-link" data-bind="click: resetPassword">Elfelejtettem a jelszót</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="form-container" data-bind="visible: passwordChangeShown() && !isAuthPending()">
-        <form data-bind="submit: changePassword">
-            <h1>Jelszócsere</h1>
-            <div class="form-group">
-                <label>Régi jelszó</label>
-                <input type="password" data-bind="value: oldPassword">
-            </div>
-            <div class="form-group">
-                <label>Új jelszó</label>
-                <input type="password" data-bind="value: newPassword">
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn-primary">Jelszóváltoztatás</button>
-                <button class="btn-link" data-bind="click: cancelPasswordChange">Mégsem</button>
-            </div>
-        </form>
-    </div>
-
-    <div id="dashboard" data-bind="visible: isAuthenticated() && !passwordChangeShown()">
-        <header id="admin-header">
-            <div class="container">
-                <span data-bind="html: email"></span>
-                <a class="logout" href="#/change-password" data-bind="click: showChangePasswordDialog">Jelszócsere</a>
-                <a class="logout" href="#/logout" data-bind="click: logout">Kijelentkezés</a>
+<body>
+    <div id="app-root">
+        <header class="site-header">
+            <div class="page-container">
+                <div class="brand"><a href="/" title="Meexpizza - Gyöngyös">Meexpizza</a></div>
+                <button v-if="!user" @click.prevent="login">Login</button>
+                <button v-if="user" @click.prevent="logout">Logout</button>
             </div>
         </header>
-        <div class="container">
-            <div id="orders-list">
-                <audio src="glass_ping.mp3" id="ping-sound"></audio>
-                <h2>Beérkező rendelések</h2>
-                <ul data-bind="foreach: orders">
-                    <li class="order-item">
-                        <p>
-                            id: <span data-bind="text: id"></span>
-                            <!-- <button data-bind="click: deliver">Kiszállítás</button> -->
-                        </p>
 
-                        <p>Idő: <span data-bind="text: formattedTime"></span></p>
-                        <address>
-                            <p>Név: <span data-bind="text: address().name"></span></p>
-                            <p>Cím: <span data-bind="text: address().city"></span>, <span data-bind="text: address().street"></span></p>
-                            <p>Telefonszám: <span data-bind="text: address().phone"></span></p>
-                        </address>
-                        <ol data-bind="foreach: items">
-                            <p>
-                                <span data-bind="text: name"></span> (<span data-bind="text: variant"></span>)
-                                <span data-bind="text: price"></span> Ft
-                            </p>
-                            <div data-bind="foreach: extras">
-                                <p>+ <span data-bind="text: name"></span> <span data-bind="text: price"></span></p>
-                            </div>
-                        </ol>
-                        <p>Kiszállítási díj: <span data-bind="text: deliveryFee"></span> Ft
-                        <p>Végösszeg: <span data-bind="text: totalPrice"></span> Ft
-                    </li>
-                </ul>
 
-                <!-- <h2>Már feldolgozott rendelések</h2>
-                <ul data-bind="foreach: pastOrders">
-                    <li class="order-item">
-                        <p data-bind="text: formattedTime"></p>
-                        <address>
-                            <p><span data-bind="text: address().name"></span></p>
-                            <p><span data-bind="text: address().phone"></span></p>
-                            <p><span data-bind="text: address().city"></span>, <span data-bind="text: address().street"></span></p>
-                        </address>
-                        <ol data-bind="foreach: items">
-                            <p>
-                                <span data-bind="text: name"></span> (<span data-bind="text: variant"></span>)
-                                <span data-bind="text: price"></span> Ft
-                            </p>
-                        </ol>
-                        <p>Kiszállítási díj: <span data-bind="text: deliveryFee"></span> Ft
-                        <p>Kiszállítási díj: <span data-bind="text: deliveryFee"></span> Ft
-                    </li>
-                </ul> -->
-            </div>
+        <div id="auth-spinner" style="display: none;">
+            <img src="ring-alt.svg">
         </div>
+
+        <ul>
+            <li v-for="order in orders">
+                {{ order | json}}
+            </li>
+        </ul>
     </div>
-    <script src="admin.js" async></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.3.2/firebase.js"></script>
+    <script>
+    (function() {
+        var firebaseConfig = {
+            apiKey: "AIzaSyAqthwrP-XTWxxZnG41UZ2m8kbIszqZu3k",
+            authDomain: "meexpizza-admin.firebaseapp.com",
+            databaseURL: "https://meexpizza-admin.firebaseio.com",
+            storageBucket: "meexpizza-admin.appspot.com",
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        var model = new Vue({
+            el: '#app-root',
+            data: { user: null },
+
+            ready: function() {
+                var self = this;
+
+                firebase.auth().onAuthStateChanged(function(firebaseUser) {
+                    self.user = firebaseUser;
+
+                    console.log(firebaseUser);
+
+                });
+
+                var dbref = firebase.database().ref('orders');
+                dbref.on('value', function(snapshot) {
+                    console.log(snapshot.val());
+                    // updateStarCount(postElement, snapshot.val());
+                });
+
+            },
+
+            methods: {
+                login: function() {
+                    console.log('login');
+                    var provider = new firebase.auth.GoogleAuthProvider();
+                    firebase.auth().signInWithPopup(provider).then(function(result) {
+                    }).catch(function(error) {});
+                },
+
+                logout: function() {
+                    firebase.auth().signOut();
+                }
+            }
+        });
+    }());
+    </script>
 </body>
 </html>
