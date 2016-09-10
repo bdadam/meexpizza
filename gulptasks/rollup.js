@@ -3,8 +3,7 @@ var cache;
 module.exports = (gulp, options) => {
     gulp.task('js', () => {
 
-        const rollup = require( 'rollup' );
-        const babel = require('rollup-plugin-babel');
+        const rollup = require('rollup');
         const buble = require('rollup-plugin-buble');
         const commonjs = require('rollup-plugin-commonjs');
         const nodeResolve = require('rollup-plugin-node-resolve');
@@ -21,9 +20,7 @@ module.exports = (gulp, options) => {
             cache,
             plugins: [
                 nodeResolve({ jsnext: true, main: true }),
-                commonjs({
-                    exclude: ['node_modules/symbol-observable/es/*']
-                }),
+                commonjs({ exclude: ['node_modules/symbol-observable/es/*'] }),
                 yaml(),
                 html(),
                 buble(),
@@ -34,7 +31,7 @@ module.exports = (gulp, options) => {
                     'process.env.VUE_ENV': '"browser"'
                 }),
                 uglify(),
-                filesize()
+                filesize(),
             ]
         };
 
@@ -47,7 +44,6 @@ module.exports = (gulp, options) => {
             cache = bundle;
 
             return bundle.write({
-                moduleName: 'asdf',
                 format: 'iife',
                 dest: 'dist/main.js',
                 sourceMap: true
@@ -58,6 +54,5 @@ module.exports = (gulp, options) => {
     gulp.task('js:watch', function () {
         gulp.watch('src/js/**/*', ['js']);
         gulp.watch('data/**/*', ['js']);
-        // gulp.watch(['data/**/*.yaml', 'data/**/*.yaml'], ['js']);
     });
 };

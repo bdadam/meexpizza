@@ -687,7 +687,7 @@
             <footer id="site-footer"><span>Meex Pizza & Food</span><span>3200 Gyöngyös, Orczy út 1.</span><span>Minden jog fenntartva © 2016</span><span><a href="https://bdadam.com/" target="_blank">made by bdadam.com</a></span></footer>
           </div>
           <div v-if="secondPage" :transition="pageTransition" class="second-page">
-            <div :is="secondPage" @done="secondPage = null" @product-customized="productCustomized" :dish="currentDish" class="second-page-content"></div>
+            <div :is="secondPage" @done="secondPage = null" @product-selected="productSelected" :dish="currentDish" class="second-page-content"></div>
           </div>
         </div>
       </div>

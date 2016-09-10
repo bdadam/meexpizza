@@ -221,7 +221,7 @@
           Szendvics + steakburgonya: 1090
           Szendvics + burgonyachips: 1090
       Választható:
-        - Hamburgerszószok [kötelező]
+        - Hamburgerszószok
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
@@ -235,7 +235,7 @@
           Szendvics + steakburgonya: 1190
           Szendvics + burgonyachips: 1190
       Választható:
-        - Hamburgerszószok [kötelező]
+        - Hamburgerszószok
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
@@ -249,7 +249,7 @@
           Szendvics + steakburgonya: 1490
           Szendvics + burgonyachips: 1490
       Választható:
-        - Hamburgerszószok [kötelező]
+        - Hamburgerszószok
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
@@ -263,7 +263,7 @@
           Szendvics + steakburgonya: 1590
           Szendvics + burgonyachips: 1590
       Választható:
-        - Hamburgerszószok [kötelező]
+        - Hamburgerszószok
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
@@ -273,7 +273,7 @@
       Összetevők: alap + választható sajt, opcionálisan hasáb- vagy steakburgonyával
       Választható:
         - Cheese Lovers sajt [kötelező]
-        - Hamburgerszószok [kötelező]
+        - Hamburgerszószok
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
@@ -292,7 +292,7 @@
           Szendvics + steakburgonya: 1390
           Szendvics + burgonyachips: 1390
       Választható:
-        - Hamburgerszószok [kötelező]
+        - Hamburgerszószok
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
@@ -306,7 +306,7 @@
           Szendvics + steakburgonya: 1390
           Szendvics + burgonyachips: 1390
       Választható:
-        - Hamburgerszószok [kötelező]
+        - Hamburgerszószok
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
@@ -316,7 +316,7 @@
         Összetevők: alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt, opcionálisan hasáb- vagy steakburgonyával
         Választható:
           - Sertés vagy csirke [kötelező]
-          - Hamburgerszószok [kötelező]
+          - Hamburgerszószok
           - Hamburgerextrák
           - Hamburgerfeltétek - Zöldségek
           - Hamburgerfeltétek - Húsok

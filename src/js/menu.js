@@ -98,3 +98,11 @@ export const findExtrasForDishCategoryAndName = (category, name) => {
         optional: extras.filter(e => some(dish.options, o => startsWith(e.category, o)))
     };
 };
+
+import find from 'lodash/find'
+
+export const findExtraPriceByCategoryAndName = category => {
+    const extras = store.getState().menu.extras2;
+    const ex = find(extras, { category });
+    return (ex && ex.price) || 0;
+};

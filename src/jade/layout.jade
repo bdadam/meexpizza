@@ -40,7 +40,7 @@ html(lang='hu')
               include site-footer.jade
         
           div.second-page(v-if='secondPage', :transition='pageTransition')
-            div.second-page-content(:is='secondPage', @done='secondPage = null', @product-customized='productCustomized', :dish='currentDish')
+            div.second-page-content(:is='secondPage', @done='secondPage = null', @product-selected='productSelected', :dish='currentDish')
           
       mini-shopping-cart
     

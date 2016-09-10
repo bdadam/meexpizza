@@ -13,15 +13,10 @@ import { register as registerShoppingCarts } from './components/shopping-cart';
 
 import { init as openingHoursInit } from './opening-hours';
 import { findDishByCategoryAndName, findExtrasForDishCategoryAndName, init as menuInit } from './menu';
+import { addItem as addItemToCart } from './order';
 
 menuInit();
 openingHoursInit();
-
-// console.log(findDishByCategoryAndName('Klasszikus Pizzák', 'Margarita pizza'));
-// console.log(findExtrasForDishCategoryAndName('Klasszikus Pizzák', 'Margarita pizza'));
-// const x = findExtrasForDishCategoryAndName('Extra pizzák', 'Három kívánság pizza');
-// const x = findExtrasForDishCategoryAndName('Klasszikus Pizzák', 'Hawaii pizza');
-// console.log(x);
 
 registerFbBox(Vue);
 registerGoogleMap(Vue);
@@ -30,16 +25,6 @@ registerClosedMessage(Vue);
 registerAddToCart(Vue);
 registerShoppingCarts(Vue);
 
-
-import { addItem as addItemToOrder } from './order';
-
-let oldOrder;
-store.subscribe(() => {
-    const order = store.getState().order;
-    if (order !== oldOrder) {
-        oldOrder = order;
-    }
-});
 
 const vm = new Vue({
     el: '#app-root',
@@ -77,7 +62,7 @@ const vm = new Vue({
             const dish = findDishByCategoryAndName(product.category, product.name);
 
             if (Object.keys(dish.variants).length === 1) {
-                return addItemToOrder(product);
+                return addItemToCart(product);
             }
 
             this.currentDish.name = product.name;
@@ -86,8 +71,9 @@ const vm = new Vue({
             this.secondPage = 'choose-details';
             this.pageTransition = 'show-second-page';
         },
-        productCustomized(product) {
-            store.dispatch({ type: 'add-item', product: product, id: Date.now() });
+        productSelected(selection) {
+            console.log(selection);
+            addItemToCart(selection);
         },
         back() {
             this.pageTransition = null;

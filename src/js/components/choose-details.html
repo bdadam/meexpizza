@@ -1,26 +1,22 @@
-<form @submit.prevent="add">
+<form @submit.prevent="add" @change="updateTotalPrice()">
     <h1>{{ dish.name }}</h1>
     <div class="selections">
-        <p>{{ invalidFields | json }}</p>
-
-        <div v-for="extraGroup in extras.required">
-            <p v-if="invalidFields.includes(extraGroup.category)">invalid</p>
-            <h3>{{ extraGroup.category }} <span v-if="extraGroup.price" class="price">({{ extraGroup.price }} Ft)</span></h3>
-            <label v-for="extra in extraGroup.single"><input type="radio" :name="extraGroup.category" :value="extra" v-model="selectedRequiredExtras[extraGroup.category]" @change="validate"> {{ extra }}</label>
-            <label v-for="extra in extraGroup.multi"><input type="checkbox" :name="extraGroup.category" :value="extra" v-model="selectedRequiredExtras[extraGroup.category]" @change="validate"> {{ extra }}</label>
+        <div v-for="extraGroup in extras.required" :class="{ error: invalidFields.includes(extraGroup.category) }">
+            <h3>{{ extraGroup.category }} <span v-if="extraGroup.price" class="price">({{ extraGroup.price }} Ft)</span> *</h3>
+            <label v-for="extra in extraGroup.single"><input type="radio" :name="extraGroup.category" :value="extra" v-model="selectedRequiredExtras[extraGroup.category].selection" @change="validate"> {{ extra }}</label>
+            <label v-for="extra in extraGroup.multi"><input type="checkbox" :name="extraGroup.category" :value="extra" v-model="selectedRequiredExtras[extraGroup.category].selection"> {{ extra }}</label>
         </div>
-
         <div v-for="extraGroup in extras.optional">
             <h3>{{ extraGroup.category }} <span v-if="extraGroup.price" class="price">({{ extraGroup.price }} Ft)</span></h3>
-            <label v-for="extra in extraGroup.single"><input type="radio" :name="extraGroup.category" :value="extra" v-model="selectedOptionalExtras[extraGroup.category]"> {{ extra }}</label>
-            <label v-for="extra in extraGroup.multi"><input type="checkbox" :xxname="extraGroup.category" :value="extra" v-model="selectedOptionalExtras[extraGroup.category]"> {{ extra }}</label>
+            <label v-for="extra in extraGroup.single"><input type="radio" :name="extraGroup.category" :value="extra" v-model="selectedOptionalExtras[extraGroup.category].selection"> {{ extra }}</label>
+            <label v-for="extra in extraGroup.multi"><input type="checkbox" :xxname="extraGroup.category" :value="extra" v-model="selectedOptionalExtras[extraGroup.category].selection"> {{ extra }}</label>
         </div>
     </div>
     <div class="action">
-        <button @click="cancel">Mégsem</button>
+        <button @click.prevent="cancel">Mégsem</button>
         <button type="submit" class="add-to-cart">
             <svg class="icon-cart" style="fill: white;"><use xlink:href="#icon-cart"></use></svg>
-            {{ total }} Ft - Kosárba
+            {{ totalPrice }} Ft - Kosárba
         </button>
     </div>
 </form>
