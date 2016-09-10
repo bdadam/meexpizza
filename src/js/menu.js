@@ -6,7 +6,7 @@ import merge from 'lodash/merge';
 import speakingurl from 'speakingurl';
 
 import store from './store';
-import { default as fullMenu } from '../../data/test.yaml';
+import { default as fullMenu } from '../../data/menu.yaml';
 
 export const menuReducer = (state = { dishes2: [], extras2: [] }, action) => {
     switch (action.type) {

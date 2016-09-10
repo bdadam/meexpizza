@@ -4,7 +4,7 @@ const jade = require('jade');
 module.exports = (gulp) => {
     gulp.task('html', () => {
         const YAML = require('yamljs');
-        const menu = YAML.load('data/test.yaml');
+        const menu = YAML.load('data/menu.yaml');
         const getSlug = text => require('speakingurl')(text, { lang: 'hu' });
 
         const html = jade.renderFile('src/jade/layout.jade', {
