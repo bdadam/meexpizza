@@ -1,6 +1,12 @@
 {
-  "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null"
-  }
+    "rules": {
+      "orders": {
+        ".read": "auth.uid === 'admin' || auth.id === '9b310a7f-4013-42f4-bc01-6dfe784c67e6'",
+        ".write": true,
+        ".indexOn": "timestamp",
+        "$post" : {
+          ".write": "!data.exists()"
+        }
+      }
+    }
 }

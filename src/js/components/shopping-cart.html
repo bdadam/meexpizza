@@ -56,17 +56,17 @@
                     </select>
                 </label>
 
-                <label class="required error">
+                <label class="required" :class="{ error: !address.street }">
                     Cím
                     <input type="text" v-model="address.street">
                 </label>
 
-                <label class="required success">
+                <label class="required" :class="{ error: !address.name }">
                     Név
                     <input type="text" v-model="address.name">
                 </label>
 
-                <label class="required">
+                <label class="required" :class="{ error: !address.phone }">
                     Telefonszám
                     <input type="text"v-model="address.phone">
                 </label>

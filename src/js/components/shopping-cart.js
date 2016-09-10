@@ -56,22 +56,22 @@ export const register = Vue => {
                     return console.log('BLEHH');
                 }
 
-                // $.ajax({
-                //     url: 'https://meexpizza.firebaseio.com/orders.json',
-                //     type: 'POST',
-                //     accept: 'application/json',
-                //     contentType: 'application/json',
-                //     dataType: 'json',
-                //     data: JSON.stringify(data),
-                //     success: (d) => {
-                //         model.succeed();
-                //         shoppingCartStore.dispatch({ type: 'ORDER_SUCCESS' });
-                //     },
-                //     error: x => {
-                //         model.error();
-                //         shoppingCartStore.dispatch({ type: 'ORDER_ERROR' });
-                //     }
-                // });
+                window.fetch('https://meexpizza-admin.firebaseio.com/orders.json', {
+                        method: 'POST',
+                        mode: 'cors',
+                        cache: false,
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(this.order)
+                    })
+                    .then(response => {
+                        console.log(response);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
             }
         }
     });
