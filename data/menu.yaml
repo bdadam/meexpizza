@@ -219,7 +219,6 @@
           Szendvics: 850
           Szendvics + hasábburgonya: 1090
           Szendvics + steakburgonya: 1090
-          Szendvics + burgonyachips: 1090
       Választható:
         - Hamburgerszószok
         - Hamburgerextrák
@@ -233,7 +232,6 @@
           Szendvics: 950
           Szendvics + hasábburgonya: 1190
           Szendvics + steakburgonya: 1190
-          Szendvics + burgonyachips: 1190
       Választható:
         - Hamburgerszószok
         - Hamburgerextrák
@@ -247,7 +245,6 @@
           Szendvics: 1250
           Szendvics + hasábburgonya: 1490
           Szendvics + steakburgonya: 1490
-          Szendvics + burgonyachips: 1490
       Választható:
         - Hamburgerszószok
         - Hamburgerextrák
@@ -261,7 +258,6 @@
           Szendvics: 1450
           Szendvics + hasábburgonya: 1590
           Szendvics + steakburgonya: 1590
-          Szendvics + burgonyachips: 1590
       Választható:
         - Hamburgerszószok
         - Hamburgerextrák
@@ -282,7 +278,6 @@
           Szendvics: 890
           Szendvics + hasábburgonya: 1190
           Szendvics + steakburgonya: 1190
-          Szendvics + burgonyachips: 1190
     Texasi Tüzes Burger:
       image: meex-burger
       Összetevők: alap + 100% marhahús, jalapeno, cheddar sajt, opcionálisan hasáb- vagy steakburgonyával
@@ -290,7 +285,6 @@
           Szendvics: 990
           Szendvics + hasábburgonya: 1390
           Szendvics + steakburgonya: 1390
-          Szendvics + burgonyachips: 1390
       Választható:
         - Hamburgerszószok
         - Hamburgerextrák
@@ -304,7 +298,6 @@
           Szendvics: 990
           Szendvics + hasábburgonya: 1390
           Szendvics + steakburgonya: 1390
-          Szendvics + burgonyachips: 1390
       Választható:
         - Hamburgerszószok
         - Hamburgerextrák
@@ -325,7 +318,6 @@
             Szendvics: 990
             Szendvics + hasábburgonya: 1390
             Szendvics + steakburgonya: 1390
-            Szendvics + burgonyachips: 1390
 
   Levesek:
     Fokhagymakrémleves:
