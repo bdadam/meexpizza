@@ -4,7 +4,7 @@ import store from '../store';
 
 import merge from 'lodash/merge';
 
-import { duplicateItem, removeItem, updateAddress, validateOrder } from '../order';
+import { duplicateItem, removeItem, updateAddress, validateOrder, sendOrder } from '../order';
 
 export const register = Vue => {
     Vue.component('shopping-cart', {
@@ -69,7 +69,7 @@ export const register = Vue => {
                         body: JSON.stringify(Object.assign({}, this.order, { test: isTest, timestamp: { '.sv': 'timestamp'} }))
                     })
                     .then(response => {
-                        console.log(response);
+                        sendOrder();
                     })
                     .catch(error => {
                         console.error(error);

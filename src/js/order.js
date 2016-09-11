@@ -53,6 +53,10 @@ export const orderReducer = (state = defaultState, action) => {
             newState = Object.assign({}, state, { items: newItems2 });
             break;
 
+        case 'send-order':
+            newState = Object.assign({}, state, { items: [] });
+            break;
+
         default:
             return state;
     }
@@ -150,4 +154,10 @@ export const updateAddress = address => {
 
 export const validateOrder = order => {
     return order.minOrderValueReached && order.items.length > 0;
+};
+
+export const sendOrder = () => {
+    store.dispatch({
+        type: 'send-order'
+    });
 };
