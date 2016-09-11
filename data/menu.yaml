@@ -419,7 +419,7 @@
         Árak:
           '': 1390
     Rántott csirkemell:
-        Összetevők: hasábburgonyával, steakburgonyával vagy burgonyachips-szel
+        Összetevők: hasábburgonyával vagy steakburgonyával
         Választható:
           - Burgonya [kötelező]
           - Szószok [kötelező]
@@ -427,20 +427,20 @@
             '': 1390
     Rántott sertéskaraj:
         image: rantott-csirkemell
-        Összetevők: hasábburgonyával, steakburgonyával vagy burgonyachips-szel
+        Összetevők: hasábburgonyával vagy steakburgonyával
         Választható:
           - Burgonya [kötelező]
           - Szószok [kötelező]
         Árak:
             '': 1390
     Szűzérme grillzöldséggel:
-        Összetevők: szűzérme roston, grill zöldségek, hasábburgonyával, steakburgonyával vagy burgonyachips-szel
+        Összetevők: szűzérme roston, grill zöldségek, hasábburgonyával vagy steakburgonyával
         Választható:
           - Burgonya [kötelező]
         Árak:
             '': 1390
     Grillezett csirkemell:
-        Összetevők: bacon chips, tükörtojás, káposztasaláta, hasábburgonyával, steakburgonyával vagy burgonyachips-szel
+        Összetevők: bacon chips, tükörtojás, káposztasaláta, hasábburgonyával vagy steakburgonyával
         Választható:
           - Burgonya [kötelező]
         Árak:
@@ -658,7 +658,6 @@ Extrák:
     single:
       - hasábburgonya
       - steakburgonya
-      - burgonyachips
 
   Szószok:
     price: 0

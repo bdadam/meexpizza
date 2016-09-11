@@ -78,6 +78,7 @@ export const register = Vue => {
                     })
                     .then(() => {
                         this.submittingOrder = false;
+                        this.$emit('done');
                     });
             }
         }

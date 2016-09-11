@@ -3,9 +3,7 @@ import { findDishByCategoryAndName, findExtrasForDishCategoryAndName } from './m
 
 import findIndex from 'lodash/findIndex';
 
-
 // import Immutable from 'immutable';
-// console.log(Immutable);
 
 import merge from 'lodash/merge';
 
@@ -99,9 +97,6 @@ export const init = orderToRestore => {
     });
 
     if (orderToRestore) {
-
-        console.log(orderToRestore);
-
         store.dispatch({
             type: 'restore-order',
             order: orderToRestore

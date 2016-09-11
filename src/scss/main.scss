@@ -362,35 +362,44 @@ closed-message > div {
   }
 }
 
-shopping-cart {
-
-  h2 {
-    background-color: material-color('blue-grey', '500');
-    color: #fff;
-    padding: 8px 20px;
-    border-radius: 4px 4px 0 0;
-    font-size: 1.125rem;
-    font-weight: 600;
-  }
-  label, input, select, textarea {
-    display: block;
-    width: 100%;
-  }
-
-  label {
-    padding: 4px 0;
-  }
-
-  button {
-    color: #fff;
-    background-color: material-color('deep-orange', '700');
-    display: block;
-    width: 100%;
-    margin-top: 8px;
-    font-size: 1.125rem;
-    font-weight: 600;
-  }
+.card-title {
+  background-color: material-color('blue-grey', '500');
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 4px 4px 0 0;
+  font-size: 1.125rem;
+  font-weight: 600;
 }
+
+// shopping-cart {
+//
+//   h2 {
+//     background-color: material-color('blue-grey', '500');
+//     color: #fff;
+//     padding: 8px 20px;
+//     border-radius: 4px 4px 0 0;
+//     font-size: 1.125rem;
+//     font-weight: 600;
+//   }
+//   label, input, select, textarea {
+//     display: block;
+//     width: 100%;
+//   }
+//
+//   label {
+//     padding: 4px 0;
+//   }
+//
+//   button {
+//     color: #fff;
+//     background-color: material-color('deep-orange', '700');
+//     display: block;
+//     width: 100%;
+//     margin-top: 8px;
+//     font-size: 1.125rem;
+//     font-weight: 600;
+//   }
+// }
 
 .error {
   color: material-color('red', '700');
@@ -407,4 +416,8 @@ shopping-cart {
 
 .slide-down-leave {
   opacity: 0;
+}
+
+[v-cloak] {
+  display: none;
 }

@@ -47,12 +47,23 @@ const vm = new Vue({
             name: '',
             category: '',
             variant: ''
-        }
+        },
+        orderItemCount: 0
     },
     props: {
         page: 'home',
         secondPage: null,
         pageTransition: null,
+    },
+    ready() {
+        const onsub = () => {
+            const state = store.getState();
+            this.orderItemCount = state.order.items.length;
+
+        };
+
+        store.subscribe(onsub);
+        onsub();
     },
     methods: {
         add(product) {
@@ -68,7 +79,7 @@ const vm = new Vue({
         },
 
         showPage(page, attributes) {
-            this.secondPage = 'choose-details';
+            this.secondPage = page;
             this.pageTransition = 'show-second-page';
         },
 
@@ -82,8 +93,13 @@ const vm = new Vue({
             this.currentDish.name = product.name;
             this.currentDish.category = product.category;
             this.currentDish.variant = product.variant;
-            this.secondPage = 'choose-details';
-            this.pageTransition = 'show-second-page';
+            // this.secondPage = 'choose-details';
+            // this.secondPage = 'shopping-cart';
+            // this.pageTransition = 'show-second-page';
+            this.showPage('choose-details');
+        },
+        showCart() {
+            this.showPage('shopping-cart');
         },
         productSelected(selection) {
             addItemToCart(selection);
