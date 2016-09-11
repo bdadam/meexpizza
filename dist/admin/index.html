@@ -5,33 +5,101 @@
     <title>Meexpizza</title>
     <meta name="robots" content="noindex,nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="admin.css">
-    <link rel="stylesheet" href="../main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <style>
+        html { font-size: 1.125rem; }
+        [v-cloak] { display: none; }
+        td { padding: 8px 5px; }
+        tr.extra:not(:last-child) { border: 0 !important; }
+    </style>
 </head>
 <body>
     <div id="app-root">
-        <header class="site-header">
-            <div class="page-container">
-                <div class="brand"><a href="/" title="Meexpizza - Gyöngyös">Meexpizza</a></div>
-                <button v-if="!user" @click.prevent="login">Login</button>
-                <button v-if="user" @click.prevent="logout">Logout</button>
+        <nav>
+            <div class="nav-wrapper indigo">
+                <a href="#" class="brand-logo" style="padding-left: 12px;">Meexpizza Admin</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li v-if="!user"><a href="#" @click.prevent="login">Login</a></li>
+                    <li v-if="user"><a href="#" @click.prevent="logout">Logout</a></li>
+                </ul>
             </div>
-        </header>
+        </nav>
 
+        <div class="container" v-if="user">
+            <order-list v-cloak title="Aktuális megrendelések" :orders="orders" :color="'green darken-2'"></order-list>
+            <order-list v-cloak title="Feldolgozott megrendelések" :orders="processedOrders" :color="'blue-grey darken-1'"></order-list>
 
-        <div id="auth-spinner" style="display: none;">
-            <img src="ring-alt.svg">
+            <script type="text/template" id="order-list-template">
+                <div>
+                    <h3>{{ title }}</h3>
+                    <p v-if="!orders.length">Nincs várakozó megrendelés</p>
+                    <ul v-cloak v-if="orders.length">
+                        <li v-for="order in orders" class="row">
+                            <div class="col s12">
+                                <!-- <div class="card blue-grey darken-1"> -->
+                                <div class="card {{ color }}">
+                                    <div class="card-content white-text">
+                                        <span class="card-title">{{ order.address.city }}, {{ order.address.street }}<br>{{ order.address.name }}, tel: {{ order.address.phone }}</span>
+
+                                        <table class="bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th data-field="name">Megnevezés</th>
+                                                    <th data-field="price" class="right-align">Ár</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody v-for="item in order.items">
+                                                <tr>
+                                                    <td>{{ item.name }}</td>
+                                                    <td class="right-align">{{ item.price }} Ft</td>
+                                                </tr>
+
+                                                <tr v-for="(category, ex) in item.extras.required" class="extra">
+                                                    <td>&nbsp;&nbsp;&nbsp;+ {{ ex.selection }}</td>
+                                                </tr>
+
+                                                <tr v-for="(category, ex) in item.extras.optional" class="extra">
+                                                    <td>&nbsp;&nbsp;&nbsp;+ {{ ex.selection.join(', ') }}</td>
+                                                    <td class="right-align">{{ ex.price * ex.selection.length }} Ft</td>
+                                                </tr>
+                                            </tbody>
+
+                                            <tbody>
+                                                <tr>
+                                                    <td>Szállítási díj</td>
+                                                    <td class="right-align">{{ order.deliveryFee }} Ft</td>
+                                                </tr>
+                                            </tbody>
+
+                                            <tfoot>
+                                                <tr>
+                                                    <td>Végösszeg</td>
+                                                    <td class="right-align">{{ order.grandTotal }} Ft</td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+
+                                        <div v-if="order.address.notes">
+                                            <h5>Megjegyzés a rendeléshez</h5>
+                                            <div style="white-space: pre-line;">{{ order.address.notes }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="card-action" v-if="!order.processed">
+                                        <a class="" href="#" @click.prevent="processOrder(order)">Feldolgozva</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </script>
         </div>
-
-        <ul>
-            <li v-for="order in orders">
-                {{ order | json}}
-            </li>
-        </ul>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.3.2/firebase.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
     <script>
     (function() {
         var firebaseConfig = {
@@ -43,26 +111,33 @@
 
         firebase.initializeApp(firebaseConfig);
 
+        Vue.component('order-list', {
+            props: ['title', 'orders', 'color'],
+            template: document.querySelector('#order-list-template').innerHTML,
+
+            methods: {
+                processOrder: function(order) {
+                    var ref = firebase.database().ref('orders/' + order.key);
+                    ref.update({
+                        processed: true
+                    });
+                }
+            }
+        });
+
         var model = new Vue({
             el: '#app-root',
-            data: { user: null },
+            data: { user: null, orders: [], processedOrders: [] },
 
             ready: function() {
                 var self = this;
 
                 firebase.auth().onAuthStateChanged(function(firebaseUser) {
                     self.user = firebaseUser;
-
-                    console.log(firebaseUser);
-
+                    if(firebaseUser && firebaseUser.uid) {
+                        self.startToSyncData();
+                    }
                 });
-
-                var dbref = firebase.database().ref('orders');
-                dbref.on('value', function(snapshot) {
-                    console.log(snapshot.val());
-                    // updateStarCount(postElement, snapshot.val());
-                });
-
             },
 
             methods: {
@@ -75,6 +150,31 @@
 
                 logout: function() {
                     firebase.auth().signOut();
+                    this.orders = [];
+                    this.processedOrders = [];
+                },
+
+                startToSyncData: function() {
+                    var self = this;
+
+                    var startDate = Date.now() - 86400000;
+                    var dbref = firebase.database().ref('orders').orderByChild('timestamp').startAt(startDate);
+                    dbref.on('value', function(snapshot) {
+                        console.log(snapshot.val());
+
+                        self.orders = [];
+
+                        snapshot.forEach(function(snap) {
+                            var order = snap.val();
+                            order.key = snap.key;
+
+                            if (order.processed) {
+                                self.processedOrders.unshift(order);
+                            } else {
+                                self.orders.unshift(order);
+                            }
+                        });
+                    });
                 }
             }
         });
