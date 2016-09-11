@@ -72,7 +72,6 @@ const vm = new Vue({
         const onsub = () => {
             const state = store.getState();
             this.orderItemCount = state.order.items.length;
-
         };
 
         store.subscribe(onsub);
@@ -102,7 +101,6 @@ const vm = new Vue({
 
 
             if (extras.optional.length === 0 && extras.required.length === 0) {
-            // if (Object.keys(dish.variants).length === 1) {
                 return addItemToCart(product);
             }
 
@@ -129,6 +127,14 @@ const vm = new Vue({
         closeNotification() {
             this.notification = '';
             this.notificationType = '';
+        },
+
+        orderSuccess() {
+            this.showNotification("Megrendelés sikeresen elküldve!", "success");
+        },
+
+        orderError() {
+            this.showNotification("A megrendelést nem tudtuk elküldeni!", "error");
         }
     }
 });

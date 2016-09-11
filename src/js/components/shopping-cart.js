@@ -10,10 +10,13 @@ export const register = Vue => {
     Vue.component('shopping-cart', {
         replace: false,
         template: html,
+        props: ['showcancelbutton'],
         data() {
             return { order: [], address: { city: 'Gyöngyös', name: '', phone: '', street: '', notes: '', submittingOrder: false } };
         },
         ready() {
+            console.log(this.showCancelButton);
+
             const state = store.getState();
             this.order = merge({}, state.order);
             this.address = merge({}, state.order.address);
@@ -51,6 +54,10 @@ export const register = Vue => {
                 return isAddressValid && isOrderValid;
             },
 
+            cancel() {
+                this.$emit('done');
+            },
+
             submitOrder() {
                 if (!this.validate()) {
                     return console.log('BLEHH');
@@ -75,10 +82,12 @@ export const register = Vue => {
                     })
                     .catch(error => {
                         console.error(error);
+                        this.$emit('order-error');
                     })
                     .then(() => {
                         this.submittingOrder = false;
                         this.$emit('done');
+                        this.$emit('order-successful');
                     });
             }
         }

@@ -15,6 +15,9 @@ html(lang='hu')
     div#app-root
       header.site-header
         include ./site-header.jade
+      closed-message
+      x-notification(v-if="notification", :text='notification', :type='notificationType' @close="closeNotification")
+
       
       .main
         div(style='display: flex; flex-direction: row; width: 100%; height: 100%; transition: transform 0.35s ease-in-out;')
@@ -22,9 +25,11 @@ html(lang='hu')
             div.hero
               img(src='/images/meex_logo_web.png')
             div.page-container.app-page(style='max-width: 1100px; background-color: #fff; margin: 0 auto; padding: 16px; display: flex;')
-              buttton(class='btn-floating-shopping-cart', @click='showPage("shopping-cart")', v-cloak, v-if='orderItemCount > 0')
-                | {{ orderItemCount }} x
-                | Megrendelés
+              buttton(class='btn-floating-shopping-cart', @click='showPage("shopping-cart")', v-cloak, v-if='orderItemCount > 0 && !secondPage')
+                svg.icon-cart(style='fill: #fff;')
+                  use(xlink:href='#icon-cart')
+                | x {{ orderItemCount }}
+                | - Megrendelés
               main
               
                 each dishes, category in menu['Étlap']
@@ -47,9 +52,7 @@ html(lang='hu')
               include site-footer.jade
         
           div.second-page(v-if='secondPage', :transition='pageTransition', style='position: relative')
-            //- button(style='position: absolute; top: 0; right: 0; font-size: 3rem; font-weight: 300; color: #777;', @click.prevent="this.$emit('done')") &times;
             choose-details.second-page-content(v-if='secondPage === "choose-details"', @done='secondPage = null', @product-selected='productSelected', :dish='currentDish')
-            shopping-cart.second-page-content(v-if='secondPage === "shopping-cart"', @done='secondPage = null', :showCancelButton='true')
-            //- div.second-page-content(:is='secondPage', @done='secondPage = null', @product-selected='productSelected', :dish='currentDish')
+            shopping-cart.second-page-content(v-if='secondPage === "shopping-cart"', @order-successful='orderSuccess' @order-error='orderError' @done='secondPage = null', :showcancelbutton='true')
     
     script(src=jsPath, async='')
