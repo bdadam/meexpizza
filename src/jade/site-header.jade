@@ -13,3 +13,4 @@
       a(href='#uditok') Üdítő
 
 closed-message
+x-notification(v-if="notification", :text='notification', :type='notificationType' @close="closeNotification")

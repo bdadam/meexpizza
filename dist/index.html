@@ -38,6 +38,7 @@
           </div>
         </div>
         <closed-message></closed-message>
+        <x-notification v-if="notification" :text="notification" :type="notificationType" @close="closeNotification"></x-notification>
       </header>
       <div class="main">
         <div style="display: flex; flex-direction: row; width: 100%; height: 100%; transition: transform 0.35s ease-in-out;">

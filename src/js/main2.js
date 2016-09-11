@@ -40,6 +40,17 @@ store.subscribe(() => {
 });
 
 
+const notification = Vue.component('x-notification', {
+    replace: false,
+    props: ['type', 'timeout', 'text'],
+    template: '<div v-if="text" class="notification-{{ type }}">{{ text }} <button class="btn-close" @click="close">&times;</button></div>',
+    methods: {
+        close() {
+            this.$emit('close');
+        }
+    }
+});
+
 const vm = new Vue({
     el: '#app-root',
     data: {
@@ -48,7 +59,9 @@ const vm = new Vue({
             category: '',
             variant: ''
         },
-        orderItemCount: 0
+        orderItemCount: 0,
+        notification: '',
+        notificationType: ''
     },
     props: {
         page: 'home',
@@ -93,9 +106,6 @@ const vm = new Vue({
             this.currentDish.name = product.name;
             this.currentDish.category = product.category;
             this.currentDish.variant = product.variant;
-            // this.secondPage = 'choose-details';
-            // this.secondPage = 'shopping-cart';
-            // this.pageTransition = 'show-second-page';
             this.showPage('choose-details');
         },
         showCart() {
@@ -106,6 +116,18 @@ const vm = new Vue({
         },
         back() {
             this.pageTransition = null;
+        },
+
+        showNotification(text, type) {
+            this.notification = text;
+            this.notificationType = type;
+        },
+
+        closeNotification() {
+            this.notification = '';
+            this.notificationType = '';
         }
     }
 });
+
+// vm.showNotification('blah blah', 'success');

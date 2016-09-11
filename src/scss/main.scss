@@ -371,6 +371,25 @@ closed-message > div {
   font-weight: 600;
 }
 
+x-notification {
+  display: block;
+
+  .notification-success {
+    background-color: material-color('green', '100');
+    color: material-color('green', '900');
+    font-weight: 600;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .btn-close {
+    border: 0;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 900;
+  }
+}
+
 // shopping-cart {
 //
 //   h2 {
