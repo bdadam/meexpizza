@@ -383,13 +383,14 @@ shopping-cart {
 }
 
 .slide-down-transition {
-
+  transition: all 0.5s ease-in-out;
+  opacity: 1;
 }
 
 .slide-down-enter {
-
+  opacity: 0;
 }
 
 .slide-down-leave {
-  
+  opacity: 0;
 }

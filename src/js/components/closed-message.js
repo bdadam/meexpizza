@@ -9,11 +9,11 @@ export const register = Vue => {
         },
         ready() {
             store.subscribe(() => {
-                this.closed = !store.getState().openingHours.isOpen;
+                this.closed = !store.getState().openingHours.isOpen || window.location.hash.indexOf('closed-now') >= 0;
                 this.nextOpen = store.getState().openingHours.nextOpen;
             });
 
-            this.closed = !store.getState().openingHours.isOpen;
+            this.closed = !store.getState().openingHours.isOpen || window.location.hash.indexOf('closed-now') >= 0;
             this.nextOpen = store.getState().openingHours.nextOpen;
         }
     });
