@@ -254,6 +254,16 @@
       color: #fff;
       font-weight: 600;
       padding: 8px 16px;
+      border-radius: 0 3px 3px 0;
+    }
+
+    select {
+      border-radius: 3px 0 0 3px;
+    }
+
+    .single-price {
+      color: material-color('teal', '600');
+      margin-right: 12px;
     }
 
     select, button {

@@ -11,7 +11,7 @@ export const register = Vue => {
         replace: false,
         template: html,
         data() {
-            return { order: [], address: { city: 'Gyöngyös', name: '', phone: '', street: '', notes: '' } };
+            return { order: [], address: { city: 'Gyöngyös', name: '', phone: '', street: '', notes: '', submittingOrder: false } };
         },
         ready() {
             const state = store.getState();
@@ -56,6 +56,8 @@ export const register = Vue => {
                     return console.log('BLEHH');
                 }
 
+                this.submittingOrder = true;
+
                 const isTest = location.hostname.indexOf('localhost') >= 0;
 
                 window.fetch('https://meexpizza-admin.firebaseio.com/orders.json', {
@@ -73,6 +75,9 @@ export const register = Vue => {
                     })
                     .catch(error => {
                         console.error(error);
+                    })
+                    .then(() => {
+                        this.submittingOrder = false;
                     });
             }
         }
