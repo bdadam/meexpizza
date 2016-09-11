@@ -98,8 +98,11 @@ const vm = new Vue({
 
         addToCart(product) {
             const dish = findDishByCategoryAndName(product.category, product.name);
+            const extras = findExtrasForDishCategoryAndName(product.category, product.name);
 
-            if (Object.keys(dish.variants).length === 1) {
+
+            if (extras.optional.length === 0 && extras.required.length === 0) {
+            // if (Object.keys(dish.variants).length === 1) {
                 return addItemToCart(product);
             }
 

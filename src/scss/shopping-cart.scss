@@ -158,4 +158,8 @@ shopping-cart {
   text-align: center;
   line-height: 48px;
   z-index: 2;
+
+  @media (min-width: 1024px) {
+    display: none !important;
+  }
 }
