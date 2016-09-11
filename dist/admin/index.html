@@ -42,6 +42,8 @@
                                     <div class="card-content white-text">
                                         <span class="card-title">{{ order.address.city }}, {{ order.address.street }}<br>{{ order.address.name }}, tel: {{ order.address.phone }}</span>
 
+                                        <p>{{ new Date(order.timestamp).toLocaleString('hu') }}</p>
+
                                         <table class="">
                                             <thead>
                                                 <tr>

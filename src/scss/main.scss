@@ -313,6 +313,10 @@ closed-message > div {
   }
 }
 
+.second-page {
+  overflow-y: auto;
+}
+
 .second-page-content {
   border-radius: 4px;
   box-shadow: 0 0 8px rgba(0, 0, 0, .5);
