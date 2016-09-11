@@ -440,3 +440,37 @@ x-notification {
 [v-cloak] {
   display: none;
 }
+
+.hero {
+  height: 318px;
+  width: 100%;
+
+  // background-image: url(/images/meex_logo_web.png);
+  // background-image: url(/images/hero.jpg), url(/images/meex_logo_web.png);
+
+  background-image: url(/images/hero.jpg);
+  background-repeat: no-repeat;
+  background-position: center center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (min-width: 1024px) {
+    background: none;
+  }
+  // position: relative;
+
+  // @media (min-width: 1024px) {
+  //   &:before {
+  //     content: '';
+  //     display: block;
+  //     position: absolute;
+  //     left: 0;
+  //     right: 0;
+  //     top: 0;
+  //     bottom: 0;
+  //     background-image: url(/images/hero.jpg);
+  //   }
+  // }
+}
