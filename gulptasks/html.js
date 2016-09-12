@@ -10,8 +10,8 @@ module.exports = (gulp) => {
     gulp.task('html', () => {
 
         const html = jade.renderFile('src/jade/layout.jade', {
-            cssPath: 'main.css?v3',
-            jsPath: 'main.js?v3',
+            cssPath: '/main.css?v3',
+            jsPath: '/main.js?v3',
             pretty: true,
             getSlug,
             menu

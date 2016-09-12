@@ -11,6 +11,7 @@ gulp.task('set-dev', () => {
 require('./gulptasks/sass')(gulp, options); // sass, sass:watch
 require('./gulptasks/html')(gulp); // html, html:watch
 require('./gulptasks/rollup')(gulp, options);
+require('./gulptasks/ftp-upload')(gulp, options);
 
 gulp.task('browser-sync', () => {
     const browserSync = require('browser-sync').create();

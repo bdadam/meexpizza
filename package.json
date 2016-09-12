@@ -7,7 +7,8 @@
   "scripts": {
     "generate-data": "node data/index.js",
     "build": "gulp build",
-    "deploy": "firebase deploy"
+    "deploy": "firebase deploy",
+    "ftp-deploy": "gulp ftp-upload"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
     "gulp-image-resize": "^0.7.1",
     "gulp-pleeease": "^2.0.2",
     "gulp-sass": "^2.3.2",
+    "gulp-util": "^3.0.7",
     "gulp.spritesmith": "^6.2.0",
     "jade": "^1.11.0",
     "js-yaml": "^3.5.2",
@@ -58,6 +60,7 @@
     "sass-material-colors": "0.0.5",
     "sass-module-importer": "^1.2.1",
     "speakingurl": "^8.0.2",
+    "vinyl-ftp": "^0.5.0",
     "vue": "^1.0.16",
     "whatwg-fetch": "^1.0.0",
     "yamljs": "^0.2.8"
