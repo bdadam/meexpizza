@@ -44,6 +44,14 @@ gulp.task('images', () => {
         }))
         .pipe(gulp.dest('dist/food-images/160'));
 
+    gulp.src('food-images/**/*')
+        .pipe(imageResize({
+            format: 'jpeg',
+            quality: 0.8,
+            width: 600,
+            height: 600
+        }))
+        .pipe(gulp.dest('dist/food-images/600'));
 });
 
 const spritesmith = require('gulp.spritesmith');

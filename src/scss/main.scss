@@ -239,59 +239,59 @@
     border: 1px solid material-color('teal', '600');
     color: material-color('teal', '600');
   }
+}
 
-  add-cart {
-    width: 100%;
+add-cart {
+  width: 100%;
+  display: block;
+  min-height: 42px;
+  text-align: right;
+  // flex: 1;
+
+  button {
+    margin-left: 8px;
+    background-color: material-color('teal', '600');
+    border: 1px solid material-color('teal', '600');
+    color: #fff;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 0 3px 3px 0;
+  }
+
+  select {
+    border-radius: 3px 0 0 3px;
+  }
+
+  .single-price {
+    color: material-color('teal', '600');
+    margin-right: 12px;
+  }
+
+  select, button {
     display: block;
-    min-height: 42px;
-    text-align: right;
-    // flex: 1;
+    width: 100%;
+  }
 
-    button {
-      margin-left: 8px;
-      background-color: material-color('teal', '600');
-      border: 1px solid material-color('teal', '600');
-      color: #fff;
-      font-weight: 600;
-      padding: 8px 16px;
-      border-radius: 0 3px 3px 0;
-    }
+  button {
+    margin: 12px 0 0 0;
+  }
 
-    select {
-      border-radius: 3px 0 0 3px;
-    }
-
-    .single-price {
-      color: material-color('teal', '600');
-      margin-right: 12px;
-    }
-
-    select, button {
-      display: block;
+  @media (min-width: 360px) {
+    add-cart {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
       width: 100%;
     }
 
-    button {
-      margin: 12px 0 0 0;
+    select, button {
+      width: auto;
+      margin: 0;
+      display: inline;
+      flex: 1;
     }
-
-    @media (min-width: 360px) {
-      add-cart {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        width: 100%;
-      }
-
-      select, button {
-        width: auto;
-        margin: 0;
-        display: inline;
-        flex: 1;
-      }
-    }
-
   }
+
 }
 
 button.add-to-cart {
@@ -473,4 +473,43 @@ x-notification {
   //     background-image: url(/images/hero.jpg);
   //   }
   // }
+}
+
+.dish-details {
+  background-color: #fff;
+  margin: 16px 0 24px;
+  overflow: hidden;
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .details {
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+
+  img {
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    img {
+      float: left;
+      margin-right: 12px;
+    }
+  }
+
+  add-cart {
+    margin-top: 16px;
+    text-align: left;
+  }
+}
+
+.menu-title {
+  font-weight: 600;
+  font-size: 2rem;
+  margin: 24px 0;
 }

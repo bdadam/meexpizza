@@ -9,28 +9,46 @@ const mkdirp = require('mkdirp');
 module.exports = (gulp) => {
     gulp.task('html', () => {
 
-        const html = jade.renderFile('src/jade/layout.jade', {
+        const template = jade.compileFile('src/jade/layout.jade');
+
+        const html = template({
             cssPath: '/main.css?v3',
             jsPath: '/main.js?v3',
             pretty: true,
             getSlug,
-            menu
+            menu,
+            isDetailPage: false,
+            canonical: 'http://www.meexpizza.hu/'
         });
 
         fs.writeFileSync('dist/index.html', html);
 
-        // const generateDetailPageFor = (directory, category, dish, data) => {
-        //     mkdirp.sync(directory);
-        //
-        // };
-        //
-        // Object.keys(menu['Étlap']).forEach(category => {
-        //     const urlCategory = getSlug(category);
-        //     Object.keys(menu['Étlap'][category]).forEach(dish => {
-        //         const directory = `dist/${getSlug(category)}/${getSlug(dish)}`;
-        //         generateDetailPageFor(directory, category, dish, menu['Étlap'][category][dish]);
-        //     });
-        // });
+        const generateDetailPageFor = (directory, category, dish, data) => {
+            mkdirp.sync(directory);
+
+            const page = template({
+                cssPath: '/main.css?v3',
+                jsPath: '/main.js?v3',
+                pretty: true,
+                getSlug,
+                menu,
+                isDetailPage: true,
+                canonical: `http://www.meexpizza.hu/${getSlug(category)}/${getSlug(dish)}/`,
+                dishCategory: category,
+                dishName: dish,
+                dishDetails: data
+            });
+
+            fs.writeFileSync(`${directory}/index.html`, page);
+        };
+
+        Object.keys(menu['Étlap']).forEach(category => {
+            const urlCategory = getSlug(category);
+            Object.keys(menu['Étlap'][category]).forEach(dish => {
+                const directory = `dist/${getSlug(category)}/${getSlug(dish)}`;
+                generateDetailPageFor(directory, category, dish, menu['Étlap'][category][dish]);
+            });
+        });
     });
 
     gulp.task('html:watch', () => {

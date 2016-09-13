@@ -2,13 +2,24 @@ doctype html
 html(lang='hu')
   head
     meta(charset='utf-8')
-    title Meexpizza Gyöngyös
-    meta(name='description', content='Pizza házhozszállítás a hét minden napján - Gyöngyösön és környékén. Harapj bele Amerikába!')
-    link(rel='canonical', href='http://www.meexpizza.hu/')
+    if isDetailPage
+      title #{dishName} (#{dishCategory}) - MeexPizza Gyöngyös
+      meta(property='og:title', content='#{dishName} (#{dishCategory}) - MeexPizza Gyöngyös')
+      meta(name='description' property='og:description', content='dishDetails["Összetevők"]')
+      meta(property='og:image', content='/food-images/600/#{getSlug(dishName)}.jpeg')
+      meta(property='og:type', content='restaurant.menu_item')
+    if !isDetailPage
+      title Meexpizza Gyöngyös
+      meta('og:title', content='MeexPizza Gyöngyös')
+      meta(name='description', property='og:description', content='Pizza házhozszállítás a hét minden napján - Gyöngyösön és környékén. Harapj bele Amerikába!')
+      meta(property='og:image', content='/images/meex_logo_web.png')
+      meta(property='og:type', content='restaurant.menu')
+      
+    link(rel='canonical', href=canonical)
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Russo+One&subset=latin,latin-ext')
     link(rel='stylesheet', href=cssPath)
-
+    
   body
     include icons.jade
     
@@ -24,6 +35,7 @@ html(lang='hu')
           div(style='height: 100%; overflow-y: scroll; overflow-x: hidden; width: 100%; flex-shrink: 0;')
             div.hero
               img(src='/images/meex_logo_web.png')
+            
             div.page-container.app-page(style='max-width: 1100px; background-color: #fff; margin: 0 auto; padding: 16px; display: flex;')
               buttton(class='btn-floating-shopping-cart', @click='showPage("shopping-cart")', v-cloak, v-if='orderItemCount > 0 && !secondPage')
                 svg.icon-cart(style='fill: #fff;')
@@ -31,7 +43,16 @@ html(lang='hu')
                 | x {{ orderItemCount }}
                 | - Megrendelés
               main
-              
+
+                if (dishName && dishCategory)
+                  .dish-details
+                      h1 #{dishName}
+                      div.details
+                        | #{dishDetails['Összetevők']}
+                        img(src='/food-images/600/#{getSlug(dishName)}.jpeg', alt='#{dishCategory} - #{dishName}',)
+                        add-cart(:prices=JSON.stringify(dishDetails['Árak']), category=dishCategory, name=dishName, @add-to-cart="addToCart")
+                  
+                h2.menu-title Étlapunk
                 each dishes, category in menu['Étlap']
                   a(id="#{getSlug(category)}", class='section-anchor')
                   h2.category-title= category
@@ -41,7 +62,8 @@ html(lang='hu')
                         .image
                           img.lazyload(data-src='/food-images/100/#{dish.image || getSlug(name)}.jpeg', alt='#{name}', onerror='this.src="https://placeholdit.imgix.net/~text?txtsize=24&txt=&w=160&h=80"')
                         .details
-                          h3.title= name
+                          h3.title
+                            a(href='/#{getSlug(category)}/#{getSlug(name)}/')= name
                           p.description= dish['Összetevők']
                         add-cart(:prices=JSON.stringify(dish['Árak']), category=category, name=name, @add-to-cart="addToCart")
         
