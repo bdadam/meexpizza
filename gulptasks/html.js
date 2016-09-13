@@ -8,6 +8,7 @@ const mkdirp = require('mkdirp');
 
 module.exports = (gulp) => {
     gulp.task('html', () => {
+        const urls = ['http://www.meexpizza.hu/'];
 
         const template = jade.compileFile('src/jade/layout.jade');
 
@@ -25,7 +26,7 @@ module.exports = (gulp) => {
 
         const generateDetailPageFor = (directory, category, dish, data) => {
             mkdirp.sync(directory);
-
+            const canonical = `http://www.meexpizza.hu/${getSlug(category)}/${getSlug(dish)}/`;
             const page = template({
                 cssPath: '/main.css?v3',
                 jsPath: '/main.js?v3',
@@ -33,11 +34,13 @@ module.exports = (gulp) => {
                 getSlug,
                 menu,
                 isDetailPage: true,
-                canonical: `http://www.meexpizza.hu/${getSlug(category)}/${getSlug(dish)}/`,
+                canonical,
                 dishCategory: category,
                 dishName: dish,
                 dishDetails: data
             });
+
+            urls.push(canonical);
 
             fs.writeFileSync(`${directory}/index.html`, page);
         };
@@ -49,6 +52,9 @@ module.exports = (gulp) => {
                 generateDetailPageFor(directory, category, dish, menu['Étlap'][category][dish]);
             });
         });
+
+        const sitemap = jade.renderFile('src/jade/sitemap.jade', { urls });
+        fs.writeFileSync('dist/sitemap.xml', sitemap);
     });
 
     gulp.task('html:watch', () => {
