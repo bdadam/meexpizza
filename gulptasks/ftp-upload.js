@@ -26,7 +26,7 @@ module.exports = (gulp) => {
 
     gulp.task('ftp-upload-code', () => {
         const conn = connect();
-        return gulp.src(['dist/**/*.html', 'dist/**/*.js', 'dist/**/*.css'], { base: 'dist', buffer: false })
+        return gulp.src(['dist/**/*.html', 'dist/**/*.js', 'dist/**/*.css', 'dist/**/*.xml'], { base: 'dist', buffer: false })
                     .pipe(conn.dest('/web'));
     });
 
