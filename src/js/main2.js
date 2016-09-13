@@ -18,6 +18,8 @@ import { init as openingHoursInit } from './opening-hours';
 import { findDishByCategoryAndName, findExtrasForDishCategoryAndName, init as menuInit } from './menu';
 import { addItem as addItemToCart, init as orderInit } from './order';
 
+import { pageview } from './tracking';
+
 menuInit();
 openingHoursInit();
 
@@ -139,4 +141,4 @@ const vm = new Vue({
     }
 });
 
-// vm.showNotification('blah blah', 'success');
+pageview();

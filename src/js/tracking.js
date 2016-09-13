@@ -5,14 +5,11 @@ if (!window.ga) {
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
     } else {
-        window.ga = () => {};
+        window.ga = (...args) => { console.log(args); };
     }
-
 }
 
-module.exports = {
-    pageview: () => {
-      ga('create', 'UA-73703688-1', 'auto');
-      ga('send', 'pageview');
-    }
+export const pageview = () => {
+  ga('create', 'UA-73703688-1', 'auto');
+  ga('send', 'pageview');
 };
