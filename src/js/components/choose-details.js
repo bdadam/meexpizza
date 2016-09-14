@@ -56,6 +56,11 @@ export const register = Vue => {
                 const extraPrice = Object.keys(this.selectedOptionalExtras).map(cat => this.selectedOptionalExtras[cat].price * this.selectedOptionalExtras[cat].selection.length).reduce((prev, curr) => prev + curr, 0);
                 this.totalPrice = basePrice + extraPrice;
             }
+        },
+        computed: {
+            hasMultiVariants() {
+                return Object.keys(this.variants).length > 1;
+            }
         }
     });
 };

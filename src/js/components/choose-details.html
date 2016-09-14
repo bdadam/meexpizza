@@ -1,15 +1,15 @@
 <form @submit.prevent="add" @change="updateTotalPrice()">
-    <h1>{{ dish.name }}</h1>
+    <h1>{{ dish.name }} <span v-if="hasMultiVariants">({{ selectedVariant}})</span></h1>
     <div class="selections">
         <div v-for="extraGroup in extras.required" :class="{ error: invalidFields.includes(extraGroup.category) }">
             <h3>{{ extraGroup.category }} <span v-if="extraGroup.price" class="price">({{ extraGroup.price }} Ft)</span> *</h3>
             <label v-for="extra in extraGroup.single"><input type="radio" :name="extraGroup.category" :value="extra" v-model="selectedRequiredExtras[extraGroup.category].selection" @change="validate"> {{ extra }}</label>
-            <label v-for="extra in extraGroup.multi"><input type="checkbox" :name="extraGroup.category" :value="extra" v-model="selectedRequiredExtras[extraGroup.category].selection"> {{ extra }}</label>
+            <label v-for="extra in extraGroup.multi"><input type="checkbox" :name="extraGroup.category + extra" :value="extra" v-model="selectedRequiredExtras[extraGroup.category].selection"> {{ extra }}</label>
         </div>
         <div v-for="extraGroup in extras.optional">
             <h3>{{ extraGroup.category }} <span v-if="extraGroup.price" class="price">({{ extraGroup.price }} Ft)</span></h3>
             <label v-for="extra in extraGroup.single"><input type="radio" :name="extraGroup.category" :value="extra" v-model="selectedOptionalExtras[extraGroup.category].selection"> {{ extra }}</label>
-            <label v-for="extra in extraGroup.multi"><input type="checkbox" :xxname="extraGroup.category" :value="extra" v-model="selectedOptionalExtras[extraGroup.category].selection"> {{ extra }}</label>
+            <label v-for="extra in extraGroup.multi"><input type="checkbox" :name="extraGroup.category + extra" :value="extra" v-model="selectedOptionalExtras[extraGroup.category].selection"> {{ extra }}</label>
         </div>
     </div>
     <div class="action">

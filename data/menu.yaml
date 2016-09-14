@@ -75,15 +75,15 @@
             50cm: 3540
         Választható:
           - Pizzafeltétek
-    Három kívánság pizza:
-        Összetevők: szabadon választott alap, sajt és plusz három feltét
-        Árak:
-          30cm: 1190
-          40cm: 2450
-          50cm: 3540
-        Választható:
-          - Pizzaalapok [kötelező]
-          - Pizzafeltétek [3 ingyen]
+    # Három kívánság pizza:
+    #     Összetevők: szabadon választott alap, sajt és plusz három feltét
+    #     Árak:
+    #       30cm: 1190
+    #       40cm: 2450
+    #       50cm: 3540
+    #     Választható:
+    #       - Pizzaalapok [kötelező]
+    #       - Pizzafeltétek [3 ingyen]
     Chuck Norris pizza:
         Összetevők: extra erős chilipaszta, sajt, grillezett csirkemell, paradicsomkarika, szeletekre vágott lilahagyma
         Árak:
@@ -214,59 +214,99 @@
   Hamburgerek:
     Meex burger:
       image: meex-burger
-      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, opcionálisan hasáb- vagy steakburgonyával
+      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa
       Árak:
           Szendvics: 850
-          Szendvics + hasábburgonya: 1090
-          Szendvics + steakburgonya: 1090
       Választható:
         - Hamburgerszószok
+        - Hamburgerextrák
+        - Hamburgerfeltétek - Zöldségek
+        - Hamburgerfeltétek - Húsok
+        - Hamburgerfeltétek - Sajtok
+    Meex burger menü:
+      image: meex-burger
+      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, hasáb- vagy steakburgonyával
+      Árak:
+          Hasábburgonyával: 1090
+          Steakburgonyával: 1090
+      Választható:
+        - Menü hamburgerszósz [kötelező]
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
         - Hamburgerfeltétek - Sajtok
     Meex sajtburger:
       image: meex-burger
-      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával
+      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt
       Árak:
           Szendvics: 950
-          Szendvics + hasábburgonya: 1190
-          Szendvics + steakburgonya: 1190
       Választható:
         - Hamburgerszószok
+        - Hamburgerextrák
+        - Hamburgerfeltétek - Zöldségek
+        - Hamburgerfeltétek - Húsok
+        - Hamburgerfeltétek - Sajtok
+    Meex sajtburger menü:
+      image: meex-burger
+      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi húspogácsa, olvasztott sajt, hasáb- vagy steakburgonyával
+      Árak:
+          Hasábburgonyával: 1190
+          Steakburgonyával: 1190
+      Választható:
+        - Menü hamburgerszósz [kötelező]
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
         - Hamburgerfeltétek - Sajtok
     Dupla Meex burger:
       image: meex-burger
-      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, opcionálisan hasáb- vagy steakburgonyával
+      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa
       Árak:
           Szendvics: 1250
-          Szendvics + hasábburgonya: 1490
-          Szendvics + steakburgonya: 1490
       Választható:
         - Hamburgerszószok
+        - Hamburgerextrák
+        - Hamburgerfeltétek - Zöldségek
+        - Hamburgerfeltétek - Húsok
+        - Hamburgerfeltétek - Sajtok
+    Dupla Meex burger menü:
+      image: meex-burger
+      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, hasáb- vagy steakburgonyával
+      Árak:
+          Hasábburgonyával: 1490
+          Steakburgonyával: 1490
+      Választható:
+        - Menü hamburgerszósz [kötelező]
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
         - Hamburgerfeltétek - Sajtok
     Dupla Meex sajtburger:
       image: meex-burger
-      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt, opcionálisan hasáb- vagy steakburgonyával
+      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt
       Árak:
           Szendvics: 1450
-          Szendvics + hasábburgonya: 1590
-          Szendvics + steakburgonya: 1590
       Választható:
         - Hamburgerszószok
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
         - Hamburgerfeltétek - Sajtok
+    Dupla Meex sajtburger menü:
+      image: meex-burger
+      Összetevők: friss jégsaláta, paradicsomkarika, uborka, házi dupla húspogácsa, dupla adag olvasztott sajt, hasáb- vagy steakburgonyával
+      Árak:
+          Hasábburgonyával: 1590
+          Steakburgonyával: 1590
+      Választható:
+        - Menü hamburgerszósz [kötelező]
+        - Hamburgerextrák
+        - Hamburgerfeltétek - Zöldségek
+        - Hamburgerfeltétek - Húsok
+        - Hamburgerfeltétek - Sajtok
     Cheese Lovers Burger:
       image: meex-burger
-      Összetevők: alap + választható sajt, opcionálisan hasáb- vagy steakburgonyával
+      Összetevők: alap + választható sajt
       Választható:
         - Cheese Lovers sajt [kötelező]
         - Hamburgerszószok
@@ -276,37 +316,68 @@
         - Hamburgerfeltétek - Sajtok
       Árak:
           Szendvics: 890
-          Szendvics + hasábburgonya: 1190
-          Szendvics + steakburgonya: 1190
+    Cheese Lovers Burger menü:
+      image: meex-burger
+      Összetevők: alap + választható sajt, hasáb- vagy steakburgonyával
+      Választható:
+        - Cheese Lovers sajt [kötelező]
+        - Menü hamburgerszósz [kötelező]
+        - Hamburgerextrák
+        - Hamburgerfeltétek - Zöldségek
+        - Hamburgerfeltétek - Húsok
+        - Hamburgerfeltétek - Sajtok
+      Árak:
+          Hasábburgonyával: 1190
+          Steakburgonyával: 1190
     Texasi Tüzes Burger:
       image: meex-burger
-      Összetevők: alap + 100% marhahús, jalapeno, cheddar sajt, opcionálisan hasáb- vagy steakburgonyával
+      Összetevők: alap + 100% marhahús, jalapeno, cheddar sajt
       Árak:
           Szendvics: 990
-          Szendvics + hasábburgonya: 1390
-          Szendvics + steakburgonya: 1390
       Választható:
         - Hamburgerszószok
+        - Hamburgerextrák
+        - Hamburgerfeltétek - Zöldségek
+        - Hamburgerfeltétek - Húsok
+        - Hamburgerfeltétek - Sajtok
+    Texasi Tüzes Burger menü:
+      image: meex-burger
+      Összetevők: alap + 100% marhahús, jalapeno, cheddar sajt, hasáb- vagy steakburgonyával
+      Árak:
+          Hasábburgonyával: 1390
+          Steakburgonyával: 1390
+      Választható:
+        - Menü hamburgerszósz [kötelező]
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
         - Hamburgerfeltétek - Sajtok
     New York Burger:
       image: meex-burger
-      Összetevők: alap + rostonsült csirke, füstölt sajt, tükörtojás, opcionálisan hasáb- vagy steakburgonyával
+      Összetevők: alap + rostonsült csirke, füstölt sajt, tükörtojás
       Árak:
           Szendvics: 990
-          Szendvics + hasábburgonya: 1390
-          Szendvics + steakburgonya: 1390
       Választható:
         - Hamburgerszószok
         - Hamburgerextrák
         - Hamburgerfeltétek - Zöldségek
         - Hamburgerfeltétek - Húsok
         - Hamburgerfeltétek - Sajtok
+    New York Burger menü:
+      image: meex-burger
+      Összetevők: alap + rostonsült csirke, füstölt sajt, tükörtojás, hasáb- vagy steakburgonyával
+      Árak:
+          Hasábburgonyával: 1390
+          Steakburgonyával: 1390
+      Választható:
+        - Menü hamburgerszósz [kötelező]
+        - Hamburgerextrák
+        - Hamburgerfeltétek - Zöldségek
+        - Hamburgerfeltétek - Húsok
+        - Hamburgerfeltétek - Sajtok
     Hungarian Burger:
         image: meex-burger
-        Összetevők: alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt, opcionálisan hasáb- vagy steakburgonyával
+        Összetevők: alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt
         Választható:
           - Sertés vagy csirke [kötelező]
           - Hamburgerszószok
@@ -316,8 +387,19 @@
           - Hamburgerfeltétek - Sajtok
         Árak:
             Szendvics: 990
-            Szendvics + hasábburgonya: 1390
-            Szendvics + steakburgonya: 1390
+    Hungarian Burger menü:
+        image: meex-burger
+        Összetevők: alap + panko morzsás sertés vagy csirke, savanyú uborka, reszelt sajt, hasáb- vagy steakburgonyával
+        Választható:
+          - Sertés vagy csirke [kötelező]
+          - Menü hamburgerszósz [kötelező]
+          - Hamburgerextrák
+          - Hamburgerfeltétek - Zöldségek
+          - Hamburgerfeltétek - Húsok
+          - Hamburgerfeltétek - Sajtok
+        Árak:
+            Hasábburgonyával: 1390
+            Steakburgonyával: 1390
 
   Levesek:
     Fokhagymakrémleves:
@@ -626,6 +708,17 @@ Extrák:
   Hamburgerszószok:
     price: 150
     multi:
+      - hamburger szósz
+      - tartármártás
+      - chili szósz
+      - BBQ szósz
+      - gyümölcsszósz
+      - cézár öntet
+      - sajtos-mártogatós
+
+  Menü hamburgerszósz:
+    price: 0
+    single:
       - hamburger szósz
       - tartármártás
       - chili szósz

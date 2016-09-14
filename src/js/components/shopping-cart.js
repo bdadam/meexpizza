@@ -64,8 +64,12 @@ export const register = Vue => {
                 this.submittingOrder = true;
 
                 const isTest = location.hostname.indexOf('localhost') >= 0;
+                const url = isTest
+                                ? 'https://meexpizza-test.firebaseio.com/orders.json'
+                                : 'https://meexpizza-admin.firebaseio.com/orders.json';
 
-                window.fetch('https://meexpizza-admin.firebaseio.com/orders.json', {
+
+                window.fetch(url, {
                         method: 'POST',
                         mode: 'cors',
                         cache: false,
@@ -79,7 +83,8 @@ export const register = Vue => {
                         sendOrder();
                     })
                     .catch(error => {
-                        console.error(error);
+                        this.submittingOrder = false;
+                        this.$emit('done');
                         this.$emit('order-error');
                     })
                     .then(() => {

@@ -6,6 +6,10 @@ language: node_js
 node_js:
   - "5.3.0"
 
+branches:
+  only:
+  - master
+
 install:
   - npm install -s
 

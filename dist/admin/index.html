@@ -105,6 +105,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
     <script>
     (function() {
+        var isTest = location.hostname.indexOf('localhost') >= 0;
+
+        var testConfig = {
+            apiKey: "AIzaSyDnOj42doG2aiQLK70iaK9DonTqvafb2qM",
+            authDomain: "meexpizza-test.firebaseapp.com",
+            databaseURL: "https://meexpizza-test.firebaseio.com",
+            storageBucket: "meexpizza-test.appspot.com",
+            messagingSenderId: "22895934467"
+        };
+
         var firebaseConfig = {
             apiKey: "AIzaSyAqthwrP-XTWxxZnG41UZ2m8kbIszqZu3k",
             authDomain: "meexpizza-admin.firebaseapp.com",
@@ -112,7 +122,7 @@
             storageBucket: "meexpizza-admin.appspot.com",
         };
 
-        firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(isTest ? testConfig : firebaseConfig);
 
         Vue.component('order-list', {
             props: ['title', 'orders', 'color'],
