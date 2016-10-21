@@ -1,37 +1,53 @@
 <!doctype html>
 <html lang="hu">
+
 <head>
-    <meta charset="utf-8">
-    <title>Meexpizza</title>
-    <meta name="robots" content="noindex,nofollow">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
-    <style>
-        html { font-size: 1.125rem; }
-        [v-cloak] { display: none; }
-        td { padding: 8px 5px; }
-        tr.extra:not(:last-child) { border: 0 !important; }
-        .bold { font-weight: bold !important; }
-    </style>
+	<meta charset="utf-8">
+	<title>Meexpizza</title>
+	<meta name="robots" content="noindex,nofollow">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+	<style>
+		html {
+			font-size: 1.125rem;
+		}
+		
+		[v-cloak] {
+			display: none;
+		}
+		
+		td {
+			padding: 8px 5px;
+		}
+		
+		tr.extra:not(:last-child) {
+			border: 0 !important;
+		}
+		
+		.bold {
+			font-weight: bold !important;
+		}
+	</style>
 </head>
+
 <body>
-    <audio id="ping-sound" src="glass_ping.mp3" preload="auto"></audio>
-    <div id="app-root">
-        <nav>
-            <div class="nav-wrapper indigo">
-                <a href="#" class="brand-logo" style="padding-left: 12px;">Meexpizza Admin</a>
-                <ul id="nav-mobile" class="right hide-on-med-and-down">
-                    <li v-if="!user"><a href="#" @click.prevent="login">Login</a></li>
-                    <li v-if="user"><a href="#" @click.prevent="logout">Logout</a></li>
-                </ul>
-            </div>
-        </nav>
+	<audio id="ping-sound" src="glass_ping.mp3" preload="auto"></audio>
+	<div id="app-root">
+		<nav>
+			<div class="nav-wrapper indigo">
+				<a href="#" class="brand-logo" style="padding-left: 12px;">Meexpizza Admin</a>
+				<ul id="nav-mobile" class="right hide-on-med-and-down">
+					<li v-if="!user"><a href="#" @click.prevent="login">Login</a></li>
+					<li v-if="user"><a href="#" @click.prevent="logout">Logout</a></li>
+				</ul>
+			</div>
+		</nav>
 
-        <div class="container" v-if="user">
-            <order-list v-cloak title="Aktuális megrendelések" :orders="orders" :color="'green darken-2'"></order-list>
-            <order-list v-cloak title="Feldolgozott megrendelések" :orders="processedOrders" :color="'blue-grey darken-1'"></order-list>
+		<div class="container" v-if="user">
+			<order-list v-cloak title="Aktuális megrendelések" :orders="orders" :color="'green darken-2'"></order-list>
+			<order-list v-cloak title="Feldolgozott megrendelések" :orders="processedOrders" :color="'blue-grey darken-1'"></order-list>
 
-            <script type="text/template" id="order-list-template">
+			<script type="text/template" id="order-list-template">
                 <div>
                     <h3>{{ title }}</h3>
                     <p v-if="!orders.length">Nincs várakozó megrendelés</p>
@@ -96,14 +112,14 @@
                     </ul>
                 </div>
             </script>
-        </div>
-    </div>
+		</div>
+	</div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/3.3.2/firebase.js"></script>
-    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
-    <script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/3.3.2/firebase.js"></script>
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+	<script>
     (function() {
         var isTest = location.hostname.indexOf('localhost') >= 0;
 
@@ -111,8 +127,7 @@
             apiKey: "AIzaSyDnOj42doG2aiQLK70iaK9DonTqvafb2qM",
             authDomain: "meexpizza-test.firebaseapp.com",
             databaseURL: "https://meexpizza-test.firebaseio.com",
-            storageBucket: "meexpizza-test.appspot.com",
-            messagingSenderId: "22895934467"
+            storageBucket: "meexpizza-test.appspot.com"
         };
 
         var firebaseConfig = {
@@ -155,10 +170,10 @@
 
             methods: {
                 login: function() {
-                    console.log('login');
                     var provider = new firebase.auth.GoogleAuthProvider();
-                    firebase.auth().signInWithPopup(provider).then(function(result) {
-                    }).catch(function(error) {});
+                    firebase.auth().signInWithPopup(provider).catch(function(error) {
+                        console.log(error);
+                    });
                 },
 
                 logout: function() {
@@ -198,8 +213,6 @@
                         }
 
                         latestOrderTimestamp = latestTimestampInThisBatch;
-
-                        console.log(latestOrderTimestamp, latestTimestampInThisBatch);
                     });
                 }
             }
@@ -207,4 +220,5 @@
     }());
     </script>
 </body>
+
 </html>

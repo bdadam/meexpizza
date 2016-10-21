@@ -65,33 +65,55 @@ export const register = Vue => {
 
                 const isTest = location.hostname.indexOf('localhost') >= 0;
                 const url = isTest
-                                ? 'https://meexpizza-test.firebaseio.com/orders.json'
-                                : 'https://meexpizza-admin.firebaseio.com/orders.json';
+                    ? 'https://meexpizza-test.firebaseio.com/orders.json'
+                    : 'https://meexpizza-admin.firebaseio.com/orders.json';
 
+                const body = JSON.stringify(Object.assign({}, this.order, { test: isTest, timestamp: { '.sv': 'timestamp' } }));
 
-                window.fetch(url, {
-                        method: 'POST',
-                        mode: 'cors',
-                        cache: false,
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(Object.assign({}, this.order, { test: isTest, timestamp: { '.sv': 'timestamp'} }))
-                    })
-                    .then(response => {
-                        sendOrder();
-                    })
-                    .catch(error => {
-                        this.submittingOrder = false;
-                        this.$emit('done');
-                        this.$emit('order-error');
-                    })
-                    .then(() => {
-                        this.submittingOrder = false;
-                        this.$emit('done');
-                        this.$emit('order-successful');
-                    });
+                const xmlhttp = new XMLHttpRequest();
+                xmlhttp.open('POST', url);
+                xmlhttp.setRequestHeader('Content-Type', 'application/json');
+
+                xmlhttp.onreadystatechange = () => {
+                    if (xmlhttp.readyState === 4) {
+                        if (xmlhttp.status === 200) {
+                            sendOrder();
+                            this.submittingOrder = false;
+                            this.$emit('done');
+                            this.$emit('order-successful');
+                        } else {
+                            this.submittingOrder = false;
+                            this.$emit('done');
+                            this.$emit('order-error');
+                        }
+                    }
+                };
+
+                xmlhttp.send(body);
+
+                // window.fetch(url, {
+                //         method: 'POST',
+                //         mode: 'cors',
+                //         cache: false,
+                //         headers: {
+                //             'Accept': 'application/json',
+                //             'Content-Type': 'application/json'
+                //         },
+                //         body: JSON.stringify(Object.assign({}, this.order, { test: isTest, timestamp: { '.sv': 'timestamp'} }))
+                //     })
+                //     .then(response => {
+                //         sendOrder();
+                //     })
+                //     .catch(error => {
+                //         this.submittingOrder = false;
+                //         this.$emit('done');
+                //         this.$emit('order-error');
+                //     })
+                //     .then(() => {
+                //         this.submittingOrder = false;
+                //         this.$emit('done');
+                //         this.$emit('order-successful');
+                //     });
             }
         }
     });
