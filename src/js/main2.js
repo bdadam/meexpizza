@@ -1,7 +1,6 @@
 import polyfillPromise from 'es6-promise';
 polyfillPromise.polyfill();
 import './polyfills';
-import 'whatwg-fetch';
 
 import { default as lazysizes } from 'lazysizes/lazysizes';
 import Vue from 'vue';

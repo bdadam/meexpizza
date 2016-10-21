@@ -90,30 +90,6 @@ export const register = Vue => {
                 };
 
                 xmlhttp.send(body);
-
-                // window.fetch(url, {
-                //         method: 'POST',
-                //         mode: 'cors',
-                //         cache: false,
-                //         headers: {
-                //             'Accept': 'application/json',
-                //             'Content-Type': 'application/json'
-                //         },
-                //         body: JSON.stringify(Object.assign({}, this.order, { test: isTest, timestamp: { '.sv': 'timestamp'} }))
-                //     })
-                //     .then(response => {
-                //         sendOrder();
-                //     })
-                //     .catch(error => {
-                //         this.submittingOrder = false;
-                //         this.$emit('done');
-                //         this.$emit('order-error');
-                //     })
-                //     .then(() => {
-                //         this.submittingOrder = false;
-                //         this.$emit('done');
-                //         this.$emit('order-successful');
-                //     });
             }
         }
     });
