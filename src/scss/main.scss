@@ -382,6 +382,14 @@ x-notification {
     line-height: 1;
   }
 
+  .notification-error {
+    background-color: material-color('red', '100');
+    color: material-color('red', '900');
+    font-weight: 600;
+    text-align: center;
+    line-height: 1;    
+  }
+
   .btn-close {
     border: 0;
     color: #fff;
